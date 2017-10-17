@@ -1,0 +1,2 @@
+def GenerateUserId(device):
+  pass

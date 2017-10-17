@@ -1,0 +1,2 @@
+def GetPlaceName(location):
+  pass

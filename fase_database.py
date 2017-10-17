@@ -1,0 +1,2 @@
+class FaseDatabase(object):
+  pass

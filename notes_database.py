@@ -1,0 +1,2 @@
+class NotesDatabase(object):
+  pass
