@@ -114,6 +114,7 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
           label=note.place_text, font=0.75, aligh=fase.Text.RIGHT, sizable=fase.Label.FIT_OUTER_ELEMENT)
 
       note_layout.SetOnClick(functools.partial(self.OnNote, note.note_id))
+    return screen
 
   def OnNew(self, screen):
     return self._DisplayNote(None, screen)

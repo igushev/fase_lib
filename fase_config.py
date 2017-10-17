@@ -64,7 +64,7 @@ def GetSMSSender(config):
 
 
 fase_config = GetConfig('FASE_CONFIG_FILENAME')
-activation_code_generator.ActivationCodeGenerator.Set(GetActivationCodeGenerator)
+activation_code_generator.ActivationCodeGenerator.Set(GetActivationCodeGenerator(fase_config))
 fase_database.FaseDatabase.Set(fase_database.FaseDatabase(
     GetDatabaseConfig(fase_config), GetDynamoDBConnection(fase_config)))
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
