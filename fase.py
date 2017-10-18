@@ -1,8 +1,11 @@
 import fase_database
 import fase_model
-import fase_util
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
+
+
+def GenerateUserId(device):
+  pass
 
 
 class Variable(object):
@@ -237,7 +240,7 @@ class Service(VariableSet):
     self._main_menu = None
     self._button_bar = None
     self._device = device
-    self._user_id = fase_util.GenerateUserId(self._device)
+    self._user_id = GenerateUserId(self._device)
 
   def AddMenu(self):
     self._menu = Menu()
@@ -265,4 +268,4 @@ class Service(VariableSet):
   def GetUserId(self):
     return self._user_id
   def ResetUserId(self):
-    self._user_id = fase_util.GenerateUserId(self._device)
+    self._user_id = GenerateUserId(self._device)

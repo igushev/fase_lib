@@ -1,6 +1,6 @@
-import fase_util
+import singleton_util
 
 
-@fase_util.Singleton()
+@singleton_util.Singleton()
 class FaseDatabase(object):
   pass

@@ -1,7 +1,3 @@
-def GenerateUserId(device):
-  pass
-
-
 @classmethod
 def Set(cls, instance):
   assert cls._instance is None

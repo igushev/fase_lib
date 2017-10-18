@@ -1,9 +1,9 @@
 import unittest
 
-import fase_util
+import singleton_util
 
 
-@fase_util.Singleton()
+@singleton_util.Singleton()
 class SumClass(object):
   
   def __init__(self, a, b):
