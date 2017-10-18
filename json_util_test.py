@@ -4,15 +4,15 @@ import datetime
 from Yusi.YuUtils.hash_utils import HashKey
 from Yusi.YuUtils.repr_utils import Repr
 
-import json_utils
+import json_util
 
 
-@json_utils.JSONDecorator(
-    {'_int_field': json_utils.JSONInt(),
-     'float_field': json_utils.JSONFloat(),
-     '_string_field': json_utils.JSONString(),
-     'date_field': json_utils.JSONDate(),
-     'datetime_field': json_utils.JSONDateTime()})
+@json_util.JSONDecorator(
+    {'_int_field': json_util.JSONInt(),
+     'float_field': json_util.JSONFloat(),
+     '_string_field': json_util.JSONString(),
+     'date_field': json_util.JSONDate(),
+     'datetime_field': json_util.JSONDateTime()})
 class WithFields(object):
   
   def __init__(self, int_field, float_field, string_field, date_field,
@@ -38,10 +38,10 @@ class WithFields(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'nested_list': json_utils.JSONList(json_utils.JSONObject(WithFields)),
-     'nest_dict': json_utils.JSONDict(json_utils.JSONString(),
-                                      json_utils.JSONObject(WithFields))})
+@json_util.JSONDecorator(
+    {'nested_list': json_util.JSONList(json_util.JSONObject(WithFields)),
+     'nest_dict': json_util.JSONDict(json_util.JSONString(),
+                                      json_util.JSONObject(WithFields))})
 class WithListAndDict(object):
   
   def __init__(self, nested_list, nest_dict):
@@ -60,11 +60,11 @@ class WithListAndDict(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'_nested_with_fields': json_utils.JSONObject(WithFields),
-     '_nested_with_list_and_dict': json_utils.JSONObject(WithListAndDict),
-     '_none_value': json_utils.JSONString(),
-     '_bool_value': json_utils.JSONBool()})
+@json_util.JSONDecorator(
+    {'_nested_with_fields': json_util.JSONObject(WithFields),
+     '_nested_with_list_and_dict': json_util.JSONObject(WithListAndDict),
+     '_none_value': json_util.JSONString(),
+     '_bool_value': json_util.JSONBool()})
 class WithNestedFields(object):
 
   def __init__(self, nested_with_fields, nested_with_list_and_dict,
@@ -89,9 +89,9 @@ class WithNestedFields(object):
 
 
 # We declare _nested_with_fields_2 to be WithFields but allow None.
-@json_utils.JSONDecorator(
-    {'_nested_with_fields_1': json_utils.JSONObject(WithFields),
-     '_nested_with_fields_2': json_utils.JSONObject(WithFields)})
+@json_util.JSONDecorator(
+    {'_nested_with_fields_1': json_util.JSONObject(WithFields),
+     '_nested_with_fields_2': json_util.JSONObject(WithFields)})
 class WithNestedNoneObjectsFields(object):
 
   def __init__(self, nested_with_fields_1, nested_with_fields_2):
@@ -113,8 +113,8 @@ class WithNestedNoneObjectsFields(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var1': json_utils.JSONFloat()},
+@json_util.JSONDecorator(
+    {'var1': json_util.JSONFloat()},
     inherited=True)
 class Level1(object):
 
@@ -132,8 +132,8 @@ class Level1(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var2': json_utils.JSONFloat()})
+@json_util.JSONDecorator(
+    {'var2': json_util.JSONFloat()})
 class Level2(Level1):
 
   def __init__(self, var1, var2):
@@ -151,8 +151,8 @@ class Level2(Level1):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var3': json_utils.JSONFloat()})
+@json_util.JSONDecorator(
+    {'var3': json_util.JSONFloat()})
 class Level3A(Level2):
 
   def __init__(self, var1, var2, var3):
@@ -170,8 +170,8 @@ class Level3A(Level2):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var3': json_utils.JSONString()})
+@json_util.JSONDecorator(
+    {'var3': json_util.JSONString()})
 class Level3B(Level2):
 
   def __init__(self, var1, var2, var3):
@@ -189,8 +189,8 @@ class Level3B(Level2):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'diff_level_list': json_utils.JSONList(json_utils.JSONObject(Level1))})
+@json_util.JSONDecorator(
+    {'diff_level_list': json_util.JSONList(json_util.JSONObject(Level1))})
 class WithDifferentLevelList(object):
   
   def __init__(self, diff_level_list):
@@ -208,10 +208,10 @@ class WithDifferentLevelList(object):
 
 
 
-@json_utils.JSONDecorator(
-    {'var1': json_utils.JSONString(),
-     'var2': json_utils.JSONString(),
-     'var3': json_utils.JSONString()})
+@json_util.JSONDecorator(
+    {'var1': json_util.JSONString(),
+     'var2': json_util.JSONString(),
+     'var3': json_util.JSONString()})
 class StateNotFull(object):
   
   def __init__(self, var1, var2):
@@ -228,8 +228,8 @@ class StateNotFull(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var1': json_utils.JSONFloat()},
+@json_util.JSONDecorator(
+    {'var1': json_util.JSONFloat()},
     inherited=True)
 class Base1(object):
 
@@ -247,8 +247,8 @@ class Base1(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var2': json_utils.JSONFloat()},
+@json_util.JSONDecorator(
+    {'var2': json_util.JSONFloat()},
     inherited=True)
 class Base2(object):
 
@@ -266,8 +266,8 @@ class Base2(object):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var3': json_utils.JSONFloat()},
+@json_util.JSONDecorator(
+    {'var3': json_util.JSONFloat()},
     inherited=True)
 class Base1_2(Base1, Base2):
 
@@ -287,8 +287,8 @@ class Base1_2(Base1, Base2):
     return self.__dict__ == other.__dict__
 
 
-@json_utils.JSONDecorator(
-    {'var4': json_utils.JSONFloat()},
+@json_util.JSONDecorator(
+    {'var4': json_util.JSONFloat()},
     inherited=True)
 class Derived(Base1_2):
 
