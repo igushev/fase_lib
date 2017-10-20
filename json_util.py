@@ -1,5 +1,6 @@
 import copy
 import datetime
+import inspect
 import json
 import os
 
@@ -9,6 +10,7 @@ TIME_FORMAT = '%H:%M:%S'
 DATETIME_FORMAT = '%s %s' % (DATE_FORMAT, TIME_FORMAT)
 MODULE_FIELD = '__module__'
 CLASS_FIELD = '__class__'
+FUNC_FIELD = '__func__'
 
 
 class JSONObjectInterface(object):
@@ -84,6 +86,22 @@ class JSONDateTime(JSONObjectInterface):
   def FromSimple(self, simple):
     assert isinstance(simple, basestring)
     return datetime.datetime.strptime(simple, DATETIME_FORMAT)
+
+
+class JSONClassMethod(JSONObjectInterface):
+
+  def ToSimple(self, field_obj):
+    assert inspect.ismethod(field_obj) and field_obj.im_self is None
+    field_obj_cls = field_obj.im_class
+    return {MODULE_FIELD: field_obj_cls.__module__,
+            CLASS_FIELD: field_obj_cls.__name__,
+            FUNC_FIELD: field_obj.__name__}
+  
+  def FromSimple(self, simple):
+    assert isinstance(simple, dict)
+    return getattr(getattr(os.sys.modules[simple[MODULE_FIELD]],
+                           simple[CLASS_FIELD]),
+                   simple[FUNC_FIELD])
 
 
 class JSONObject(JSONObjectInterface):

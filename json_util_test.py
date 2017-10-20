@@ -307,6 +307,32 @@ class Derived(Base1_2):
     return self.__dict__ == other.__dict__
 
 
+class ClassWithMethod(object):
+
+  def __init__(self, var1):
+    self.var1 = var1
+
+  def Method(self, var2):
+    return self.var1 + var2
+
+
+@json_util.JSONDecorator(
+    {'method': json_util.JSONClassMethod()})
+class WithClassMethod(object):
+  
+  def __init__(self, method):
+    self.method = method
+
+  def HashKey(self):
+    return HashKey(self.__dict__)
+
+  def __repr__(self):
+    return Repr(self)
+
+  def __eq__(self, other):
+    return self.__dict__ == other.__dict__
+
+
 class JSONUtilsTest(unittest.TestCase):
 
   def AssertToFrom(self, obj, obj_cls):
@@ -402,6 +428,17 @@ class JSONUtilsTest(unittest.TestCase):
   def testMultipleInheritance(self):
     derived = Derived(var1=11., var2=12., var3=13., var4=14.)
     self.AssertToFrom(derived, Base1_2)
+
+  def testWithClassMethod(self):
+    class_with_method = ClassWithMethod(3)
+    with_class_method = WithClassMethod(ClassWithMethod.Method)
+    self.AssertToFrom(with_class_method, WithClassMethod)
+    with_class_method_from_simple = (
+        WithClassMethod.FromSimple(with_class_method.ToSimple()))
+    self.assertEqual(4,
+                     with_class_method_from_simple.method(class_with_method, 1))
+    self.assertEqual(7,
+                     with_class_method_from_simple.method(class_with_method, 4))
 
     
 
