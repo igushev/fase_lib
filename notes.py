@@ -1,5 +1,4 @@
 import datetime
-import functools
 import hashlib
 
 import datetime_util
@@ -12,25 +11,25 @@ import fase_sign_in_util
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 
-class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
+class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
 
   def OnStart(self):
     menu = self.AddMenu()
     menu.AddMenuItem(id_='user_name', text='User Name')
-    menu.AddMenuItem(id_='sign_in', text='Sign In', on_click=self.OnSignIn, icon='sign_in.pnp')
-    sign_out_context_menu = fase.ContextMenu('Sign Out')
-    sign_out_context_menu.AddMenuItem(id_='sign_out_context_menu_item', text='Sign Out', on_click=self.OnSignOut)
-    menu.AddMenuItem(id_='sign_out', text='Sign Out', on_click=sign_out_context_menu, icon='sign_out.pnp')
+    menu.AddMenuItem(id_='sign_in', text='Sign In', on_click=NotesService.OnSignIn, icon='sign_in.pnp')
+    sign_out_context_menu = fase.Menu()
+    sign_out_context_menu.AddMenuItem(id_='sign_out_context_menu_item', text='Sign Out', on_click=NotesService.OnSignOut)
+    menu.AddMenuItem(id_='sign_out', text='Sign Out', on_click_element=sign_out_context_menu, icon='sign_out.pnp')
 
-    self.AddMainButton(text='New', on_click=self.OnNew, icon='new.pnp')
+    self.AddMainButton(text='New', on_click=NotesService.OnNew, icon='new.pnp')
 
     button_bar = self.AddButtonBar()
-    button_bar.AddButton(id_='notes', text='Notes', on_click=self.OnNotes, icon='notes.pnp')
-    button_bar.AddButton(id_='favourites', text='Favourites', on_click=self.OnFavourites, icon='favourites.pnp')
-    button_bar.AddButton(id_='recent', text='Recent', on_click=self.OnRecent, icon='recent.pnp')
-    button_bar.AddButton(id_='places', text='Places', on_click=self.OnPlaces, icon='places.pnp')
+    button_bar.AddButton(id_='notes', text='Notes', on_click=NotesService.OnNotes, icon='notes.pnp')
+    button_bar.AddButton(id_='favourites', text='Favourites', on_click=NotesService.OnFavourites, icon='favourites.pnp')
+    button_bar.AddButton(id_='recent', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
+    button_bar.AddButton(id_='places', text='Places', on_click=NotesService.OnPlaces, icon='places.pnp')
 
-    self.AddStringVariable(id_='screen_label')
+    self.AddStringVariable(id_='screen_label', value='notes')
     return self.OnNotes(None)
 
   def OnSignIn(self, screen):
@@ -50,6 +49,7 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
     return self._DisplayRecent(screen)
 
   def OnSignOut(self, screen):
+    self._DisplaySignInOut(logged_in=False, user_name=None)
     self.ResetUserId()
     return self._DisplayRecent(screen)
 
@@ -79,7 +79,7 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
     return self._DisplayRecent(screen)
 
   def _DisplayRecent(self, screen):
-    screen_label = self.GetVariable('screen_label')
+    screen_label = self.GetStringVariable('screen_label').GetValue()
     if screen_label == 'notes':
       return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), None, screen)
     elif screen_label == 'favourites':
@@ -91,35 +91,38 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
     else:
       raise AssertionError()
 
+  # TODO(igushev): Clean up ids inside for-loop.
   def _DisplayNotesByFunc(self, cmp_func, filter_func, screen):
     screen = fase.Screen()
-    notes_layout = screen.AddLayout(orientation=fase.Layout.VERTICAL, scrollable=True)
+    notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
     notes = notes_database.NotesDatabase.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(notes, filter_func)
     for note in sorted(notes, cmp=cmp_func):
-      note_layout = notes_layout.AddLayout(orientation=fase.Layout.VERTICAL)
+      note_layout = notes_layout.AddLayout(id_='note_layout', orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
+      note_layout.AddStringVariable('layout_note_id', note.note_id)
 
-      note_header_layout = note_layout.AddLayout(orientation=fase.Layout.HORIZONTAL)
-      note_header_layout.AddLabel(label=note.header, font=2, sizable=fase.Label.FIT_OUTER_ELEMENT)
-      note_header_layout.AddImage(image=('favourite.pnp' if note.favourite else 'favourite_non.pnp'))
+      note_header_layout = note_layout.AddLayout(id_='note_header_layout', orientation=fase.Layout.HORIZONTAL)
+      note_header_layout.AddLabel(id_='note_header_label', label=note.header, font=2., sizable=fase.Label.FIT_OUTER_ELEMENT)
+      note_header_layout.AddImage(id_='note_header_image', image=('favourite.pnp' if note.favourite else 'favourite_non.pnp'))
 
-      note_layout.AddLabel(label=note.text[:100])  # preview only
+      note_layout.AddLabel(id_='note_layout_label', label=note.text[:100])  # preview only
 
-      datetime_text = datetime_util.GetDatetimeDiffStr(self.datetime, datetime.datetime.now())
-      note_deails_layout = note_layout.AddLayout(orientation=fase.Layout.HORIZONTAL)
+      datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.now())
+      note_deails_layout = note_layout.AddLayout(id_='note_deails_layout', orientation=fase.Layout.HORIZONTAL)
       note_deails_layout.AddLabel(
-          label=datetime_text, font=0.75, aligh=fase.Text.LEFT, sizable=fase.Label.FIT_OUTER_ELEMENT)
+          id_='note_deails_layout_datetime_text',
+          label=datetime_text, font=0.75, aligh=fase.Label.LEFT, sizable=fase.Label.FIT_OUTER_ELEMENT)
       note_deails_layout.AddLabel(
-          label=note.place_text, font=0.75, aligh=fase.Text.RIGHT, sizable=fase.Label.FIT_OUTER_ELEMENT)
-
-      note_layout.SetOnClick(functools.partial(self.OnNote, note.note_id))
+          id_='note_deails_layout_place_name',
+          label=note.place_name, font=0.75, aligh=fase.Label.RIGHT, sizable=fase.Label.FIT_OUTER_ELEMENT)
     return screen
 
   def OnNew(self, screen):
     return self._DisplayNote(None, screen)
 
-  def OnNote(self, note_id, screen):
+  def OnNote(self, screen, component):
+    note_id = component.GetStringVariable('layout_note_id')
     return self._DisplayNote(note_id, screen)
 
   def _DisplayNote(self, note_id, screen):
@@ -133,7 +136,7 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
     note_layout = screen.AddLayout(orientation=fase.Layout.VERTICAL)
     header_text = note_layout.AddText(id_='header_text')
     text_text = note_layout.AddText(id_='text_text', sizable=fase.Label.FIT_OUTER_ELEMENT)
-    favourite_bool = screen.AddBooleanVariable(id_='favourite_bool', value=False)
+    favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
 
     note = notes_database.NotesDatabase.Get().GetNote(note_id=note_id) if note_id is not None else None
     # If editing existing note.
@@ -142,18 +145,20 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
       text_text.SetText(note.text)
       favourite_bool.SetValue(note.favourite)
 
-    screen.AddNextStepButton(on_click=functools.partial(self.OnSaveNote, note_id))
-    screen.AddPrevStepButton(on_click=self.OnCancelNote)
+    screen.AddStringVariable('current_note_id', note_id)
+    screen.AddNextStepButton(on_click=NotesService.OnSaveNote)
+    screen.AddPrevStepButton(on_click=NotesService.OnCancelNote)
 
     context_menu = screen.AddContextMenu('Options')
     context_menu.AddMenuItem(text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
-                             on_click=functools.partial(self.OnReverseFavouriteNote, note_id),
+                             on_click=NotesService.OnReverseFavouriteNote,
                              icon=('favourite.pnp' if note is favourite_bool.GetValue() else 'favourite_non.pnp'))
     if note_id is not None:
-      context_menu.AddMenuItem(
-          text='Delete', icon='delete.pnp', on_click=functools.partial(self.OnDeleteNote, note_id))
+      context_menu.AddMenuItem(text='Delete', icon='delete.pnp', on_click=NotesService.OnDeleteNote)
 
-  def OnSaveNote(self, note_id, screen):
+  def OnSaveNote(self, screen):
+    note_id = screen.GetStringVariable('current_note_id')
+    user_id = self.GetUserId()
     datetime_now = datetime.datetime.now()
     # If new note.
     if note_id is None:
@@ -164,23 +169,25 @@ class NotesService(fase.Service, fase_sign_in_util.SignInUtil):
     location = screen.GetUtilLocation()
     place_name = place_util.GetPlaceName(location)
     note = notes_model.Note(note_id=note_id,
+                            user_id=user_id,
                             header=screen.GetElemenet(id_='header_text').GetText(),
                             text=screen.GetElement(id_='text_text').GetText(),
                             datetime=datetime_now,
                             place_name=place_name,
-                            favourite=screen.GetVariable('favourite_bool').GetValue())
+                            favourite=screen.GetStringVariable('favourite_bool').GetValue())
     notes_database.NotesDatabase.Get().AddNote(note, overwrite=True)
     return self._DisplayRecent(screen)
 
   def OnCancelNote(self, screen):
     return self._DisplayRecent(screen)
 
-  def OnReverseFavouriteNote(self, note_id, screen):
-    favourite_bool = screen.GetBooleanVariable(id_='favourite_bool')
+  def OnReverseFavouriteNote(self, screen):
+    favourite_bool = screen.GetBoolVariable(id_='favourite_bool')
     favourite_bool.SetValue(not favourite_bool.GetValue())
     return screen
 
-  def OnDeleteNote(self, note_id, screen):
+  def OnDeleteNote(self, screen):
+    note_id = screen.GetStringVariable('current_note_id')
     if note_id is not None:
       notes_database.NotesDatabase.Get().DeleteNote(note_id)
     return self._DisplayRecent(screen)
