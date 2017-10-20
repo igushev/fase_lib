@@ -1,6 +1,7 @@
 @classmethod
 def Set(cls, instance):
   assert cls._instance is None
+  assert isinstance(instance, cls)
   cls._instance = instance
 
 

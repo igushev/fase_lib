@@ -18,6 +18,7 @@ class SingletonTest(unittest.TestCase):
 
   def testSingleton(self):
     self.assertRaises(AssertionError, SumClass.Get)
+    self.assertRaises(AssertionError, SumClass.Set, int)
     SumClass.Set(SumClass(2, 1))
     self.assertEqual(3, SumClass.Get().Sum())
     self.assertRaises(AssertionError, SumClass.Set, SumClass(1, 2))
@@ -25,4 +26,3 @@ class SingletonTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-  
