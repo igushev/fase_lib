@@ -370,14 +370,15 @@ class Service(VariableSet):
     assert isinstance(service_obj, Service)
     Service.service_dict[service_name] = service_obj
 
-  def __init__(self, device):
+  def __init__(self, session_id):
     super(Service, self).__init__()
     
     self._menu = None
     self._main_menu = None
     self._button_bar = None
-    self._device = device
-    self._user_id = GenerateUserId(self._device)
+    self._session_id = None 
+    self._user_id = GenerateUserId(self._session_id)
+    self._datetime_added = None
 
   def AddMenu(self):
     self._menu = Menu()
@@ -405,26 +406,4 @@ class Service(VariableSet):
   def GetUserId(self):
     return self._user_id
   def ResetUserId(self):
-    self._user_id = GenerateUserId(self._device)
-
-
-@json_util.JSONDecorator(
-    {'id_to_value':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONString())},
-    inherited=True)
-class ScreenUpdate(data_util.AbstractObject):
-
-  def __init__(self, id_to_value):
-    self.id_to_value = id_to_value
-
-
-@json_util.JSONDecorator(
-    {'id_clicked': json_util.JSONString()})
-class ScreenClicked(ScreenUpdate):
-
-  def  __init__(self,
-                id_clicked,
-                **kwargs):
-    super(ScreenClicked, self).__init__(**kwargs)
-    self.id_clicked = id_clicked
+    self._user_id = GenerateUserId(self._session_id)

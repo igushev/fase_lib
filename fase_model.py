@@ -7,9 +7,21 @@ import json_util
     'device_token': json_util.JSONString()})
 class Device(data_util.AbstractObject):
 
-  def __init__(self, device_type, device_token):
+  def __init__(self,
+               device_type=None,
+               device_token=None):
     self.device_type = device_type
     self.device_token = device_token
+
+
+@json_util.JSONDecorator({
+    'session_id': json_util.JSONString()})
+class SessionInfo(data_util.AbstractObject):
+
+  def __init__(self,
+               session_id=None):
+    self.session_id = session_id
+
 
 
 @json_util.JSONDecorator({
@@ -36,6 +48,35 @@ class User(data_util.AbstractObject):
     self.display_name = display_name
     self.device = device
     self.datetime_added = datetime_added
+
+
+@json_util.JSONDecorator(
+    {'id_to_value':
+     json_util.JSONDict(json_util.JSONString(),
+                        json_util.JSONString())},
+    inherited=True)
+class ScreenUpdate(data_util.AbstractObject):
+
+  def __init__(self, id_to_value):
+    self.id_to_value = id_to_value
+
+
+@json_util.JSONDecorator(
+    {'id_element': json_util.JSONString()})
+class ElementClicked(data_util.AbstractObject):
+
+  def  __init__(self,
+                id_element,
+                **kwargs):
+    self.id_element = id_element
+
+
+@json_util.JSONDecorator({
+    'message': json_util.JSONString()})
+class Status(data_util.AbstractObject):
+
+  def __init__(self, message):
+    self.message = message
 
 
 class BadRequest(data_util.AbstractObject):
