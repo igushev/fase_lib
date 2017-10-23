@@ -1,3 +1,4 @@
+import data_util
 import fase_database
 import fase_model
 import json_util
@@ -13,7 +14,7 @@ def GenerateUserId(device):
 
 
 @json_util.JSONDecorator({})
-class Variable(object):
+class Variable(data_util.AbstractObject):
   pass
 
 
@@ -86,7 +87,7 @@ class BoolVariable(Variable):
      '_id_to_variable_bool':
      json_util.JSONDict(json_util.JSONString(),
                         json_util.JSONObject(BoolVariable))})
-class VariableSet(object):
+class VariableSet(data_util.AbstractObject):
   def __init__(self):
     self._id_to_variable_int = {}
     self._id_to_variable_float = {}
@@ -119,7 +120,7 @@ class VariableSet(object):
 
 
 @json_util.JSONDecorator({}, inherited=True)
-class Element(object):
+class Element(data_util.AbstractObject):
   pass
 
 
@@ -405,3 +406,25 @@ class Service(VariableSet):
     return self._user_id
   def ResetUserId(self):
     self._user_id = GenerateUserId(self._device)
+
+
+@json_util.JSONDecorator(
+    {'id_to_value':
+     json_util.JSONDict(json_util.JSONString(),
+                        json_util.JSONString())},
+    inherited=True)
+class ScreenUpdate(data_util.AbstractObject):
+
+  def __init__(self, id_to_value):
+    self.id_to_value = id_to_value
+
+
+@json_util.JSONDecorator(
+    {'id_clicked': json_util.JSONString()})
+class ScreenClicked(ScreenUpdate):
+
+  def  __init__(self,
+                id_clicked,
+                **kwargs):
+    super(ScreenClicked, self).__init__(**kwargs)
+    self.id_clicked = id_clicked

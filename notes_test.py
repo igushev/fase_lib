@@ -9,7 +9,7 @@ import notes
 class NotesTest(unittest.TestCase):
 
   def testGeneral(self):
-    notes_database.NotesDatabase.Set(notes_database.MockNotesDatabase([
+    notes_database.NotesDatabaseInterface.Set(notes_database.MockNotesDatabase([
         notes_model.Note(note_id='321_1',
                          user_id='321',
                          header='Note 1 Header',

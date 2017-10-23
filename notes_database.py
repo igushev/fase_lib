@@ -2,11 +2,13 @@ import singleton_util
 
 
 @singleton_util.Singleton()
-class NotesDatabase(object):
-  pass
+class NotesDatabaseInterface(object):
+
+  def GetUserNotes(self, user_id):
+    raise NotImplemented()
 
 
-class MockNotesDatabase(NotesDatabase):
+class MockNotesDatabase(NotesDatabaseInterface):
 
   def __init__(self, notes):
     self.notes = notes

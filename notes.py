@@ -42,9 +42,9 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
       self._DisplaySignInOut(logged_in=True, user_name=self.GetUser().GetUserName())
   
       # Move notes from guest user_id to logged in user.
-      for note in notes_database.NotesDatabase.Get().GetUserNotes(previous_user_id):
+      for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(previous_user_id):
         note.user_id = self.GetUserId()
-        notes_database.NotesDatabase.Get().AddNote(note, overwrite=True)
+        notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
       
     return self._DisplayRecent(screen)
 
@@ -95,7 +95,7 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
   def _DisplayNotesByFunc(self, cmp_func, filter_func, screen):
     screen = fase.Screen()
     notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
-    notes = notes_database.NotesDatabase.Get().GetUserNotes(self.GetUserId())
+    notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(notes, filter_func)
     for note in sorted(notes, cmp=cmp_func):
@@ -138,7 +138,7 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
     text_text = note_layout.AddText(id_='text_text', sizable=fase.Label.FIT_OUTER_ELEMENT)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
 
-    note = notes_database.NotesDatabase.Get().GetNote(note_id=note_id) if note_id is not None else None
+    note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None
     # If editing existing note.
     if note is not None:
       header_text.SetText(note.header)
@@ -175,7 +175,7 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
                             datetime=datetime_now,
                             place_name=place_name,
                             favourite=screen.GetStringVariable('favourite_bool').GetValue())
-    notes_database.NotesDatabase.Get().AddNote(note, overwrite=True)
+    notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
     return self._DisplayRecent(screen)
 
   def OnCancelNote(self, screen):
@@ -189,5 +189,5 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
   def OnDeleteNote(self, screen):
     note_id = screen.GetStringVariable('current_note_id')
     if note_id is not None:
-      notes_database.NotesDatabase.Get().DeleteNote(note_id)
+      notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)
     return self._DisplayRecent(screen)
