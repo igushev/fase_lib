@@ -23,3 +23,6 @@ class HelloWorldService(fase.Service):
   def OnResetButton(self, screen, element):
     # Ignore previous screen and element.
     return self.OnStart()
+
+
+fase.Service.RegisterService(HelloWorldService)

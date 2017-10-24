@@ -166,6 +166,12 @@ class Text(VisualElement):
     self._hint = hint
     self._sizable = sizable
 
+  def Update(self, value):
+    self._text = value
+
+  def GetText(self):
+    return self._text
+
 
 @json_util.JSONDecorator(
     {'_image': json_util.JSONString()})
@@ -266,6 +272,11 @@ class VisualElementContainer(VariableContainer):
   def GetImage(self, id_):
     return self.GetElement(id_)
 
+  def AddButton(self, id_, *args, **kwargs):
+    return self.AddElement(id_, Button(*args, **kwargs))
+  def GetButton(self, id_):
+    return self.GetElement(id_)
+
 
 @json_util.JSONDecorator(
     {'_orientation': json_util.JSONInt(),
@@ -305,7 +316,8 @@ class Popup(VariableContainer):
      '_button_bar_displayed': json_util.JSONBool(),
      '_next_step_button': json_util.JSONObject(Button),
      '_prev_step_button': json_util.JSONObject(Button),
-     '_context_menu': json_util.JSONObject(Menu)})
+     '_context_menu': json_util.JSONObject(Menu),
+     '_session_id': json_util.JSONString()})
 class Screen(VisualElementContainer):
 
   def __init__(self):
@@ -316,6 +328,7 @@ class Screen(VisualElementContainer):
     self._next_step_button = None
     self._prev_step_button = None
     self._context_menu = None
+    self._session_id = None
 
   def SetMenuDisplayed(self, if_displayed):
     self._menu_displayed = if_displayed
@@ -356,8 +369,9 @@ class Screen(VisualElementContainer):
     {'_menu': json_util.JSONObject(Menu),
      '_main_menu': json_util.JSONObject(Menu),
      '_button_bar': json_util.JSONObject(ButtonBar),
-     '_device': json_util.JSONObject(fase_model.Device),
-     '_user_id': json_util.JSONString()})
+     '_session_id': json_util.JSONString(),
+     '_user_id': json_util.JSONString(),
+     '_datetime_added': json_util.JSONBool()})
 class Service(VariableContainer):
   
   service_cls = None
@@ -368,13 +382,13 @@ class Service(VariableContainer):
     assert issubclass(service_cls, Service)
     Service.service_cls = service_cls
 
-  def __init__(self, session_id):
+  def __init__(self):
     super(Service, self).__init__()
     
     self._menu = None
     self._main_menu = None
     self._button_bar = None
-    self._session_id = None 
+    self._session_id = None
     self._user_id = GenerateUserId(self._session_id)
     self._datetime_added = None
 
