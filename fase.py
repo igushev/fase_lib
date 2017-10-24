@@ -138,7 +138,11 @@ class Label(VisualElement):
   FIXED = 1  
   FIT_OUTER_ELEMENT = 2
 
-  def __init__(self, label=None, font=None, aligh=None, sizable=None):
+  def __init__(self,
+               label=None,
+               font=None,
+               aligh=None,
+               sizable=None):
     self._label = label
     self._font = font
     self._aligh = aligh
@@ -154,7 +158,10 @@ class Text(VisualElement):
   FIXED = 1  
   FIT_OUTER_ELEMENT = 2
   
-  def __init__(self, text=None, hint=None, sizable=None):
+  def __init__(self,
+               text=None,
+               hint=None,
+               sizable=None):
     self._text = text
     self._hint = hint
     self._sizable = sizable
@@ -164,7 +171,8 @@ class Text(VisualElement):
     {'_image': json_util.JSONString()})
 class Image(VisualElement):
   
-  def __init__(self, image=None):
+  def __init__(self,
+               image=None):
     self._image = image
 
 
@@ -175,8 +183,11 @@ class Image(VisualElement):
      '_icon': json_util.JSONString()})
 class MenuItem(VisualElement):
 
-  def __init__(self, text=None,
-               on_click=None, on_click_element=None, icon=None):
+  def __init__(self,
+               text=None,
+               on_click=None,
+               on_click_element=None,
+               icon=None):
     super(MenuItem, self).__init__()
     self._text = text
     self._on_click = on_click
@@ -187,10 +198,15 @@ class MenuItem(VisualElement):
 @json_util.JSONDecorator({})
 class Menu(ElementContainer):
 
-  def AddMenuItem(self, id_, text=None,
-                  on_click=None, on_click_element=None, icon=None):
-    menu_item = MenuItem(text=text, on_click=on_click,
-                         on_click_element=on_click_element, icon=icon)
+  def AddMenuItem(self, id_,
+                  text=None,
+                  on_click=None,
+                  on_click_element=None,
+                  icon=None):
+    menu_item = MenuItem(text=text,
+                         on_click=on_click,
+                         on_click_element=on_click_element,
+                         icon=icon)
     return self.AddElement(id_, menu_item)
   def GetMenuItem(self, id_):
     return self.GetElement(id_)
@@ -202,7 +218,10 @@ class Menu(ElementContainer):
      '_icon': json_util.JSONString()})
 class Button(VisualElement):
 
-  def __init__(self, text=None, on_click=None, icon=None):
+  def __init__(self,
+               text=None,
+               on_click=None,
+               icon=None):
     super(Button, self).__init__()
     self._text = text
     self._on_click = on_click
@@ -212,8 +231,13 @@ class Button(VisualElement):
 @json_util.JSONDecorator({})
 class ButtonBar(ElementContainer):
 
-  def AddButton(self, id_, text=None, on_click=None, icon=None):
-    button = Button(text=text, on_click=on_click, icon=icon)
+  def AddButton(self, id_,
+                text=None,
+                on_click=None,
+                icon=None):
+    button = Button(text=text,
+                    on_click=on_click,
+                    icon=icon)
     return self.AddElement(id_, button)
   def GetButton(self, id_):
     return self.GetElement(id_)
@@ -255,7 +279,10 @@ class Layout(VisualElementContainer):
   WRAP_INNER_ELEMENTS = 1
   FIT_OUTER_ELEMENT = 2
 
-  def __init__(self, orientation=None, scrollable=None, sizable=None,
+  def __init__(self,
+               orientation=None,
+               scrollable=None,
+               sizable=None,
                on_click=None):
     super(Layout, self).__init__()
     self._orientation = orientation

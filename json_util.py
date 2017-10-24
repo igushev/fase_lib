@@ -116,7 +116,7 @@ class JSONObject(JSONObjectInterface):
     return self._cls.FromSimple(simple)
 
   
-class JSONList(object):
+class JSONList(JSONObjectInterface):
   
   def __init__(self, json_obj):
     assert isinstance(json_obj, JSONObjectInterface)

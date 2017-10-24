@@ -70,11 +70,17 @@ class FaseServer(object):
               GetScreen(session_info.session_id))
     return screen
 
+  def _GetElement(self, screen, id_list):
+    element = screen
+    for id_ in id_list:
+      element = element.GetElemenet(id_)
+    return element
+
   def ScreenUpdate(self, screen_update, session_info):
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
-    for id_, value in screen_update.id_to_value.iteritems():
-      screen.GetElement(id_).Update(value)
+    for id_list, value in screen_update.id_list_list, screen_update.value_list:
+      self._GetElement(screen, id_list).Update(value)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
     return fase_model.Status(STATUS_OK_TEXT)
 
@@ -83,7 +89,7 @@ class FaseServer(object):
                GetService(session_info.session_id))
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
-    element = screen.GetElement(element_clicked.id_element)
+    element = self._GetElement(screen, element_clicked.id_list)
     screen = element._on_click(service, screen)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
     return screen
