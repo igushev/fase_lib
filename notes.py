@@ -191,3 +191,6 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
     if note_id is not None:
       notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)
     return self._DisplayRecent(screen)
+
+
+fase.Service.RegisterService(NotesService)

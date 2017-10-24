@@ -53,10 +53,9 @@ class FaseServer(object):
       logging.error(str(traceback.format_exc()))
       return str(traceback.format_exc()), STATUS_ERROR
 
-  def GetService(self, service_name, device):
-    if service_name not in fase.service_dict:
-      raise BadRequestException(fase_error.SERVICE_NOT_FOUND)
-    service_cls = fase.service_dict[service_name]
+  def GetService(self, device):
+    assert fase.Service.service_cls is not None
+    service_cls = fase.Service.service_cls
 
     service = CreateService(service_cls)
     fase_database.FaseDatabaseInterface.Get().AddService(service)

@@ -360,12 +360,13 @@ class Screen(VisualElementContainer):
      '_user_id': json_util.JSONString()})
 class Service(VariableContainer):
   
-  service_dict = {}
+  service_cls = None
 
   @staticmethod
-  def RegisterService(service_name, service_obj):
-    assert isinstance(service_obj, Service)
-    Service.service_dict[service_name] = service_obj
+  def RegisterService(service_cls):
+    assert Service.service_cls is None
+    assert issubclass(service_cls, Service)
+    Service.service_cls = service_cls
 
   def __init__(self, session_id):
     super(Service, self).__init__()
