@@ -13,8 +13,31 @@ def GenerateUserId(device):
   pass
 
 
+@json_util.JSONDecorator({}, inherited=True)
+class Element(data_util.AbstractObject):
+  pass
+
+
+@json_util.JSONDecorator(
+    {'_id_to_element':
+     json_util.JSONDict(json_util.JSONString(),
+                        json_util.JSONObject(Element))})
+class ElementContainer(Element):
+  def __init__(self):
+    super(ElementContainer, self).__init__()
+    self._id_to_element = {}
+
+  def AddElement(self, id_, element):
+    assert id_ not in self._id_to_element
+    self._id_to_element[id_] = element
+    return element
+
+  def GetElement(self, id_):
+    return self._id_to_element[id_]
+
+
 @json_util.JSONDecorator({})
-class Variable(data_util.AbstractObject):
+class Variable(Element):
   pass
 
 
@@ -74,121 +97,39 @@ class BoolVariable(Variable):
     return self._value
 
 
-@json_util.JSONDecorator(
-    {'_id_to_variable_int':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(IntVariable)),
-     '_id_to_variable_float':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(FloatVariable)),
-     '_id_to_variable_string':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(StringVariable)),
-     '_id_to_variable_bool':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(BoolVariable))})
-class VariableSet(data_util.AbstractObject):
-  def __init__(self):
-    self._id_to_variable_int = {}
-    self._id_to_variable_float = {}
-    self._id_to_variable_string = {}
-    self._id_to_variable_bool = {}
+@json_util.JSONDecorator({})
+class VariableContainer(ElementContainer):
 
   def AddIntVariable(self, id_, value):
-    assert id_ not in self._id_to_variable_int
-    self._id_to_variable_int[id_] = IntVariable(value)
+    return self.AddElement(id_, IntVariable(value))
   def GetIntVariable(self, id_):
-    return self._id_to_variable_int[id_]
+    return self.GetElement(id_)
 
   def AddFloatVariable(self, id_, value):
-    assert id_ not in self._id_to_variable_float
-    self._id_to_variable_float[id_] = FloatVariable(value)
+    return self.AddElement(id_, FloatVariable(value))
   def GetFloatVariable(self, id_):
-    return self._id_to_variable_float[id_]
+    return self.GetElement(id_)
 
   def AddStringVariable(self, id_, value):
-    assert id_ not in self._id_to_variable_string
-    self._id_to_variable_string[id_] = StringVariable(value)
+    return self.AddElement(id_, StringVariable(value))
   def GetStringVariable(self, id_):
-    return self._id_to_variable_string[id_]
+    return self.GetElement(id_)
 
   def AddBoolVariable(self, id_, value):
-    assert id_ not in self._id_to_variable_bool
-    self._id_to_variable_bool[id_] = BoolVariable(value)
+    return self.AddElement(id_, BoolVariable(value))
   def GetBoolVariable(self, id_):
-    return self._id_to_variable_bool[id_]
+    return self.GetElement(id_)
 
 
-@json_util.JSONDecorator({}, inherited=True)
-class Element(data_util.AbstractObject):
+class VisualElement(Element):
   pass
-
-
-@json_util.JSONDecorator(
-    {'_id_to_element':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(Element))})
-class ContainerElement(Element, VariableSet):
-  def __init__(self):
-    super(ContainerElement, self).__init__()
-    self._id_to_element = {}
-
-  def AddElement(self, type_, id_, *args, **kwargs):
-    assert id_ not in self._id_to_element
-    element = type_(*args, **kwargs)
-    self._id_to_element[id_] = element
-    return element
-  def GetElement(self, id_):
-    return self._id_to_element[id_]
-
-  def AddLayout(self, id_, *args, **kwargs):
-    return self.AddElement(Layout, id_, *args, **kwargs)
-  def GetLayout(self, id_):
-    return self.GetElement(id_)
-
-  def AddLabel(self, id_, *args, **kwargs):
-    return self.AddElement(Label, id_, *args, **kwargs)
-  def GetLabel(self, id_):
-    return self.GetElement(id_)
-
-  def AddText(self, id_, *args, **kwargs):
-    return self.AddElement(Text, id_, *args, **kwargs)
-  def GetText(self, id_):
-    return self.GetElement(id_)
-
-  def AddImage(self, id_, *args, **kwargs):
-    return self.AddElement(Image, id_, *args, **kwargs)
-  def GetImage(self, id_):
-    return self.GetElement(id_)
-
-
-@json_util.JSONDecorator(
-    {'_orientation': json_util.JSONInt(),
-     '_scrollable': json_util.JSONBool(),
-     '_sizable': json_util.JSONInt(),
-     '_on_click': json_util.JSONClassMethod()})
-class Layout(ContainerElement):
-  VERTICAL = 1
-  HORIZONTAL = 2
-
-  WRAP_INNER_ELEMENTS = 1
-  FIT_OUTER_ELEMENT = 2
-
-  def __init__(self, orientation=None, scrollable=None, sizable=None,
-               on_click=None):
-    super(Layout, self).__init__()
-    self._orientation = orientation
-    self._scrollable = scrollable
-    self._sizable = sizable
-    self._on_click = on_click
-
 
 @json_util.JSONDecorator(
     {'_label': json_util.JSONString(),
      '_font': json_util.JSONFloat(),
      '_aligh': json_util.JSONInt(),
      '_sizable': json_util.JSONInt()})
-class Label(Element):
+class Label(VisualElement):
 
   LEFT = 1
   CENTER = 2
@@ -208,7 +149,7 @@ class Label(Element):
     {'_text': json_util.JSONString(),
      '_hint': json_util.JSONString(),
      '_sizable': json_util.JSONInt()})
-class Text(Element):
+class Text(VisualElement):
 
   FIXED = 1  
   FIT_OUTER_ELEMENT = 2
@@ -221,7 +162,7 @@ class Text(Element):
 
 @json_util.JSONDecorator(
     {'_image': json_util.JSONString()})
-class Image(Element):
+class Image(VisualElement):
   
   def __init__(self, image=None):
     self._image = image
@@ -232,7 +173,7 @@ class Image(Element):
      '_on_click': json_util.JSONClassMethod(),
      '_on_click_element': json_util.JSONObject(Element),
      '_icon': json_util.JSONString()})
-class MenuItem(Element):
+class MenuItem(VisualElement):
 
   def __init__(self, text=None,
                on_click=None, on_click_element=None, icon=None):
@@ -243,31 +184,23 @@ class MenuItem(Element):
     self._icon = icon
 
 
-@json_util.JSONDecorator(
-    {'_id_to_menu_item':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(MenuItem))})
-class Menu(Element):
-  def __init__(self):
-    super(Menu, self).__init__()
-    self._id_to_menu_item = {}
+@json_util.JSONDecorator({})
+class Menu(ElementContainer):
 
   def AddMenuItem(self, id_, text=None,
                   on_click=None, on_click_element=None, icon=None):
-    assert id_ not in self._id_to_menu_item
     menu_item = MenuItem(text=text, on_click=on_click,
                          on_click_element=on_click_element, icon=icon)
-    self._id_to_menu_item[id_] = menu_item
-    return menu_item
+    return self.AddElement(id_, menu_item)
   def GetMenuItem(self, id_):
-    return self._id_to_menu_item[id_]
+    return self.GetElement(id_)
 
 
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString(),
      '_on_click': json_util.JSONClassMethod(),
      '_icon': json_util.JSONString()})
-class Button(Element):
+class Button(VisualElement):
 
   def __init__(self, text=None, on_click=None, icon=None):
     super(Button, self).__init__()
@@ -276,27 +209,64 @@ class Button(Element):
     self._icon = icon
 
 
-@json_util.JSONDecorator(
-    {'_id_to_button':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(Button))})
-class ButtonBar(Element):
-  def __init__(self):
-    super(ButtonBar, self).__init__()
-    self._id_to_button = {}
+@json_util.JSONDecorator({})
+class ButtonBar(ElementContainer):
 
   def AddButton(self, id_, text=None, on_click=None, icon=None):
-    assert id_ not in self._id_to_button
     button = Button(text=text, on_click=on_click, icon=icon)
-    self._id_to_button[id_] = button
-    return button
+    return self.AddElement(id_, button)
   def GetButton(self, id_):
-    return self._id_to_button[id_]
+    return self.GetElement(id_)
     
+
+@json_util.JSONDecorator({})
+class VisualElementContainer(VariableContainer):
+
+  def AddLayout(self, id_, *args, **kwargs):
+    return self.AddElement(id_, Layout(*args, **kwargs))
+  def GetLayout(self, id_):
+    return self.GetElement(id_)
+
+  def AddLabel(self, id_, *args, **kwargs):
+    return self.AddElement(id_, Label(*args, **kwargs))
+  def GetLabel(self, id_):
+    return self.GetElement(id_)
+
+  def AddText(self, id_, *args, **kwargs):
+    return self.AddElement(id_, Text(*args, **kwargs))
+  def GetText(self, id_):
+    return self.GetElement(id_)
+
+  def AddImage(self, id_, *args, **kwargs):
+    return self.AddElement(id_, Image(*args, **kwargs))
+  def GetImage(self, id_):
+    return self.GetElement(id_)
+
+
+@json_util.JSONDecorator(
+    {'_orientation': json_util.JSONInt(),
+     '_scrollable': json_util.JSONBool(),
+     '_sizable': json_util.JSONInt(),
+     '_on_click': json_util.JSONClassMethod()})
+class Layout(VisualElementContainer):
+  VERTICAL = 1
+  HORIZONTAL = 2
+
+  WRAP_INNER_ELEMENTS = 1
+  FIT_OUTER_ELEMENT = 2
+
+  def __init__(self, orientation=None, scrollable=None, sizable=None,
+               on_click=None):
+    super(Layout, self).__init__()
+    self._orientation = orientation
+    self._scrollable = scrollable
+    self._sizable = sizable
+    self._on_click = on_click
+
 
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString()})
-class Popup(Element, VariableSet):
+class Popup(VariableContainer):
 
   def __init__(self, text=None):
     self._text = text
@@ -309,7 +279,7 @@ class Popup(Element, VariableSet):
      '_next_step_button': json_util.JSONObject(Button),
      '_prev_step_button': json_util.JSONObject(Button),
      '_context_menu': json_util.JSONObject(Menu)})
-class Screen(ContainerElement):
+class Screen(VisualElementContainer):
 
   def __init__(self):
     super(Screen, self).__init__()
@@ -361,7 +331,7 @@ class Screen(ContainerElement):
      '_button_bar': json_util.JSONObject(ButtonBar),
      '_device': json_util.JSONObject(fase_model.Device),
      '_user_id': json_util.JSONString()})
-class Service(VariableSet):
+class Service(VariableContainer):
   
   service_dict = {}
 
