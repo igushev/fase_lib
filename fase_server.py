@@ -59,8 +59,8 @@ class FaseServer(object):
     service_cls = fase.Service.service_cls
 
     service = CreateService(service_cls, device)
-    fase_database.FaseDatabaseInterface.Get().AddService(service)
     screen = service.OnStart()
+    fase_database.FaseDatabaseInterface.Get().AddService(service)
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen)
 
@@ -93,6 +93,7 @@ class FaseServer(object):
               GetScreen(session_info.session_id))
     element = self._GetElement(screen, element_clicked.id_list)
     screen = element._on_click(service, screen, element)
+    fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
     return screen
