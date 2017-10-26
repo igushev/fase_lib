@@ -6,7 +6,7 @@ import notes_database
 import notes_model
 import place_util
 import fase
-import fase_sign_in_util
+import fase_sign_in
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
@@ -33,7 +33,7 @@ class NotesService(fase.Service):
     return self.OnNotes(None, None)
 
   def OnSignIn(self, screen, element):
-    return fase_sign_in_util.FaseSignIn.Start(self, on_sign_in_done=self.OnSignInDone, cancel_option=True)
+    return fase_sign_in.FaseSignIn.Start(self, on_sign_in_done=self.OnSignInDone, cancel_option=True)
 
   def OnSignInDone(self, cancelled=False, skipped=False, service_before=None, screen_before=None):
     assert not skipped
