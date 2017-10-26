@@ -11,7 +11,7 @@ import fase_sign_in_util
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 
-class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
+class NotesService(fase.Service):
 
   def OnStart(self):
     menu = self.AddMenu()
@@ -30,15 +30,15 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
     button_bar.AddButton(id_='places', text='Places', on_click=NotesService.OnPlaces, icon='places.pnp')
 
     self.AddStringVariable(id_='screen_label', value='notes')
-    return self.OnNotes(None)
+    return self.OnNotes(None, None)
 
-  def OnSignIn(self, screen):
-    screen.AddStringVariable('previous_user_id', self.GetUserId())
-    return self.SignInProcedure(screen, skip_option=False, cancel_option=True, on_done=self.OnSignInDone)
+  def OnSignIn(self, screen, element):
+    return fase_sign_in_util.FaseSignIn.Start(self, on_sign_in_done=self.OnSignInDone, cancel_option=True)
 
-  def OnSignInDone(self, screen, sign_in_cancelled):
-    if not sign_in_cancelled:
-      previous_user_id = screen.GetStringVariable('previous_user_id').GetValue()
+  def OnSignInDone(self, cancelled=False, skipped=False, service_before=None, screen_before=None):
+    assert not skipped
+    if not cancelled:
+      previous_user_id = screen_before.GetUserId()
       self._DisplaySignInOut(logged_in=True, user_name=self.GetUser().GetUserName())
   
       # Move notes from guest user_id to logged in user.
@@ -46,12 +46,11 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
         note.user_id = self.GetUserId()
         notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
       
-    return self._DisplayRecent(screen)
+    return self._DisplayRecent(None)
 
-  def OnSignOut(self, screen):
-    self._DisplaySignInOut(logged_in=False, user_name=None)
-    self.ResetUserId()
-    return self._DisplayRecent(screen)
+  def OnSignOut(self, screen, element):
+    # TODO(igushev): Implement me!
+    pass
 
   def _DisplaySignInOut(self, logged_in=False, user_name=None):
     menu = self.GetMenu()
@@ -62,19 +61,19 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
     menu.GetMenuItem(id_='sign_in').SetDisplayed(not logged_in)
     menu.GetMenuItem(id_='sign_out').SetDisplayed(logged_in)
 
-  def OnNotes(self, screen):
+  def OnNotes(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('notes')
     return self._DisplayRecent(screen)
 
-  def OnFavourites(self, screen):
+  def OnFavourites(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('favourites')
     return self._DisplayRecent(screen)
 
-  def OnRecent(self, screen):
+  def OnRecent(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('recent')
     return self._DisplayRecent(screen)
   
-  def OnPlaces(self, screen):
+  def OnPlaces(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('places')
     return self._DisplayRecent(screen)
 
@@ -118,11 +117,11 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
           label=note.place_name, font=0.75, aligh=fase.Label.RIGHT, sizable=fase.Label.FIT_OUTER_ELEMENT)
     return screen
 
-  def OnNew(self, screen):
+  def OnNew(self, screen, element):
     return self._DisplayNote(None, screen)
 
-  def OnNote(self, screen, component):
-    note_id = component.GetStringVariable('layout_note_id')
+  def OnNote(self, screen, element):
+    note_id = element.GetStringVariable('layout_note_id')
     return self._DisplayNote(note_id, screen)
 
   def _DisplayNote(self, note_id, screen):
@@ -156,7 +155,7 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
     if note_id is not None:
       context_menu.AddMenuItem(text='Delete', icon='delete.pnp', on_click=NotesService.OnDeleteNote)
 
-  def OnSaveNote(self, screen):
+  def OnSaveNote(self, screen, element):
     note_id = screen.GetStringVariable('current_note_id')
     user_id = self.GetUserId()
     datetime_now = datetime.datetime.now()
@@ -178,15 +177,15 @@ class NotesService(fase_sign_in_util.SignInUtil, fase.Service):
     notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
     return self._DisplayRecent(screen)
 
-  def OnCancelNote(self, screen):
+  def OnCancelNote(self, screen, element):
     return self._DisplayRecent(screen)
 
-  def OnReverseFavouriteNote(self, screen):
+  def OnReverseFavouriteNote(self, screen, element):
     favourite_bool = screen.GetBoolVariable(id_='favourite_bool')
     favourite_bool.SetValue(not favourite_bool.GetValue())
     return screen
 
-  def OnDeleteNote(self, screen):
+  def OnDeleteNote(self, screen, element):
     note_id = screen.GetStringVariable('current_note_id')
     if note_id is not None:
       notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)

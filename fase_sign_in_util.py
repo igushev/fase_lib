@@ -9,45 +9,75 @@ import fase_model
 import fase
 
 
-class SignInUtil(fase.Service):
+class FaseSignInButton(fase.Button):
 
-  def SignInProcedure(self, screen, skip_option=False, cancel_option=False, on_done=None):
-    self.SaveScreen(id_='sign_in_screen')
-    self.SaveCallback(id_='sign_in_on_done_callback')
-    screen = fase.Screen()
-    sign_in_layout = screen.AddLayout(id_='sign_in_layout', orientation=fase.Layout.VERTICAL)
-    sign_in_layout.AddButton(id='sign_in', text='Sign In', on_click=self.OnSignInOption)
-    sign_in_layout.AddButton(id='sign_up', text='Sign Up', on_click=self.OnSignUpOption)
-    screen.AddPrevStepButton(on_click=self.OnSignInCancel)
-    return screen
-
-  def OnSignInOption(self, screen):
-    screen = fase.Screen()
-    sign_in_layout = screen.AddLayout(id_='sign_in_layout', orientation=fase.Layout.VERTICAL)
-    sign_in_layout.AddText(id_='phone_number', hint='Phone Number')
-    sign_in_layout.AddButton(id='sign_in', text='Sign In', on_click=self.OnSignInEnteredData)
-    screen.AddPrevStepButton(on_click=self.OnSignInCancel)
-    return screen
+  def FaseOnClick(self, service, screen, element):
+    activation_code_sent = service.GetStringVariable(id_='fase_sign_in_activation_code_str')
+    activation_code_entered = screen.GetLayout('enter_activation_layout_id').GetText('activation_code_text_id').GetText()
+    if activation_code_sent != activation_code_entered:
+      return service, fase.Popup('Wrong activation code!')
     
-  def OnSignInEnteredData(self, screen):
-    phone_number = screen.GetText(id_='phone_number')
+    on_sign_in_done = service.GetClassMethodVariable('fase_sign_in_on_sign_in_done_class_method')
+    session_id = service.GetStringVariable(id_='fase_sign_in_session_id_str')
+    service_signed_in = fase_database.FaseDatabase.Get().GetService(session_id=session_id)
+    screen_sign_in = on_sign_in_done(service_signed_in, cancelled=False, skipped=False,
+                                     service_before=service, screen_before=screen)
+    session_id_before = service._session_id
+    fase_database.FaseDatabase.Get().DeleteService(session_id=session_id_before)
+    fase_database.FaseDatabase.Get().DeleteScreen(session_id=session_id_before)
+    return service_signed_in, screen_sign_in 
+
+
+# TODO(igushev): fase_sign_in variables should be in separated better from services own variables.
+class FaseSignIn(object):
+
+  @staticmethod
+  def Start(service, on_sign_in_done=None, cancel_option=False, skip_option=False):
+    service.AddClassMethodVariable('fase_sign_in_on_sign_in_done_class_method', on_sign_in_done)
+    service.AddBoolVariable('fase_sign_in_cancel_option_bool', cancel_option)
+    screen = fase.Screen()
+    sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
+    sign_in_layout.AddButton(id='sign_in_button_id', text='Sign In', on_click=FaseSignIn.OnSignInOption)
+    sign_in_layout.AddButton(id='sign_up_button_id', text='Sign Up', on_click=FaseSignIn.OnSignUpOption)
+    if skip_option:
+      sign_in_layout.AddButton(id='skip_button_id', text='Skip', on_click=FaseSignIn.OnSkipOption)
+    if service.GetBoolVariable('fase_sign_in_cancel_option_bool').GetValue():
+      screen.AddPrevStepButton(on_click=FaseSignIn.OnCancelOption)
+    return screen
+
+  @staticmethod
+  def OnSignInOption(service, screen, element):
+    screen = fase.Screen()
+    sign_in_layout = screen.AddLayout(id_='sign_in_layout', orientation=fase.Layout.VERTICAL)
+    sign_in_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
+    sign_in_layout.AddButton(id='sign_in_button_id', text='Sign In', on_click=FaseSignIn.OnSignInEnteredData)
+    if service.GetBoolVariable('fase_sign_in_cancel_option_bool').GetValue():
+      screen.AddPrevStepButton(on_click=FaseSignIn.OnCancelOption)
+    return screen
+
+  @staticmethod
+  def OnSignInEnteredData(service, screen, element):
+    phone_number = screen.GetText(id_='phone_number_text_id').GetText()
     user = fase_database.FaseDatabase.Get().GetUserByPhoneNumber(phone_number)
     if not user:
       return fase.Popup('User with such phone number has not been found!')
-    return self._OnEnteredData(phone_number, user.user_id)
+    return FaseSignIn._OnEnteredData(phone_number, user.user_id)
 
-  def OnSignUpOption(self, screen):
+  @staticmethod
+  def OnSignUpOption(service, screen, element):
     screen = fase.Screen()
-    sign_up_layout = screen.AddLayout(id_='sign_up_layout', orientation=fase.Layout.VERTICAL)
-    sign_up_layout.AddText(id_='phone_number', hint='Phone Number')
-    sign_up_layout.AddText(id_='first_name', hint='First Name')
-    sign_up_layout.AddText(id_='last_name', hint='Last Name')
-    sign_up_layout.AddButton(id='sign_in', text='Sign In', on_click=self.OnSignUpEnteredData)
-    screen.AddPrevStepButton(on_click=self.OnSignInCancel)
+    sign_up_layout = screen.AddLayout(id_='sign_up_layout_id', orientation=fase.Layout.VERTICAL)
+    sign_up_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
+    sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
+    sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
+    sign_up_layout.AddButton(id='sign_in_button_id', text='Sign In', on_click=FaseSignIn.OnSignUpEnteredData)
+    if service.GetBoolVariable('fase_sign_in_cancel_option_bool').GetValue():
+      screen.AddPrevStepButton(on_click=FaseSignIn.OnCancelOption)
     return screen
     
-  def OnSignUpEnteredData(self, screen):
-    phone_number = screen.GetText(id_='phone_number')
+  @staticmethod
+  def OnSignUpEnteredData(service, screen, element):
+    phone_number = screen.GetText(id_='phone_number_text_id')
     if fase_database.FaseDatabase.Get().GetUserByPhoneNumber(phone_number):
       return fase.Popup('User with such phone number is already registered!')
 
@@ -58,34 +88,32 @@ class SignInUtil(fase.Service):
     user_id = user_id_hash.hexdigest()
     
     user = fase_model.User(user_id=user_id,
-                            phone_number=screen.GetText(id_='phone_number').GetText(),
-                            first_name=screen.GetText(id_='first_name').GetText(),
-                            last_name=screen.GetText(id_='last_name').GetText(),
-                            datetime_added=datetime_now)
+                           phone_number=screen.GetText(id_='phone_number').GetText(),
+                           first_name=screen.GetText(id_='first_name').GetText(),
+                           last_name=screen.GetText(id_='last_name').GetText(),
+                           datetime_added=datetime_now)
     fase_database.FaseDatabase.Get().AddUser(user)
-    return self._OnEnteredData(phone_number, user_id)
+    return FaseSignIn._OnEnteredData(phone_number, user_id)
 
-  def _OnEnteredData(self, phone_number, user_id):
+  @staticmethod
+  def _OnEnteredData(service, phone_number, user_id):
     activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
     sms_sender.SMSSender.Get().SendSMS(phone_number, activation_code)
     screen = fase.Screen()
-    text_layout = screen.AddLayout(id_='text_layout', orientation=fase.Layout.VERTICAL)
-    text_layout.AddText(id_='activation_code', hint='Activation Code')
-    text_layout.AddButton(
-        id_='send', text='Send',
-        on_click=functools.partial(self.OnActivationCodeSend, phone_number, user_id, activation_code))
-    screen.AddPrevStepButton(on_click=self.OnSignInCancel)
+    enter_activation_layout = screen.AddLayout(id_='enter_activation_layout_id', orientation=fase.Layout.VERTICAL)
+    enter_activation_layout.AddText(id_='activation_code_text_id', hint='Activation Code')
+    enter_activation_layout.AddElement(FaseSignInButton(id_='send_button_id', text='Send'))
+    service.AddStringVariable(id_='fase_sign_in_session_id_str', value=user_id)
+    service.AddStringVariable(id_='fase_sign_in_activation_code_str', value=activation_code)
+    screen.AddPrevStepButton(on_click=FaseSignIn.Start)
     return screen
-    
-  def OnActivationCodeSend(self, phone_number, user_id, activation_code, screen):
-    if screen.GetText(id_='activation_code').GetText() != activation_code:
-      return fase.Popup('Wrong activation code!')
-    self.SetUserId(user_id)
-    screen = self.PopScreen(id_='sign_in_screen')
-    on_done = self.PopCallback(id_='sign_in_on_done_callback')
-    on_done(screen, False)
 
-  def OnSignInCancel(self):
-    screen = self.PopScreen(id_='sign_in_screen')
-    on_done = self.PopCallback(id_='sign_in_on_done_callback')
-    on_done(screen, True)
+  @staticmethod
+  def OnSkipOption(service):
+    on_sign_in_done = service.GetClassMethodVariable('fase_sign_in_on_sign_in_done_class_method')
+    return on_sign_in_done(service, cancelled=False, skipped=True, service_before=None, screen_before=None)
+
+  @staticmethod
+  def OnCancelOption(service, screen, element):
+    on_sign_in_done = service.GetClassMethodVariable('fase_sign_in_on_sign_in_done_class_method')
+    return on_sign_in_done(service, cancelled=True, skipped=False, service_before=None, screen_before=None)

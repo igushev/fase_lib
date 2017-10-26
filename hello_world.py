@@ -12,7 +12,7 @@ class HelloWorldService(fase.Service):
     return screen
 
   def OnNextButton(self, screen, element):
-    name = screen.GetElement('text_name_id').GetText()
+    name = screen.GetText('text_name_id').GetText()
     label = 'Hello, %s!' % name
     screen = fase.Screen()
     screen.AddLabel('hello_label_id', label=label)

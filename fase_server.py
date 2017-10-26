@@ -77,6 +77,7 @@ class FaseServer(object):
       element = element.GetElement(id_)
     return element
 
+  # TODO(igushev): Generate screen_id and compare with received one.
   def ScreenUpdate(self, screen_update, session_info):
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
@@ -92,7 +93,7 @@ class FaseServer(object):
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
     element = self._GetElement(screen, element_clicked.id_list)
-    screen = element._on_click(service, screen, element)
+    service, screen = element.FaseOnClick(service, screen)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)

@@ -15,7 +15,10 @@ def GenerateUserId(device):
 
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
-  pass
+
+  def FaseOnClick(self, service, screen):
+    screen = self._on_click(service, screen, self)
+    return service, screen
 
 
 @json_util.JSONDecorator(
@@ -97,6 +100,20 @@ class BoolVariable(Variable):
     return self._value
 
 
+@json_util.JSONDecorator(
+    {'_value': json_util.JSONClassMethod()})
+class ClassMethodVariable(Variable):
+  def __init__(self, value):
+    super(ClassMethodVariable, self).__init__()
+    self.SetValue(value)
+
+  def SetValue(self, value):
+    assert callable(value)
+    self._value = value
+  def GetValue(self):
+    return self._value
+
+
 @json_util.JSONDecorator({})
 class VariableContainer(ElementContainer):
 
@@ -120,8 +137,13 @@ class VariableContainer(ElementContainer):
   def GetBoolVariable(self, id_):
     return self.GetElement(id_)
 
+  def AddClassMethodVariable(self, id_, value):
+    return self.AddElement(id_, ClassMethodVariable(value))
+  def GetClassMethodVariable(self, id_):
+    return self.GetElement(id_)
 
-class VisualElement(Element):
+
+class VisualElement(ElementContainer):
   pass
 
 @json_util.JSONDecorator(

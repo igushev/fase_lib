@@ -17,7 +17,7 @@ class NotesTest(unittest.TestCase):
                          datetime=datetime.datetime.now(),
                          place_name='NYC',
                          favourite=False)]))
-    notes_service = notes.NotesService(None)
+    notes_service = notes.NotesService()
     notes_service.SetUserId('321')
     screen = notes_service.OnStart()
     
