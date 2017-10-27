@@ -18,12 +18,9 @@ class NotesTest(unittest.TestCase):
                          place_name='NYC',
                          favourite=False)]))
     notes_service = notes.NotesService()
-    notes_service.SetUserId('321')
+    notes_service._session_id = '321'
     screen = notes_service.OnStart()
-    
-    import pprint
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(screen.ToSimple())
+    screen.ToSimple()
     
     
 

@@ -33,16 +33,16 @@ class NotesService(fase.Service):
     return self.OnNotes(None, None)
 
   def OnSignIn(self, screen, element):
-    return fase_sign_in.FaseSignIn.Start(self, on_sign_in_done=self.OnSignInDone, cancel_option=True)
+    return fase_sign_in.FaseSignIn.Start(self, on_sign_in_done=NotesService.OnSignInDone, cancel_option=True)
 
-  def OnSignInDone(self, cancelled=False, skipped=False, service_before=None, screen_before=None):
+  def OnSignInDone(self, cancelled=False, skipped=False, user_id_before=None):
     assert not skipped
     if not cancelled:
-      previous_user_id = screen_before.GetUserId()
+      assert user_id_before is not None
       self._DisplaySignInOut(logged_in=True, user_name=self.GetUser().GetUserName())
   
       # Move notes from guest user_id to logged in user.
-      for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(previous_user_id):
+      for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(user_id_before):
         note.user_id = self.GetUserId()
         notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
       
@@ -163,7 +163,7 @@ class NotesService(fase.Service):
     if note_id is None:
       note_id_hash = hashlib.md5()
       note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
-      note_id_hash.update(self.GetUserId())
+      note_id_hash.update(user_id)
       note_id = note_id_hash.hexdigest()
     location = screen.GetUtilLocation()
     place_name = place_util.GetPlaceName(location)

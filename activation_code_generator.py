@@ -1,9 +1,12 @@
 import random
 
+import singleton_util
+
 MIN_ACTIVATION_CODE = 100000
 MAX_ACTIVATION_CODE = 1000000
 
 
+@singleton_util.Singleton()
 class ActivationCodeGeneratorInterface(object):
   
   def Generate(self):
@@ -26,5 +29,3 @@ class MockActivationCodeGenerator(ActivationCodeGeneratorInterface):
     activation_code = self.activation_code_generator.Generate()
     self.codes.append(activation_code)
     return activation_code
-
-

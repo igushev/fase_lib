@@ -11,7 +11,8 @@ class FaseTest(unittest.TestCase):
 
   def testHelloWorld(self):
     fase_database.FaseDatabaseInterface.Set(
-        fase_database.MockFaseDatabase([], []))
+        fase_database.MockFaseDatabase(
+            service_list=[], screen_list=[], user_list=[]))
     fase_server_ = fase_server.FaseServer()
     device = fase_model.Device('MockType', 'MockToken')
     session_info = fase_server_.GetService(device)
@@ -21,6 +22,7 @@ class FaseTest(unittest.TestCase):
     expected_screen.AddButton(
         'next_button_id',
         text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen._session_id = session_info.session_id
     actual_screen = fase_server_.GetScreen(session_info)
     self.assertEqual(expected_screen, actual_screen)
     
@@ -36,6 +38,7 @@ class FaseTest(unittest.TestCase):
     expected_screen.AddButton(
         'reset_button_id',
         text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
+    expected_screen._session_id = session_info.session_id
     actual_screen = fase_server_.ElementClicked(element_clicked, session_info)
     self.assertEqual(expected_screen, actual_screen)
 
@@ -45,9 +48,10 @@ class FaseTest(unittest.TestCase):
     expected_screen.AddButton(
         'next_button_id',
         text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen._session_id = session_info.session_id
     actual_screen = fase_server_.ElementClicked(element_clicked, session_info)
     self.assertEqual(expected_screen, actual_screen)
-    
+
 
 if __name__ == '__main__':
     unittest.main()

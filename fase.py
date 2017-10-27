@@ -1,3 +1,6 @@
+import datetime
+import hashlib
+
 import data_util
 import fase_database
 import fase_model
@@ -7,10 +10,21 @@ DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 
 # TODO(igushev): Move on_click to Element.
+def GenerateSessionId():
+  datetime_now = datetime.datetime.now()
+  session_id_hash = hashlib.md5()
+  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
+  session_id = session_id_hash.hexdigest()
+  return session_id
 
 
-def GenerateUserId(device):
-  pass
+def GenerateUserId(session_id):
+  datetime_now = datetime.datetime.now()
+  user_id_hash = hashlib.md5()
+  user_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
+  user_id_hash.update(session_id)
+  user_id = user_id_hash.hexdigest()
+  return user_id
 
 
 @json_util.JSONDecorator({}, inherited=True)
@@ -169,6 +183,9 @@ class Label(VisualElement):
     self._font = font
     self._aligh = aligh
     self._sizable = sizable
+
+  def GetLabel(self):
+    return self._label
 
 
 @json_util.JSONDecorator(
@@ -392,7 +409,6 @@ class Screen(VisualElementContainer):
      '_main_menu': json_util.JSONObject(Menu),
      '_button_bar': json_util.JSONObject(ButtonBar),
      '_session_id': json_util.JSONString(),
-     '_user_id': json_util.JSONString(),
      '_datetime_added': json_util.JSONBool()})
 class Service(VariableContainer):
   
@@ -410,9 +426,11 @@ class Service(VariableContainer):
     self._menu = None
     self._main_menu = None
     self._button_bar = None
-    self._session_id = None
-    self._user_id = GenerateUserId(self._session_id)
+    self._session_id = GenerateSessionId()
     self._datetime_added = None
+
+  def GetUserId(self):
+    return self._session_id
 
   def AddMenu(self):
     self._menu = Menu()
@@ -434,10 +452,3 @@ class Service(VariableContainer):
   def GetButtonBar(self):
     assert self._button_bar is not None
     return self._button_bar
-
-  def SetUserId(self, user_id):
-    self._user_id = user_id
-  def GetUserId(self):
-    return self._user_id
-  def ResetUserId(self):
-    self._user_id = GenerateUserId(self._session_id)

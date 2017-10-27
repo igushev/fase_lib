@@ -78,6 +78,7 @@ class FaseServer(object):
     return element
 
   # TODO(igushev): Generate screen_id and compare with received one.
+  # TODO(igushev): Return either OK or another screen.
   def ScreenUpdate(self, screen_update, session_info):
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))

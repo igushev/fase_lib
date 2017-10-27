@@ -1,14 +1,10 @@
 import boto3
 from collections import namedtuple
 
+import singleton_util
 
-ACTIVATION_CODE_MSG = 'Your activation code is %d. Welcome to the KarmaCounter!'
-ADDED_EVENT_TO_USER_MSG = (
-    '%s invites you to KarmaCounter and has added you a new event.'
-    ' Download iOS from %s or Andriod from %s.')
-ADDED_EVENT_TO_WITNESS_MSG = (
-    '%s invites you to KarmaCounter and has asked you to witness an event.'
-    ' Download iOS from %s or Andriod from %s.')
+
+ACTIVATION_CODE_MSG = 'Your activation code is %d.'
 THROW_ERROR = 'Include text to throw error'
 SMS = namedtuple('SMS', ['phone_number', 'message'])
 
@@ -52,28 +48,12 @@ class MockSMSServiceProvider(SMSServiceProviderInterface):
     self.smss.append(SMS(phone_number, message))
 
 
+@singleton_util.Singleton()
 class SMSSender(object):
   
-  def __init__(self, sms_service_provider, ios_link, andriod_link,
-               intercept_to=None):
+  def __init__(self, sms_service_provider, intercept_to=None):
     self.sms_service_provider = sms_service_provider
-    self.ios_link = ios_link
-    self.andriod_link = andriod_link
     self.intercept_to = intercept_to
 
-  def SendActivationCode(self, user, activation_code):
-    self.sms_service_provider.Send(
-        self.intercept_to or user.phone_number,
-        ACTIVATION_CODE_MSG % activation_code)
-
-  def SendAddedEventToUser(self, user_event):
-    self.sms_service_provider.Send(
-        self.intercept_to or user_event.user.phone_number,
-        ADDED_EVENT_TO_USER_MSG % (user_event.witness.Display(),
-                             self.ios_link, self.andriod_link))
-
-  def SendAddedEventToWitness(self, user_event):
-    self.sms_service_provider.Send(
-        self.intercept_to or user_event.witness.phone_number,
-        ADDED_EVENT_TO_WITNESS_MSG % (user_event.user.Display(),
-                                self.ios_link, self.andriod_link))
+  def SendActivationCode(self, phone_number, activation_code):
+    self.sms_service_provider.Send(self.intercept_to or phone_number, ACTIVATION_CODE_MSG % activation_code)
