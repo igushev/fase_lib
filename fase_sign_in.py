@@ -17,20 +17,28 @@ class FaseSignInButton(fase.Button):
       return service, fase.Popup('Wrong activation code!')
     
     on_sign_in_done = service.GetClassMethodVariable('fase_sign_in_on_sign_in_done_class_method').GetValue()
-    session_id_signed_in = service.GetStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
     screen_before_session_id = service.GetStringVariable('fase_sign_in_screen_before_session_id_str').GetValue() 
+    session_id_signed_in = service.GetStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
+    # Delete service and screen current.
+    session_id_current = service._session_id
+    fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
+    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=session_id_current)
+
     if fase_database.FaseDatabaseInterface.Get().HasService(session_id=session_id_signed_in):
+      # Delete screen before.
+      fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
+      # Retrieve sign in service and call.
       service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
       screen_signed_in = on_sign_in_done(service_signed_in, cancelled=False, skipped=False, user_id_before=service._session_id)
-      session_id_before = service._session_id
-      fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_before)
-      fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=session_id_before)
-      fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
       return service_signed_in, screen_signed_in
     else:
+      # Retrieve screen before and assign signed in session id.
+      service._session_id = session_id_signed_in
       screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
       screen._session_id = session_id_signed_in
       fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
+      # Delete same object by old key.
+      fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
       return service, screen
 
 
@@ -123,11 +131,13 @@ class FaseSignIn(object):
     return screen
 
   @staticmethod
-  def OnSkipOption(service):
+  def OnSkipOption(service, screen, element):
     screen_before_session_id = service.GetStringVariable('fase_sign_in_screen_before_session_id_str').GetValue() 
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
+    # Delete same object by old key.
+    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
     return service, screen
 
   @staticmethod
@@ -136,4 +146,6 @@ class FaseSignIn(object):
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
+    # Delete same object by old key.
+    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
     return service, screen

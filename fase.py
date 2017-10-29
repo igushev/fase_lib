@@ -43,6 +43,9 @@ class ElementContainer(Element):
   def GetElement(self, id_):
     return self._id_to_element[id_]
 
+  def GetIdToElement(self):
+    return self._id_to_element
+
 
 @json_util.JSONDecorator({})
 class Variable(Element):

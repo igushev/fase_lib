@@ -1,6 +1,6 @@
 @classmethod
-def Set(cls, instance):
-  assert cls._instance is None
+def Set(cls, instance, overwrite=False):
+  assert cls._instance is None or overwrite is True
   assert isinstance(instance, cls)
   cls._instance = instance
 
