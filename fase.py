@@ -18,15 +18,6 @@ def GenerateSessionId():
   return session_id
 
 
-def GenerateUserId(session_id):
-  datetime_now = datetime.datetime.now()
-  user_id_hash = hashlib.md5()
-  user_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
-  user_id_hash.update(session_id)
-  user_id = user_id_hash.hexdigest()
-  return user_id
-
-
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
 
