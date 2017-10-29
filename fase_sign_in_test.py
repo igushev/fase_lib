@@ -84,7 +84,7 @@ class FaseSignInTest(unittest.TestCase):
     
     # Check.
     self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
-    self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_info.session_id)
     screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
@@ -95,7 +95,7 @@ class FaseSignInTest(unittest.TestCase):
 
     # Check.
     self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
-    self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_info.session_id)
     screen.GetElement('sign_in_layout_id').GetElement(id_='phone_number_text_id')
@@ -109,7 +109,7 @@ class FaseSignInTest(unittest.TestCase):
     
     # Check.
     self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
-    self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_info.session_id)
     screen.GetElement('enter_activation_layout_id').GetElement(id_='activation_code_text_id')
@@ -127,6 +127,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
+    session = fase_database.FaseDatabaseInterface.Get().GetService('321')
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen('321')
     self.assertEqual(session_info.session_id,
                      screen.GetElement('user_id_before_label_id').GetLabel())

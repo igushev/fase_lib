@@ -31,6 +31,9 @@ class MockFaseDatabase(FaseDatabaseInterface):
     assert service._session_id not in self.session_id_to_service or overwrite
     self.session_id_to_service[service._session_id] = service
 
+  def HasService(self, session_id):
+    return session_id in self.session_id_to_service
+
   def GetService(self, session_id):
     return self.session_id_to_service[session_id]
 
@@ -40,6 +43,9 @@ class MockFaseDatabase(FaseDatabaseInterface):
   def AddScreen(self, screen, overwrite=False):
     assert screen._session_id not in self.session_id_to_screen or overwrite
     self.session_id_to_screen[screen._session_id] = screen
+
+  def HasScreen(self, session_id):
+    return session_id in self.session_id_to_screen
 
   def GetScreen(self, session_id):
     return self.session_id_to_screen[session_id]
