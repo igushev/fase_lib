@@ -35,16 +35,14 @@ class NotesService(fase.Service):
   def OnSignIn(self, screen, element):
     return fase_sign_in.FaseSignIn.Start(self, on_sign_in_done=NotesService.OnSignInDone, cancel_option=True)
 
-  def OnSignInDone(self, cancelled=False, skipped=False, user_id_before=None):
-    assert not skipped
-    if not cancelled:
-      assert user_id_before is not None
-      self._DisplaySignInOut(logged_in=True, user_name=self.GetUser().GetUserName())
-  
-      # Move notes from guest user_id to logged in user.
-      for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(user_id_before):
-        note.user_id = self.GetUserId()
-        notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
+  def OnSignInDone(self, user_id_before=None):
+    assert user_id_before is not None
+    self._DisplaySignInOut(logged_in=True, user_name=self.GetUser().GetUserName())
+
+    # Move notes from guest user_id to logged in user.
+    for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(user_id_before):
+      note.user_id = self.GetUserId()
+      notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
       
     return self._DisplayRecent(None)
 
