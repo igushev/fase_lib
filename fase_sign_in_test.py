@@ -47,8 +47,10 @@ class FaseSignInTest(unittest.TestCase):
   def SingInProcedure(self,
                       service_num_before, screen_num_before,
                       service_num_during, screen_num_during,
-                      service_num_after, screen_num_after,
+                      sign_in=None,
+                      expected_user_id=None,
                       test_user_id_before=True):
+    assert sign_in is not None
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
     session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
@@ -73,22 +75,46 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
     screen.GetElement('sign_in_layout_id').GetElement(id_='sign_up_button_id')
 
-    # Click on Sign In button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info)
-
-    # Check.
-    self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
-    self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
-    # Check present of main elements.
-    screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_info.session_id)
-    screen.GetElement('sign_in_layout_id').GetElement(id_='phone_number_text_id')
-    screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
-
-    # Enter phone number.
-    screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], ['+13216549870'])
-    fase_server_.ScreenUpdate(screen_update, session_info)
-    # Click on Sign In button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info)
+    if sign_in:
+      # Click on Sign In button.
+      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info)
+  
+      # Check.
+      self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+      # Check present of main elements.
+      screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_info.session_id)
+      screen.GetElement('sign_in_layout_id').GetElement(id_='phone_number_text_id')
+      screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
+  
+      # Enter phone number.
+      screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], ['+13216549870'])
+      fase_server_.ScreenUpdate(screen_update, session_info)
+      # Click on Sign In button.
+      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info)
+    else:
+      # Click on Sign Up button.
+      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_up_button_id']), session_info)
+  
+      # Check.
+      self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+      # Check present of main elements.
+      screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_info.session_id)
+      screen.GetElement('sign_up_layout_id').GetElement(id_='phone_number_text_id')
+      screen.GetElement('sign_up_layout_id').GetElement(id_='first_name_text_id')
+      screen.GetElement('sign_up_layout_id').GetElement(id_='last_name_text_id')
+      screen.GetElement('sign_up_layout_id').GetElement(id_='sign_up_button_id')
+  
+      # Enter phone number.
+      screen_update = fase_model.ScreenUpdate([['sign_up_layout_id', 'phone_number_text_id'],
+                                               ['sign_up_layout_id', 'first_name_text_id'],
+                                               ['sign_up_layout_id', 'last_name_text_id']], ['+13216549870',
+                                                                                             'Edward',
+                                                                                             'Igushev'])
+      fase_server_.ScreenUpdate(screen_update, session_info)
+      # Click on Sign Up button.
+      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']), session_info)
     
     # Check.
     self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -105,24 +131,36 @@ class FaseSignInTest(unittest.TestCase):
     fase_server_.ScreenUpdate(screen_update, session_info)
     # Click on Send button.
     fase_server_.ElementClicked(fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']), session_info)
-    
+
     # Check.
-    self.assertEqual(service_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
-    self.assertEqual(screen_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
+    user_id_to_user = fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()
+    self.assertEqual(1, len(user_id_to_user))
+    actual_user_id = list(user_id_to_user.iterkeys())[0]
+    if expected_user_id is None:
+      expected_user_id = actual_user_id 
+    else:
+      self.assertEqual(expected_user_id, actual_user_id)
     # Check present of main elements.
-    session = fase_database.FaseDatabaseInterface.Get().GetService('321')
-    screen = fase_database.FaseDatabaseInterface.Get().GetScreen('321')
+    fase_database.FaseDatabaseInterface.Get().GetService(expected_user_id)
+    screen = fase_database.FaseDatabaseInterface.Get().GetScreen(expected_user_id)
     if test_user_id_before:
       self.assertEqual(session_info.session_id, screen.GetElement('user_id_before_label_id').GetLabel())
     else:
       self.assertNotIn('user_id_before_label_id', screen.GetIdToElement())
 
   def testSingIn_Existing_Service_Screen_User(self):
-    return
+    service = SignInTestService()
+    service._session_id = '321'
+    screen = service.OnStart()
+    screen = service.OnAbount(screen, screen.GetElement(id_='about_button_id'))
+    screen._session_id = service._session_id
+
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
-            screen_list=[],
+            service_list=[service],
+            screen_list=[screen],
             user_list=[
                 fase_model.User(user_id='321',
                                 phone_number='+13216549870',
@@ -134,16 +172,10 @@ class FaseSignInTest(unittest.TestCase):
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
-    service = SignInTestService()
-    service._session_id = '321'
-    screen = service.OnStart()
-    screen = service.OnAbount(screen, screen.GetElement(id_='about_button_id'))
-    fase_database.FaseDatabaseInterface.Get().AddService(service)
-    screen._session_id = service._session_id
-    fase_database.FaseDatabaseInterface.Get().AddScreen(screen)
     self.SingInProcedure(service_num_before=2, screen_num_before=2,
                          service_num_during=2, screen_num_during=3,
-                         service_num_after=1, screen_num_after=1)
+                         sign_in=True,
+                         expected_user_id='321')
 
   def testSingIn_Non_Existing_Service_Screen_Existing_User(self):
     fase_database.FaseDatabaseInterface.Set(
@@ -163,7 +195,21 @@ class FaseSignInTest(unittest.TestCase):
 
     self.SingInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
-                         service_num_after=1, screen_num_after=1,
+                         sign_in=True,
+                         expected_user_id='321',
+                         test_user_id_before=False)
+
+  def testSingUpIn_Non_Existing_Service_Screen_User(self):
+    fase_database.FaseDatabaseInterface.Set(
+        fase_database.MockFaseDatabase(
+            service_list=[],
+            screen_list=[],
+            user_list=[]),
+        overwrite=True)
+
+    self.SingInProcedure(service_num_before=1, screen_num_before=1,
+                         service_num_during=1, screen_num_during=2,
+                         sign_in=False,
                          test_user_id_before=False)
 
 

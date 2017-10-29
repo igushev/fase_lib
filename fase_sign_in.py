@@ -79,7 +79,9 @@ class FaseSignIn(object):
   def OnSignInEnteredData(service, screen, element):
     sign_in_layout = screen.GetElement(id_='sign_in_layout_id')
     phone_number = sign_in_layout.GetText(id_='phone_number_text_id').GetText()
-    user = fase_database.FaseDatabaseInterface.Get().GetUserByPhoneNumber(phone_number)
+    phone_number_user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
+    assert len(phone_number_user_list) == 1
+    user = phone_number_user_list[0]
     if not user:
       return fase.Popup('User with such phone number has not been found!')
     return FaseSignIn._OnEnteredData(service, phone_number, user.user_id)
@@ -91,7 +93,7 @@ class FaseSignIn(object):
     sign_up_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
     sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
     sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
-    sign_up_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=FaseSignIn.OnSignUpEnteredData)
+    sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign In', on_click=FaseSignIn.OnSignUpEnteredData)
     if service.GetBoolVariable('fase_sign_in_cancel_option_bool').GetValue():
       screen.AddPrevStepButton(on_click=FaseSignIn.OnCancelOption)
     return screen
@@ -99,8 +101,8 @@ class FaseSignIn(object):
   @staticmethod
   def OnSignUpEnteredData(service, screen, element):
     sign_up_layout = screen.GetElement('sign_up_layout_id')
-    phone_number = sign_up_layout.GetText(id_='phone_number_text_id')
-    if fase_database.FaseDatabaseInterface.Get().GetUserByPhoneNumber(phone_number):
+    phone_number = sign_up_layout.GetText(id_='phone_number_text_id').GetText()
+    if fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number):
       return fase.Popup('User with such phone number is already registered!')
 
     datetime_now = datetime.datetime.now()
@@ -110,9 +112,9 @@ class FaseSignIn(object):
     user_id = user_id_hash.hexdigest()
     
     user = fase_model.User(user_id=user_id,
-                           phone_number=sign_up_layout.GetText(id_='phone_number').GetText(),
-                           first_name=sign_up_layout.GetText(id_='first_name').GetText(),
-                           last_name=sign_up_layout.GetText(id_='last_name').GetText(),
+                           phone_number=sign_up_layout.GetText(id_='phone_number_text_id').GetText(),
+                           first_name=sign_up_layout.GetText(id_='first_name_text_id').GetText(),
+                           last_name=sign_up_layout.GetText(id_='last_name_text_id').GetText(),
                            datetime_added=datetime_now)
     fase_database.FaseDatabaseInterface.Get().AddUser(user)
     return FaseSignIn._OnEnteredData(service, phone_number, user_id)
