@@ -57,6 +57,9 @@ class MockFaseDatabase(FaseDatabaseInterface):
     assert user.user_id not in self.user_id_to_user or overwrite
     self.user_id_to_user[user.user_id] = user
 
+  def HasUser(self, user_id):
+    return user_id in self.user_id_to_user
+
   def GetUser(self, user_id):
     return self.user_id_to_user[user_id]
 

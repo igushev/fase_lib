@@ -42,11 +42,32 @@ class FaseSignInButton(fase.Button):
       return service, screen
 
 
+class FaseSignOutButton(fase.Button):
+
+  def FaseOnClick(self, service, screen):
+    # Delete screen before.
+    screen_before_session_id = service.GetStringVariable('fase_sign_in_screen_before_session_id_str').GetValue()
+    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
+    # Delete service and screen current.
+    session_id_current = service._session_id
+    fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
+    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=session_id_current)
+
+    service_cls = fase.Service.service_cls
+    service = service_cls()
+    service._sessino_id = fase.GenerateSessionId()
+    service._datetime_added = datetime.datetime.now()
+    screen = service.OnStart()
+    screen._session_id = service._session_id
+    return service, screen
+
+
 # TODO(igushev): fase_sign_in variables should be in separated better from services own variables.
 class FaseSignIn(object):
 
   @staticmethod
-  def Start(service, on_sign_in_done=None, skip_option=False, cancel_option=False):
+  def StartSignIn(service, on_sign_in_done=None, skip_option=False, cancel_option=False):
+    assert not fase_database.FaseDatabaseInterface.Get().HasUser(user_id=service._session_id)
     screen_before = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=service._session_id)
     screen_before_session_id = fase.GenerateSessionId()
     screen_before._session_id = screen_before_session_id
@@ -70,7 +91,7 @@ class FaseSignIn(object):
     sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
     sign_in_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
     sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=FaseSignIn.OnSignInEnteredData)
-    screen.AddPrevStepButton(on_click=FaseSignIn.Start)
+    screen.AddPrevStepButton(on_click=FaseSignIn.StartSignIn)
     return screen
 
   @staticmethod
@@ -92,7 +113,7 @@ class FaseSignIn(object):
     sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
     sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
     sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign In', on_click=FaseSignIn.OnSignUpEnteredData)
-    screen.AddPrevStepButton(on_click=FaseSignIn.Start)
+    screen.AddPrevStepButton(on_click=FaseSignIn.StartSignIn)
     return screen
     
   @staticmethod
@@ -126,7 +147,23 @@ class FaseSignIn(object):
     enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send'))
     service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
     service.AddIntVariable(id_='fase_sign_in_activation_code_str', value=activation_code)
-    screen.AddPrevStepButton(on_click=FaseSignIn.Start)
+    screen.AddPrevStepButton(on_click=FaseSignIn.StartSignIn)
+    return screen
+
+  @staticmethod
+  def StartSignOut(service, cancel_option=False):
+    assert fase_database.FaseDatabaseInterface.Get().HasUser(user_id=service._session_id)
+    screen_before = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=service._session_id)
+    screen_before_session_id = fase.GenerateSessionId()
+    screen_before._session_id = screen_before_session_id
+    fase_database.FaseDatabaseInterface.Get().AddScreen(screen_before)
+    service.AddStringVariable('fase_sign_in_screen_before_session_id_str', screen_before_session_id)
+
+    screen = fase.Screen()
+    sign_out_layout = screen.AddLayout(id_='sign_out_layout_id', orientation=fase.Layout.VERTICAL)
+    sign_out_layout.AddElement(id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out'))
+    if cancel_option:
+      screen.AddPrevStepButton(on_click=FaseSignIn.OnSkipCancelOption)
     return screen
 
   @staticmethod

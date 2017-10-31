@@ -33,7 +33,7 @@ class NotesService(fase.Service):
     return self.OnNotes(None, None)
 
   def OnSignIn(self, screen, element):
-    return fase_sign_in.FaseSignIn.Start(self, on_sign_in_done=NotesService.OnSignInDone, cancel_option=True)
+    return fase_sign_in.FaseSignIn.StartSignIn(self, on_sign_in_done=NotesService.OnSignInDone, cancel_option=True)
 
   def OnSignInDone(self, user_id_before=None):
     assert user_id_before is not None
@@ -47,8 +47,7 @@ class NotesService(fase.Service):
     return self._DisplayRecent(None)
 
   def OnSignOut(self, screen, element):
-    # TODO(igushev): Implement me!
-    pass
+    return fase_sign_in.FaseSignIn.StartSignOut(self)
 
   def _DisplaySignInOut(self, logged_in=False, user_name=None):
     menu = self.GetMenu()

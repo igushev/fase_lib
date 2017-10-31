@@ -17,18 +17,6 @@ STATUS_OK_TEXT = 'OK'
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 
-def CreateService(service_cls, device):
-  service = service_cls()
-  datetime_now = datetime.datetime.now()
-  sessino_id_hash = hashlib.md5()
-  sessino_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
-  sessino_id_hash.update(device.device_type)
-  sessino_id_hash.update(device.device_token)
-  service._sessino_id = sessino_id_hash.hexdigest()
-  service._datetime_added = datetime_now
-  return service
-
-
 class BadRequestException(Exception):
 
   def __init__(self, bad_request):
@@ -58,7 +46,9 @@ class FaseServer(object):
     assert fase.Service.service_cls is not None
     service_cls = fase.Service.service_cls
 
-    service = CreateService(service_cls, device)
+    service = service_cls()
+    service._sessino_id = fase.GenerateSessionId()
+    service._datetime_added = datetime.datetime.now()
     screen = service.OnStart()
     fase_database.FaseDatabaseInterface.Get().AddService(service)
     screen._session_id = service._session_id
