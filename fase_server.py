@@ -54,12 +54,14 @@ class FaseServer(object):
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen)
 
-    return fase_model.SessionInfo(service._session_id)
+    return fase_model.Response(screen=screen,
+                               session_info=fase_model.SessionInfo(service._session_id))
 
   def GetScreen(self, session_info):
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
-    return screen
+    return fase_model.Response(screen=screen,
+                               session_info=session_info)
 
   def _GetElement(self, screen, id_list):
     element = screen
@@ -70,13 +72,17 @@ class FaseServer(object):
   # TODO(igushev): Generate screen_id and compare with received one.
   # TODO(igushev): Return either OK or another screen.
   def ScreenUpdate(self, screen_update, session_info):
+    service = (fase_database.FaseDatabaseInterface.Get().
+               GetService(session_info.session_id))
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
     for id_list, value in zip(
         screen_update.id_list_list, screen_update.value_list):
       self._GetElement(screen, id_list).Update(value)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
-    return fase_model.Status(STATUS_OK_TEXT)
+
+    return fase_model.Response(screen=screen,
+                               session_info=fase_model.SessionInfo(service._session_id))
 
   def ElementClicked(self, element_clicked, session_info):
     service = (fase_database.FaseDatabaseInterface.Get().
@@ -88,5 +94,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     screen._session_id = service._session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
-    return screen
+
+    return fase_model.Response(screen=screen,
+                               session_info=fase_model.SessionInfo(service._session_id))
 

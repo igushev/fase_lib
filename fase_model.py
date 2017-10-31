@@ -1,6 +1,8 @@
 import data_util
 import json_util
 
+import fase
+
 
 @json_util.JSONDecorator({
     'device_type': json_util.JSONString(),
@@ -71,6 +73,18 @@ class ElementClicked(data_util.AbstractObject):
   def  __init__(self,
                 id_list=None):
     self.id_list = id_list
+
+
+@json_util.JSONDecorator({
+    'screen': json_util.JSONObject(fase.Screen),
+    'session_info': json_util.JSONObject(SessionInfo)})
+class Response(data_util.AbstractObject):
+  
+  def __init__(self,
+               screen=None,
+               session_info=None):
+    self.screen = screen
+    self.session_info = session_info
 
 
 @json_util.JSONDecorator({

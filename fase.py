@@ -3,7 +3,6 @@ import hashlib
 
 import data_util
 import fase_database
-import fase_model
 import json_util
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'

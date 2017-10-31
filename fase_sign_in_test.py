@@ -60,7 +60,7 @@ class FaseSignInTest(unittest.TestCase):
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
     session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
-                                                             device_token='Token'))
+                                                             device_token='Token')).session_info
     fase_server_.GetScreen(session_info)
 
     # Check.
@@ -229,7 +229,7 @@ class FaseSignInTest(unittest.TestCase):
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
     session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
-                                                             device_token='Token'))
+                                                             device_token='Token')).session_info
     fase_server_.GetScreen(session_info)
 
     fase_database.FaseDatabaseInterface.Get().AddUser(
@@ -292,7 +292,7 @@ class FaseSignInTest(unittest.TestCase):
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
     session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
-                                                             device_token='Token'))
+                                                             device_token='Token')).session_info
     fase_server_.GetScreen(session_info)
 
     # Check.
