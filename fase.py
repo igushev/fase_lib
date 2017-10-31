@@ -17,6 +17,14 @@ def GenerateSessionId():
   return session_id
 
 
+def GenerateScreenId():
+  datetime_now = datetime.datetime.now()
+  screen_id_hash = hashlib.md5()
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
+  screen_id = screen_id_hash.hexdigest()
+  return screen_id
+
+
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
 
@@ -349,7 +357,8 @@ class Popup(VariableContainer):
      '_next_step_button': json_util.JSONObject(Button),
      '_prev_step_button': json_util.JSONObject(Button),
      '_context_menu': json_util.JSONObject(Menu),
-     '_session_id': json_util.JSONString()})
+     '_session_id': json_util.JSONString(),
+     '_screen_id': json_util.JSONString()})
 class Screen(VisualElementContainer):
 
   def __init__(self):
@@ -361,6 +370,7 @@ class Screen(VisualElementContainer):
     self._prev_step_button = None
     self._context_menu = None
     self._session_id = None
+    self._screen_id = GenerateScreenId()
 
   def SetMenuDisplayed(self, if_displayed):
     self._menu_displayed = if_displayed

@@ -48,10 +48,6 @@ class FaseSignOutButton(fase.Button):
     # Delete screen before.
     screen_before_session_id = service.GetStringVariable('fase_sign_in_screen_before_session_id_str').GetValue()
     fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
-    # Delete service and screen current.
-    session_id_current = service._session_id
-    fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
-    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=session_id_current)
 
     service_cls = fase.Service.service_cls
     service = service_cls()

@@ -23,7 +23,8 @@ class SignInTestService(fase.Service):
     return screen
 
   def OnSignIn(self, screen, element):
-    return fase_sign_in.FaseSignIn.StartSignIn(self, on_sign_in_done=SignInTestService.OnSignInDone, skip_option=True, cancel_option=True)
+    return fase_sign_in.FaseSignIn.StartSignIn(
+        self, on_sign_in_done=SignInTestService.OnSignInDone, skip_option=True, cancel_option=True)
 
   def OnSignOut(self, screen, element):
     return fase_sign_in.FaseSignIn.StartSignOut(self)
@@ -59,8 +60,10 @@ class FaseSignInTest(unittest.TestCase):
     assert sign_in is not None
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
-    session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
-                                                             device_token='Token')).session_info
+    response = fase_server_.GetService(fase_model.Device(device_type='iOS',
+                                                         device_token='Token'))
+    session_info = response.session_info
+    screen_info = response.screen_info
     fase_server_.GetScreen(session_info)
 
     # Check.
@@ -71,7 +74,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement('sign_in_button_id')
 
     # Click on Sign In button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info)
+    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
+    screen_info = response.screen_info
     
     # Check.
     self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -83,7 +87,9 @@ class FaseSignInTest(unittest.TestCase):
 
     if sign_in:
       # Click on Sign In button.
-      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info)
+      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']),
+                                             session_info, screen_info)
+      screen_info = response.screen_info
   
       # Check.
       self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -95,12 +101,16 @@ class FaseSignInTest(unittest.TestCase):
   
       # Enter phone number.
       screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], ['+13216549870'])
-      fase_server_.ScreenUpdate(screen_update, session_info)
+      fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign In button.
-      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info)
+      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']),
+                                             session_info, screen_info)
+      screen_info = response.screen_info
     else:
       # Click on Sign Up button.
-      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_up_button_id']), session_info)
+      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_up_button_id']),
+                                             session_info, screen_info)
+      screen_info = response.screen_info
   
       # Check.
       self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -118,9 +128,11 @@ class FaseSignInTest(unittest.TestCase):
                                                ['sign_up_layout_id', 'last_name_text_id']], ['+13216549870',
                                                                                              'Edward',
                                                                                              'Igushev'])
-      fase_server_.ScreenUpdate(screen_update, session_info)
+      fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign Up button.
-      fase_server_.ElementClicked(fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']), session_info)
+      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']),
+                                             session_info, screen_info)
+      screen_info = response.screen_info
     
     # Check.
     self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -134,9 +146,10 @@ class FaseSignInTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(
         [['enter_activation_layout_id', 'activation_code_text_id']],
         [str(activation_code_generator.ActivationCodeGeneratorInterface.Get().codes[-1])])
-    fase_server_.ScreenUpdate(screen_update, session_info)
+    fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Send button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']), session_info)
+    fase_server_.ElementClicked(fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']),
+                                session_info, screen_info)
 
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -228,8 +241,10 @@ class FaseSignInTest(unittest.TestCase):
 
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
-    session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
-                                                             device_token='Token')).session_info
+    response = fase_server_.GetService(fase_model.Device(device_type='iOS',
+                                                         device_token='Token'))
+    session_info = response.session_info
+    screen_info = response.screen_info
     fase_server_.GetScreen(session_info)
 
     fase_database.FaseDatabaseInterface.Get().AddUser(
@@ -252,7 +267,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement('sign_out_button_id')
 
     # Click on Sign Out button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_button_id']), session_info)
+    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_button_id']), session_info, screen_info)
+    screen_info = response.screen_info
     
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -262,18 +278,24 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement('sign_out_layout_id').GetElement(id_='sign_out_button_id')
 
     # Click on Sign Out button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_layout_id', 'sign_out_button_id']), session_info)
+    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_layout_id', 'sign_out_button_id']),
+                                session_info, screen_info)
 
     # Check.
     session_id_to_service = fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()
-    self.assertEqual(1, len(session_id_to_service))
-    actual_service_session_id = list(session_id_to_service.iterkeys())[0]
+    self.assertEqual(2, len(session_id_to_service))
+    self.assertIn(session_info.session_id, session_id_to_service)
+    actual_service_session_id = list(set(session_id_to_service.iterkeys()) - {session_info.session_id})[0]
+
     session_id_to_screen = fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()
-    self.assertEqual(1, len(session_id_to_screen))
-    actual_screen_session_id = list(session_id_to_screen.iterkeys())[0]
+    self.assertEqual(2, len(session_id_to_screen))
+    self.assertIn(session_info.session_id, session_id_to_screen)
+    actual_screen_session_id = list(set(session_id_to_screen.iterkeys()) - {session_info.session_id})[0]
+
     user_id_to_user = fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()
     self.assertEqual(1, len(user_id_to_user))
     actual_user_id = list(user_id_to_user.iterkeys())[0]
+
     self.assertEqual(actual_screen_session_id, actual_service_session_id)
     self.assertNotEqual(actual_user_id, actual_service_session_id)
     
@@ -291,8 +313,10 @@ class FaseSignInTest(unittest.TestCase):
 
     # Create Server and Service.
     fase_server_ = fase_server.FaseServer()
-    session_info = fase_server_.GetService(fase_model.Device(device_type='iOS',
-                                                             device_token='Token')).session_info
+    response = fase_server_.GetService(fase_model.Device(device_type='iOS',
+                                                         device_token='Token'))
+    session_info = response.session_info
+    screen_info = response.screen_info
     fase_server_.GetScreen(session_info)
 
     # Check.
@@ -303,7 +327,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement('sign_in_button_id')
 
     # Click on Sign In button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info)
+    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
+    screen_info = response.screen_info
     
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -314,7 +339,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement('sign_in_layout_id').GetElement(id_='sign_up_button_id')
     
     # Click on Skip button
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'skip_button_id']), session_info)
+    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'skip_button_id']),
+                                session_info, screen_info)
 
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))

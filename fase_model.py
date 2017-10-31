@@ -25,6 +25,14 @@ class SessionInfo(data_util.AbstractObject):
     self.session_id = session_id
 
 
+@json_util.JSONDecorator({
+    'screen_id': json_util.JSONString()})
+class ScreenInfo(data_util.AbstractObject):
+
+  def __init__(self,
+               screen_id=None):
+    self.screen_id = screen_id
+
 
 @json_util.JSONDecorator({
     'user_id': json_util.JSONString(),
@@ -82,9 +90,11 @@ class Response(data_util.AbstractObject):
   
   def __init__(self,
                screen=None,
-               session_info=None):
+               session_info=None,
+               screen_info=None):
     self.screen = screen
     self.session_info = session_info
+    self.screen_info = screen_info
 
 
 @json_util.JSONDecorator({

@@ -55,13 +55,15 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen)
 
     return fase_model.Response(screen=screen,
-                               session_info=fase_model.SessionInfo(service._session_id))
+                               session_info=fase_model.SessionInfo(service._session_id),
+                               screen_info=fase_model.ScreenInfo(screen._screen_id))
 
   def GetScreen(self, session_info):
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
     return fase_model.Response(screen=screen,
-                               session_info=session_info)
+                               session_info=session_info,
+                               screen_info=fase_model.ScreenInfo(screen._screen_id))
 
   def _GetElement(self, screen, id_list):
     element = screen
@@ -71,24 +73,39 @@ class FaseServer(object):
 
   # TODO(igushev): Generate screen_id and compare with received one.
   # TODO(igushev): Return either OK or another screen.
-  def ScreenUpdate(self, screen_update, session_info):
+  def ScreenUpdate(self, screen_update, session_info, screen_info):
     service = (fase_database.FaseDatabaseInterface.Get().
                GetService(session_info.session_id))
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
+
+    # If given screen_id is no longer relevant, just send current screen
+    if screen._screen_id != screen_info.screen_id:
+      return fase_model.Response(screen=screen,
+                                 session_info=fase_model.SessionInfo(service._session_id),
+                                 screen_info=fase_model.ScreenInfo(screen._screen_id))
+
     for id_list, value in zip(
         screen_update.id_list_list, screen_update.value_list):
       self._GetElement(screen, id_list).Update(value)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
 
     return fase_model.Response(screen=screen,
-                               session_info=fase_model.SessionInfo(service._session_id))
+                               session_info=fase_model.SessionInfo(service._session_id),
+                               screen_info=screen_info)
 
-  def ElementClicked(self, element_clicked, session_info):
+  def ElementClicked(self, element_clicked, session_info, screen_info):
     service = (fase_database.FaseDatabaseInterface.Get().
                GetService(session_info.session_id))
     screen = (fase_database.FaseDatabaseInterface.Get().
               GetScreen(session_info.session_id))
+
+    # If given screen_id is no longer relevant, just send current screen
+    if screen._screen_id != screen_info.screen_id:
+      return fase_model.Response(screen=screen,
+                                 session_info=fase_model.SessionInfo(service._session_id),
+                                 screen_info=fase_model.ScreenInfo(screen._screen_id))
+
     element = self._GetElement(screen, element_clicked.id_list)
     service, screen = element.FaseOnClick(service, screen)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
@@ -96,5 +113,6 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
 
     return fase_model.Response(screen=screen,
-                               session_info=fase_model.SessionInfo(service._session_id))
+                               session_info=fase_model.SessionInfo(service._session_id),
+                               screen_info=fase_model.ScreenInfo(screen._screen_id))
 
