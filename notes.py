@@ -75,7 +75,7 @@ class NotesService(fase.Service):
     return self._DisplayRecent(screen)
 
   def _DisplayRecent(self, screen):
-    screen_label = self.GetStringVariable('screen_label').GetValue()
+    screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
       return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), None, screen)
     elif screen_label == 'favourites':
@@ -96,7 +96,7 @@ class NotesService(fase.Service):
       notes = filter(notes, filter_func)
     for note in sorted(notes, cmp=cmp_func):
       note_layout = notes_layout.AddLayout(id_='note_layout', orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
-      note_layout.AddStringVariable('layout_note_id', note.note_id)
+      note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
 
       note_header_layout = note_layout.AddLayout(id_='note_header_layout', orientation=fase.Layout.HORIZONTAL)
       note_header_layout.AddLabel(id_='note_header_label', label=note.header, font=2., sizable=fase.Label.FIT_OUTER_ELEMENT)
@@ -118,7 +118,7 @@ class NotesService(fase.Service):
     return self._DisplayNote(None, screen)
 
   def OnNote(self, screen, element):
-    note_id = element.GetStringVariable('layout_note_id')
+    note_id = element.GetStringVariable(id_='layout_note_id')
     return self._DisplayNote(note_id, screen)
 
   def _DisplayNote(self, note_id, screen):
@@ -141,7 +141,7 @@ class NotesService(fase.Service):
       text_text.SetText(note.text)
       favourite_bool.SetValue(note.favourite)
 
-    screen.AddStringVariable('current_note_id', note_id)
+    screen.AddStringVariable(id_='current_note_id', value=note_id)
     screen.AddNextStepButton(on_click=NotesService.OnSaveNote)
     screen.AddPrevStepButton(on_click=NotesService.OnCancelNote)
 
@@ -153,7 +153,7 @@ class NotesService(fase.Service):
       context_menu.AddMenuItem(text='Delete', icon='delete.pnp', on_click=NotesService.OnDeleteNote)
 
   def OnSaveNote(self, screen, element):
-    note_id = screen.GetStringVariable('current_note_id')
+    note_id = screen.GetStringVariable(id_='current_note_id')
     user_id = self.GetUserId()
     datetime_now = datetime.datetime.now()
     # If new note.
@@ -170,7 +170,7 @@ class NotesService(fase.Service):
                             text=screen.GetElement(id_='text_text').GetText(),
                             datetime=datetime_now,
                             place_name=place_name,
-                            favourite=screen.GetStringVariable('favourite_bool').GetValue())
+                            favourite=screen.GetStringVariable(id_='favourite_bool').GetValue())
     notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
     return self._DisplayRecent(screen)
 
@@ -183,7 +183,7 @@ class NotesService(fase.Service):
     return screen
 
   def OnDeleteNote(self, screen, element):
-    note_id = screen.GetStringVariable('current_note_id')
+    note_id = screen.GetStringVariable(id_='current_note_id')
     if note_id is not None:
       notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)
     return self._DisplayRecent(screen)

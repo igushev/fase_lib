@@ -42,7 +42,6 @@ class SignInTestService(fase.Service):
 fase.Service.RegisterService(SignInTestService)
 
 
-# TODO(igushev): Test Popup windows.
 class FaseSignInTest(unittest.TestCase):
 
   def setUp(self):
@@ -70,7 +69,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(service_num_before, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(screen_num_before, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('sign_in_button_id')
+    screen.GetElement(id_='sign_in_button_id')
 
     # Click on Sign In button.
     response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
@@ -80,8 +79,8 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
-    screen.GetElement('sign_in_layout_id').GetElement(id_='sign_up_button_id')
+    screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
+    screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_up_button_id')
 
     if sign_in:
       # Click on Sign In button.
@@ -93,8 +92,8 @@ class FaseSignInTest(unittest.TestCase):
       self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
       self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
       # Check present of main elements.
-      screen.GetElement('sign_in_layout_id').GetElement(id_='phone_number_text_id')
-      screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
+      screen.GetElement(id_='sign_in_layout_id').GetElement(id_='phone_number_text_id')
+      screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
   
       if return_phone_enter:
         return fase_server_, session_info, screen_info
@@ -117,10 +116,10 @@ class FaseSignInTest(unittest.TestCase):
       self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
       self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
       # Check present of main elements.
-      screen.GetElement('sign_up_layout_id').GetElement(id_='phone_number_text_id')
-      screen.GetElement('sign_up_layout_id').GetElement(id_='first_name_text_id')
-      screen.GetElement('sign_up_layout_id').GetElement(id_='last_name_text_id')
-      screen.GetElement('sign_up_layout_id').GetElement(id_='sign_up_button_id')
+      screen.GetElement(id_='sign_up_layout_id').GetElement(id_='phone_number_text_id')
+      screen.GetElement(id_='sign_up_layout_id').GetElement(id_='first_name_text_id')
+      screen.GetElement(id_='sign_up_layout_id').GetElement(id_='last_name_text_id')
+      screen.GetElement(id_='sign_up_layout_id').GetElement(id_='sign_up_button_id')
   
       if return_phone_enter:
         return fase_server_, session_info, screen_info
@@ -142,8 +141,8 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('enter_activation_layout_id').GetElement(id_='activation_code_text_id')
-    screen.GetElement('enter_activation_layout_id').GetElement(id_='send_button_id')
+    screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='activation_code_text_id')
+    screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='send_button_id')
   
     if return_activation_code_enter:
       return fase_server_, session_info, screen_info
@@ -171,7 +170,7 @@ class FaseSignInTest(unittest.TestCase):
     fase_database.FaseDatabaseInterface.Get().GetService(expected_user_id)
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(expected_user_id)
     if test_user_id_before:
-      self.assertEqual(session_info.session_id, screen.GetElement('user_id_before_label_id').GetLabel())
+      self.assertEqual(session_info.session_id, screen.GetElement(id_='user_id_before_label_id').GetLabel())
     else:
       self.assertNotIn('user_id_before_label_id', screen.GetIdToElement())
 
@@ -356,7 +355,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()))
     # Check present of main elements.
-    screen.GetElement('sign_out_button_id')
+    screen.GetElement(id_='sign_out_button_id')
 
     # Click on Sign Out button.
     response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_button_id']), session_info, screen_info)
@@ -366,7 +365,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('sign_out_layout_id').GetElement(id_='sign_out_button_id')
+    screen.GetElement(id_='sign_out_layout_id').GetElement(id_='sign_out_button_id')
 
     # Click on Sign Out button.
     fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_layout_id', 'sign_out_button_id']),
@@ -392,7 +391,7 @@ class FaseSignInTest(unittest.TestCase):
     
     # Check present of main elements.
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(actual_service_session_id)
-    screen.GetElement('sign_out_button_id')
+    screen.GetElement(id_='sign_out_button_id')
 
   def testSkip(self):
     fase_database.FaseDatabaseInterface.Set(
@@ -412,7 +411,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('sign_in_button_id')
+    screen.GetElement(id_='sign_in_button_id')
 
     # Click on Sign In button.
     response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
@@ -422,8 +421,8 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(2, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('sign_in_layout_id').GetElement(id_='sign_in_button_id')
-    screen.GetElement('sign_in_layout_id').GetElement(id_='sign_up_button_id')
+    screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
+    screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_up_button_id')
     
     # Click on Skip button
     response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'skip_button_id']),
@@ -433,7 +432,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     # Check present of main elements.
-    screen.GetElement('about_button_id')
+    screen.GetElement(id_='about_button_id')
 
 
 if __name__ == '__main__':

@@ -8,7 +8,6 @@ import json_util
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 
-# TODO(igushev): Move on_click to Element.
 def GenerateSessionId():
   datetime_now = datetime.datetime.now()
   session_id_hash = hashlib.md5()
@@ -292,28 +291,46 @@ class ButtonBar(ElementContainer):
 @json_util.JSONDecorator({})
 class VisualElementContainer(VariableContainer):
 
-  def AddLayout(self, id_, *args, **kwargs):
-    return self.AddElement(id_, Layout(*args, **kwargs))
+  def AddLayout(self, id_,
+               orientation=None,
+               scrollable=None,
+               sizable=None,
+               on_click=None):
+    return self.AddElement(id_, Layout(orientation=orientation,
+                                       scrollable=scrollable,
+                                       sizable=sizable,
+                                       on_click=on_click))
   def GetLayout(self, id_):
     return self.GetElement(id_)
 
-  def AddLabel(self, id_, *args, **kwargs):
-    return self.AddElement(id_, Label(*args, **kwargs))
+  def AddLabel(self, id_,
+               label=None,
+               font=None,
+               aligh=None,
+               sizable=None):
+    return self.AddElement(id_, Label(label=label, font=font, aligh=aligh, sizable=sizable))
   def GetLabel(self, id_):
     return self.GetElement(id_)
 
-  def AddText(self, id_, *args, **kwargs):
-    return self.AddElement(id_, Text(*args, **kwargs))
+  def AddText(self, id_,
+               text=None,
+               hint=None,
+               sizable=None):
+    return self.AddElement(id_, Text(text=text, hint=hint, sizable=sizable))
   def GetText(self, id_):
     return self.GetElement(id_)
 
-  def AddImage(self, id_, *args, **kwargs):
-    return self.AddElement(id_, Image(*args, **kwargs))
+  def AddImage(self, id_,
+               image=None):
+    return self.AddElement(id_, Image(image=image))
   def GetImage(self, id_):
     return self.GetElement(id_)
 
-  def AddButton(self, id_, *args, **kwargs):
-    return self.AddElement(id_, Button(*args, **kwargs))
+  def AddButton(self, id_,
+               text=None,
+               on_click=None,
+               icon=None):
+    return self.AddElement(id_, Button(text=text, on_click=on_click, icon=icon))
   def GetButton(self, id_):
     return self.GetElement(id_)
 
