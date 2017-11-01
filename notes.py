@@ -89,7 +89,7 @@ class NotesService(fase.Service):
 
   # TODO(igushev): Clean up ids inside for-loop.
   def _DisplayNotesByFunc(self, cmp_func, filter_func, screen):
-    screen = fase.Screen()
+    screen = fase.Screen(self)
     notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
@@ -122,7 +122,7 @@ class NotesService(fase.Service):
     return self._DisplayNote(note_id, screen)
 
   def _DisplayNote(self, note_id, screen):
-    screen = fase.Screen()
+    screen = fase.Screen(self)
     # Don't display main controls.
     screen.SetMenuDisplayed(False)
     screen.SetMainButton(False)

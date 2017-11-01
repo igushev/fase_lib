@@ -382,8 +382,10 @@ class Popup(VariableContainer):
      '_screen_id': json_util.JSONString()})
 class Screen(VisualElementContainer):
 
-  def __init__(self):
+  def __init__(self, service):
     super(Screen, self).__init__()
+    self._session_id = service.GetSessionId()
+    self._screen_id = GenerateScreenId()
     self._menu_displayed = True
     self._main_button_displayed = True
     self._button_bar_displayed = True
@@ -391,8 +393,11 @@ class Screen(VisualElementContainer):
     self._prev_step_button = None
     self._context_menu = None
     self._popup = None
-    self._session_id = None
-    self._screen_id = GenerateScreenId()
+
+  def GetSessionId(self):
+    return self._session_id
+  def GetScreenId(self):
+    return self._screen_id
 
   def SetMenuDisplayed(self, if_displayed):
     self._menu_displayed = if_displayed
@@ -458,13 +463,14 @@ class Service(VariableContainer):
 
   def __init__(self):
     super(Service, self).__init__()
-    
+    self._session_id = GenerateSessionId()
     self._menu = None
     self._main_menu = None
     self._button_bar = None
-    self._session_id = GenerateSessionId()
     self._datetime_added = None
 
+  def GetSessionId(self):
+    return self._session_id
   def GetUserId(self):
     return self._session_id
 

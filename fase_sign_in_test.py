@@ -13,7 +13,7 @@ import sms_sender
 class SignInTestService(fase.Service):
   
   def OnStart(self):
-    screen = fase.Screen()
+    screen = fase.Screen(self)
     screen.AddButton(id_='sign_in_button_id',
                      text='Sign In', on_click=SignInTestService.OnSignIn)
     screen.AddButton(id_='sign_out_button_id',
@@ -30,12 +30,12 @@ class SignInTestService(fase.Service):
     return fase_sign_in.FaseSignIn.StartSignOut(self)
 
   def OnSignInDone(self, user_id_before=None):
-    screen = fase.Screen()
+    screen = fase.Screen(self)
     screen.AddLabel(id_='user_id_before_label_id', label=user_id_before)
     return screen
 
   def OnAbount(self, screen, element):
-    screen = fase.Screen()
+    screen = fase.Screen(self)
     screen.AddLabel(id_='about_label_id', label='Sign In Test Service')
     return screen
 
@@ -179,7 +179,6 @@ class FaseSignInTest(unittest.TestCase):
     service._session_id = '321'
     screen = service.OnStart()
     screen = service.OnAbount(screen, screen.GetElement(id_='about_button_id'))
-    screen._session_id = service._session_id
 
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
@@ -191,7 +190,6 @@ class FaseSignInTest(unittest.TestCase):
                                 first_name='Edward',
                                 last_name='Igushev',
                                 display_name='Edward Igushev',
-                                device=fase_model.Device(device_type='iOS', device_token='Token'),
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
@@ -211,7 +209,6 @@ class FaseSignInTest(unittest.TestCase):
                                 first_name='Edward',
                                 last_name='Igushev',
                                 display_name='Edward Igushev',
-                                device=fase_model.Device(device_type='iOS', device_token='Token'),
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
@@ -272,7 +269,6 @@ class FaseSignInTest(unittest.TestCase):
                                 first_name='Edward',
                                 last_name='Igushev',
                                 display_name='Edward Igushev',
-                                device=fase_model.Device(device_type='iOS', device_token='Token'),
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
@@ -347,7 +343,6 @@ class FaseSignInTest(unittest.TestCase):
                         first_name='Edward',
                         last_name='Igushev',
                         display_name='Edward Igushev',
-                        device=fase_model.Device(device_type='iOS', device_token='Token'),
                         datetime_added=datetime.datetime.now()))
 
     # Check.

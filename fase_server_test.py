@@ -18,10 +18,10 @@ class FaseTest(unittest.TestCase):
     response = fase_server_.GetService(device)
     session_info = response.session_info
     screen_info = response.screen_info
-    expected_screen = fase.Screen()
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    expected_screen = fase.Screen(service)
     expected_screen.AddText(id_='text_name_id', hint='Enter Name')
     expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
-    expected_screen._session_id = session_info.session_id
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = fase_server_.GetScreen(session_info)
@@ -37,10 +37,9 @@ class FaseTest(unittest.TestCase):
     element_clicked = fase_model.ElementClicked(['next_button_id'])
     response = fase_server_.ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
-    expected_screen = fase.Screen()
+    expected_screen = fase.Screen(service)
     expected_screen.AddLabel(id_='hello_label_id', label='Hello, Hanry Ford!')
     expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
-    expected_screen._session_id = session_info.session_id
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = fase_server_.GetScreen(session_info)
@@ -49,10 +48,9 @@ class FaseTest(unittest.TestCase):
     element_clicked = fase_model.ElementClicked(['reset_button_id'])
     response = fase_server_.ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
-    expected_screen = fase.Screen()
+    expected_screen = fase.Screen(service)
     expected_screen.AddText(id_='text_name_id', hint='Enter Name')
     expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
-    expected_screen._session_id = session_info.session_id
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = fase_server_.GetScreen(session_info)
