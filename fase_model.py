@@ -40,7 +40,6 @@ class ScreenInfo(data_util.AbstractObject):
     'first_name': json_util.JSONString(),
     'last_name': json_util.JSONString(),
     'display_name': json_util.JSONString(),
-    'device': json_util.JSONObject(Device),
     'datetime_added': json_util.JSONString()})
 class User(data_util.AbstractObject):
   def __init__(self,
@@ -49,14 +48,12 @@ class User(data_util.AbstractObject):
                first_name=None,
                last_name=None,
                display_name=None,
-               device=None,
                datetime_added=None):
     self.user_id = user_id
     self.phone_number = phone_number
     self.first_name = first_name
     self.last_name = last_name
     self.display_name = display_name
-    self.device = device
     self.datetime_added = datetime_added
 
 
