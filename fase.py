@@ -349,6 +349,9 @@ class Popup(VariableContainer):
   def __init__(self, text=None):
     self._text = text
 
+  def GetText(self):
+    return self._text
+
 
 @json_util.JSONDecorator(
     {'_menu_displayed': json_util.JSONBool(),
@@ -357,6 +360,7 @@ class Popup(VariableContainer):
      '_next_step_button': json_util.JSONObject(Button),
      '_prev_step_button': json_util.JSONObject(Button),
      '_context_menu': json_util.JSONObject(Menu),
+     '_popup': json_util.JSONObject(Popup),
      '_session_id': json_util.JSONString(),
      '_screen_id': json_util.JSONString()})
 class Screen(VisualElementContainer):
@@ -369,6 +373,7 @@ class Screen(VisualElementContainer):
     self._next_step_button = None
     self._prev_step_button = None
     self._context_menu = None
+    self._popup = None
     self._session_id = None
     self._screen_id = GenerateScreenId()
 
@@ -386,6 +391,7 @@ class Screen(VisualElementContainer):
     return self._button_bar_displayed
 
   def AddNextStepButton(self, text=None, on_click=None, icon=None):
+    assert self._next_step_button is None
     self._next_step_button = Button(text=text, on_click=on_click, icon=icon)
     return self._next_step_button
   def GetNextStepButton(self):
@@ -393,6 +399,7 @@ class Screen(VisualElementContainer):
     return self._next_step_button
 
   def AddPrevStepButton(self, text=None, on_click=None, icon=None):
+    assert self._prev_step_button is None
     self._prev_step_button = Button(text=text, on_click=on_click, icon=icon)
     return self._prev_step_button
   def GetPrevStepButton(self):
@@ -400,11 +407,20 @@ class Screen(VisualElementContainer):
     return self._prev_step_button
 
   def AddContextMenu(self):
+    assert self._context_menu is None
     self._context_menu = Menu()
     return self._context_menu
   def GetContextMenu(self):
     assert self._context_menu is not None
     return self._context_menu
+
+  def AddPopup(self, text=None):
+    assert self._popup is None
+    self._popup = Popup(text=text)
+    return self._popup
+  def GetPopup(self):
+    assert self._popup is not None
+    return self._popup
 
 
 @json_util.JSONDecorator(

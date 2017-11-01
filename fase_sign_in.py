@@ -14,8 +14,9 @@ class FaseSignInButton(fase.Button):
     activation_code_sent = service.GetIntVariable(id_='fase_sign_in_activation_code_str').GetValue()
     activation_code_entered = int(screen.GetLayout('enter_activation_layout_id').GetText('activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
-      return service, fase.Popup('Wrong activation code!')
-    
+      screen.AddPopup('Wrong activation code!')
+      return service, screen
+
     on_sign_in_done = service.GetClassMethodVariable('fase_sign_in_on_sign_in_done_class_method').GetValue()
     screen_before_session_id = service.GetStringVariable('fase_sign_in_screen_before_session_id_str').GetValue() 
     session_id_signed_in = service.GetStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
@@ -95,10 +96,11 @@ class FaseSignIn(object):
     sign_in_layout = screen.GetElement(id_='sign_in_layout_id')
     phone_number = sign_in_layout.GetText(id_='phone_number_text_id').GetText()
     phone_number_user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
+    if not phone_number_user_list:
+      screen.AddPopup('User with such phone number has not been found!')
+      return screen
     assert len(phone_number_user_list) == 1
     user = phone_number_user_list[0]
-    if not user:
-      return fase.Popup('User with such phone number has not been found!')
     return FaseSignIn._OnEnteredData(service, phone_number, user.user_id)
 
   @staticmethod
@@ -117,7 +119,8 @@ class FaseSignIn(object):
     sign_up_layout = screen.GetElement('sign_up_layout_id')
     phone_number = sign_up_layout.GetText(id_='phone_number_text_id').GetText()
     if fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number):
-      return fase.Popup('User with such phone number is already registered!')
+      screen.AddPopup('User with such phone number is already registered!')
+      return screen
 
     datetime_now = datetime.datetime.now()
     user_id_hash = hashlib.md5()
