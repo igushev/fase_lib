@@ -7,6 +7,14 @@ import json_util
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
+NEXT_STEP_BUTTON_ID = 'next_step_button'
+PREV_STEP_BUTTON_ID = 'prev_step_button'
+CONTEXT_MENU_ID = 'context_menu'
+POPUP_ID = 'popup'
+MENU_ID = 'menu'
+MAIN_MENU_ID = 'main_menu'
+BUTTON_BAR_ID = 'button_bar'
+
 
 def GenerateSessionId():
   datetime_now = datetime.datetime.now()
@@ -26,6 +34,8 @@ def GenerateScreenId():
 
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
+  def __init__(self):
+    super(Element, self).__init__()
 
   def FaseOnClick(self, service, screen):
     screen = self._on_click(service, screen, self)
@@ -49,13 +59,17 @@ class ElementContainer(Element):
   def GetElement(self, id_):
     return self._id_to_element[id_]
 
+  def HasElement(self, id_):
+    return id_ in self._id_to_element
+
   def GetIdToElement(self):
     return self._id_to_element
 
 
 @json_util.JSONDecorator({})
 class Variable(Element):
-  pass
+  def __init__(self):
+    super(Variable, self).__init__()
 
 
 @json_util.JSONDecorator(
@@ -130,6 +144,8 @@ class ClassMethodVariable(Variable):
 
 @json_util.JSONDecorator({})
 class VariableContainer(ElementContainer):
+  def __init__(self):
+    super(VariableContainer, self).__init__()
 
   def AddIntVariable(self, id_, value):
     return self.AddElement(id_, IntVariable(value))
@@ -157,8 +173,17 @@ class VariableContainer(ElementContainer):
     return self.GetElement(id_)
 
 
+@json_util.JSONDecorator(
+    {'_displayed': json_util.JSONBool()})
 class VisualElement(ElementContainer):
-  pass
+  def __init__(self):
+    super(VisualElement, self).__init__()
+    self._displayed = True
+
+  def SetDisplayed(self, displayed):
+    assert isinstance(displayed, bool)
+    self._displayed = displayed
+
 
 @json_util.JSONDecorator(
     {'_label': json_util.JSONString(),
@@ -179,6 +204,7 @@ class Label(VisualElement):
                font=None,
                aligh=None,
                sizable=None):
+    super(Label, self).__init__()
     self._label = label
     self._font = font
     self._aligh = aligh
@@ -201,6 +227,7 @@ class Text(VisualElement):
                text=None,
                hint=None,
                sizable=None):
+    super(Text, self).__init__()
     self._text = text
     self._hint = hint
     self._sizable = sizable
@@ -215,9 +242,10 @@ class Text(VisualElement):
 @json_util.JSONDecorator(
     {'_image': json_util.JSONString()})
 class Image(VisualElement):
-  
+
   def __init__(self,
                image=None):
+    super(Image, self).__init__()
     self._image = image
 
 
@@ -242,6 +270,8 @@ class MenuItem(VisualElement):
 
 @json_util.JSONDecorator({})
 class Menu(ElementContainer):
+  def __init__(self):
+    super(Menu, self).__init__()
 
   def AddMenuItem(self, id_,
                   text=None,
@@ -275,6 +305,8 @@ class Button(VisualElement):
 
 @json_util.JSONDecorator({})
 class ButtonBar(ElementContainer):
+  def __init__(self):
+    super(ButtonBar, self).__init__()
 
   def AddButton(self, id_,
                 text=None,
@@ -290,6 +322,8 @@ class ButtonBar(ElementContainer):
 
 @json_util.JSONDecorator({})
 class VisualElementContainer(VariableContainer):
+  def __init__(self):
+    super(VisualElementContainer, self).__init__()
 
   def AddLayout(self, id_,
                orientation=None,
@@ -364,6 +398,7 @@ class Layout(VisualElementContainer):
 class Popup(VariableContainer):
 
   def __init__(self, text=None):
+    super(Popup, self).__init__()
     self._text = text
 
   def GetText(self):
@@ -371,14 +406,7 @@ class Popup(VariableContainer):
 
 
 @json_util.JSONDecorator(
-    {'_menu_displayed': json_util.JSONBool(),
-     '_main_button_displayed': json_util.JSONBool(),
-     '_button_bar_displayed': json_util.JSONBool(),
-     '_next_step_button': json_util.JSONObject(Button),
-     '_prev_step_button': json_util.JSONObject(Button),
-     '_context_menu': json_util.JSONObject(Menu),
-     '_popup': json_util.JSONObject(Popup),
-     '_session_id': json_util.JSONString(),
+    {'_session_id': json_util.JSONString(),
      '_screen_id': json_util.JSONString()})
 class Screen(VisualElementContainer):
 
@@ -386,70 +414,57 @@ class Screen(VisualElementContainer):
     super(Screen, self).__init__()
     self._session_id = service.GetSessionId()
     self._screen_id = GenerateScreenId()
-    self._menu_displayed = True
-    self._main_button_displayed = True
-    self._button_bar_displayed = True
-    self._next_step_button = None
-    self._prev_step_button = None
-    self._context_menu = None
-    self._popup = None
 
   def GetSessionId(self):
     return self._session_id
   def GetScreenId(self):
     return self._screen_id
 
-  def SetMenuDisplayed(self, if_displayed):
-    self._menu_displayed = if_displayed
-  def GetMenuDisplayed(self):
-    return self._menu_displayed
-  def SetMainButton(self, if_displayed):
-    self._main_button_displayed = if_displayed
+  def AddMenu(self):
+    assert not self.HasElement(MENU_ID)
+    return self.AddElement(MENU_ID, Menu())
+  def GetMenu(self):
+    return self.GetElement(MENU_ID)
+
+  def AddMainButton(self, text=None, on_click=None, icon=None):
+    assert not self.HasElement(MAIN_MENU_ID)
+    return self.AddElement(MAIN_MENU_ID, Button(text=text, on_click=on_click, icon=icon))
   def GetMainButton(self):
-    return self._main_button_displayed
-  def SetButtonBarDisplayed(self, if_displayed):
-    self._button_bar_displayed = if_displayed
-  def GetButtonBarDisplayed(self):
-    return self._button_bar_displayed
+    return self.GetElement(MAIN_MENU_ID)
+
+  def AddButtonBar(self):
+    assert not self.HasElement(BUTTON_BAR_ID)
+    return self.AddElement(BUTTON_BAR_ID, ButtonBar())
+  def GetButtonBar(self):
+    return self.GetElement(BUTTON_BAR_ID)
 
   def AddNextStepButton(self, text=None, on_click=None, icon=None):
-    assert self._next_step_button is None
-    self._next_step_button = Button(text=text, on_click=on_click, icon=icon)
-    return self._next_step_button
+    assert not self.HasElement(NEXT_STEP_BUTTON_ID)
+    return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
   def GetNextStepButton(self):
-    assert self._next_step_button is not None
-    return self._next_step_button
+    return self.GetElement(NEXT_STEP_BUTTON_ID)
 
   def AddPrevStepButton(self, text=None, on_click=None, icon=None):
-    assert self._prev_step_button is None
-    self._prev_step_button = Button(text=text, on_click=on_click, icon=icon)
-    return self._prev_step_button
+    assert not self.HasElement(PREV_STEP_BUTTON_ID)
+    return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
   def GetPrevStepButton(self):
-    assert self._prev_step_button is not None
-    return self._prev_step_button
+    return self.GetElement(PREV_STEP_BUTTON_ID)
 
   def AddContextMenu(self):
-    assert self._context_menu is None
-    self._context_menu = Menu()
-    return self._context_menu
+    assert not self.HasElement(CONTEXT_MENU_ID)
+    return self.AddElement(CONTEXT_MENU_ID, Menu())
   def GetContextMenu(self):
-    assert self._context_menu is not None
-    return self._context_menu
+    return self.GetElement(CONTEXT_MENU_ID)
 
   def AddPopup(self, text=None):
-    assert self._popup is None
-    self._popup = Popup(text=text)
-    return self._popup
+    assert not self.HasElement(POPUP_ID)
+    return self.AddElement(POPUP_ID, Popup(text=text))
   def GetPopup(self):
-    assert self._popup is not None
-    return self._popup
+    return self.GetElement(POPUP_ID) 
 
 
 @json_util.JSONDecorator(
-    {'_menu': json_util.JSONObject(Menu),
-     '_main_menu': json_util.JSONObject(Menu),
-     '_button_bar': json_util.JSONObject(ButtonBar),
-     '_session_id': json_util.JSONString(),
+    {'_session_id': json_util.JSONString(),
      '_datetime_added': json_util.JSONBool()})
 class Service(VariableContainer):
   
@@ -464,33 +479,9 @@ class Service(VariableContainer):
   def __init__(self):
     super(Service, self).__init__()
     self._session_id = GenerateSessionId()
-    self._menu = None
-    self._main_menu = None
-    self._button_bar = None
     self._datetime_added = datetime.datetime.now()
 
   def GetSessionId(self):
     return self._session_id
   def GetUserId(self):
     return self._session_id
-
-  def AddMenu(self):
-    self._menu = Menu()
-    return self._menu
-  def GetMenu(self):
-    assert self._menu is not None
-    return self._menu
-
-  def AddMainButton(self, text=None, on_click=None, icon=None):
-    self._main_menu = Button(text=text, on_click=on_click, icon=icon)
-    return self._main_menu
-  def GetMainButton(self):
-    assert self._main_menu is not None
-    return self._main_menu
-
-  def AddButtonBar(self):
-    self._button_bar = ButtonBar()
-    return self._button_bar
-  def GetButtonBar(self):
-    assert self._button_bar is not None
-    return self._button_bar

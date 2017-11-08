@@ -12,21 +12,25 @@ DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 class NotesService(fase.Service):
 
+  def _AddMenu(self, screen):
+    menu = screen.AddMenu()
+    logged_in = False
+    if logged_in:
+      user_name = self.GetUser().GetUserName()
+      menu.AddMenuItem(id_='user_name_menu_item', text=user_name)
+      menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut, icon='sign_out.pnp')
+    else:
+      menu.AddMenuItem(id_='sign_in_menu_item', text='Sign In', on_click=NotesService.OnSignIn, icon='sign_in.pnp')
+
+  def _AddButtons(self, screen):
+    screen.AddMainButton(text='New', on_click=NotesService.OnNew, icon='new.pnp')
+    button_bar = screen.AddButtonBar()
+    button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes, icon='notes.pnp')
+    button_bar.AddButton(
+        id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites, icon='favourites.pnp')
+    button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
+
   def OnStart(self):
-    menu = self.AddMenu()
-    menu.AddMenuItem(id_='user_name', text='User Name')
-    menu.AddMenuItem(id_='sign_in', text='Sign In', on_click=NotesService.OnSignIn, icon='sign_in.pnp')
-    sign_out_context_menu = fase.Menu()
-    sign_out_context_menu.AddMenuItem(id_='sign_out_context_menu_item', text='Sign Out', on_click=NotesService.OnSignOut)
-    menu.AddMenuItem(id_='sign_out', text='Sign Out', on_click_element=sign_out_context_menu, icon='sign_out.pnp')
-
-    self.AddMainButton(text='New', on_click=NotesService.OnNew, icon='new.pnp')
-
-    button_bar = self.AddButtonBar()
-    button_bar.AddButton(id_='notes', text='Notes', on_click=NotesService.OnNotes, icon='notes.pnp')
-    button_bar.AddButton(id_='favourites', text='Favourites', on_click=NotesService.OnFavourites, icon='favourites.pnp')
-    button_bar.AddButton(id_='recent', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
-
     self.AddStringVariable(id_='screen_label', value='notes')
     return self.OnNotes(None, None)
 
@@ -35,8 +39,6 @@ class NotesService(fase.Service):
 
   def OnSignInDone(self, user_id_before=None):
     assert user_id_before is not None
-    self._DisplaySignInOut(logged_in=True, user_name=self.GetUser().GetUserName())
-
     # Move notes from guest user_id to logged in user.
     for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(user_id_before):
       note.user_id = self.GetUserId()
@@ -46,15 +48,6 @@ class NotesService(fase.Service):
 
   def OnSignOut(self, screen, element):
     return fase_sign_in.FaseSignIn.StartSignOut(self)
-
-  def _DisplaySignInOut(self, logged_in=False, user_name=None):
-    menu = self.GetMenu()
-    if logged_in:
-      assert user_name is not None
-      menu.GetMenuItem(id_='user_name').SetText(user_name)
-    menu.GetMenuItem(id_='user_name').SetDisplayed(logged_in)
-    menu.GetMenuItem(id_='sign_in').SetDisplayed(not logged_in)
-    menu.GetMenuItem(id_='sign_out').SetDisplayed(logged_in)
 
   def OnNotes(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('notes')
@@ -82,17 +75,22 @@ class NotesService(fase.Service):
   # TODO(igushev): Clean up ids inside for-loop.
   def _DisplayNotesByFunc(self, cmp_func, filter_func, screen):
     screen = fase.Screen(self)
+    self._AddMenu(screen)
+    self._AddButtons(screen)
     notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(notes, filter_func)
     for note in sorted(notes, cmp=cmp_func):
-      note_layout = notes_layout.AddLayout(id_='note_layout', orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
+      note_layout = notes_layout.AddLayout(
+          id_='note_layout', orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
       note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
 
       note_header_layout = note_layout.AddLayout(id_='note_header_layout', orientation=fase.Layout.HORIZONTAL)
-      note_header_layout.AddLabel(id_='note_header_label', label=note.header, font=2., sizable=fase.Label.FIT_OUTER_ELEMENT)
-      note_header_layout.AddImage(id_='note_header_image', image=('favourite.pnp' if note.favourite else 'favourite_non.pnp'))
+      note_header_layout.AddLabel(
+          id_='note_header_label', label=note.header, font=2., sizable=fase.Label.FIT_OUTER_ELEMENT)
+      note_header_layout.AddImage(
+          id_='note_header_image', image=('favourite.pnp' if note.favourite else 'favourite_non.pnp'))
 
       note_layout.AddLabel(id_='note_layout_label', label=note.text[:100])  # preview only
 
