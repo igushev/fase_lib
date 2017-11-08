@@ -12,42 +12,9 @@ DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 class NotesService(fase.Service):
 
-  def _AddMenu(self, screen):
-    menu = screen.AddMenu()
-    logged_in = False
-    if logged_in:
-      user_name = self.GetUser().GetUserName()
-      menu.AddMenuItem(id_='user_name_menu_item', text=user_name)
-      menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut, icon='sign_out.pnp')
-    else:
-      menu.AddMenuItem(id_='sign_in_menu_item', text='Sign In', on_click=NotesService.OnSignIn, icon='sign_in.pnp')
-
-  def _AddButtons(self, screen):
-    screen.AddMainButton(text='New', on_click=NotesService.OnNew, icon='new.pnp')
-    button_bar = screen.AddButtonBar()
-    button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes, icon='notes.pnp')
-    button_bar.AddButton(
-        id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites, icon='favourites.pnp')
-    button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
-
   def OnStart(self):
     self.AddStringVariable(id_='screen_label', value='notes')
     return self.OnNotes(None, None)
-
-  def OnSignIn(self, screen, element):
-    return fase_sign_in.FaseSignIn.StartSignIn(self, on_sign_in_done=NotesService.OnSignInDone, cancel_option=True)
-
-  def OnSignInDone(self, user_id_before=None):
-    assert user_id_before is not None
-    # Move notes from guest user_id to logged in user.
-    for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(user_id_before):
-      note.user_id = self.GetUserId()
-      notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
-      
-    return self._DisplayNotes(None)
-
-  def OnSignOut(self, screen, element):
-    return fase_sign_in.FaseSignIn.StartSignOut(self)
 
   def OnNotes(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('notes')
@@ -100,6 +67,39 @@ class NotesService(fase.Service):
           id_='note_deails_layout_datetime_text',
           label=datetime_text, font=0.75, aligh=fase.Label.LEFT, sizable=fase.Label.FIT_OUTER_ELEMENT)
     return screen
+
+  def _AddMenu(self, screen):
+    menu = screen.AddMenu()
+    logged_in = False
+    if logged_in:
+      user_name = self.GetUser().GetUserName()
+      menu.AddMenuItem(id_='user_name_menu_item', text=user_name)
+      menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut, icon='sign_out.pnp')
+    else:
+      menu.AddMenuItem(id_='sign_in_menu_item', text='Sign In', on_click=NotesService.OnSignIn, icon='sign_in.pnp')
+
+  def _AddButtons(self, screen):
+    screen.AddMainButton(text='New', on_click=NotesService.OnNew, icon='new.pnp')
+    button_bar = screen.AddButtonBar()
+    button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes, icon='notes.pnp')
+    button_bar.AddButton(
+        id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites, icon='favourites.pnp')
+    button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
+
+  def OnSignIn(self, screen, element):
+    return fase_sign_in.FaseSignIn.StartSignIn(self, on_sign_in_done=NotesService.OnSignInDone, cancel_option=True)
+
+  def OnSignInDone(self, user_id_before=None):
+    assert user_id_before is not None
+    # Move notes from guest user_id to logged in user.
+    for note in notes_database.NotesDatabaseInterface.Get().GetUserNotes(user_id_before):
+      note.user_id = self.GetUserId()
+      notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
+      
+    return self._DisplayNotes(None)
+
+  def OnSignOut(self, screen, element):
+    return fase_sign_in.FaseSignIn.StartSignOut(self)
 
   def OnNew(self, screen, element):
     return self._DisplayNote(None, screen)
