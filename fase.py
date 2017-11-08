@@ -467,7 +467,7 @@ class Service(VariableContainer):
     self._menu = None
     self._main_menu = None
     self._button_bar = None
-    self._datetime_added = None
+    self._datetime_added = datetime.datetime.now()
 
   def GetSessionId(self):
     return self._session_id

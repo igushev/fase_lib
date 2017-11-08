@@ -53,10 +53,7 @@ class FaseSignOutButton(fase.Button):
 
     service_cls = fase.Service.service_cls
     service = service_cls()
-    service._sessino_id = fase.GenerateSessionId()
-    service._datetime_added = datetime.datetime.now()
     screen = service.OnStart()
-    screen._session_id = service.GetSessionId()
     return service, screen
 
 

@@ -42,7 +42,7 @@ class NotesService(fase.Service):
       note.user_id = self.GetUserId()
       notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
       
-    return self._DisplayRecent(None)
+    return self._DisplayNotes(None)
 
   def OnSignOut(self, screen, element):
     return fase_sign_in.FaseSignIn.StartSignOut(self)
@@ -58,17 +58,17 @@ class NotesService(fase.Service):
 
   def OnNotes(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('notes')
-    return self._DisplayRecent(screen)
+    return self._DisplayNotes(screen)
 
   def OnFavourites(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('favourites')
-    return self._DisplayRecent(screen)
+    return self._DisplayNotes(screen)
 
   def OnRecent(self, screen, element):
     self.GetStringVariable(id_='screen_label').SetValue('recent')
-    return self._DisplayRecent(screen)
+    return self._DisplayNotes(screen)
   
-  def _DisplayRecent(self, screen):
+  def _DisplayNotes(self, screen):
     screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
       return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), None, screen)
@@ -151,7 +151,6 @@ class NotesService(fase.Service):
       note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
       note_id_hash.update(user_id)
       note_id = note_id_hash.hexdigest()
-    location = screen.GetUtilLocation()
     note = notes_model.Note(note_id=note_id,
                             user_id=user_id,
                             header=screen.GetElemenet(id_='header_text').GetText(),
@@ -159,10 +158,10 @@ class NotesService(fase.Service):
                             datetime=datetime_now,
                             favourite=screen.GetStringVariable(id_='favourite_bool').GetValue())
     notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
-    return self._DisplayRecent(screen)
+    return self._DisplayNotes(screen)
 
   def OnCancelNote(self, screen, element):
-    return self._DisplayRecent(screen)
+    return self._DisplayNotes(screen)
 
   def OnReverseFavouriteNote(self, screen, element):
     favourite_bool = screen.GetBoolVariable(id_='favourite_bool')
@@ -173,7 +172,7 @@ class NotesService(fase.Service):
     note_id = screen.GetStringVariable(id_='current_note_id')
     if note_id is not None:
       notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)
-    return self._DisplayRecent(screen)
+    return self._DisplayNotes(screen)
 
 
 fase.Service.RegisterService(NotesService)

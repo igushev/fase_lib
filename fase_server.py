@@ -47,8 +47,6 @@ class FaseServer(object):
     service_cls = fase.Service.service_cls
 
     service = service_cls()
-    service._sessino_id = fase.GenerateSessionId()
-    service._datetime_added = datetime.datetime.now()
     screen = service.OnStart()
     fase_database.FaseDatabaseInterface.Get().AddService(service)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen)
