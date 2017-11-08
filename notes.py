@@ -4,7 +4,6 @@ import hashlib
 import datetime_util
 import notes_database
 import notes_model
-import place_util
 import fase
 import fase_sign_in
 
@@ -27,7 +26,6 @@ class NotesService(fase.Service):
     button_bar.AddButton(id_='notes', text='Notes', on_click=NotesService.OnNotes, icon='notes.pnp')
     button_bar.AddButton(id_='favourites', text='Favourites', on_click=NotesService.OnFavourites, icon='favourites.pnp')
     button_bar.AddButton(id_='recent', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
-    button_bar.AddButton(id_='places', text='Places', on_click=NotesService.OnPlaces, icon='places.pnp')
 
     self.AddStringVariable(id_='screen_label', value='notes')
     return self.OnNotes(None, None)
@@ -70,10 +68,6 @@ class NotesService(fase.Service):
     self.GetStringVariable(id_='screen_label').SetValue('recent')
     return self._DisplayRecent(screen)
   
-  def OnPlaces(self, screen, element):
-    self.GetStringVariable(id_='screen_label').SetValue('places')
-    return self._DisplayRecent(screen)
-
   def _DisplayRecent(self, screen):
     screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
@@ -82,8 +76,6 @@ class NotesService(fase.Service):
       return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), lambda x: x.favourite, screen)
     elif screen_label == 'recent':
       return self._DisplayNotesByFunc(lambda x, y: cmp(x.time, y.time), None, screen)
-    elif screen_label == 'places':
-      return self._DisplayNotesByFunc(lambda x, y: cmp(x.place, y.place), None, screen)
     else:
       raise AssertionError()
 
@@ -109,9 +101,6 @@ class NotesService(fase.Service):
       note_deails_layout.AddLabel(
           id_='note_deails_layout_datetime_text',
           label=datetime_text, font=0.75, aligh=fase.Label.LEFT, sizable=fase.Label.FIT_OUTER_ELEMENT)
-      note_deails_layout.AddLabel(
-          id_='note_deails_layout_place_name',
-          label=note.place_name, font=0.75, aligh=fase.Label.RIGHT, sizable=fase.Label.FIT_OUTER_ELEMENT)
     return screen
 
   def OnNew(self, screen, element):
@@ -163,13 +152,11 @@ class NotesService(fase.Service):
       note_id_hash.update(user_id)
       note_id = note_id_hash.hexdigest()
     location = screen.GetUtilLocation()
-    place_name = place_util.GetPlaceName(location)
     note = notes_model.Note(note_id=note_id,
                             user_id=user_id,
                             header=screen.GetElemenet(id_='header_text').GetText(),
                             text=screen.GetElement(id_='text_text').GetText(),
                             datetime=datetime_now,
-                            place_name=place_name,
                             favourite=screen.GetStringVariable(id_='favourite_bool').GetValue())
     notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)
     return self._DisplayRecent(screen)
