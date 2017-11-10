@@ -54,6 +54,7 @@ class FaseSignInTest(unittest.TestCase):
                       service_num_before, screen_num_before,
                       service_num_during, screen_num_during,
                       sign_in=None,
+                      phone_number=None, first_name=None, last_name=None,
                       expected_user_id=None,
                       test_user_id_before=True,
                       return_phone_enter=False,
@@ -99,7 +100,7 @@ class FaseSignInTest(unittest.TestCase):
         return fase_server_, session_info, screen_info
   
       # Enter phone number.
-      screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], ['+13216549870'])
+      screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], [phone_number])
       fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign In button.
       response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']),
@@ -127,9 +128,9 @@ class FaseSignInTest(unittest.TestCase):
       # Enter phone number.
       screen_update = fase_model.ScreenUpdate([['sign_up_layout_id', 'phone_number_text_id'],
                                                ['sign_up_layout_id', 'first_name_text_id'],
-                                               ['sign_up_layout_id', 'last_name_text_id']], ['+13216549870',
-                                                                                             'Edward',
-                                                                                             'Igushev'])
+                                               ['sign_up_layout_id', 'last_name_text_id']], [phone_number,
+                                                                                             first_name,
+                                                                                             last_name])
       fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign Up button.
       response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']),
@@ -155,7 +156,6 @@ class FaseSignInTest(unittest.TestCase):
     # Click on Send button.
     fase_server_.ElementClicked(fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']),
                                 session_info, screen_info)
-
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
@@ -189,13 +189,13 @@ class FaseSignInTest(unittest.TestCase):
                                 phone_number='+13216549870',
                                 first_name='Edward',
                                 last_name='Igushev',
-                                display_name='Edward Igushev',
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
     self.SignInProcedure(service_num_before=2, screen_num_before=2,
                          service_num_during=2, screen_num_during=3,
                          sign_in=True,
+                         phone_number='+13216549870',
                          expected_user_id='321')
 
   def testSignIn_Non_Existing_Service_Screen_Existing_User(self):
@@ -208,13 +208,13 @@ class FaseSignInTest(unittest.TestCase):
                                 phone_number='+13216549870',
                                 first_name='Edward',
                                 last_name='Igushev',
-                                display_name='Edward Igushev',
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
                          sign_in=True,
+                         phone_number='+13216549870',
                          expected_user_id='321',
                          test_user_id_before=False)
 
@@ -230,6 +230,7 @@ class FaseSignInTest(unittest.TestCase):
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
                              sign_in=True,
+                             phone_number='+13216549870',
                              return_phone_enter=True))
 
     # Enter phone number.
@@ -256,6 +257,7 @@ class FaseSignInTest(unittest.TestCase):
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
                          sign_in=False,
+                         phone_number='+13216549870', first_name='Edward', last_name='Igushev',                         
                          test_user_id_before=False)
 
   def testSignUp_Existing_PhoneNumber(self):
@@ -268,7 +270,6 @@ class FaseSignInTest(unittest.TestCase):
                                 phone_number='+13216549870',
                                 first_name='Edward',
                                 last_name='Igushev',
-                                display_name='Edward Igushev',
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
@@ -276,6 +277,7 @@ class FaseSignInTest(unittest.TestCase):
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
                              sign_in=False,
+                             phone_number='+13216549870', first_name='Edward', last_name='Igushev',
                              return_phone_enter=True))
 
     # Enter phone number.
@@ -307,6 +309,7 @@ class FaseSignInTest(unittest.TestCase):
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
                              sign_in=False,
+                             phone_number='+13216549870', first_name='Edward', last_name='Igushev',
                              return_activation_code_enter=True))
 
     # Enter activation code.
@@ -342,7 +345,6 @@ class FaseSignInTest(unittest.TestCase):
                         phone_number='+13216549870',
                         first_name='Edward',
                         last_name='Igushev',
-                        display_name='Edward Igushev',
                         datetime_added=datetime.datetime.now()))
 
     # Check.

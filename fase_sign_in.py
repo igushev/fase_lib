@@ -36,9 +36,10 @@ class FaseSignInButton(fase.Button):
     else:
       # Retrieve screen before and assign signed in session id.
       service._session_id = session_id_signed_in
+      service._if_signed_in = True
+      service._user_name = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=session_id_signed_in).DisplayName()
       screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
       screen._session_id = session_id_signed_in
-      fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
       # Delete same object by old key.
       fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
       return service, screen

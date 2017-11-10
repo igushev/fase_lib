@@ -2,7 +2,6 @@ import datetime
 import hashlib
 
 import data_util
-import fase_database
 import json_util
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
@@ -465,6 +464,8 @@ class Screen(VisualElementContainer):
 
 @json_util.JSONDecorator(
     {'_session_id': json_util.JSONString(),
+     '_if_signed_in': json_util.JSONBool(),
+     '_user_name': json_util.JSONString(),
      '_datetime_added': json_util.JSONBool()})
 class Service(VariableContainer):
   
@@ -479,9 +480,16 @@ class Service(VariableContainer):
   def __init__(self):
     super(Service, self).__init__()
     self._session_id = GenerateSessionId()
+    self._if_signed_in = False
+    self._user_name = None
     self._datetime_added = datetime.datetime.now()
 
   def GetSessionId(self):
     return self._session_id
   def GetUserId(self):
     return self._session_id
+  def IfSignedIn(self):
+    return self._if_signed_in
+  def GetUserUser(self):
+    return self._user_name
+

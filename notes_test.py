@@ -28,7 +28,6 @@ class NotesTest(unittest.TestCase):
                              header='Note 1 Header',
                              text='Note 1 text',
                              datetime=datetime.datetime.now(),
-                             place_name='NYC',
                              favourite=False)]),
         overwrite=True)
 
