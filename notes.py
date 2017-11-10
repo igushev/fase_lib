@@ -108,13 +108,7 @@ class NotesService(fase.Service):
 
   def _DisplayNote(self, note_id, screen):
     screen = fase.Screen(self)
-    # Don't display main controls.
-    screen.SetMenuDisplayed(False)
-    screen.SetMainButton(False)
-    screen.SetButtonBarDisplayed(False)
-    screen.EnableUtilLocation()
-
-    note_layout = screen.AddLayout(orientation=fase.Layout.VERTICAL)
+    note_layout = screen.AddLayout(id_='note_layout', orientation=fase.Layout.VERTICAL)
     header_text = note_layout.AddText(id_='header_text')
     text_text = note_layout.AddText(id_='text_text', sizable=fase.Label.FIT_OUTER_ELEMENT)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
@@ -130,15 +124,17 @@ class NotesService(fase.Service):
     screen.AddNextStepButton(on_click=NotesService.OnSaveNote)
     screen.AddPrevStepButton(on_click=NotesService.OnCancelNote)
 
-    context_menu = screen.AddContextMenu('Options')
-    context_menu.AddMenuItem(text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
+    context_menu = screen.AddContextMenu(text='Options')
+    context_menu.AddMenuItem(id_='favourite_context_menu',
+                             text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
                              on_click=NotesService.OnReverseFavouriteNote,
                              icon=('favourite.pnp' if note is favourite_bool.GetValue() else 'favourite_non.pnp'))
     if note_id is not None:
       context_menu.AddMenuItem(text='Delete', icon='delete.pnp', on_click=NotesService.OnDeleteNote)
+    return screen
 
   def OnSaveNote(self, screen, element):
-    note_id = screen.GetStringVariable(id_='current_note_id')
+    note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
     user_id = self.GetUserId()
     datetime_now = datetime.datetime.now()
     # If new note.
@@ -147,10 +143,11 @@ class NotesService(fase.Service):
       note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
       note_id_hash.update(user_id)
       note_id = note_id_hash.hexdigest()
+    note_layout = screen.GetLayout(id_='note_layout')
     note = notes_model.Note(note_id=note_id,
                             user_id=user_id,
-                            header=screen.GetElemenet(id_='header_text').GetText(),
-                            text=screen.GetElement(id_='text_text').GetText(),
+                            header=note_layout.GetElement(id_='header_text').GetText(),
+                            text=note_layout.GetElement(id_='text_text').GetText(),
                             datetime=datetime_now,
                             favourite=screen.GetStringVariable(id_='favourite_bool').GetValue())
     notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)

@@ -41,6 +41,7 @@ class Element(data_util.AbstractObject):
     return service, screen
 
 
+# TODO(igushev): Change implementation to list of tuples.
 @json_util.JSONDecorator(
     {'_id_to_element':
      json_util.JSONDict(json_util.JSONString(),
@@ -84,7 +85,7 @@ class IntVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, int)
+    assert isinstance(value, int) or value is None
     self._value = value
   def GetValue(self):
     return self._value
@@ -98,7 +99,7 @@ class FloatVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, float)
+    assert isinstance(value, float) or value is None
     self._value = value
   def GetValue(self):
     return self._value
@@ -112,7 +113,7 @@ class StringVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, basestring)
+    assert isinstance(value, basestring) or value is None
     self._value = value
   def GetValue(self):
     return self._value
@@ -126,7 +127,7 @@ class BoolVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, bool)
+    assert isinstance(value, bool) or value is None
     self._value = value
   def GetValue(self):
     return self._value
@@ -266,28 +267,28 @@ class MenuItem(VisualElement):
   def __init__(self,
                text=None,
                on_click=None,
-               on_click_element=None,
                icon=None):
     super(MenuItem, self).__init__()
     self._text = text
     self._on_click = on_click
-    self._on_click_element = on_click_element
     self._icon = icon
 
 
 @json_util.JSONDecorator({})
 class Menu(ElementContainer):
-  def __init__(self):
+  def __init__(self, text=None):
     super(Menu, self).__init__()
+    self._text = text
+
+  def GetText(self):
+    return self._text
 
   def AddMenuItem(self, id_,
                   text=None,
                   on_click=None,
-                  on_click_element=None,
                   icon=None):
     menu_item = MenuItem(text=text,
                          on_click=on_click,
-                         on_click_element=on_click_element,
                          icon=icon)
     return self.AddElement(id_, menu_item)
   def GetMenuItem(self, id_):
@@ -428,43 +429,36 @@ class Screen(VisualElementContainer):
     return self._screen_id
 
   def AddMenu(self):
-    assert not self.HasElement(MENU_ID)
     return self.AddElement(MENU_ID, Menu())
   def GetMenu(self):
     return self.GetElement(MENU_ID)
 
   def AddMainButton(self, text=None, on_click=None, icon=None):
-    assert not self.HasElement(MAIN_MENU_ID)
     return self.AddElement(MAIN_MENU_ID, Button(text=text, on_click=on_click, icon=icon))
   def GetMainButton(self):
     return self.GetElement(MAIN_MENU_ID)
 
   def AddButtonBar(self):
-    assert not self.HasElement(BUTTON_BAR_ID)
     return self.AddElement(BUTTON_BAR_ID, ButtonBar())
   def GetButtonBar(self):
     return self.GetElement(BUTTON_BAR_ID)
 
   def AddNextStepButton(self, text=None, on_click=None, icon=None):
-    assert not self.HasElement(NEXT_STEP_BUTTON_ID)
     return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
   def GetNextStepButton(self):
     return self.GetElement(NEXT_STEP_BUTTON_ID)
 
   def AddPrevStepButton(self, text=None, on_click=None, icon=None):
-    assert not self.HasElement(PREV_STEP_BUTTON_ID)
     return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
   def GetPrevStepButton(self):
     return self.GetElement(PREV_STEP_BUTTON_ID)
 
-  def AddContextMenu(self):
-    assert not self.HasElement(CONTEXT_MENU_ID)
-    return self.AddElement(CONTEXT_MENU_ID, Menu())
+  def AddContextMenu(self, text=None):
+    return self.AddElement(CONTEXT_MENU_ID, Menu(text=text))
   def GetContextMenu(self):
     return self.GetElement(CONTEXT_MENU_ID)
 
   def AddPopup(self, text=None):
-    assert not self.HasElement(POPUP_ID)
     return self.AddElement(POPUP_ID, Popup(text=text))
   def GetPopup(self):
     return self.GetElement(POPUP_ID) 
