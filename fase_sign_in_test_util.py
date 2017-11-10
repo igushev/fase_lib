@@ -12,7 +12,7 @@ def SignInProcedure(fase_server_, session_info, screen_info, sign_in_id_list,
   sms_sender.SMSSender.Set(sms_sender.SMSSender(sms_sender.MockSMSServiceProvider()), overwrite=True)
 
   # Click on Sign In button.
-  response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
+  response = fase_server_.ElementClicked(fase_model.ElementClicked(sign_in_id_list), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -77,7 +77,8 @@ def SignInProcedure(fase_server_, session_info, screen_info, sign_in_id_list,
                               session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
-  return session_info, screen_info
+  screen = response.screen
+  return session_info, screen_info, screen
 
 
 def testSignOutProcedure(fase_server_, session_info, screen_info, sign_out_id_list):

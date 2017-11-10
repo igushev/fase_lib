@@ -49,10 +49,12 @@ class ElementContainer(Element):
   def __init__(self):
     super(ElementContainer, self).__init__()
     self._id_to_element = {}
+    self._id_element_list = []
 
   def AddElement(self, id_, element):
     assert id_ not in self._id_to_element
     self._id_to_element[id_] = element
+    self._id_element_list.append((id_, element))
     return element
 
   def GetElement(self, id_):
@@ -63,6 +65,9 @@ class ElementContainer(Element):
 
   def GetIdToElement(self):
     return self._id_to_element
+
+  def GetIdElementList(self):
+    return self._id_element_list
 
 
 @json_util.JSONDecorator({})
@@ -246,6 +251,9 @@ class Image(VisualElement):
                image=None):
     super(Image, self).__init__()
     self._image = image
+
+  def GetImage(self):
+    return self._image
 
 
 @json_util.JSONDecorator(
@@ -490,6 +498,6 @@ class Service(VariableContainer):
     return self._session_id
   def IfSignedIn(self):
     return self._if_signed_in
-  def GetUserUser(self):
+  def GetUserName(self):
     return self._user_name
 

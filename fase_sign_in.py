@@ -25,23 +25,20 @@ class FaseSignInButton(fase.Button):
     session_id_current = service.GetSessionId()
     fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
     fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=session_id_current)
+    # Delete screen before.
+    fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
 
     if fase_database.FaseDatabaseInterface.Get().HasService(session_id=session_id_signed_in):
-      # Delete screen before.
-      fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
       # Retrieve sign in service and call.
       service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
-      screen_signed_in = on_sign_in_done(service_signed_in, user_id_before=service.GetSessionId())
+      screen_signed_in = on_sign_in_done(service_signed_in, user_id_before=session_id_current)
       return service_signed_in, screen_signed_in
     else:
-      # Retrieve screen before and assign signed in session id.
+      # Assign signed in session id.
       service._session_id = session_id_signed_in
       service._if_signed_in = True
       service._user_name = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=session_id_signed_in).DisplayName()
-      screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
-      screen._session_id = session_id_signed_in
-      # Delete same object by old key.
-      fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
+      screen = on_sign_in_done(service, user_id_before=session_id_current)
       return service, screen
 
 

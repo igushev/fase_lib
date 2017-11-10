@@ -56,7 +56,6 @@ class FaseSignInTest(unittest.TestCase):
                       sign_in=None,
                       phone_number=None, first_name=None, last_name=None,
                       expected_user_id=None,
-                      test_user_id_before=True,
                       return_phone_enter=False,
                       return_activation_code_enter=False):
     assert sign_in is not None
@@ -169,10 +168,7 @@ class FaseSignInTest(unittest.TestCase):
     # Check present of main elements.
     fase_database.FaseDatabaseInterface.Get().GetService(expected_user_id)
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(expected_user_id)
-    if test_user_id_before:
-      self.assertEqual(session_info.session_id, screen.GetElement(id_='user_id_before_label_id').GetLabel())
-    else:
-      self.assertNotIn('user_id_before_label_id', screen.GetIdToElement())
+    self.assertEqual(session_info.session_id, screen.GetElement(id_='user_id_before_label_id').GetLabel())
 
   def testSignIn_Existing_Service_Screen_User(self):
     service = SignInTestService()
@@ -215,8 +211,7 @@ class FaseSignInTest(unittest.TestCase):
                          service_num_during=1, screen_num_during=2,
                          sign_in=True,
                          phone_number='+13216549870',
-                         expected_user_id='321',
-                         test_user_id_before=False)
+                         expected_user_id='321')
 
   def testSignIn_Wrong_PhoneNumber(self):
     fase_database.FaseDatabaseInterface.Set(
@@ -257,8 +252,7 @@ class FaseSignInTest(unittest.TestCase):
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
                          sign_in=False,
-                         phone_number='+13216549870', first_name='Edward', last_name='Igushev',                         
-                         test_user_id_before=False)
+                         phone_number='+13216549870', first_name='Edward', last_name='Igushev')
 
   def testSignUp_Existing_PhoneNumber(self):
     fase_database.FaseDatabaseInterface.Set(

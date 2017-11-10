@@ -35,7 +35,7 @@ class NotesService(fase.Service):
     elif screen_label == 'favourites':
       return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), lambda x: x.favourite, screen)
     elif screen_label == 'recent':
-      return self._DisplayNotesByFunc(lambda x, y: cmp(x.time, y.time), None, screen)
+      return self._DisplayNotesByFunc(lambda x, y: cmp(x.datetime, y.datetime), None, screen)
     else:
       raise AssertionError()
 
@@ -47,10 +47,10 @@ class NotesService(fase.Service):
     notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
-      notes = filter(notes, filter_func)
+      notes = filter(filter_func, notes)
     for note in sorted(notes, cmp=cmp_func):
       note_layout = notes_layout.AddLayout(
-          id_='note_layout', orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
+          id_='note_layout_%s' % note.note_id, orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
       note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
 
       note_header_layout = note_layout.AddLayout(id_='note_header_layout', orientation=fase.Layout.HORIZONTAL)
