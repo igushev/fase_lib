@@ -43,9 +43,9 @@ class Element(data_util.AbstractObject):
 
 # TODO(igushev): Change implementation to list of tuples.
 @json_util.JSONDecorator(
-    {'_id_to_element':
-     json_util.JSONDict(json_util.JSONString(),
-                        json_util.JSONObject(Element))})
+    {'_id_element_list':
+     json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
+                                             json_util.JSONObject(Element)]))})
 class ElementContainer(Element):
   def __init__(self):
     super(ElementContainer, self).__init__()
