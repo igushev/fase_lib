@@ -163,7 +163,7 @@ class NotesService(fase.Service):
     return screen
 
   def OnDeleteNote(self, screen, element):
-    note_id = screen.GetStringVariable(id_='current_note_id')
+    note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
     if note_id is not None:
       notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)
     return self._DisplayNotes(screen)

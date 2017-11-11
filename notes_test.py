@@ -105,25 +105,62 @@ class NotesTest(unittest.TestCase):
 
     return session_info, screen_info, screen
 
-  def EditNote(self, fase_server_, session_info, screen_info, note_edited):
-    # Click on a note.
+  def SelectNote(self, fase_server_, session_info, screen_info, note):
+    # Click on the Note.
     response = fase_server_.ElementClicked(
-        fase_model.ElementClicked(['notes_layout', 'note_layout_321_2']), session_info, screen_info)
+        fase_model.ElementClicked(['notes_layout', 'note_layout_%s' % note.note_id]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements and content.
     screen.GetElement(id_='note_layout')
-    self.assertEqual(self.note_2.header,
-                     screen.GetElement(id_='note_layout').GetElement(id_='header_text').GetText())
-    self.assertEqual(self.note_2.text,
-                     screen.GetElement(id_='note_layout').GetElement(id_='text_text').GetText())
+    self.assertEqual(note.header, screen.GetElement(id_='note_layout').GetElement(id_='header_text').GetText())
+    self.assertEqual(note.text, screen.GetElement(id_='note_layout').GetElement(id_='text_text').GetText())
 
-    # Edit note.
+    return session_info, screen_info, screen
+
+  def EditNote(self, fase_server_, session_info, screen_info, note, note_edited):
+    session_info, screen_info, _ = self.SelectNote(fase_server_, session_info, screen_info, note)
+
+    # Edit Note.
     screen_update = fase_model.ScreenUpdate([['note_layout', 'header_text'],
                                              ['note_layout', 'text_text']], [note_edited.header,
                                                                              note_edited.text])
     fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+
+    # Click on Save button.
+    response = fase_server_.ElementClicked(
+        fase_model.ElementClicked([fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+    # Check present of main elements.
+    screen.GetElement(id_='notes_layout')
+
+    return session_info, screen_info, screen
+
+  def DeleteNote(self, fase_server_, session_info, screen_info, note):
+    session_info, screen_info, _ = self.SelectNote(fase_server_, session_info, screen_info, note)
+    
+    # Click on Delete context menu.
+    response = fase_server_.ElementClicked(
+        fase_model.ElementClicked([fase.CONTEXT_MENU_ID, 'delete_context_menu']), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+    # Check present of main elements.
+    screen.GetElement(id_='notes_layout')
+
+    return session_info, screen_info, screen
+
+  def ReverseFavouriteNote(self, fase_server_, session_info, screen_info, note):
+    session_info, screen_info, _ = self.SelectNote(fase_server_, session_info, screen_info, note)
+
+    # Click on Favourite context menu.
+    response = fase_server_.ElementClicked(
+        fase_model.ElementClicked([fase.CONTEXT_MENU_ID, 'favourite_context_menu']), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
 
     # Click on Save button.
     response = fase_server_.ElementClicked(
@@ -179,6 +216,7 @@ class NotesTest(unittest.TestCase):
     fase_server_, session_info, screen_info, screen = self.Start()
     self.AssertNotes([], screen)
 
+    # Create a Note.
     note_4 = notes_model.Note(note_id=None,
                               user_id=None,
                               header='Note 4 Header',
@@ -186,6 +224,7 @@ class NotesTest(unittest.TestCase):
                               datetime=None,
                               favourite=False)
 
+    # Add Note.
     session_info, screen_info, screen = self.AddNote(fase_server_, session_info, screen_info, note_4)
     self.AssertNotes([note_4], screen)
 
@@ -200,6 +239,7 @@ class NotesTest(unittest.TestCase):
     fase_server_, session_info, screen_info, screen = self.Start()
     self.AssertNotes([], screen)
 
+    # Create a Note.
     note_4 = notes_model.Note(note_id=None,
                               user_id=None,
                               header='Note 4 Header',
@@ -207,6 +247,7 @@ class NotesTest(unittest.TestCase):
                               datetime=None,
                               favourite=False)
 
+    # Add Note.
     session_info, screen_info, screen = self.AddNote(fase_server_, session_info, screen_info, note_4)
     self.AssertNotes([note_4], screen)
 
@@ -234,6 +275,29 @@ class NotesTest(unittest.TestCase):
                                             sign_out_id_list=[fase.MENU_ID, 'sign_out_menu_item'])
     self.AssertNotes([], screen)
 
+  def testNotes_Start_SignIn_AddNote(self):
+    fase_server_, session_info, screen_info, screen = self.Start()
+    self.AssertNotes([], screen)
+
+    # Sign In.
+    session_info, screen_info, screen = (
+        fase_sign_in_test_util.SignInProcedure(
+            fase_server_, session_info, screen_info,
+            sign_in_id_list=[fase.MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+    self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
+
+    # Create a Note.
+    note_4 = notes_model.Note(note_id=None,
+                              user_id=None,
+                              header='Note 4 Header',
+                              text='Note 4 text',
+                              datetime=None,
+                              favourite=False)
+
+    # Add Note.
+    session_info, screen_info, screen = self.AddNote(fase_server_, session_info, screen_info, note_4)
+    self.AssertNotes([self.note_1, self.note_2, self.note_3, note_4], screen)
+
   def testNotes_Start_SignIn_EditNote(self):
     fase_server_, session_info, screen_info, screen = self.Start()
     self.AssertNotes([], screen)
@@ -245,13 +309,88 @@ class NotesTest(unittest.TestCase):
             sign_in_id_list=[fase.MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
-    # Copy and edit a note.
+    # Copy and edit Note.
     note_2_edited = copy.copy(self.note_2)
+    note_2_edited.header = 'Note 2 Header edited'
     note_2_edited.text = 'Note 2 text edited'
     note_2_edited.datetime = datetime.datetime.now()  # Should be updated by the Service.
     
-    session_info, screen_info, screen = self.EditNote(fase_server_, session_info, screen_info, note_2_edited)
+    # Edit Note.
+    session_info, screen_info, screen = (
+        self.EditNote(fase_server_, session_info, screen_info, self.note_2, note_2_edited))
     self.AssertNotes([self.note_1, note_2_edited, self.note_3], screen)
+
+  def testNotes_Start_SignIn_DeleteNote(self):
+    fase_server_, session_info, screen_info, screen = self.Start()
+    self.AssertNotes([], screen)
+
+    # Sign In.
+    session_info, screen_info, screen = (
+        fase_sign_in_test_util.SignInProcedure(
+            fase_server_, session_info, screen_info,
+            sign_in_id_list=[fase.MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+    self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
+
+    # Delete Note.
+    session_info, screen_info, screen = (
+        self.DeleteNote(fase_server_, session_info, screen_info, self.note_2))
+    self.AssertNotes([self.note_1, self.note_3], screen)
+
+  def testNotes_Start_SignIn_ReverseFavouriteNote(self):
+    fase_server_, session_info, screen_info, screen = self.Start()
+    self.AssertNotes([], screen)
+
+    # Sign In.
+    session_info, screen_info, screen = (
+        fase_sign_in_test_util.SignInProcedure(
+            fase_server_, session_info, screen_info,
+            sign_in_id_list=[fase.MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+    self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
+
+    # Copy and edit Note.
+    note_3_edited = copy.copy(self.note_3)
+    note_3_edited.favourite = True
+    note_3_edited.datetime = datetime.datetime.now()  # Should be updated by the Service.
+    
+    # Reverse Favourite for Note.
+    session_info, screen_info, screen = (
+        self.ReverseFavouriteNote(fase_server_, session_info, screen_info, self.note_3))
+    self.AssertNotes([self.note_1, self.note_2, note_3_edited], screen)
+
+  def testNotes_Start_SignIn_EditNote_Cancel(self):
+    fase_server_, session_info, screen_info, screen = self.Start()
+    self.AssertNotes([], screen)
+
+    # Sign In.
+    session_info, screen_info, screen = (
+        fase_sign_in_test_util.SignInProcedure(
+            fase_server_, session_info, screen_info,
+            sign_in_id_list=[fase.MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+    self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
+
+    # Copy and edit Note.
+    note_2_edited = copy.copy(self.note_2)
+    note_2_edited.header = 'Note 2 Header edited'
+    note_2_edited.text = 'Note 2 text edited'
+
+    session_info, screen_info, screen = self.SelectNote(fase_server_, session_info, screen_info, self.note_2)
+
+    # Edit Note.
+    screen_update = fase_model.ScreenUpdate([['note_layout', 'header_text'],
+                                             ['note_layout', 'text_text']], [note_2_edited.header,
+                                                                             note_2_edited.text])
+    fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+
+    # Click on Cancel button.
+    response = fase_server_.ElementClicked(
+        fase_model.ElementClicked([fase.PREV_STEP_BUTTON_ID]), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+    # Check present of main elements.
+    screen.GetElement(id_='notes_layout')
+    self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
+
 
 
 if __name__ == '__main__':

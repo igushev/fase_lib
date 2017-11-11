@@ -22,3 +22,6 @@ class MockNotesDatabase(NotesDatabaseInterface):
 
   def GetNote(self, note_id):
     return self.note_id_note[note_id]
+
+  def DeleteNote(self, note_id):
+    del self.note_id_note[note_id]
