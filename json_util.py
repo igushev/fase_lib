@@ -116,6 +116,24 @@ class JSONObject(JSONObjectInterface):
     return self._cls.FromSimple(simple)
 
   
+class JSONTuple(JSONObjectInterface):
+  
+  def __init__(self, json_obj_list):
+    for json_obj in json_obj_list:
+      assert isinstance(json_obj, JSONObjectInterface)
+    self._json_obj_list = json_obj_list
+    
+  def ToSimple(self, field_obj):
+    assert isinstance(field_obj, tuple)
+    return [json_obj.ToSimple(item_obj)
+            for json_obj, item_obj in zip(self._json_obj_list, field_obj)]
+  
+  def FromSimple(self, simple):
+    assert isinstance(simple, list)
+    return tuple(json_obj.FromSimple(item_simple)
+                 for json_obj, item_simple in zip(self._json_obj_list, simple))
+
+
 class JSONList(JSONObjectInterface):
   
   def __init__(self, json_obj):

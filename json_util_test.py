@@ -40,15 +40,15 @@ class WithFields(object):
 
 @json_util.JSONDecorator(
     {'nested_list': json_util.JSONList(json_util.JSONObject(WithFields)),
-     'nest_dict': json_util.JSONDict(json_util.JSONString(),
+     'nested_dict': json_util.JSONDict(json_util.JSONString(),
                                       json_util.JSONObject(WithFields))})
 class WithListAndDict(object):
   
-  def __init__(self, nested_list, nest_dict):
+  def __init__(self, nested_list, nested_dict):
     assert isinstance(nested_list, list)
-    assert isinstance(nest_dict, dict)
+    assert isinstance(nested_dict, dict)
     self.nested_list = nested_list
-    self.nest_dict = nest_dict
+    self.nested_dict = nested_dict
 
   def HashKey(self):
     return HashKey(self.__dict__)
@@ -333,6 +333,42 @@ class WithClassMethod(object):
     return self.__dict__ == other.__dict__
 
 
+@json_util.JSONDecorator(
+    {'float_field': json_util.JSONFloat()})
+class WithFloat(object):
+
+  def __init__(self, float_field):
+    assert isinstance(float_field, float)
+    self.float_field = float_field
+
+  def HashKey(self):
+    return HashKey(self.__dict__)
+
+  def __repr__(self):
+    return Repr(self)
+
+  def __eq__(self, other):
+    return self.__dict__ == other.__dict__
+
+
+@json_util.JSONDecorator(
+    {'nested_list': json_util.JSONList(json_util.JSONTuple([json_util.JSONInt(),
+                                                            json_util.JSONObject(WithFloat)]))})
+class WithListOfTuples(object):
+  
+  def __init__(self, nested_list):
+    self.nested_list = nested_list
+
+  def HashKey(self):
+    return HashKey(self.__dict__)
+
+  def __repr__(self):
+    return Repr(self)
+
+  def __eq__(self, other):
+    return self.__dict__ == other.__dict__
+
+
 class JSONUtilsTest(unittest.TestCase):
 
   def AssertToFrom(self, obj, obj_cls):
@@ -440,6 +476,11 @@ class JSONUtilsTest(unittest.TestCase):
     self.assertEqual(7,
                      with_class_method_from_simple.method(class_with_method, 4))
 
+  def testWithListOfTuples(self):
+    obj = WithListOfTuples([(1, WithFloat(0.1)),
+                            (2, WithFloat(0.2)),
+                            (3, WithFloat(0.3))])
+    self.AssertToFrom(obj, WithListOfTuples)
     
 
 if __name__ == '__main__':
