@@ -1,9 +1,7 @@
 import unittest
 import datetime
 
-from Yusi.YuUtils.hash_utils import HashKey
-from Yusi.YuUtils.repr_utils import Repr
-
+import data_util
 import json_util
 
 
@@ -13,7 +11,7 @@ import json_util
      '_string_field': json_util.JSONString(),
      'date_field': json_util.JSONDate(),
      'datetime_field': json_util.JSONDateTime()})
-class WithFields(object):
+class WithFields(data_util.AbstractObject):
   
   def __init__(self, int_field, float_field, string_field, date_field,
                datetime_field):
@@ -28,21 +26,12 @@ class WithFields(object):
     self.date_field = date_field
     self.datetime_field = datetime_field
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'nested_list': json_util.JSONList(json_util.JSONObject(WithFields)),
      'nested_dict': json_util.JSONDict(json_util.JSONString(),
                                       json_util.JSONObject(WithFields))})
-class WithListAndDict(object):
+class WithListAndDict(data_util.AbstractObject):
   
   def __init__(self, nested_list, nested_dict):
     assert isinstance(nested_list, list)
@@ -50,22 +39,13 @@ class WithListAndDict(object):
     self.nested_list = nested_list
     self.nested_dict = nested_dict
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'_nested_with_fields': json_util.JSONObject(WithFields),
      '_nested_with_list_and_dict': json_util.JSONObject(WithListAndDict),
      '_none_value': json_util.JSONString(),
      '_bool_value': json_util.JSONBool()})
-class WithNestedFields(object):
+class WithNestedFields(data_util.AbstractObject):
 
   def __init__(self, nested_with_fields, nested_with_list_and_dict,
                none_value, bool_value):
@@ -78,21 +58,12 @@ class WithNestedFields(object):
     self._none_value = none_value
     self._bool_value = bool_value
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 # We declare _nested_with_fields_2 to be WithFields but allow None.
 @json_util.JSONDecorator(
     {'_nested_with_fields_1': json_util.JSONObject(WithFields),
      '_nested_with_fields_2': json_util.JSONObject(WithFields)})
-class WithNestedNoneObjectsFields(object):
+class WithNestedNoneObjectsFields(data_util.AbstractObject):
 
   def __init__(self, nested_with_fields_1, nested_with_fields_2):
     assert isinstance(nested_with_fields_1, WithFields)
@@ -103,33 +74,15 @@ class WithNestedNoneObjectsFields(object):
     # With underscore.
     self._nested_with_fields_2 = nested_with_fields_2
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'var1': json_util.JSONFloat()},
     inherited=True)
-class Level1(object):
+class Level1(data_util.AbstractObject):
 
   def __init__(self, var1):
     assert isinstance(var1, float)
     self.var1 = var1
-
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
 
 
 @json_util.JSONDecorator(
@@ -141,15 +94,6 @@ class Level2(Level1):
     assert isinstance(var2, float)
     self.var2 = var2
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'var3': json_util.JSONFloat()})
@@ -159,15 +103,6 @@ class Level3A(Level2):
     super(Level3A, self).__init__(var1, var2)
     assert isinstance(var3, float)
     self.var3 = var3
-
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
 
 
 @json_util.JSONDecorator(
@@ -179,91 +114,45 @@ class Level3B(Level2):
     assert isinstance(var3, basestring)
     self.var3 = var3
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'diff_level_list': json_util.JSONList(json_util.JSONObject(Level1))})
-class WithDifferentLevelList(object):
+class WithDifferentLevelList(data_util.AbstractObject):
   
   def __init__(self, diff_level_list):
     assert isinstance(diff_level_list, list)
     self.diff_level_list = diff_level_list
-
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 
 @json_util.JSONDecorator(
     {'var1': json_util.JSONString(),
      'var2': json_util.JSONString(),
      'var3': json_util.JSONString()})
-class StateNotFull(object):
+class StateNotFull(data_util.AbstractObject):
   
   def __init__(self, var1, var2):
     self.var1 = var1
     self.var2 = var2
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'var1': json_util.JSONFloat()},
     inherited=True)
-class Base1(object):
+class Base1(data_util.AbstractObject):
 
   def __init__(self, var1):
     assert isinstance(var1, float)
     self.var1 = var1
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'var2': json_util.JSONFloat()},
     inherited=True)
-class Base2(object):
+class Base2(data_util.AbstractObject):
 
   def __init__(self, var2):
     assert isinstance(var2, float)
     self.var2 = var2
-
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
 
 
 @json_util.JSONDecorator(
@@ -277,15 +166,6 @@ class Base1_2(Base1, Base2):
     assert isinstance(var3, float)
     self.var3 = var3
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'var4': json_util.JSONFloat()},
@@ -297,17 +177,8 @@ class Derived(Base1_2):
     assert isinstance(var4, float)
     self.var4 = var4
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
 
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
-
-class ClassWithMethod(object):
+class ClassWithMethod(data_util.AbstractObject):
 
   def __init__(self, var1):
     self.var1 = var1
@@ -318,55 +189,28 @@ class ClassWithMethod(object):
 
 @json_util.JSONDecorator(
     {'method': json_util.JSONClassMethod()})
-class WithClassMethod(object):
+class WithClassMethod(data_util.AbstractObject):
   
   def __init__(self, method):
     self.method = method
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'float_field': json_util.JSONFloat()})
-class WithFloat(object):
+class WithFloat(data_util.AbstractObject):
 
   def __init__(self, float_field):
     assert isinstance(float_field, float)
     self.float_field = float_field
 
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
-
 
 @json_util.JSONDecorator(
     {'nested_list': json_util.JSONList(json_util.JSONTuple([json_util.JSONInt(),
                                                             json_util.JSONObject(WithFloat)]))})
-class WithListOfTuples(object):
+class WithListOfTuples(data_util.AbstractObject):
   
   def __init__(self, nested_list):
     self.nested_list = nested_list
-
-  def HashKey(self):
-    return HashKey(self.__dict__)
-
-  def __repr__(self):
-    return Repr(self)
-
-  def __eq__(self, other):
-    return self.__dict__ == other.__dict__
 
 
 class JSONUtilsTest(unittest.TestCase):
