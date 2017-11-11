@@ -81,7 +81,7 @@ def SignInProcedure(fase_server_, session_info, screen_info, sign_in_id_list,
   return session_info, screen_info, screen
 
 
-def testSignOutProcedure(fase_server_, session_info, screen_info, sign_out_id_list):
+def SignOutProcedure(fase_server_, session_info, screen_info, sign_out_id_list):
   # Click on Sign Out button.
   response = fase_server_.ElementClicked(fase_model.ElementClicked(sign_out_id_list), session_info, screen_info)
   session_info = response.session_info

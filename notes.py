@@ -103,7 +103,7 @@ class NotesService(fase.Service):
     return self._DisplayNote(None, screen)
 
   def OnNote(self, screen, element):
-    note_id = element.GetStringVariable(id_='layout_note_id')
+    note_id = element.GetStringVariable(id_='layout_note_id').GetValue()
     return self._DisplayNote(note_id, screen)
 
   def _DisplayNote(self, note_id, screen):
@@ -130,7 +130,8 @@ class NotesService(fase.Service):
                              on_click=NotesService.OnReverseFavouriteNote,
                              icon=('favourite.pnp' if note is favourite_bool.GetValue() else 'favourite_non.pnp'))
     if note_id is not None:
-      context_menu.AddMenuItem(text='Delete', icon='delete.pnp', on_click=NotesService.OnDeleteNote)
+      context_menu.AddMenuItem(
+          id_='delete_context_menu', text='Delete', icon='delete.pnp', on_click=NotesService.OnDeleteNote)
     return screen
 
   def OnSaveNote(self, screen, element):

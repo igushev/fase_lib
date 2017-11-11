@@ -19,3 +19,6 @@ class MockNotesDatabase(NotesDatabaseInterface):
   def AddNote(self, note, overwrite=False):
     assert note.note_id not in self.note_id_note or overwrite
     self.note_id_note[note.note_id] = note
+
+  def GetNote(self, note_id):
+    return self.note_id_note[note_id]

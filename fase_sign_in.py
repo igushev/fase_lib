@@ -11,16 +11,16 @@ import fase
 class FaseSignInButton(fase.Button):
 
   def FaseOnClick(self, service, screen):
-    activation_code_sent = service.GetIntVariable(id_='fase_sign_in_activation_code_str').GetValue()
+    activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_str').GetValue()
     activation_code_entered = int(
         screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
       screen.AddPopup('Wrong activation code!')
       return service, screen
 
-    on_sign_in_done = service.GetClassMethodVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
-    screen_before_session_id = service.GetStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
-    session_id_signed_in = service.GetStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
+    on_sign_in_done = service.PopClassMethodVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
+    screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
+    session_id_signed_in = service.PopStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
     # Delete service and screen current.
     session_id_current = service.GetSessionId()
     fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
@@ -46,7 +46,7 @@ class FaseSignOutButton(fase.Button):
 
   def FaseOnClick(self, service, screen):
     # Delete screen before.
-    screen_before_session_id = service.GetStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue()
+    screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue()
     fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
 
     service_cls = fase.Service.service_cls
@@ -163,7 +163,7 @@ class FaseSignIn(object):
 
   @staticmethod
   def OnSkipCancelOption(service, screen, element):
-    screen_before_session_id = service.GetStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
+    screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
     screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
     screen._session_id = service.GetSessionId()
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)

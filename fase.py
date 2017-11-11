@@ -58,11 +58,18 @@ class ElementContainer(Element):
     self._id_element_list.append((id_, element))
     return element
 
+  def HasElement(self, id_):
+    return id_ in self._id_to_element
+
   def GetElement(self, id_):
     return self._id_to_element[id_]
 
-  def HasElement(self, id_):
-    return id_ in self._id_to_element
+  def PopElement(self, id_):
+    for i, (id_in_list, _) in enumerate(self._id_element_list):
+      if id_in_list == id_:
+        del self._id_element_list[i]
+        break
+    return self._id_to_element.pop(id_)
 
   def GetIdToElement(self):
     return self._id_to_element
@@ -156,26 +163,36 @@ class VariableContainer(ElementContainer):
     return self.AddElement(id_, IntVariable(value))
   def GetIntVariable(self, id_):
     return self.GetElement(id_)
+  def PopIntVariable(self, id_):
+    return self.PopElement(id_)
 
   def AddFloatVariable(self, id_, value):
     return self.AddElement(id_, FloatVariable(value))
   def GetFloatVariable(self, id_):
     return self.GetElement(id_)
+  def PopFloatVariable(self, id_):
+    return self.PopElement(id_)
 
   def AddStringVariable(self, id_, value):
     return self.AddElement(id_, StringVariable(value))
   def GetStringVariable(self, id_):
     return self.GetElement(id_)
+  def PopStringVariable(self, id_):
+    return self.PopElement(id_)
 
   def AddBoolVariable(self, id_, value):
     return self.AddElement(id_, BoolVariable(value))
   def GetBoolVariable(self, id_):
     return self.GetElement(id_)
+  def PopBoolVariable(self, id_):
+    return self.PopElement(id_)
 
   def AddClassMethodVariable(self, id_, value):
     return self.AddElement(id_, ClassMethodVariable(value))
   def GetClassMethodVariable(self, id_):
     return self.GetElement(id_)
+  def PopClassMethodVariable(self, id_):
+    return self.PopElement(id_)
 
 
 @json_util.JSONDecorator(
@@ -238,6 +255,9 @@ class Text(VisualElement):
     self._sizable = sizable
 
   def Update(self, value):
+    self._text = value
+
+  def SetText(self, value):
     self._text = value
 
   def GetText(self):
