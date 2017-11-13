@@ -6,7 +6,7 @@ import os
 
     
 DATE_FORMAT = '%Y-%m-%d'
-TIME_FORMAT = '%H:%M:%S'
+TIME_FORMAT = '%H:%M:%S.%f'
 DATETIME_FORMAT = '%s %s' % (DATE_FORMAT, TIME_FORMAT)
 MODULE_FIELD = '__module__'
 CLASS_FIELD = '__class__'
@@ -51,7 +51,7 @@ class JSONInt(JSONObjectInterface):
     return field_obj
   
   def FromSimple(self, simple):
-    assert isinstance(simple, int)
+    assert isinstance(simple, (float, int))
     return simple
 
 
