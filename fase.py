@@ -41,9 +41,11 @@ class Element(data_util.AbstractObject):
     return service, screen
 
 
-# TODO(igushev): Change implementation to list of tuples.
+# TODO(igushev): Reuse object when deserialized.
 @json_util.JSONDecorator(
-    {'_id_element_list':
+    {'_id_to_element':
+     json_util.JSONDict(json_util.JSONString(), json_util.JSONObject(Element)),
+     '_id_element_list':
      json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
                                              json_util.JSONObject(Element)]))})
 class ElementContainer(Element):
@@ -70,9 +72,6 @@ class ElementContainer(Element):
         del self._id_element_list[i]
         break
     return self._id_to_element.pop(id_)
-
-  def GetIdToElement(self):
-    return self._id_to_element
 
   def GetIdElementList(self):
     return self._id_element_list
@@ -488,7 +487,7 @@ class Screen(VisualElementContainer):
     {'_session_id': json_util.JSONString(),
      '_if_signed_in': json_util.JSONBool(),
      '_user_name': json_util.JSONString(),
-     '_datetime_added': json_util.JSONBool()})
+     '_datetime_added': json_util.JSONDateTime()})
 class Service(VariableContainer):
   
   service_cls = None

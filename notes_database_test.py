@@ -77,7 +77,7 @@ class DynamoDBNotesDatabaseTest(unittest.TestCase):
                                 datetime=datetime_now,
                                 favourite=False)
     # Before adding any notes.
-    self.assertRaises(KeyError, notes_database.NotesDatabaseInterface.Get().GetNote, note_1_1.note_id)
+    self.assertIsNone(notes_database.NotesDatabaseInterface.Get().GetNote(note_1_1.note_id))
     self.assertEqual([],
                      notes_database.NotesDatabaseInterface.Get().GetUserNotes(note_1_1.user_id))
     # Add note_1_1.
@@ -117,19 +117,19 @@ class DynamoDBNotesDatabaseTest(unittest.TestCase):
 
     # Delete note_1_3
     notes_database.NotesDatabaseInterface.Get().DeleteNote(note_1_3.note_id)
-    self.assertRaises(KeyError, notes_database.NotesDatabaseInterface.Get().GetNote, note_1_3.note_id)
+    self.assertIsNone(notes_database.NotesDatabaseInterface.Get().GetNote(note_1_3.note_id))
     self.assertEqual([note_1_2_edited, note_1_1],
                      notes_database.NotesDatabaseInterface.Get().GetUserNotes(note_1_1.user_id))
 
     # Delete note_1_1
     notes_database.NotesDatabaseInterface.Get().DeleteNote(note_1_1.note_id)
-    self.assertRaises(KeyError, notes_database.NotesDatabaseInterface.Get().GetNote, note_1_1.note_id)
+    self.assertIsNone(notes_database.NotesDatabaseInterface.Get().GetNote(note_1_1.note_id))
     self.assertEqual([note_1_2_edited],
                      notes_database.NotesDatabaseInterface.Get().GetUserNotes(note_1_1.user_id))
 
     # Delete note_1_2
     notes_database.NotesDatabaseInterface.Get().DeleteNote(note_1_2.note_id)
-    self.assertRaises(KeyError, notes_database.NotesDatabaseInterface.Get().GetNote, note_1_2.note_id)
+    self.assertIsNone(notes_database.NotesDatabaseInterface.Get().GetNote(note_1_2.note_id))
     self.assertEqual([],
                      notes_database.NotesDatabaseInterface.Get().GetUserNotes(note_1_1.user_id))
 

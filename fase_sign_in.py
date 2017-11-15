@@ -28,9 +28,9 @@ class FaseSignInButton(fase.Button):
     # Delete screen before.
     fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
 
-    if fase_database.FaseDatabaseInterface.Get().HasService(session_id=session_id_signed_in):
+    service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
+    if service_signed_in:
       # Retrieve sign in service and call.
-      service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
       screen_signed_in = on_sign_in_done(service_signed_in, user_id_before=session_id_current)
       return service_signed_in, screen_signed_in
     else:
@@ -60,7 +60,7 @@ class FaseSignIn(object):
 
   @staticmethod
   def StartSignIn(service, on_sign_in_done=None, skip_option=False, cancel_option=False):
-    assert not fase_database.FaseDatabaseInterface.Get().HasUser(user_id=service.GetSessionId())
+    assert fase_database.FaseDatabaseInterface.Get().GetUser(user_id=service.GetSessionId()) is None
     screen_before = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=service.GetSessionId())
     screen_before_session_id = fase.GenerateSessionId()
     screen_before._session_id = screen_before_session_id
@@ -91,12 +91,12 @@ class FaseSignIn(object):
   def OnSignInEnteredData(service, screen, element):
     sign_in_layout = screen.GetElement(id_='sign_in_layout_id')
     phone_number = sign_in_layout.GetText(id_='phone_number_text_id').GetText()
-    phone_number_user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
-    if not phone_number_user_list:
+    user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
+    if not user_list:
       screen.AddPopup('User with such phone number has not been found!')
       return screen
-    assert len(phone_number_user_list) == 1
-    user = phone_number_user_list[0]
+    assert len(user_list) == 1
+    user = user_list[0]
     return FaseSignIn._OnEnteredData(service, phone_number, user.user_id)
 
   @staticmethod
@@ -114,7 +114,8 @@ class FaseSignIn(object):
   def OnSignUpEnteredData(service, screen, element):
     sign_up_layout = screen.GetElement(id_='sign_up_layout_id')
     phone_number = sign_up_layout.GetText(id_='phone_number_text_id').GetText()
-    if fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number):
+    user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
+    if user_list:
       screen.AddPopup('User with such phone number is already registered!')
       return screen
 
@@ -147,7 +148,7 @@ class FaseSignIn(object):
 
   @staticmethod
   def StartSignOut(service, cancel_option=False):
-    assert fase_database.FaseDatabaseInterface.Get().HasUser(user_id=service.GetSessionId())
+    assert fase_database.FaseDatabaseInterface.Get().GetUser(user_id=service.GetSessionId()) is not None
     screen_before = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=service.GetSessionId())
     screen_before_session_id = fase.GenerateSessionId()
     screen_before._session_id = screen_before_session_id
