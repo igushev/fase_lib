@@ -32,7 +32,7 @@ class DynamoDBNotesDatabaseTest(unittest.TestCase):
     super(DynamoDBNotesDatabaseTest, self).tearDown()
 
   def testNotes(self):
-    notes_database.NotesDatabaseInterface.Get().CreateTables()
+    notes_database.NotesDatabaseInterface.Get().CreateDatabase()
     datetime_now = datetime.datetime.now()
     note_1_1 = notes_model.Note(note_id='321_1',
                                 user_id='321',

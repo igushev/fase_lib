@@ -18,17 +18,13 @@ STATUS_OK_TEXT = 'OK'
 CREATE_DB_COMMAND = 'createdb'
 DELETE_DB_COMMAND = 'deletedb'
 
-TABLE_CREATED = 'Table %s created'
-TABLE_EXISTED = 'Table %s already existed'
+TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
-DELETING_DB_IS_NOT_ALLOWED = fase_model.BadRequest(
-  code=401,
-  message='Deleting of database is not allowed by the configuration!')
 WRONG_COMMAND = fase_model.BadRequest(
-  code=402,
+  code=401,
   message='Wrong command!')
 
 
@@ -60,18 +56,10 @@ class FaseServer(object):
 
   def SendCommand(self, command):
     if command.command == CREATE_DB_COMMAND:
-      table_statuses_dict = self.database.CreateDB()
-      table_statuses_str = [
-          TABLE_CREATED % table_name
-          if table_status.created
-          else TABLE_EXISTED % table_name
-          for table_name, table_status
-          in table_statuses_dict.iteritems()]
-      return fase_model.Status('\n'.join(sorted(table_statuses_str)))
+      fase_database.FaseDatabaseInterface.Get().CreateDatabase()
+      return fase_model.Status(TABLES_CREATED)
     elif command.command == DELETE_DB_COMMAND:
-      if not self.processor_config.allow_deletedb:
-        raise BadRequestException(DELETING_DB_IS_NOT_ALLOWED)
-      self.database.DeleteDB()
+      fase_database.FaseDatabaseInterface.Get().DeleteDatabase()
       return fase_model.Status(TABLES_DELETED)
     else:
       raise BadRequestException(WRONG_COMMAND)

@@ -89,7 +89,8 @@ class ElementClicked(data_util.AbstractObject):
 
 @json_util.JSONDecorator({
     'screen': json_util.JSONObject(fase.Screen),
-    'session_info': json_util.JSONObject(SessionInfo)})
+    'session_info': json_util.JSONObject(SessionInfo),
+    'screen_info': json_util.JSONObject(ScreenInfo)})
 class Response(data_util.AbstractObject):
   
   def __init__(self,

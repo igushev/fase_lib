@@ -33,6 +33,12 @@ class MockFaseDatabase(FaseDatabaseInterface):
     self.user_id_to_user = {
         user.user_id: user for user in user_list}
 
+  def CreateDatabase(self):
+    pass
+
+  def DeleteDatabase(self):
+    pass
+
   def AddService(self, service, overwrite=False):
     assert service._session_id not in self.session_id_to_service or overwrite
     self.session_id_to_service[service._session_id] = service
@@ -88,7 +94,7 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
   def _GetUserTableName(self):
     return 'User'
 
-  def CreateTables(self):
+  def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
     table_names = table_names_response['TableNames']
 
@@ -184,6 +190,11 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
               'WriteCapacityUnits': 10
           }
       )
+
+  def DeleteDatabase(self):
+    self.dynamodb.delete_table(self._GetServiceTableName())
+    self.dynamodb.delete_table(self._GetScreenTableName())
+    self.dynamodb.delete_table(self._GetUserTableName())
 
   def AddService(self, service, overwrite=False):
     self.dynamodb.put_item(

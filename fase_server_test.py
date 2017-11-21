@@ -16,6 +16,19 @@ class FaseTest(unittest.TestCase):
             service_list=[], screen_list=[], user_list=[]), overwrite=True)
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
+  def testSendCommand(self):
+    command = fase_model.Command(fase_server.CREATE_DB_COMMAND)
+    status = fase_server.FaseServer.Get().SendCommand(command)
+    self.assertEqual(fase_server.TABLES_CREATED, status.message)
+
+    command = fase_model.Command(fase_server.DELETE_DB_COMMAND)
+    status = fase_server.FaseServer.Get().SendCommand(command)
+    self.assertEqual(fase_server.TABLES_DELETED, status.message)
+
+  def testError(self):
+    command = fase_model.Command('FAKE_COMMAND')
+    self.assertRaises(fase_server.BadRequestException, fase_server.FaseServer.Get().SendCommand, command)
+
   def testHelloWorld(self):
     device = fase_model.Device('MockType', 'MockToken')
     response = fase_server.FaseServer.Get().GetService(device)

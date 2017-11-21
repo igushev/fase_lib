@@ -33,7 +33,7 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     super(DynamoDBFaseDatabaseTest, self).tearDown()
 
   def testFase(self):
-    fase_database.FaseDatabaseInterface.Get().CreateTables()
+    fase_database.FaseDatabaseInterface.Get().CreateDatabase()
 
     service_1 = hello_world.HelloWorldService()
     screen_1 = service_1.OnStart()

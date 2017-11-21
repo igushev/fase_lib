@@ -18,6 +18,12 @@ class MockNotesDatabase(NotesDatabaseInterface):
   def __init__(self, note_list):
     self.note_id_note = {note.note_id: note for note in note_list}
 
+  def CreateDatabase(self):
+    pass
+
+  def DeleteDatabase(self):
+    pass
+
   def GetUserNotes(self, user_id):
     return [note for note in self.note_id_note.itervalues() if note.user_id == user_id]
 
@@ -40,7 +46,7 @@ class DynamoDBNotesDatabase(NotesDatabaseInterface):
   def _GetNotesTableName(self):
     return 'Notes'
 
-  def CreateTables(self):
+  def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
     table_names = table_names_response['TableNames']
     
@@ -94,6 +100,9 @@ class DynamoDBNotesDatabase(NotesDatabaseInterface):
               'WriteCapacityUnits': 10
           }
       )    
+
+  def DeleteDatabase(self):
+    self.dynamodb.delete_table(self._GetNotesTableName())
 
   def GetUserNotes(self, user_id):
     notes_response = self.dynamodb.query(
