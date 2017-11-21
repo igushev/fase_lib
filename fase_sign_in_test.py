@@ -45,10 +45,12 @@ fase.Service.RegisterService(SignInTestService)
 class FaseSignInTest(unittest.TestCase):
 
   def setUp(self):
+    super(FaseSignInTest, self).setUp()
     activation_code_generator.ActivationCodeGeneratorInterface.Set(
         activation_code_generator.MockActivationCodeGenerator(activation_code_generator.ActivationCodeGenerator()),
         overwrite=True)
     sms_sender.SMSSender.Set(sms_sender.SMSSender(sms_sender.MockSMSServiceProvider()), overwrite=True)
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
   def SignInProcedure(self,
                       service_num_before, screen_num_before,
@@ -188,8 +190,6 @@ class FaseSignInTest(unittest.TestCase):
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
-
     self.SignInProcedure(service_num_before=2, screen_num_before=2,
                          service_num_during=2, screen_num_during=3,
                          sign_in=True,
@@ -209,8 +209,6 @@ class FaseSignInTest(unittest.TestCase):
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
-
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
                          sign_in=True,
@@ -224,8 +222,6 @@ class FaseSignInTest(unittest.TestCase):
             screen_list=[],
             user_list=[]),
         overwrite=True)
-
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
     session_info, screen_info = (
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
@@ -255,8 +251,6 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
-
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
                          sign_in=False,
@@ -274,8 +268,6 @@ class FaseSignInTest(unittest.TestCase):
                                 last_name='Igushev',
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
-
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
     session_info, screen_info = (
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
@@ -309,8 +301,6 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
-
     session_info, screen_info = (
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
@@ -338,8 +328,6 @@ class FaseSignInTest(unittest.TestCase):
             screen_list=[],
             user_list=[]),
         overwrite=True)
-
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
     # Create Service.
     response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
@@ -405,8 +393,6 @@ class FaseSignInTest(unittest.TestCase):
             screen_list=[],
             user_list=[]),
         overwrite=True)
-
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
     # Create Service.
     response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))

@@ -16,6 +16,10 @@ import notes
 
 class NotesTest(unittest.TestCase):
 
+  def setUp(self):
+    super(NotesTest, self).setUp()
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
   def Start(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
@@ -51,8 +55,6 @@ class NotesTest(unittest.TestCase):
     notes_database.NotesDatabaseInterface.Set(
         notes_database.MockNotesDatabase([self.note_1, self.note_2, self.note_3]),
         overwrite=True)
-
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
     # Create Service
     response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))

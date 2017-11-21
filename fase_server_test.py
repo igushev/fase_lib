@@ -9,11 +9,14 @@ import hello_world
 
 class FaseTest(unittest.TestCase):
 
-  def testHelloWorld(self):
+  def setUp(self):
+    super(FaseTest, self).setUp()
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[], screen_list=[], user_list=[]), overwrite=True)
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
+  def testHelloWorld(self):
     device = fase_model.Device('MockType', 'MockToken')
     response = fase_server.FaseServer.Get().GetService(device)
     session_info = response.session_info
@@ -57,10 +60,6 @@ class FaseTest(unittest.TestCase):
     self.assertEqual(expected_screen, response.screen)
 
   def testElementClickedScreenInfoObsolete(self):
-    fase_database.FaseDatabaseInterface.Set(
-        fase_database.MockFaseDatabase(
-            service_list=[], screen_list=[], user_list=[]), overwrite=True)
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
     device = fase_model.Device('MockType', 'MockToken')
     response = fase_server.FaseServer.Get().GetService(device)
     session_info = response.session_info
@@ -82,10 +81,6 @@ class FaseTest(unittest.TestCase):
     self.assertEqual(screen_clicked_next, response_click_again.screen)
 
   def testScreenUpdateScreenInfoObsolete(self):
-    fase_database.FaseDatabaseInterface.Set(
-        fase_database.MockFaseDatabase(
-            service_list=[], screen_list=[], user_list=[]), overwrite=True)
-    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
     device = fase_model.Device('MockType', 'MockToken')
     response = fase_server.FaseServer.Get().GetService(device)
     session_info = response.session_info
