@@ -1,4 +1,4 @@
-import fase_config
+import config_util
 import notes_database
 
 
@@ -10,5 +10,5 @@ def GetNotesDatabase(config):
       aws_secret_access_key=config.get('dynamodb', 'aws_secret_access_key'))
 
 
-notes_config = fase_config.GetConfig('NOTES_CONFIG_FILENAME')
+notes_config = config_util.GetConfig('NOTES_CONFIG_FILENAME')
 notes_database.NotesDatabaseInterface.Set(GetNotesDatabase(notes_config))

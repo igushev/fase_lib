@@ -1,15 +1,8 @@
-import os
-import ConfigParser
-
 import activation_code_generator
+import config_util
 import fase_database
+import fase_server
 import sms_sender
-
-
-def GetConfig(filename):
-  config = ConfigParser.ConfigParser()
-  config.read(os.environ[filename])
-  return config
 
 
 def GetFaseDatabase(config):
@@ -40,7 +33,8 @@ def GetSMSSender(config):
           else None))
 
 
-fase_config = GetConfig('FASE_CONFIG_FILENAME')
+fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
 fase_database.FaseDatabase.Set(GetFaseDatabase(fase_config))
 activation_code_generator.ActivationCodeGenerator.Set(GetActivationCodeGenerator(fase_config))
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
+fase_server.FaseServer.Set(fase_server.FaseServer())
