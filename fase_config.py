@@ -40,7 +40,6 @@ def GetSMSSender(config):
           else None))
 
 
-
 fase_config = GetConfig('FASE_CONFIG_FILENAME')
 fase_database.FaseDatabase.Set(GetFaseDatabase(fase_config))
 activation_code_generator.ActivationCodeGenerator.Set(GetActivationCodeGenerator(fase_config))

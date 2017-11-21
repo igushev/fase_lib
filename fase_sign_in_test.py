@@ -59,9 +59,8 @@ class FaseSignInTest(unittest.TestCase):
                       return_phone_enter=False,
                       return_activation_code_enter=False):
     assert sign_in is not None
-    # Create Server and Service.
-    fase_server_ = fase_server.FaseServer()
-    response = fase_server_.GetService(fase_model.Device(device_type='iOS', device_token='Token'))
+    # Create Service.
+    response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -72,7 +71,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='sign_in_button_id')
 
     # Click on Sign In button.
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check.
@@ -84,8 +84,8 @@ class FaseSignInTest(unittest.TestCase):
 
     if sign_in:
       # Click on Sign In button.
-      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']),
-                                             session_info, screen_info)
+      response = fase_server.FaseServer.Get().ElementClicked(
+          fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
       # Check.
@@ -96,20 +96,20 @@ class FaseSignInTest(unittest.TestCase):
       screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
   
       if return_phone_enter:
-        return fase_server_, session_info, screen_info
+        return session_info, screen_info
   
       # Enter phone number.
       screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], [phone_number])
-      fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+      fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign In button.
-      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']),
-                                             session_info, screen_info)
+      response = fase_server.FaseServer.Get().ElementClicked(
+          fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
     else:
       # Click on Sign Up button.
-      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_up_button_id']),
-                                             session_info, screen_info)
+      response = fase_server.FaseServer.Get().ElementClicked(
+          fase_model.ElementClicked(['sign_in_layout_id', 'sign_up_button_id']), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
       # Check.
@@ -122,7 +122,7 @@ class FaseSignInTest(unittest.TestCase):
       screen.GetElement(id_='sign_up_layout_id').GetElement(id_='sign_up_button_id')
   
       if return_phone_enter:
-        return fase_server_, session_info, screen_info
+        return session_info, screen_info
   
       # Enter phone number.
       screen_update = fase_model.ScreenUpdate([['sign_up_layout_id', 'phone_number_text_id'],
@@ -130,10 +130,10 @@ class FaseSignInTest(unittest.TestCase):
                                                ['sign_up_layout_id', 'last_name_text_id']], [phone_number,
                                                                                              first_name,
                                                                                              last_name])
-      fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+      fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign Up button.
-      response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']),
-                                             session_info, screen_info)
+      response = fase_server.FaseServer.Get().ElementClicked(
+          fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
     
@@ -145,16 +145,16 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='send_button_id')
   
     if return_activation_code_enter:
-      return fase_server_, session_info, screen_info
+      return session_info, screen_info
 
     # Enter activation code.
     screen_update = fase_model.ScreenUpdate(
         [['enter_activation_layout_id', 'activation_code_text_id']],
         [str(activation_code_generator.ActivationCodeGeneratorInterface.Get().codes[-1])])
-    fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Send button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']),
-                                session_info, screen_info)
+    fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']), session_info, screen_info)
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
@@ -188,6 +188,8 @@ class FaseSignInTest(unittest.TestCase):
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
     self.SignInProcedure(service_num_before=2, screen_num_before=2,
                          service_num_during=2, screen_num_during=3,
                          sign_in=True,
@@ -207,6 +209,8 @@ class FaseSignInTest(unittest.TestCase):
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
                          sign_in=True,
@@ -221,7 +225,9 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    fase_server_, session_info, screen_info = (
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
+    session_info, screen_info = (
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
                              sign_in=True,
@@ -230,10 +236,10 @@ class FaseSignInTest(unittest.TestCase):
 
     # Enter phone number.
     screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], ['+13216549870'])
-    fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign In button.
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']),
-                                           session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -248,6 +254,8 @@ class FaseSignInTest(unittest.TestCase):
             screen_list=[],
             user_list=[]),
         overwrite=True)
+
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=2,
@@ -267,7 +275,9 @@ class FaseSignInTest(unittest.TestCase):
                                 datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
-    fase_server_, session_info, screen_info = (
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
+    session_info, screen_info = (
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
                              sign_in=False,
@@ -280,10 +290,10 @@ class FaseSignInTest(unittest.TestCase):
                                              ['sign_up_layout_id', 'last_name_text_id']], ['+13216549870',
                                                                                            'Edward',
                                                                                            'Igushev'])
-    fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign Up button.
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']),
-                                           session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']), session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -299,7 +309,9 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    fase_server_, session_info, screen_info = (
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
+    session_info, screen_info = (
         self.SignInProcedure(service_num_before=1, screen_num_before=1,
                              service_num_during=1, screen_num_during=2,
                              sign_in=False,
@@ -308,10 +320,10 @@ class FaseSignInTest(unittest.TestCase):
 
     # Enter activation code.
     screen_update = fase_model.ScreenUpdate([['enter_activation_layout_id', 'activation_code_text_id']], '1234')
-    fase_server_.ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Send button.
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']),
-                                           session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']), session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -327,9 +339,10 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    # Create Server and Service.
-    fase_server_ = fase_server.FaseServer()
-    response = fase_server_.GetService(fase_model.Device(device_type='iOS', device_token='Token'))
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
+    # Create Service.
+    response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -349,7 +362,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='sign_out_button_id')
 
     # Click on Sign Out button.
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_button_id']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_out_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check.
@@ -359,8 +373,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='sign_out_layout_id').GetElement(id_='sign_out_button_id')
 
     # Click on Sign Out button.
-    fase_server_.ElementClicked(fase_model.ElementClicked(['sign_out_layout_id', 'sign_out_button_id']),
-                                session_info, screen_info)
+    fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_out_layout_id', 'sign_out_button_id']), session_info, screen_info)
 
     # Check.
     session_id_to_service = fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()
@@ -392,9 +406,10 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    # Create Server and Service.
-    fase_server_ = fase_server.FaseServer()
-    response = fase_server_.GetService(fase_model.Device(device_type='iOS', device_token='Token'))
+    fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
+
+    # Create Service.
+    response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -405,7 +420,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='sign_in_button_id')
 
     # Click on Sign In button.
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_in_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check.
@@ -416,8 +432,8 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_up_button_id')
     
     # Click on Skip button
-    response = fase_server_.ElementClicked(fase_model.ElementClicked(['sign_in_layout_id', 'skip_button_id']),
-                                           session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(['sign_in_layout_id', 'skip_button_id']), session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))

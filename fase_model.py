@@ -102,6 +102,14 @@ class Response(data_util.AbstractObject):
 
 
 @json_util.JSONDecorator({
+    'command': json_util.JSONString()})
+class Command(data_util.AbstractObject):
+
+  def __init__(self, command):
+    self.command = command
+
+
+@json_util.JSONDecorator({
     'message': json_util.JSONString()})
 class Status(data_util.AbstractObject):
 
@@ -109,6 +117,9 @@ class Status(data_util.AbstractObject):
     self.message = message
 
 
+@json_util.JSONDecorator({
+    'code': json_util.JSONInt(),
+    'message': json_util.JSONString()})
 class BadRequest(data_util.AbstractObject):
 
   def __init__(self, code, message):

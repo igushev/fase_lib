@@ -7,6 +7,7 @@ import fase_database
 import fase_error
 import fase_model
 import fase
+import singleton_util
 
 
 STATUS_OK = 200
@@ -14,7 +15,21 @@ STATUS_BAD_REQUEST = 400
 STATUS_ERROR = 500
 STATUS_OK_TEXT = 'OK'
 
+CREATE_DB_COMMAND = 'createdb'
+DELETE_DB_COMMAND = 'deletedb'
+
+TABLE_CREATED = 'Table %s created'
+TABLE_EXISTED = 'Table %s already existed'
+TABLES_DELETED = 'All tables are being deleted'
+
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
+
+DELETING_DB_IS_NOT_ALLOWED = fase_model.BadRequest(
+  code=401,
+  message='Deleting of database is not allowed by the configuration!')
+WRONG_COMMAND = fase_model.BadRequest(
+  code=402,
+  message='Wrong command!')
 
 
 class BadRequestException(Exception):
@@ -27,6 +42,7 @@ class BadRequestException(Exception):
     return self._bad_request
 
 
+@singleton_util.Singleton()
 class FaseServer(object):
 
   @staticmethod
@@ -41,6 +57,24 @@ class FaseServer(object):
       logging.error(str(e))
       logging.error(str(traceback.format_exc()))
       return str(traceback.format_exc()), STATUS_ERROR
+
+  def SendCommand(self, command):
+    if command.command == CREATE_DB_COMMAND:
+      table_statuses_dict = self.database.CreateDB()
+      table_statuses_str = [
+          TABLE_CREATED % table_name
+          if table_status.created
+          else TABLE_EXISTED % table_name
+          for table_name, table_status
+          in table_statuses_dict.iteritems()]
+      return fase_model.Status('\n'.join(sorted(table_statuses_str)))
+    elif command.command == DELETE_DB_COMMAND:
+      if not self.processor_config.allow_deletedb:
+        raise BadRequestException(DELETING_DB_IS_NOT_ALLOWED)
+      self.database.DeleteDB()
+      return fase_model.Status(TABLES_DELETED)
+    else:
+      raise BadRequestException(WRONG_COMMAND)
 
   def GetService(self, device):
     assert fase.Service.service_cls is not None
@@ -110,3 +144,20 @@ class FaseServer(object):
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen.GetScreenId()))
 
+  ##############################################################################
+  # Safe Methods
+
+  def SendCommandSafe(self, command):
+    return FaseServer._SafeCall(self.SendCommand, command)
+
+  def GetServiceSafe(self, device):
+    return FaseServer._SafeCall(self.GetService, device)
+
+  def GetScreenSafe(self, session_info):
+    return FaseServer._SafeCall(self.GetScreen, session_info)
+
+  def ScreenUpdateSafe(self, screen_update, session_info, screen_info):
+    return FaseServer._SafeCall(self.ScreenUpdate, screen_update, session_info, screen_info)
+
+  def ElementClickedSafe(self, element_clicked, session_info, screen_info):
+    return FaseServer._SafeCall(self.ElementClicked, element_clicked, session_info, screen_info)
