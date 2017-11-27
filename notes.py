@@ -7,10 +7,27 @@ import notes_model
 import fase
 import fase_sign_in
 
+CREATE_DB_COMMAND = 'createdb'
+DELETE_DB_COMMAND = 'deletedb'
+
+TABLES_CREATED = 'Add table are being created'
+TABLES_DELETED = 'All tables are being deleted'
+
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 
 class NotesService(fase.Service):
+
+  @staticmethod
+  def ServiceCommand(command):
+    if command.command == CREATE_DB_COMMAND:
+      notes_database.NotesDatabaseInterface.Get().CreateDatabase()
+      return TABLES_CREATED
+    elif command.command == DELETE_DB_COMMAND:
+      notes_database.NotesDatabaseInterface.Get().DeleteDatabase()
+      return TABLES_DELETED
+    else:
+      raise AssertionError(command.command)
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label', value='notes')

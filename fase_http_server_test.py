@@ -27,20 +27,28 @@ class ApplicationTest(unittest.TestCase):
       print(result.data)
       self.fail()
 
-  def _SendCommand(self, command):
+  def _SendInternalCommand(self, command):
     result = self.test_application.post(
-        '/sendcommand',
+        '/sendinternalcommand',
         data=json.dumps(command.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
     status = fase_model.Status.FromSimple(json.loads(result.data))
     return status
 
-  def _SendCommandAndAssertFails(self, command, bad_request):
+  def _SendInternalCommandAndAssertFails(self, command, bad_request):
     result = self.test_application.post(
-        '/sendcommand',
+        '/sendinternalcommand',
         data=json.dumps(command.ToSimple()))
     self.AssertResultStatus(STATUS_BAD_REQUEST, result)
     self.assertEqual(bad_request, fase_model.BadRequest.FromSimple(json.loads(result.data)))
+
+  def _SendServiceCommand(self, command):
+    result = self.test_application.post(
+        '/sendservicecommand',
+        data=json.dumps(command.ToSimple()))
+    self.AssertResultStatus(STATUS_OK, result)
+    status = fase_model.Status.FromSimple(json.loads(result.data))
+    return status
 
   def _GetService(self, device):
     result = self.test_application.post(
@@ -76,18 +84,23 @@ class ApplicationTest(unittest.TestCase):
     response = fase_model.Response.FromSimple(json.loads(result.data))
     return response
 
-  def testSendCommand(self):
+  def testSendInternalCommand(self):
     command = fase_model.Command(fase_server.CREATE_DB_COMMAND)
-    status = self._SendCommand(command)
+    status = self._SendInternalCommand(command)
     self.assertEqual(fase_server.TABLES_CREATED, status.message)
 
     command = fase_model.Command(fase_server.DELETE_DB_COMMAND)
-    status = self._SendCommand(command)
+    status = self._SendInternalCommand(command)
     self.assertEqual(fase_server.TABLES_DELETED, status.message)
 
-  def testError(self):
+  def testSendInternalCommandError(self):
     command = fase_model.Command('FAKE_COMMAND')
-    self._SendCommandAndAssertFails(command, fase_server.WRONG_COMMAND)
+    self._SendInternalCommandAndAssertFails(command, fase_server.WRONG_COMMAND)
+
+  def testSendServiceCommand(self):
+    command = fase_model.Command('ServiceName')
+    status = self._SendServiceCommand(command)
+    self.assertEqual('HelloWorld', status.message)
 
   def testHelloWorld(self):
     device = fase_model.Device('MockType', 'MockToken')

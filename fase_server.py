@@ -54,7 +54,7 @@ class FaseServer(object):
       logging.error(str(traceback.format_exc()))
       return str(traceback.format_exc()), STATUS_ERROR
 
-  def SendCommand(self, command):
+  def SendInternalCommand(self, command):
     if command.command == CREATE_DB_COMMAND:
       fase_database.FaseDatabaseInterface.Get().CreateDatabase()
       return fase_model.Status(TABLES_CREATED)
@@ -63,6 +63,11 @@ class FaseServer(object):
       return fase_model.Status(TABLES_DELETED)
     else:
       raise BadRequestException(WRONG_COMMAND)
+
+  def SendServiceCommand(self, command):
+    assert fase.Service.service_cls is not None
+    service_cls = fase.Service.service_cls
+    return fase_model.Status(service_cls.ServiceCommand(command))
 
   def GetService(self, device):
     assert fase.Service.service_cls is not None
@@ -135,8 +140,11 @@ class FaseServer(object):
   ##############################################################################
   # Safe Methods
 
-  def SendCommandSafe(self, command):
-    return FaseServer._SafeCall(self.SendCommand, command)
+  def SendInternalCommandSafe(self, command):
+    return FaseServer._SafeCall(self.SendInternalCommand, command)
+
+  def SendServiceCommandSafe(self, command):
+    return FaseServer._SafeCall(self.SendServiceCommand, command)
 
   def GetServiceSafe(self, device):
     return FaseServer._SafeCall(self.GetService, device)

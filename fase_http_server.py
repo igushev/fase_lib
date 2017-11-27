@@ -4,14 +4,23 @@ import fase_model
 import fase_server
 
 application = Flask(__name__)
-application.secret_key = 'karma_counter_flask_secret_key'
+application.secret_key = 'fase_flask_secret_key'
 
 
-@application.route('/sendcommand', methods=['POST', 'OPTIONS'])
-def sendcommand():
+@application.route('/sendinternalcommand', methods=['POST', 'OPTIONS'])
+def sendinternalcommand():
   command_simple = request.get_json(force=True) 
   command = fase_model.Command.FromSimple(command_simple)
-  status, code = fase_server.FaseServer.Get().SendCommandSafe(command)
+  status, code = fase_server.FaseServer.Get().SendInternalCommandSafe(command)
+  status_simple = status.ToSimple()
+  return jsonify(**status_simple), code
+
+
+@application.route('/sendservicecommand', methods=['POST', 'OPTIONS'])
+def sendservicecommand():
+  command_simple = request.get_json(force=True) 
+  command = fase_model.Command.FromSimple(command_simple)
+  status, code = fase_server.FaseServer.Get().SendServiceCommandSafe(command)
   status_simple = status.ToSimple()
   return jsonify(**status_simple), code
 

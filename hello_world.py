@@ -2,8 +2,14 @@ import fase
 
 
 class HelloWorldService(fase.Service):
-  
-  
+
+  @staticmethod
+  def ServiceCommand(command):
+    if command.command == 'ServiceName':
+      return 'HelloWorld'
+    else:
+      raise AssertionError('Wrong ServiceCommand') 
+
   def OnStart(self):
     screen = fase.Screen(self)
     screen.AddText(id_='text_name_id', hint='Enter Name')
