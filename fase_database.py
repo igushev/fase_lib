@@ -86,13 +86,13 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
     self.dynamodb = boto3.client('dynamodb', **kwargs)
 
   def _GetServiceTableName(self):
-    return 'Service'
+    return 'fase_service'
 
   def _GetScreenTableName(self):
-    return 'Screen'
+    return 'fase_screen'
 
   def _GetUserTableName(self):
-    return 'User'
+    return 'fase_user'
 
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
