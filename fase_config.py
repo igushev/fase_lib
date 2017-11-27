@@ -8,9 +8,7 @@ import sms_sender
 def GetFaseDatabase(config):
   return fase_database.DynamoDBFaseDatabase(
       region_name=config.get('dynamodb', 'region_name'),
-      endpoint_url=config.get('dynamodb', 'endpoint_url'),
-      aws_access_key_id=config.get('dynamodb', 'aws_access_key_id'),
-      aws_secret_access_key=config.get('dynamodb', 'aws_secret_access_key'))
+      endpoint_url=config.get('dynamodb', 'endpoint_url'))
 
 
 def GetActivationCodeGenerator(config):
@@ -20,9 +18,7 @@ def GetActivationCodeGenerator(config):
 def GetSMSSender(config):
   if config.has_section('sns'):
     sms_service_provider = sms_sender.SNSSMSServiceProvider(
-        region_name=config.get('sns', 'region_name'),
-        aws_access_key_id=config.get('sns', 'aws_access_key_id'),
-        aws_secret_access_key=config.get('sns', 'aws_secret_access_key'))
+        region_name=config.get('sns', 'region_name'))
   else:
     sms_service_provider = sms_sender.NullSMSServiceProvider()
   return sms_sender.SMSSender(
@@ -34,7 +30,7 @@ def GetSMSSender(config):
 
 
 fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
-fase_database.FaseDatabase.Set(GetFaseDatabase(fase_config))
+fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
 activation_code_generator.ActivationCodeGenerator.Set(GetActivationCodeGenerator(fase_config))
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
 fase_server.FaseServer.Set(fase_server.FaseServer())
