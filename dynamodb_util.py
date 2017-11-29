@@ -3,7 +3,7 @@ def SimpleToField(simple):
     return {'L': [SimpleToField(nested_simple) for nested_simple in simple]}
   elif isinstance(simple, dict):
     return {'M': {nested_key: SimpleToField(nested_simple) for nested_key, nested_simple in simple.iteritems()}}
-  elif isinstance(simple, str):
+  elif isinstance(simple, basestring):
     return {'S': simple}
   elif isinstance(simple, bool):
     return {'BOOL': simple}
@@ -12,7 +12,7 @@ def SimpleToField(simple):
   elif simple is None:
     return {'NULL': True}
   else:
-    return TypeError('Unsorted type: %s' % type(simple))
+    raise TypeError('Unsupported type: %s' % type(simple))
 
 
 def SimpleToItem(simple):
@@ -29,7 +29,7 @@ def FieldToSimple(type_item):
     return {nested_key: FieldToSimple(nested_type_item)
             for nested_key, nested_type_item in item.iteritems()}
   elif type_ == 'S':
-    return item
+    return str(item)
   elif type_ == 'BOOL':
     return item
   elif type_ == 'N':
