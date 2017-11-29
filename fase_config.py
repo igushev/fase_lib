@@ -7,8 +7,7 @@ import sms_sender
 
 def GetFaseDatabase(config):
   return fase_database.DynamoDBFaseDatabase(
-      region_name=config.get('dynamodb', 'region_name'),
-      endpoint_url=config.get('dynamodb', 'endpoint_url'))
+      region_name=config.get('dynamodb', 'region_name'))
 
 
 def GetActivationCodeGenerator(config):
