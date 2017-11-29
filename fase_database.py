@@ -192,9 +192,9 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
       )
 
   def DeleteDatabase(self):
-    self.dynamodb.delete_table(self._GetServiceTableName())
-    self.dynamodb.delete_table(self._GetScreenTableName())
-    self.dynamodb.delete_table(self._GetUserTableName())
+    self.dynamodb.delete_table(TableName=self._GetServiceTableName())
+    self.dynamodb.delete_table(TableName=self._GetScreenTableName())
+    self.dynamodb.delete_table(TableName=self._GetUserTableName())
 
   def AddService(self, service, overwrite=False):
     self.dynamodb.put_item(

@@ -102,7 +102,7 @@ class DynamoDBNotesDatabase(NotesDatabaseInterface):
       )    
 
   def DeleteDatabase(self):
-    self.dynamodb.delete_table(self._GetNotesTableName())
+    self.dynamodb.delete_table(TableName=self._GetNotesTableName())
 
   def GetUserNotes(self, user_id):
     notes_response = self.dynamodb.query(
