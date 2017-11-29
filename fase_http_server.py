@@ -24,7 +24,7 @@ def SafeCall(func, *args, **kwargs):
     logging.error(type(e))
     logging.error(str(e))
     logging.error(str(traceback.format_exc()))
-    return str(traceback.format_exc()), STATUS_ERROR
+    return fase_model.Status(str(traceback.format_exc())).ToSimple(), STATUS_ERROR
 
 
 @application.route('/sendinternalcommand', methods=['POST', 'OPTIONS'])

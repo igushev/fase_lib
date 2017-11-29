@@ -11,7 +11,7 @@ import fase
 class FaseSignInButton(fase.Button):
 
   def FaseOnClick(self, service, screen):
-    activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_str').GetValue()
+    activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_int').GetValue()
     activation_code_entered = int(
         screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
@@ -142,7 +142,7 @@ class FaseSignIn(object):
     enter_activation_layout.AddText(id_='activation_code_text_id', hint='Activation Code')
     enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send'))
     service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
-    service.AddIntVariable(id_='fase_sign_in_activation_code_str', value=activation_code)
+    service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
     screen.AddPrevStepButton(on_click=FaseSignIn.StartSignIn)
     return screen
 

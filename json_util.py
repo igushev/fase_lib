@@ -52,7 +52,7 @@ class JSONInt(JSONObjectInterface):
   
   def FromSimple(self, simple):
     assert isinstance(simple, (float, int))
-    return simple
+    return int(simple)
 
 
 class JSONBool(JSONObjectInterface):

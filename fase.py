@@ -293,7 +293,8 @@ class MenuItem(VisualElement):
     self._icon = icon
 
 
-@json_util.JSONDecorator({})
+@json_util.JSONDecorator({
+    '_text': json_util.JSONString()})
 class Menu(ElementContainer):
   def __init__(self, text=None):
     super(Menu, self).__init__()
