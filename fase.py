@@ -44,35 +44,37 @@ class Element(data_util.AbstractObject):
 
 # TODO(igushev): Reuse object when deserialized.
 @json_util.JSONDecorator(
-    {'_id_to_element':
-     json_util.JSONDict(json_util.JSONString(), json_util.JSONObject(Element)),
-     '_id_element_list':
+    {'_id_element_list':
      json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
                                              json_util.JSONObject(Element)]))})
 class ElementContainer(Element):
   def __init__(self):
     super(ElementContainer, self).__init__()
-    self._id_to_element = {}
     self._id_element_list = []
 
   def AddElement(self, id_, element):
-    assert id_ not in self._id_to_element
-    self._id_to_element[id_] = element
+    assert not self.HasElement(id_)
     self._id_element_list.append((id_, element))
     return element
 
   def HasElement(self, id_):
-    return id_ in self._id_to_element
+    for id_in_list, _ in self._id_element_list:
+      if id_in_list == id_:
+        return True
+    return False
 
   def GetElement(self, id_):
-    return self._id_to_element[id_]
+    for id_in_list, value in self._id_element_list:
+      if id_in_list == id_:
+        return value
+    raise KeyError(id_)
 
   def PopElement(self, id_):
-    for i, (id_in_list, _) in enumerate(self._id_element_list):
+    for i, (id_in_list, value) in enumerate(self._id_element_list):
       if id_in_list == id_:
         del self._id_element_list[i]
-        break
-    return self._id_to_element.pop(id_)
+        return value
+    raise KeyError(id_)
 
   def GetIdElementList(self):
     return self._id_element_list
