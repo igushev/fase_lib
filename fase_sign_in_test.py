@@ -23,11 +23,11 @@ class SignInTestService(fase.Service):
     return screen
 
   def OnSignIn(self, screen, element):
-    return fase_sign_in.FaseSignIn.StartSignIn(
+    return fase_sign_in.StartSignIn(
         self, on_sign_in_done=SignInTestService.OnSignInDone, skip_option=True, cancel_option=True)
 
   def OnSignOut(self, screen, element):
-    return fase_sign_in.FaseSignIn.StartSignOut(self)
+    return fase_sign_in.StartSignOut(self)
 
   def OnSignInDone(self, user_id_before=None):
     screen = fase.Screen(self)
