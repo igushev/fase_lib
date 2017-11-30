@@ -4,6 +4,7 @@ import inspect
 import json
 import os
 
+import util
     
 DATE_FORMAT = '%Y-%m-%d'
 TIME_FORMAT = '%H:%M:%S.%f'
@@ -25,83 +26,93 @@ class JSONObjectInterface(object):
 class JSONString(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, (str, unicode))
+    util.AssertIsInstance(field_obj, (str, unicode))
     return field_obj
   
   def FromSimple(self, simple):
-    assert isinstance(simple, (str, unicode))
+    util.AssertIsInstance(simple, (str, unicode))
     return simple
 
 
 class JSONFloat(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, float)
+    util.AssertIsInstance(field_obj, float)
     return field_obj
   
   def FromSimple(self, simple):
-    assert isinstance(simple, (float, int))
+    util.AssertIsInstance(simple, (float, int))
     return float(simple)
 
 
 class JSONInt(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, int)
+    util.AssertIsInstance(field_obj, int)
     return field_obj
   
   def FromSimple(self, simple):
-    assert isinstance(simple, (float, int))
+    util.AssertIsInstance(simple, (float, int))
     return int(simple)
 
 
 class JSONBool(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, bool)
+    util.AssertIsInstance(field_obj, bool)
     return field_obj
 
   def FromSimple(self, simple):
-    assert isinstance(simple, (bool, int))
+    util.AssertIsInstance(simple, (bool, int))
     return bool(simple)
 
 
 class JSONDate(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, datetime.date)
+    util.AssertIsInstance(field_obj, datetime.date)
     return field_obj.strftime(DATE_FORMAT)
   
   def FromSimple(self, simple):
-    assert isinstance(simple, basestring)
+    util.AssertIsInstance(simple, basestring)
     return datetime.datetime.strptime(simple, DATE_FORMAT).date()
 
 
 class JSONDateTime(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, datetime.datetime)
+    util.AssertIsInstance(field_obj, datetime.datetime)
     return field_obj.strftime(DATETIME_FORMAT)
   
   def FromSimple(self, simple):
-    assert isinstance(simple, basestring)
+    util.AssertIsInstance(simple, basestring)
     return datetime.datetime.strptime(simple, DATETIME_FORMAT)
 
 
 class JSONClassMethod(JSONObjectInterface):
 
   def ToSimple(self, field_obj):
-    assert inspect.ismethod(field_obj) and field_obj.im_self is None
-    field_obj_cls = field_obj.im_class
-    return {MODULE_FIELD: field_obj_cls.__module__,
-            CLASS_FIELD: field_obj_cls.__name__,
-            FUNC_FIELD: field_obj.__name__}
+    if inspect.ismethod(field_obj) and field_obj.im_self is None:
+      field_obj_cls = field_obj.im_class
+      return {MODULE_FIELD: field_obj_cls.__module__,
+              CLASS_FIELD: field_obj_cls.__name__,
+              FUNC_FIELD: field_obj.__name__}
+    elif inspect.isfunction(field_obj):
+      return {MODULE_FIELD: field_obj.__module__,
+              FUNC_FIELD: field_obj.__name__}
+    else:
+      raise AssertionError(
+          'Type must either unbound class method or function, but got %s' %
+          type(field_obj))
   
   def FromSimple(self, simple):
-    assert isinstance(simple, dict)
-    return getattr(getattr(os.sys.modules[simple[MODULE_FIELD]],
-                           simple[CLASS_FIELD]),
-                   simple[FUNC_FIELD])
+    util.AssertIsInstance(simple, dict)
+    if CLASS_FIELD in simple:
+      return getattr(getattr(os.sys.modules[simple[MODULE_FIELD]],
+                             simple[CLASS_FIELD]),
+                     simple[FUNC_FIELD])
+    else:
+      return getattr(os.sys.modules[simple[MODULE_FIELD]], simple[FUNC_FIELD])
 
 
 class JSONObject(JSONObjectInterface):
@@ -120,16 +131,16 @@ class JSONTuple(JSONObjectInterface):
   
   def __init__(self, json_obj_list):
     for json_obj in json_obj_list:
-      assert isinstance(json_obj, JSONObjectInterface)
+      util.AssertIsInstance(json_obj, JSONObjectInterface)
     self._json_obj_list = json_obj_list
     
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, tuple)
+    util.AssertIsInstance(field_obj, tuple)
     return [json_obj.ToSimple(item_obj)
             for json_obj, item_obj in zip(self._json_obj_list, field_obj)]
   
   def FromSimple(self, simple):
-    assert isinstance(simple, list)
+    util.AssertIsInstance(simple, list)
     return tuple(json_obj.FromSimple(item_simple)
                  for json_obj, item_simple in zip(self._json_obj_list, simple))
 
@@ -137,34 +148,34 @@ class JSONTuple(JSONObjectInterface):
 class JSONList(JSONObjectInterface):
   
   def __init__(self, json_obj):
-    assert isinstance(json_obj, JSONObjectInterface)
+    util.AssertIsInstance(json_obj, JSONObjectInterface)
     self._json_obj = json_obj
     
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, list)
+    util.AssertIsInstance(field_obj, list)
     return [self._json_obj.ToSimple(item_obj) for item_obj in field_obj]
   
   def FromSimple(self, simple):
-    assert isinstance(simple, list)
+    util.AssertIsInstance(simple, list)
     return [self._json_obj.FromSimple(item_simple) for item_simple in simple]
 
 
 class JSONDict(object):
   
   def __init__(self, key_json_obj, value_json_obj):
-    assert isinstance(key_json_obj, JSONObjectInterface)
-    assert isinstance(value_json_obj, JSONObjectInterface)
+    util.AssertIsInstance(key_json_obj, JSONObjectInterface)
+    util.AssertIsInstance(value_json_obj, JSONObjectInterface)
     self._key_json_obj = key_json_obj
     self._value_json_obj = value_json_obj
   
   def ToSimple(self, field_obj):
-    assert isinstance(field_obj, dict)
+    util.AssertIsInstance(field_obj, dict)
     return {self._key_json_obj.ToSimple(key_obj):
             self._value_json_obj.ToSimple(value_obj)
             for key_obj, value_obj in field_obj.iteritems()}
   
   def FromSimple(self, simple):
-    assert isinstance(simple, dict)
+    util.AssertIsInstance(simple, dict)
     return {self._key_json_obj.FromSimple(key_simple):
             self._value_json_obj.FromSimple(value_simple)
             for key_simple, value_simple in simple.iteritems()}

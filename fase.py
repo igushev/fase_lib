@@ -3,6 +3,7 @@ import hashlib
 
 import data_util
 import json_util
+import util
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
@@ -91,7 +92,7 @@ class IntVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, int) or value is None
+    util.AssertIsInstanceOrNone(value, int)
     self._value = value
   def GetValue(self):
     return self._value
@@ -105,7 +106,7 @@ class FloatVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, float) or value is None
+    util.AssertIsInstanceOrNone(value, float)
     self._value = value
   def GetValue(self):
     return self._value
@@ -119,7 +120,7 @@ class StringVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, basestring) or value is None
+    util.AssertIsInstanceOrNone(value, basestring)
     self._value = value
   def GetValue(self):
     return self._value
@@ -133,7 +134,7 @@ class BoolVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    assert isinstance(value, bool) or value is None
+    util.AssertIsInstanceOrNone(value, bool)
     self._value = value
   def GetValue(self):
     return self._value
@@ -202,7 +203,7 @@ class VisualElement(ElementContainer):
     self._displayed = True
 
   def SetDisplayed(self, displayed):
-    assert isinstance(displayed, bool)
+    util.AssertIsInstance(displayed, bool)
     self._displayed = displayed
 
 

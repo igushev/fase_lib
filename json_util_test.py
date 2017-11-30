@@ -187,6 +187,10 @@ class ClassWithMethod(data_util.AbstractObject):
     return self.var1 + var2
 
 
+def SumFunction(var1, var2):
+  return var1 + var2
+
+
 @json_util.JSONDecorator(
     {'method': json_util.JSONClassMethod()})
 class WithClassMethod(data_util.AbstractObject):
@@ -319,6 +323,14 @@ class JSONUtilsTest(unittest.TestCase):
                      with_class_method_from_simple.method(class_with_method, 1))
     self.assertEqual(7,
                      with_class_method_from_simple.method(class_with_method, 4))
+
+  def testWithFunction(self):
+    with_class_method = WithClassMethod(SumFunction)
+    self.AssertToFrom(with_class_method, WithClassMethod)
+    with_class_method_from_simple = (
+        WithClassMethod.FromSimple(with_class_method.ToSimple()))
+    self.assertEqual(4, with_class_method_from_simple.method(3, 1))
+    self.assertEqual(7, with_class_method_from_simple.method(3, 4))
 
   def testWithListOfTuples(self):
     obj = WithListOfTuples([(1, WithFloat(0.1)),

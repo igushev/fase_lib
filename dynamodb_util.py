@@ -1,3 +1,6 @@
+import util
+
+
 def SimpleToField(simple):
   if isinstance(simple, list):
     return {'L': [SimpleToField(nested_simple) for nested_simple in simple]}
@@ -20,8 +23,8 @@ def SimpleToItem(simple):
 
 
 def FieldToSimple(type_item):
-  assert isinstance(type_item, dict)
-  assert len(type_item) == 1
+  util.AssertIsInstance(type_item, dict)
+  assert len(type_item) == 1, 'Length must be 1, but %d' % len(type_item)
   type_, item = list(type_item.iteritems())[0]
   if type_ == 'L':
     return [FieldToSimple(nested_type_item) for nested_type_item in item]
