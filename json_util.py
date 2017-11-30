@@ -89,7 +89,7 @@ class JSONDateTime(JSONObjectInterface):
     return datetime.datetime.strptime(simple, DATETIME_FORMAT)
 
 
-class JSONClassMethod(JSONObjectInterface):
+class JSONFunction(JSONObjectInterface):
 
   def ToSimple(self, field_obj):
     if inspect.ismethod(field_obj) and field_obj.im_self is None:

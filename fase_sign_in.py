@@ -18,7 +18,7 @@ class FaseSignInButton(fase.Button):
       screen.AddPopup('Wrong activation code!')
       return service, screen
 
-    on_sign_in_done = service.PopClassMethodVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
+    on_sign_in_done = service.PopFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
     screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
     session_id_signed_in = service.PopStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
     # Delete service and screen current.
@@ -65,7 +65,7 @@ class FaseSignIn(object):
     screen_before_session_id = fase.GenerateSessionId()
     screen_before._session_id = screen_before_session_id
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen_before)
-    service.AddClassMethodVariable(id_='fase_sign_in_on_sign_in_done_class_method', value=on_sign_in_done)
+    service.AddFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method', value=on_sign_in_done)
     service.AddStringVariable(id_='fase_sign_in_screen_before_session_id_str', value=screen_before_session_id)
 
     screen = fase.Screen(service)

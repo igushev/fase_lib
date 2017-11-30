@@ -141,10 +141,10 @@ class BoolVariable(Variable):
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONClassMethod()})
-class ClassMethodVariable(Variable):
+    {'_value': json_util.JSONFunction()})
+class FunctionVariable(Variable):
   def __init__(self, value):
-    super(ClassMethodVariable, self).__init__()
+    super(FunctionVariable, self).__init__()
     self.SetValue(value)
 
   def SetValue(self, value):
@@ -187,11 +187,11 @@ class VariableContainer(ElementContainer):
   def PopBoolVariable(self, id_):
     return self.PopElement(id_)
 
-  def AddClassMethodVariable(self, id_, value):
-    return self.AddElement(id_, ClassMethodVariable(value))
-  def GetClassMethodVariable(self, id_):
+  def AddFunctionVariable(self, id_, value):
+    return self.AddElement(id_, FunctionVariable(value))
+  def GetFunctionVariable(self, id_):
     return self.GetElement(id_)
-  def PopClassMethodVariable(self, id_):
+  def PopFunctionVariable(self, id_):
     return self.PopElement(id_)
 
 
@@ -279,8 +279,7 @@ class Image(VisualElement):
 
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString(),
-     '_on_click': json_util.JSONClassMethod(),
-     '_on_click_element': json_util.JSONObject(Element),
+     '_on_click': json_util.JSONFunction(),
      '_icon': json_util.JSONString()})
 class MenuItem(VisualElement):
 
@@ -318,7 +317,7 @@ class Menu(ElementContainer):
 
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString(),
-     '_on_click': json_util.JSONClassMethod(),
+     '_on_click': json_util.JSONFunction(),
      '_icon': json_util.JSONString()})
 class Button(VisualElement):
 
@@ -402,7 +401,7 @@ class VisualElementContainer(VariableContainer):
     {'_orientation': json_util.JSONInt(),
      '_scrollable': json_util.JSONBool(),
      '_sizable': json_util.JSONInt(),
-     '_on_click': json_util.JSONClassMethod()})
+     '_on_click': json_util.JSONFunction()})
 class Layout(VisualElementContainer):
   VERTICAL = 1
   HORIZONTAL = 2

@@ -192,11 +192,11 @@ def SumFunction(var1, var2):
 
 
 @json_util.JSONDecorator(
-    {'method': json_util.JSONClassMethod()})
-class WithClassMethod(data_util.AbstractObject):
+    {'func': json_util.JSONFunction()})
+class WithFunction(data_util.AbstractObject):
   
-  def __init__(self, method):
-    self.method = method
+  def __init__(self, func):
+    self.func = func
 
 
 @json_util.JSONDecorator(
@@ -315,22 +315,20 @@ class JSONUtilsTest(unittest.TestCase):
 
   def testWithClassMethod(self):
     class_with_method = ClassWithMethod(3)
-    with_class_method = WithClassMethod(ClassWithMethod.Method)
-    self.AssertToFrom(with_class_method, WithClassMethod)
-    with_class_method_from_simple = (
-        WithClassMethod.FromSimple(with_class_method.ToSimple()))
-    self.assertEqual(4,
-                     with_class_method_from_simple.method(class_with_method, 1))
-    self.assertEqual(7,
-                     with_class_method_from_simple.method(class_with_method, 4))
+    with_function = WithFunction(ClassWithMethod.Method)
+    self.AssertToFrom(with_function, WithFunction)
+    with_function_from_simple = (
+        WithFunction.FromSimple(with_function.ToSimple()))
+    self.assertEqual(4, with_function_from_simple.func(class_with_method, 1))
+    self.assertEqual(7, with_function_from_simple.func(class_with_method, 4))
 
   def testWithFunction(self):
-    with_class_method = WithClassMethod(SumFunction)
-    self.AssertToFrom(with_class_method, WithClassMethod)
-    with_class_method_from_simple = (
-        WithClassMethod.FromSimple(with_class_method.ToSimple()))
-    self.assertEqual(4, with_class_method_from_simple.method(3, 1))
-    self.assertEqual(7, with_class_method_from_simple.method(3, 4))
+    with_function = WithFunction(SumFunction)
+    self.AssertToFrom(with_function, WithFunction)
+    with_function_from_simple = (
+        WithFunction.FromSimple(with_function.ToSimple()))
+    self.assertEqual(4, with_function_from_simple.func(3, 1))
+    self.assertEqual(7, with_function_from_simple.func(3, 4))
 
   def testWithListOfTuples(self):
     obj = WithListOfTuples([(1, WithFloat(0.1)),
