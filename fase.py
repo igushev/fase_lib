@@ -19,7 +19,7 @@ BUTTON_BAR_ID = 'button_bar'
 def GenerateSessionId():
   datetime_now = datetime.datetime.now()
   session_id_hash = hashlib.md5()
-  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
+  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
   session_id = session_id_hash.hexdigest()
   return session_id
 
@@ -27,7 +27,7 @@ def GenerateSessionId():
 def GenerateScreenId():
   datetime_now = datetime.datetime.now()
   screen_id_hash = hashlib.md5()
-  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
   screen_id = screen_id_hash.hexdigest()
   return screen_id
 
@@ -122,7 +122,7 @@ class StringVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    util.AssertIsInstanceOrNone(value, basestring)
+    util.AssertIsInstanceOrNone(value, str)
     self._value = value
   def GetValue(self):
     return self._value

@@ -48,16 +48,16 @@ class NotesService(fase.Service):
   def _DisplayNotes(self, screen):
     screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
-      return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), None, screen)
+      return self._DisplayNotesByFunc(lambda note: note.header, None, screen)
     elif screen_label == 'favourites':
-      return self._DisplayNotesByFunc(lambda x, y: cmp(x.header, y.header), lambda x: x.favourite, screen)
+      return self._DisplayNotesByFunc(lambda note: note.header, lambda x: x.favourite, screen)
     elif screen_label == 'recent':
-      return self._DisplayNotesByFunc(lambda x, y: cmp(x.datetime, y.datetime), None, screen)
+      return self._DisplayNotesByFunc(lambda note: note.datetime, None, screen)
     else:
       raise AssertionError()
 
   # TODO(igushev): Clean up ids inside for-loop.
-  def _DisplayNotesByFunc(self, cmp_func, filter_func, screen):
+  def _DisplayNotesByFunc(self, key_func, filter_func, screen):
     screen = fase.Screen(self)
     self._AddMenu(screen)
     self._AddButtons(screen)
@@ -65,7 +65,7 @@ class NotesService(fase.Service):
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(filter_func, notes)
-    for note in sorted(notes, cmp=cmp_func):
+    for note in sorted(notes, key=key_func):
       note_layout = notes_layout.AddLayout(
           id_='note_layout_%s' % note.note_id, orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
       note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
@@ -158,8 +158,8 @@ class NotesService(fase.Service):
     # If new note.
     if note_id is None:
       note_id_hash = hashlib.md5()
-      note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH))
-      note_id_hash.update(user_id)
+      note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
+      note_id_hash.update(user_id.encode('utf-8'))
       note_id = note_id_hash.hexdigest()
     note_layout = screen.GetLayout(id_='note_layout')
     note = notes_model.Note(note_id=note_id,

@@ -118,8 +118,8 @@ def OnSignUpEnteredData(service, screen, element):
 
   datetime_now = datetime.datetime.now()
   user_id_hash = hashlib.md5()
-  user_id_hash.update(datetime_now.strftime(fase.DATETIME_FORMAT_HASH))
-  user_id_hash.update(phone_number)
+  user_id_hash.update(datetime_now.strftime(fase.DATETIME_FORMAT_HASH).encode('utf-8'))
+  user_id_hash.update(phone_number.encode('utf-8'))
   user_id = user_id_hash.hexdigest()
   
   user = fase_model.User(user_id=user_id,

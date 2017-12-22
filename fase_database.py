@@ -67,7 +67,7 @@ class MockFaseDatabase(FaseDatabaseInterface):
     return self.user_id_to_user.get(user_id)
 
   def GetUserListByPhoneNumber(self, phone_number):
-    user_list = [user for user in self.user_id_to_user.itervalues() if user.phone_number == phone_number]
+    user_list = [user for user in self.user_id_to_user.values() if user.phone_number == phone_number]
     return user_list
 
   def GetSessionIdToService(self):

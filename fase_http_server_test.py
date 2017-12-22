@@ -24,7 +24,7 @@ class ApplicationTest(unittest.TestCase):
 
   def AssertResultStatus(self, expected_status, result):
     if expected_status != result.status:
-      print(result.data)
+      print(result.data.decode('utf-8'))
       self.fail()
 
   def _SendInternalCommand(self, command):
@@ -32,7 +32,7 @@ class ApplicationTest(unittest.TestCase):
         '/sendinternalcommand',
         data=json.dumps(command.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    status = fase_model.Status.FromSimple(json.loads(result.data))
+    status = fase_model.Status.FromSimple(json.loads(result.data.decode('utf-8')))
     return status
 
   def _SendInternalCommandAndAssertFails(self, command, bad_request):
@@ -40,14 +40,14 @@ class ApplicationTest(unittest.TestCase):
         '/sendinternalcommand',
         data=json.dumps(command.ToSimple()))
     self.AssertResultStatus(STATUS_BAD_REQUEST, result)
-    self.assertEqual(bad_request, fase_model.BadRequest.FromSimple(json.loads(result.data)))
+    self.assertEqual(bad_request, fase_model.BadRequest.FromSimple(json.loads(result.data.decode('utf-8'))))
 
   def _SendServiceCommand(self, command):
     result = self.test_application.post(
         '/sendservicecommand',
         data=json.dumps(command.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    status = fase_model.Status.FromSimple(json.loads(result.data))
+    status = fase_model.Status.FromSimple(json.loads(result.data.decode('utf-8')))
     return status
 
   def _GetService(self, device):
@@ -55,7 +55,7 @@ class ApplicationTest(unittest.TestCase):
         '/getservice',
         data=json.dumps(device.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data))
+    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
 
   def _GetScreen(self, session_info):
@@ -63,7 +63,7 @@ class ApplicationTest(unittest.TestCase):
         '/getscreen',
         headers={'session_id': session_info.session_id})
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data))
+    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
 
   def _ScreenUpdate(self, screen_update, session_info, screen_info):
@@ -72,7 +72,7 @@ class ApplicationTest(unittest.TestCase):
         headers={'session_id': session_info.session_id, 'screen_id': screen_info.screen_id},
         data=json.dumps(screen_update.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data))
+    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
 
   def _ElementClicked(self, element_clicked, session_info, screen_info):
@@ -81,7 +81,7 @@ class ApplicationTest(unittest.TestCase):
         headers={'session_id': session_info.session_id, 'screen_id': screen_info.screen_id},
         data=json.dumps(element_clicked.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data))
+    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
 
   def testSendInternalCommand(self):

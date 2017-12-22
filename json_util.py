@@ -26,11 +26,11 @@ class JSONObjectInterface(object):
 class JSONString(JSONObjectInterface):
   
   def ToSimple(self, field_obj):
-    util.AssertIsInstance(field_obj, (str, unicode))
+    util.AssertIsInstance(field_obj, str)
     return field_obj
   
   def FromSimple(self, simple):
-    util.AssertIsInstance(simple, (str, unicode))
+    util.AssertIsInstance(simple, str)
     return simple
 
 
@@ -74,7 +74,7 @@ class JSONDate(JSONObjectInterface):
     return field_obj.strftime(DATE_FORMAT)
   
   def FromSimple(self, simple):
-    util.AssertIsInstance(simple, basestring)
+    util.AssertIsInstance(simple, str)
     return datetime.datetime.strptime(simple, DATE_FORMAT).date()
 
 
@@ -85,34 +85,23 @@ class JSONDateTime(JSONObjectInterface):
     return field_obj.strftime(DATETIME_FORMAT)
   
   def FromSimple(self, simple):
-    util.AssertIsInstance(simple, basestring)
+    util.AssertIsInstance(simple, str)
     return datetime.datetime.strptime(simple, DATETIME_FORMAT)
 
 
 class JSONFunction(JSONObjectInterface):
 
   def ToSimple(self, field_obj):
-    if inspect.ismethod(field_obj) and field_obj.im_self is None:
-      field_obj_cls = field_obj.im_class
-      return {MODULE_FIELD: field_obj_cls.__module__,
-              CLASS_FIELD: field_obj_cls.__name__,
-              FUNC_FIELD: field_obj.__name__}
-    elif inspect.isfunction(field_obj):
-      return {MODULE_FIELD: field_obj.__module__,
-              FUNC_FIELD: field_obj.__name__}
-    else:
-      raise AssertionError(
-          'Type must either unbound class method or function, but got %s' %
-          type(field_obj))
+    assert inspect.isfunction(field_obj)
+    return {MODULE_FIELD: field_obj.__module__,
+            FUNC_FIELD: field_obj.__qualname__}
   
   def FromSimple(self, simple):
     util.AssertIsInstance(simple, dict)
-    if CLASS_FIELD in simple:
-      return getattr(getattr(os.sys.modules[simple[MODULE_FIELD]],
-                             simple[CLASS_FIELD]),
-                     simple[FUNC_FIELD])
-    else:
-      return getattr(os.sys.modules[simple[MODULE_FIELD]], simple[FUNC_FIELD])
+    obj = os.sys.modules[simple[MODULE_FIELD]]
+    for name in simple[FUNC_FIELD].split('.'):
+      obj = getattr(obj, name)
+    return obj
 
 
 class JSONObject(JSONObjectInterface):
@@ -172,23 +161,23 @@ class JSONDict(object):
     util.AssertIsInstance(field_obj, dict)
     return {self._key_json_obj.ToSimple(key_obj):
             self._value_json_obj.ToSimple(value_obj)
-            for key_obj, value_obj in field_obj.iteritems()}
+            for key_obj, value_obj in field_obj.items()}
   
   def FromSimple(self, simple):
     util.AssertIsInstance(simple, dict)
     return {self._key_json_obj.FromSimple(key_simple):
             self._value_json_obj.FromSimple(value_simple)
-            for key_simple, value_simple in simple.iteritems()}
+            for key_simple, value_simple in simple.items()}
 
 
 def ToSimple(self):
   obj_cls = self.__class__
   simple = dict()
-  for key, value_obj in self.__dict__.iteritems():
+  for key, value_obj in self.__dict__.items():
     json_obj = obj_cls.desc_dict[key]
     simple[key] = (json_obj.ToSimple(value_obj)
                    if value_obj is not None else None)
-  for key, json_obj in obj_cls.desc_dict.iteritems():
+  for key, json_obj in obj_cls.desc_dict.items():
     if key in self.__dict__:
       continue
     simple[key] = None
@@ -210,13 +199,13 @@ def FromSimple(cls, simple):
     obj_cls = cls
 
   obj_dict = dict()
-  for key, value_simple in simple.iteritems():
+  for key, value_simple in simple.items():
     if key in [MODULE_FIELD, CLASS_FIELD]:
       continue
     json_obj =  obj_cls.desc_dict[key]
     obj_dict[str(key)] = (json_obj.FromSimple(value_simple)
                           if value_simple is not None else None)
-  for key, json_obj in obj_cls.desc_dict.iteritems():
+  for key, json_obj in obj_cls.desc_dict.items():
     if key in simple:
       continue
     obj_dict[key] = None

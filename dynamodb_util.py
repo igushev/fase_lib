@@ -5,8 +5,8 @@ def SimpleToField(simple):
   if isinstance(simple, list):
     return {'L': [SimpleToField(nested_simple) for nested_simple in simple]}
   elif isinstance(simple, dict):
-    return {'M': {nested_key: SimpleToField(nested_simple) for nested_key, nested_simple in simple.iteritems()}}
-  elif isinstance(simple, basestring):
+    return {'M': {nested_key: SimpleToField(nested_simple) for nested_key, nested_simple in simple.items()}}
+  elif isinstance(simple, str):
     return {'S': simple}
   elif isinstance(simple, bool):
     return {'BOOL': simple}
@@ -19,18 +19,18 @@ def SimpleToField(simple):
 
 
 def SimpleToItem(simple):
-  return {nested_key: SimpleToField(nested_simple) for nested_key, nested_simple in simple.iteritems()}
+  return {nested_key: SimpleToField(nested_simple) for nested_key, nested_simple in simple.items()}
 
 
 def FieldToSimple(type_item):
   util.AssertIsInstance(type_item, dict)
   assert len(type_item) == 1, 'Length must be 1, but %d' % len(type_item)
-  type_, item = list(type_item.iteritems())[0]
+  type_, item = list(type_item.items())[0]
   if type_ == 'L':
     return [FieldToSimple(nested_type_item) for nested_type_item in item]
   elif type_ == 'M':
     return {nested_key: FieldToSimple(nested_type_item)
-            for nested_key, nested_type_item in item.iteritems()}
+            for nested_key, nested_type_item in item.items()}
   elif type_ == 'S':
     return str(item)
   elif type_ == 'BOOL':
@@ -45,4 +45,4 @@ def FieldToSimple(type_item):
 
 
 def ItemToSimple(item):
-  return {nested_key: FieldToSimple(nested_type_item) for nested_key, nested_type_item in item.iteritems()} 
+  return {nested_key: FieldToSimple(nested_type_item) for nested_key, nested_type_item in item.items()} 

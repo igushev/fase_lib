@@ -162,7 +162,7 @@ class FaseSignInTest(unittest.TestCase):
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()))
     user_id_to_user = fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()
     self.assertEqual(1, len(user_id_to_user))
-    actual_user_id = list(user_id_to_user.iterkeys())[0]
+    actual_user_id = list(user_id_to_user.keys())[0]
     if expected_user_id is None:
       expected_user_id = actual_user_id 
     else:
@@ -368,16 +368,16 @@ class FaseSignInTest(unittest.TestCase):
     session_id_to_service = fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()
     self.assertEqual(2, len(session_id_to_service))
     self.assertIn(session_info.session_id, session_id_to_service)
-    actual_service_session_id = list(set(session_id_to_service.iterkeys()) - {session_info.session_id})[0]
+    actual_service_session_id = list(set(session_id_to_service.keys()) - {session_info.session_id})[0]
 
     session_id_to_screen = fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreen()
     self.assertEqual(2, len(session_id_to_screen))
     self.assertIn(session_info.session_id, session_id_to_screen)
-    actual_screen_session_id = list(set(session_id_to_screen.iterkeys()) - {session_info.session_id})[0]
+    actual_screen_session_id = list(set(session_id_to_screen.keys()) - {session_info.session_id})[0]
 
     user_id_to_user = fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()
     self.assertEqual(1, len(user_id_to_user))
-    actual_user_id = list(user_id_to_user.iterkeys())[0]
+    actual_user_id = list(user_id_to_user.keys())[0]
 
     self.assertEqual(actual_screen_session_id, actual_service_session_id)
     self.assertNotEqual(actual_user_id, actual_service_session_id)

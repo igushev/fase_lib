@@ -17,7 +17,7 @@ class WithFields(data_util.AbstractObject):
                datetime_field):
     assert isinstance(int_field, int)
     assert isinstance(float_field, float)
-    assert isinstance(string_field, basestring)
+    assert isinstance(string_field, str)
     assert isinstance(date_field, datetime.date)
     assert isinstance(datetime_field, datetime.datetime)
     self._int_field = int_field  # With underscore.
@@ -111,7 +111,7 @@ class Level3B(Level2):
 
   def __init__(self, var1, var2, var3):
     super(Level3B, self).__init__(var1, var2)
-    assert isinstance(var3, basestring)
+    assert isinstance(var3, str)
     self.var3 = var3
 
 

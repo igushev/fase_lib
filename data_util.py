@@ -9,18 +9,18 @@ def HashKey(obj):
   elif isinstance(obj, (list, tuple)):
     m = hashlib.md5()
     for item in obj:
-      m.update(HashKey(item))
+      m.update(HashKey(item).encode('utf-8'))
     return m.hexdigest()
   elif isinstance(obj, set):
     m = hashlib.md5()
     for item in sorted(obj):
-      m.update(HashKey(item))
+      m.update(HashKey(item).encode('utf-8'))
     return m.hexdigest()
   elif isinstance(obj, dict):
     m = hashlib.md5()
-    for key, value in sorted(obj.iteritems()):
-      m.update(HashKey(key))
-      m.update(HashKey(value))
+    for key, value in sorted(obj.items()):
+      m.update(HashKey(key).encode('utf-8'))
+      m.update(HashKey(value).encode('utf-8'))
     return m.hexdigest()
   else:
     m = hashlib.md5()
@@ -32,7 +32,7 @@ class AbstractObject(object):
 
   def __str__(self):
     return '\n'.join(['%s: %s' % (key, value)
-                      for key, value in sorted(self.__dict__.iteritems())])
+                      for key, value in sorted(self.__dict__.items())])
 
   def __repr__(self):
     return str(self)
