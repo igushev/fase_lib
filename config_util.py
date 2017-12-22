@@ -1,8 +1,8 @@
 import os
-import ConfigParser
+import configparser
 
 
 def GetConfig(filename):
-  config = ConfigParser.ConfigParser()
+  config = configparser.ConfigParser()
   config.read(os.environ[filename])
   return config

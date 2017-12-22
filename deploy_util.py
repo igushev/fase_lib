@@ -3,7 +3,7 @@ import os
 
 def ReadAndUpdateVersion(version_filename, update_position=None):
   if os.path.exists(version_filename):
-    current_version = file(version_filename).readlines()[0]
+    current_version = open(version_filename).readlines()[0]
     numbers = current_version.split('.')
     if update_position:
       numbers[update_position] = '%02d' % (int(numbers[update_position]) + 1)
@@ -12,7 +12,7 @@ def ReadAndUpdateVersion(version_filename, update_position=None):
     version = '.'.join(numbers)
   else:
     version = '1.00.00.00'
-  with file(version_filename, 'w') as fout:
+  with open(version_filename, 'w') as fout:
     fout.write(version)
   print('\n'.join(['Version %s' % version]))
   return version
