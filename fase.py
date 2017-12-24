@@ -199,7 +199,7 @@ class VariableContainer(ElementContainer):
 
 @json_util.JSONDecorator(
     {'_displayed': json_util.JSONBool()})
-class VisualElement(ElementContainer):
+class VisualElement(Element):
   def __init__(self):
     super(VisualElement, self).__init__()
     self._displayed = True
@@ -354,9 +354,9 @@ class ButtonBar(ElementContainer):
     
 
 @json_util.JSONDecorator({})
-class VisualElementContainer(VariableContainer):
+class BaseElementsContainer(VariableContainer):
   def __init__(self):
-    super(VisualElementContainer, self).__init__()
+    super(BaseElementsContainer, self).__init__()
 
   def AddLayout(self, id_,
                orientation=None,
@@ -407,7 +407,7 @@ class VisualElementContainer(VariableContainer):
      '_scrollable': json_util.JSONBool(),
      '_sizable': json_util.JSONInt(),
      '_on_click': json_util.JSONFunction()})
-class Layout(VisualElementContainer):
+class Layout(BaseElementsContainer):
   VERTICAL = 1
   HORIZONTAL = 2
 
@@ -441,7 +441,7 @@ class Popup(VariableContainer):
 @json_util.JSONDecorator(
     {'_session_id': json_util.JSONString(),
      '_screen_id': json_util.JSONString()})
-class Screen(VisualElementContainer):
+class Screen(BaseElementsContainer):
 
   def __init__(self, service):
     super(Screen, self).__init__()
