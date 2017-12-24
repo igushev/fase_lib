@@ -59,7 +59,7 @@ class NotesService(fase.Service):
   # TODO(igushev): Clean up ids inside for-loop.
   def _DisplayNotesByFunc(self, key_func, filter_func, screen):
     screen = fase.Screen(self)
-    self._AddMenu(screen)
+    self._AddMainMenu(screen)
     self._AddButtons(screen)
     notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
@@ -85,7 +85,7 @@ class NotesService(fase.Service):
           label=datetime_text, font=0.75, aligh=fase.Label.LEFT, sizable=fase.Label.FIT_OUTER_ELEMENT)
     return screen
 
-  def _AddMenu(self, screen):
+  def _AddMainMenu(self, screen):
     menu = screen.AddMainMenu()
     if self.IfSignedIn():
       menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUserName())

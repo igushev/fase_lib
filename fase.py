@@ -11,8 +11,8 @@ NEXT_STEP_BUTTON_ID = 'next_step_button'
 PREV_STEP_BUTTON_ID = 'prev_step_button'
 CONTEXT_MENU_ID = 'context_menu'
 POPUP_ID = 'popup'
-MAIN_MENU_ID = 'menu'
-MAIN_BUTTON_ID = 'main_menu'
+MAIN_MENU_ID = 'main_menu'
+MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
 
 
