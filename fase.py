@@ -332,6 +332,9 @@ class Button(VisualElement):
     self._on_click = on_click
     self._icon = icon
 
+  def GetText(self):
+    return self._text
+
 
 @json_util.JSONDecorator({})
 class ButtonBar(ElementContainer):
