@@ -6,8 +6,10 @@ import sms_sender
 import fase_database
 import fase_model
 import fase
+import json_util
 
 
+@json_util.JSONDecorator({})
 class FaseSignInButton(fase.Button):
 
   def FaseOnClick(self, service, screen):
@@ -42,6 +44,7 @@ class FaseSignInButton(fase.Button):
       return service, screen
 
 
+@json_util.JSONDecorator({})
 class FaseSignOutButton(fase.Button):
 
   def FaseOnClick(self, service, screen):
@@ -103,7 +106,7 @@ def OnSignUpOption(service, screen, element):
   sign_up_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
   sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
   sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
-  sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign In', on_click=OnSignUpEnteredData)
+  sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
   screen.AddPrevStepButton(on_click=StartSignIn)
   return screen
   
