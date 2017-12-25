@@ -294,6 +294,9 @@ class MenuItem(VisualElement):
     self._on_click = on_click
     self._icon = icon
 
+  def GetText(self):
+    return self._text
+
 
 @json_util.JSONDecorator({
     '_text': json_util.JSONString()})
@@ -331,6 +334,9 @@ class Button(VisualElement):
     self._text = text
     self._on_click = on_click
     self._icon = icon
+
+  def SetText(self, text):
+    self._text = text
 
   def GetText(self):
     return self._text

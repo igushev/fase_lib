@@ -161,6 +161,7 @@ def StartSignOut(service, cancel_option=False):
 
 
 def OnSkipCancelOption(service, screen, element):
+  service.PopStringVariable(id_='fase_sign_in_on_sign_in_done_class_method')
   screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
   screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
   screen._session_id = service.GetSessionId()
