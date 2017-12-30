@@ -114,7 +114,7 @@ class NotesService(fase.Service):
     return self._DisplayNotes(None)
 
   def OnSignOut(self, screen, element):
-    return fase_sign_in.StartSignOut(self)
+    return fase_sign_in.StartSignOut(self, cancel_option=True)
 
   def OnNew(self, screen, element):
     return self._DisplayNote(None, screen)

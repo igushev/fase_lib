@@ -50,6 +50,7 @@ class FaseSignOutButton(fase.Button):
   def FaseOnClick(self, service, screen):
     # Delete screen before.
     screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue()
+    fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().DeleteScreen(session_id=screen_before_session_id)
 
     service_cls = fase.Service.service_cls
@@ -84,7 +85,7 @@ def OnSignInOption(service, screen, element):
   sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
   sign_in_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
   sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
-  screen.AddPrevStepButton(on_click=StartSignIn)
+  screen.AddPrevStepButton(on_click=OnSkipCancelOption)
   return screen
 
 
@@ -107,7 +108,7 @@ def OnSignUpOption(service, screen, element):
   sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
   sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
   sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
-  screen.AddPrevStepButton(on_click=StartSignIn)
+  screen.AddPrevStepButton(on_click=OnSkipCancelOption)
   return screen
   
 
@@ -143,7 +144,7 @@ def _OnEnteredData(service, phone_number, user_id):
   enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send'))
   service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
-  screen.AddPrevStepButton(on_click=StartSignIn)
+  screen.AddPrevStepButton(on_click=OnSkipCancelOption)
   return screen
 
 
@@ -164,8 +165,13 @@ def StartSignOut(service, cancel_option=False):
 
 
 def OnSkipCancelOption(service, screen, element):
-  service.PopStringVariable(id_='fase_sign_in_on_sign_in_done_class_method')
+  if service.HasStringVariable(id_='fase_sign_in_on_sign_in_done_class_method'):
+    service.PopStringVariable(id_='fase_sign_in_on_sign_in_done_class_method')
   screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
+  if service.HasStringVariable(id_='fase_sign_in_session_id_signed_in_str'):
+    service.PopStringVariable(id_='fase_sign_in_session_id_signed_in_str')
+  if service.HasIntVariable(id_='fase_sign_in_activation_code_int'):
+    service.PopIntVariable(id_='fase_sign_in_activation_code_int')
   screen = fase_database.FaseDatabaseInterface.Get().GetScreen(session_id=screen_before_session_id)
   screen._session_id = service.GetSessionId()
   fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)

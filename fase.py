@@ -163,6 +163,8 @@ class VariableContainer(ElementContainer):
 
   def AddIntVariable(self, id_, value):
     return self.AddElement(id_, IntVariable(value))
+  def HasIntVariable(self, id_):
+    return self.HasElement(id_)
   def GetIntVariable(self, id_):
     return self.GetElement(id_)
   def PopIntVariable(self, id_):
@@ -170,6 +172,8 @@ class VariableContainer(ElementContainer):
 
   def AddFloatVariable(self, id_, value):
     return self.AddElement(id_, FloatVariable(value))
+  def HasFloatVariable(self, id_):
+    return self.HasElement(id_)
   def GetFloatVariable(self, id_):
     return self.GetElement(id_)
   def PopFloatVariable(self, id_):
@@ -177,6 +181,8 @@ class VariableContainer(ElementContainer):
 
   def AddStringVariable(self, id_, value):
     return self.AddElement(id_, StringVariable(value))
+  def HasStringVariable(self, id_):
+    return self.HasElement(id_)
   def GetStringVariable(self, id_):
     return self.GetElement(id_)
   def PopStringVariable(self, id_):
@@ -184,6 +190,8 @@ class VariableContainer(ElementContainer):
 
   def AddBoolVariable(self, id_, value):
     return self.AddElement(id_, BoolVariable(value))
+  def HasBoolVariable(self, id_):
+    return self.HasElement(id_)
   def GetBoolVariable(self, id_):
     return self.GetElement(id_)
   def PopBoolVariable(self, id_):
@@ -191,6 +199,8 @@ class VariableContainer(ElementContainer):
 
   def AddFunctionVariable(self, id_, value):
     return self.AddElement(id_, FunctionVariable(value))
+  def HasFunctionVariable(self, id_):
+    return self.HasElement(id_)
   def GetFunctionVariable(self, id_):
     return self.GetElement(id_)
   def PopFunctionVariable(self, id_):
