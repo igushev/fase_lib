@@ -46,20 +46,20 @@ class FaseTkUIImp(object):
     self.id_list_to_var = dict()
     return self.ui_imp_frame
 
-  def DrawMenuItem(self, ui, id_list, element):
-    self.main_menu.add_command(label=element.GetText(), command=ClickCallBack(self, id_list))
+  def DrawMenuItem(self, ui, id_list, menu_item_element):
+    self.main_menu.add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
 
-  def DrawLayout(self, ui, id_list, element, ui_imp_parent):
+  def DrawLayout(self, ui, id_list, layout_element, ui_imp_parent):
     layout = tkinter.Frame(ui_imp_parent)
     layout.grid()
     return layout
 
-  def DrawLabel(self, ui, id_list, element, ui_imp_parent):
-    label = tkinter.Label(ui_imp_parent, text=element.GetLabel())
+  def DrawLabel(self, ui, id_list, label_element, ui_imp_parent):
+    label = tkinter.Label(ui_imp_parent, text=label_element.GetLabel())
     label.grid()
     return label
 
-  def DrawText(self, ui, id_list, element, ui_imp_parent):
+  def DrawText(self, ui, id_list, text_element, ui_imp_parent):
     var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = var
     var.trace('w', UpdateCallBack(self, id_list))
@@ -67,14 +67,14 @@ class FaseTkUIImp(object):
     text.grid()
     return text
 
-  def DrawImage(self, ui, id_list, element, ui_imp_parent):
+  def DrawImage(self, ui, id_list, image_element, ui_imp_parent):
     # TODO(igushev): Draw actual image.
-    label = tkinter.Label(ui_imp_parent, text=element.GetImage())
+    label = tkinter.Label(ui_imp_parent, text=image_element.GetImage())
     label.grid()
     return label 
 
-  def DrawButton(self, ui, id_list, element, ui_imp_parent):
-    button = tkinter.Button(ui_imp_parent, text=element.GetText(), command=ClickCallBack(self, id_list))
+  def DrawButton(self, ui, id_list, button_element, ui_imp_parent):
+    button = tkinter.Button(ui_imp_parent, text=button_element.GetText(), command=ClickCallBack(self, id_list))
     button.grid()
     return button
 

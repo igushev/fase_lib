@@ -31,39 +31,39 @@ class FaseUI(object):
       self.DrawContextMenu([fase.CONTEXT_MENU_ID], screen.PopElement(fase.CONTEXT_MENU_ID))
     self.DrawBaseElementsContainer([], screen, ui_imp_window)
 
-  def DrawMainMenu(self, id_list, element):
+  def DrawMainMenu(self, id_list, main_menu_element):
     # TODO(igushev): Draw actual main menu.
-    for menu_item_id, menu_item_element in element.GetIdElementList():
+    for menu_item_id, menu_item_element in main_menu_element.GetIdElementList():
       self.ui_imp.DrawMenuItem(self, id_list + [menu_item_id], menu_item_element)
 
-  def DrawMainButton(self, id_list, element, ui_imp_parent):
+  def DrawMainButton(self, id_list, main_button_element, ui_imp_parent):
     # TODO(igushev): Draw actual main button.
-    self.ui_imp.DrawButton(self, id_list, element, ui_imp_parent)
+    self.ui_imp.DrawButton(self, id_list, main_button_element, ui_imp_parent)
 
-  def DrawButtonBar(self, id_list, element, ui_imp_parent):
+  def DrawButtonBar(self, id_list, button_bar_element, ui_imp_parent):
     # TODO(igushev): Draw actual button bar.
     # NOTE(igushev): Button Bar Layout will have id_list of Button Bar.
-    ui_imp_element = self.ui_imp.DrawLayout(self, id_list, element, ui_imp_parent)
-    for button_id, button_element in element.GetIdElementList():
+    ui_imp_element = self.ui_imp.DrawLayout(self, id_list, button_bar_element, ui_imp_parent)
+    for button_id, button_element in button_bar_element.GetIdElementList():
       self.DrawButton(id_list + [button_id], button_element, ui_imp_element)
 
-  def DrawNextStepButton(self, id_list, element, ui_imp_parent):
+  def DrawNextStepButton(self, id_list, next_step_button_element, ui_imp_parent):
     # TODO(igushev): Draw actual next button.
-    element.SetText('Next')
-    self.ui_imp.DrawButton(self, id_list, element, ui_imp_parent)
+    next_step_button_element.SetText('Next')
+    self.ui_imp.DrawButton(self, id_list, next_step_button_element, ui_imp_parent)
 
-  def DrawPrevStepButton(self, id_list, element, ui_imp_parent):
+  def DrawPrevStepButton(self, id_list, prev_step_button_element, ui_imp_parent):
     # TODO(igushev): Draw actual prev button.
-    element.SetText('Previous')
-    self.ui_imp.DrawButton(self, id_list, element, ui_imp_parent)
+    prev_step_button_element.SetText('Previous')
+    self.ui_imp.DrawButton(self, id_list, prev_step_button_element, ui_imp_parent)
 
-  def DrawContextMenu(self, id_list, element):
+  def DrawContextMenu(self, id_list, context_menu_element):
     # TODO(igushev): Draw actual context menu.
-    for menu_item_id, menu_item_element in element.GetIdElementList():
+    for menu_item_id, menu_item_element in context_menu_element.GetIdElementList():
       self.ui_imp.DrawMenuItem(self, id_list + [menu_item_id], menu_item_element)
 
-  def DrawBaseElementsContainer(self, id_list, parent, ui_imp_parent):
-    for id_, element in parent.GetIdElementList():
+  def DrawBaseElementsContainer(self, id_list, parent_element, ui_imp_parent):
+    for id_, element in parent_element.GetIdElementList():
       self._DispatchDraw(id_list + [id_], element, ui_imp_parent)
 
   def _DispatchDraw(self, id_list, element, ui_imp_parent):
@@ -82,21 +82,21 @@ class FaseUI(object):
     else:
       raise AssertionError('Unknown element type %s' % type(element))
 
-  def DrawLayout(self, id_list, element, ui_imp_parent):
-    ui_imp_element = self.ui_imp.DrawLayout(self, id_list, element, ui_imp_parent)
-    self.DrawBaseElementsContainer(id_list, element, ui_imp_element)
+  def DrawLayout(self, id_list, layout_element, ui_imp_parent):
+    ui_imp_element = self.ui_imp.DrawLayout(self, id_list, layout_element, ui_imp_parent)
+    self.DrawBaseElementsContainer(id_list, layout_element, ui_imp_element)
 
-  def DrawLabel(self, id_list, element, ui_imp_parent):
-    self.ui_imp.DrawLabel(self, id_list, element, ui_imp_parent)
+  def DrawLabel(self, id_list, label_element, ui_imp_parent):
+    self.ui_imp.DrawLabel(self, id_list, label_element, ui_imp_parent)
 
-  def DrawText(self, id_list, element, ui_imp_parent):
-    self.ui_imp.DrawText(self, id_list, element, ui_imp_parent)
+  def DrawText(self, id_list, text_element, ui_imp_parent):
+    self.ui_imp.DrawText(self, id_list, text_element, ui_imp_parent)
 
-  def DrawImage(self, id_list, element, ui_imp_parent):
-    self.ui_imp.DrawImage(self, id_list, element, ui_imp_parent)
+  def DrawImage(self, id_list, image_element, ui_imp_parent):
+    self.ui_imp.DrawImage(self, id_list, image_element, ui_imp_parent)
 
-  def DrawButton(self, id_list, element, ui_imp_parent):
-    self.ui_imp.DrawButton(self, id_list, element, ui_imp_parent)
+  def DrawButton(self, id_list, button_element, ui_imp_parent):
+    self.ui_imp.DrawButton(self, id_list, button_element, ui_imp_parent)
 
   def Run(self):
     self.ui_imp.Run()
