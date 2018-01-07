@@ -76,7 +76,7 @@ def StartSignIn(service, on_sign_in_done=None, skip_option=False, cancel_option=
   if skip_option:
     sign_in_layout.AddButton(id_='skip_button_id', text='Skip', on_click=OnSkipCancelOption)
   elif cancel_option:
-    screen.AddPrevStepButton(on_click=OnSkipCancelOption)
+    screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen
 
 
@@ -85,7 +85,7 @@ def OnSignInOption(service, screen, element):
   sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
   sign_in_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
   sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
-  screen.AddPrevStepButton(on_click=OnSkipCancelOption)
+  screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen
 
 
@@ -108,7 +108,7 @@ def OnSignUpOption(service, screen, element):
   sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
   sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
   sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
-  screen.AddPrevStepButton(on_click=OnSkipCancelOption)
+  screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen
   
 
@@ -144,7 +144,7 @@ def _OnEnteredData(service, phone_number, user_id):
   enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send'))
   service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
-  screen.AddPrevStepButton(on_click=OnSkipCancelOption)
+  screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen
 
 
@@ -160,7 +160,7 @@ def StartSignOut(service, cancel_option=False):
   sign_out_layout = screen.AddLayout(id_='sign_out_layout_id', orientation=fase.Layout.VERTICAL)
   sign_out_layout.AddElement(id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out'))
   if cancel_option:
-    screen.AddPrevStepButton(on_click=OnSkipCancelOption)
+    screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen
 
 

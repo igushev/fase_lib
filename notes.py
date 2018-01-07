@@ -139,8 +139,8 @@ class NotesService(fase.Service):
       favourite_bool.SetValue(note.favourite)
 
     screen.AddStringVariable(id_='current_note_id', value=note_id)
-    screen.AddNextStepButton(on_click=NotesService.OnSaveNote)
-    screen.AddPrevStepButton(on_click=NotesService.OnCancelNote)
+    screen.AddNextStepButton(on_click=NotesService.OnSaveNote, text='Save')
+    screen.AddPrevStepButton(on_click=NotesService.OnCancelNote, text='Cancel')
 
     context_menu = screen.AddContextMenu(text='Options')
     context_menu.AddMenuItem(id_='favourite_context_menu',
