@@ -48,17 +48,18 @@ class NotesService(fase.Service):
   def _DisplayNotes(self, screen):
     screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
-      return self._DisplayNotesByFunc(lambda note: note.header, None, screen)
+      return self._DisplayNotesByFunc(lambda note: note.header, None, 'Notes', screen)
     elif screen_label == 'favourites':
-      return self._DisplayNotesByFunc(lambda note: note.header, lambda x: x.favourite, screen)
+      return self._DisplayNotesByFunc(lambda note: note.header, lambda x: x.favourite, 'Favourites', screen)
     elif screen_label == 'recent':
-      return self._DisplayNotesByFunc(lambda note: note.datetime, None, screen)
+      return self._DisplayNotesByFunc(lambda note: note.datetime, None, 'Recent', screen)
     else:
       raise AssertionError()
 
   # TODO(igushev): Clean up ids inside for-loop.
-  def _DisplayNotesByFunc(self, key_func, filter_func, screen):
+  def _DisplayNotesByFunc(self, key_func, filter_func, title, screen):
     screen = fase.Screen(self)
+    screen.SetTitle(title)
     self._AddMainMenu(screen)
     self._AddButtons(screen)
     notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
