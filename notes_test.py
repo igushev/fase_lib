@@ -206,7 +206,7 @@ class NotesTest(unittest.TestCase):
         fase_model.ElementClicked([fase.BUTTON_BAR_ID, 'recent_button']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
-    self.AssertNotes([self.note_2, self.note_3, self.note_1], screen)
+    self.AssertNotes([self.note_1, self.note_3, self.note_2], screen)
 
     # Click on Notes button again.
     response = fase_server.FaseServer.Get().ElementClicked(
