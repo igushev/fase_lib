@@ -1,5 +1,8 @@
 import math
 import tkinter
+from tkinter import font
+
+import fase
 
 ROOT_SIZE = '540x960+50+50'
 MAIN_MENU_TEXT = '|||'
@@ -30,6 +33,35 @@ class UpdateCallBack(object):
     self.ui_tk.ElementUpdated(self.id_list, *args)
 
 
+class ParentElement(object):
+  
+  def __init__(self, ui_imp_parent, orientation):
+    self._ui_imp_parent = ui_imp_parent
+    self._orientation = orientation
+    self._column = 0
+    self._row = 0
+
+  def GetUIImpParent(self):
+    return self._ui_imp_parent
+
+  def GetOrientation(self):
+    return self._orientation
+
+  def GetColumn(self):
+    return self._column
+
+  def GetRow(self):
+    return self._row
+
+  def Next(self):
+    if self._orientation == fase.Layout.VERTICAL:
+      self._row += 1
+    elif self._orientation == fase.Layout.HORIZONTAL:
+      self._column += 1
+    else:
+      raise ValueError(self._orientation)
+
+
 class FaseTkUIImp(object):
 
   def __init__(self):
@@ -37,22 +69,22 @@ class FaseTkUIImp(object):
     self.ui_imp_root.option_add('*tearOff', False)
     self.ui_imp_root.geometry(ROOT_SIZE)
     self.ui_imp_root.resizable(False, False)
-    self.ui_imp_root.rowconfigure(0, weight=1)
     self.ui_imp_root.columnconfigure(0, weight=1)
+    self.ui_imp_root.rowconfigure(0, weight=1)
     self.ui_imp_frame = None
 
   def InitScreen(self):
     self.ui_imp_frame = tkinter.Frame(self.ui_imp_root)
     self.ui_imp_frame.grid(column=0, row=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
     # Middle layout take entire space.
-    self.ui_imp_frame.rowconfigure(1, weight=1)
     self.ui_imp_frame.columnconfigure(0, weight=1)
+    self.ui_imp_frame.rowconfigure(1, weight=1)
     
     ui_imp_middle_layout = tkinter.Frame(self.ui_imp_frame)
     ui_imp_middle_layout.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
     # Canvas take entire space and Scrollbar entire height.
-    ui_imp_middle_layout.rowconfigure(0, weight=1)
     ui_imp_middle_layout.columnconfigure(0, weight=1)
+    ui_imp_middle_layout.rowconfigure(0, weight=1)
 
     ui_imp_widget_canvas = tkinter.Canvas(ui_imp_middle_layout)
     ui_imp_widget_canvas.grid(column=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
@@ -60,7 +92,7 @@ class FaseTkUIImp(object):
     ui_imp_widget_scrollbar = tkinter.Scrollbar(
         ui_imp_middle_layout, orient=tkinter.VERTICAL, command=ui_imp_widget_canvas.yview)
     ui_imp_widget_canvas.configure(yscrollcommand=ui_imp_widget_scrollbar.set)
-    ui_imp_widget_scrollbar.grid(row=0, column=1, sticky=(tkinter.N, tkinter.S))
+    ui_imp_widget_scrollbar.grid(column=1, row=0, sticky=(tkinter.N, tkinter.S))
     
     def OnWidgetLayoutConfigure(event):
       ui_imp_widget_canvas.configure(scrollregion=ui_imp_widget_canvas.bbox(tkinter.ALL))
@@ -73,7 +105,7 @@ class FaseTkUIImp(object):
     ui_imp_width_layout.grid()
 
     self.id_list_to_var = dict()
-    return ui_imp_widget_layout
+    return ParentElement(ui_imp_widget_layout, fase.Layout.VERTICAL)
 
   def SetUI(self, ui):
     self.ui = ui
@@ -85,6 +117,8 @@ class FaseTkUIImp(object):
 
   def PrepareMainContextMenusNextPrevButtons(
       self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None):
+    if not (main_menu or context_menu or next_button or prev_button or title):
+      return
     ui_imp_header_layout = tkinter.Frame(self.ui_imp_frame)
     ui_imp_header_layout.grid(row=0, sticky=(tkinter.W, tkinter.E))
 
@@ -102,8 +136,8 @@ class FaseTkUIImp(object):
         ui_imp_button_frame = tkinter.Frame(ui_imp_header_layout, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
         ui_imp_button_frame.grid_propagate(False)
         ui_imp_button_frame.grid(column=column_i, row=0)
-        ui_imp_button_frame.rowconfigure(0, weight=1)
         ui_imp_button_frame.columnconfigure(0, weight=1)
+        ui_imp_button_frame.rowconfigure(0, weight=1)
         ui_imp_button_frame_list.append(ui_imp_button_frame)
 
     if main_menu:
@@ -116,6 +150,7 @@ class FaseTkUIImp(object):
 
     if context_menu:
       self.ui_imp_context_menu = tkinter.Menu()
+      # Either -1 or -2.
       ui_imp_context_menu_button = tkinter.Button(ui_imp_button_frame_list[-1-int(next_button)], text=CONTEXT_MENU_TEXT)
       ui_imp_context_menu_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
       ui_imp_context_menu_button.bind('<1>', lambda e: self.ui_imp_context_menu.post(e.x_root, e.y_root))
@@ -123,7 +158,7 @@ class FaseTkUIImp(object):
       self.ui_imp_context_menu = None
 
     if prev_button:
-      self.ui_imp_prev_button_frame = ui_imp_button_frame_list[int(main_menu)]  # either 0 or 1.
+      self.ui_imp_prev_button_frame = ui_imp_button_frame_list[int(main_menu)]  # Either 0 or 1.
     else:
       self.ui_imp_prev_button_frame = None
 
@@ -147,7 +182,7 @@ class FaseTkUIImp(object):
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def PrepareMainButtonAndNavigationButtons(self, main_button=False, nav_button_num=0):
-    if not main_button and not nav_button_num:
+    if not (main_button or nav_button_num):
       return
     if main_button:
       total_button_num = math.ceil(nav_button_num / 2) * 2 + int(main_button)
@@ -166,8 +201,8 @@ class FaseTkUIImp(object):
         ui_imp_button_frame = tkinter.Frame(ui_imp_footer_layout, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
       ui_imp_button_frame.grid_propagate(False)
       ui_imp_button_frame.grid(column=button_i, row=0)
-      ui_imp_button_frame.rowconfigure(0, weight=1)
       ui_imp_button_frame.columnconfigure(0, weight=1)
+      ui_imp_button_frame.rowconfigure(0, weight=1)
       ui_imp_footer_layout.columnconfigure(button_i, weight=1)
       if button_i == main_button_i:
         self.ui_imp_main_button_frame = ui_imp_button_frame
@@ -184,32 +219,41 @@ class FaseTkUIImp(object):
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def DrawLayout(self, id_list, layout_element, ui_imp_parent):
-    layout = tkinter.Frame(ui_imp_parent)
-    layout.grid()
-    return layout
+    layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
+    layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
+    return ParentElement(layout, layout_element.GetOrientation())
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
-    label = tkinter.Label(ui_imp_parent, text=label_element.GetLabel())
-    label.grid()
+    label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetLabel())
+    if label_element.GetFont() is not None:
+      label_font = font.Font(font=label['font'])
+      label_font.configure(size=int(label_font.actual()['size']*label_element.GetFont()))
+      label.configure(font=label_font)
+    label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
     return label
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
     var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = var
     var.trace('w', UpdateCallBack(self, id_list))
-    text = tkinter.Entry(ui_imp_parent, textvariable=var)
-    text.grid()
+    text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=var)
+    text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
     return text
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     # TODO(igushev): Draw actual image.
-    label = tkinter.Label(ui_imp_parent, text=image_element.GetImage())
-    label.grid()
+    label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=image_element.GetImage())
+    label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
     return label 
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
-    button = tkinter.Button(ui_imp_parent, text=button_element.GetText(), command=ClickCallBack(self, id_list))
-    button.grid()
+    button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=button_element.GetText(), command=ClickCallBack(self, id_list))
+    button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
     return button
 
   def Run(self):
