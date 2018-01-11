@@ -14,6 +14,7 @@ TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
+PREVIEW_LENGTH = 50
 
 
 class NotesService(fase.Service):
@@ -48,16 +49,16 @@ class NotesService(fase.Service):
   def _DisplayNotes(self, screen):
     screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
-      return self._DisplayNotesByFunc(lambda note: note.header, None, 'Notes', screen)
+      return self._DisplayNotesByFunc(lambda note: note.header, False, None, 'Notes', screen)
     elif screen_label == 'favourites':
-      return self._DisplayNotesByFunc(lambda note: note.header, lambda x: x.favourite, 'Favourites', screen)
+      return self._DisplayNotesByFunc(lambda note: note.header, False, lambda x: x.favourite, 'Favourites', screen)
     elif screen_label == 'recent':
-      return self._DisplayNotesByFunc(lambda note: note.datetime, None, 'Recent', screen)
+      return self._DisplayNotesByFunc(lambda note: note.datetime, True, None, 'Recent', screen)
     else:
       raise AssertionError()
 
   # TODO(igushev): Clean up ids inside for-loop.
-  def _DisplayNotesByFunc(self, key_func, filter_func, title, screen):
+  def _DisplayNotesByFunc(self, key_func, reverse, filter_func, title, screen):
     screen = fase.Screen(self)
     screen.SetTitle(title)
     self._AddMainMenu(screen)
@@ -66,23 +67,25 @@ class NotesService(fase.Service):
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(filter_func, notes)
-    for note in sorted(notes, key=key_func):
+    for note in sorted(notes, key=key_func, reverse=reverse):
       note_layout = notes_layout.AddLayout(
           id_='note_layout_%s' % note.note_id, orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
       note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
 
-      note_header_layout = note_layout.AddLayout(id_='note_header_layout', orientation=fase.Layout.HORIZONTAL)
+      note_header_layout = note_layout.AddLayout(
+          id_='note_header_layout', orientation=fase.Layout.HORIZONTAL, sizable=fase.Label.MAX)
       note_header_layout.AddLabel(
-          id_='note_header_label', label=note.header, font=1.5, sizable=fase.Label.MAX)
+          id_='note_header_label', label=note.header, font=1.5, sizable=fase.Label.MAX, alight=fase.Label.LEFT)
       note_header_layout.AddImage(
           id_='note_header_image', image=('favourite.pnp' if note.favourite else 'favourite_non.pnp'))
 
-      note_layout.AddLabel(id_='note_layout_label', label=note.text[:100])  # preview only
+      note_layout.AddLabel(id_='note_layout_label', label=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
 
       datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.now())
       note_deails_layout = note_layout.AddLayout(id_='note_deails_layout', orientation=fase.Layout.HORIZONTAL)
       note_deails_layout.AddLabel(
-          id_='note_deails_layout_datetime_text', label=datetime_text, font=0.7, sizable=fase.Label.MAX)
+          id_='note_deails_layout_datetime_text', label=datetime_text, font=0.7,
+          sizable=fase.Label.MAX, alight=fase.Label.RIGHT)
     return screen
 
   def _AddMainMenu(self, screen):

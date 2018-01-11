@@ -190,6 +190,7 @@ class FaseTkUIImp(object):
     else:
       total_button_num = nav_button_num
       main_button_i = None
+
     ui_imp_footer_layout = tkinter.Frame(self.ui_imp_frame)
     ui_imp_footer_layout.grid(row=2, sticky=(tkinter.W, tkinter.E))
     self.ui_imp_main_button_frame = None
@@ -218,39 +219,75 @@ class FaseTkUIImp(object):
     tkinter.Button(self.ui_imp_nav_button_frame_list[nav_button_i], text=nav_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
+  def _ConfigureParent(self, ui_imp_parent, maximize=False):
+    if maximize:
+      if ui_imp_parent.GetOrientation() == fase.Layout.VERTICAL:
+        ui_imp_parent.GetUIImpParent().rowconfigure(ui_imp_parent.GetRow(), weight=1)
+      elif ui_imp_parent.GetOrientation() == fase.Layout.HORIZONTAL:
+        ui_imp_parent.GetUIImpParent().columnconfigure(ui_imp_parent.GetColumn(), weight=1)
+      else:
+        raise ValueError(self._orientation)
+
   def DrawLayout(self, id_list, layout_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent, maximize=(layout_element.GetSizable()==fase.Layout.MAX))
     layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
-    layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+
+    if layout_element.GetOrientation() == fase.Layout.VERTICAL:
+      layout.columnconfigure(ui_imp_parent.GetColumn(), weight=1)
+    elif layout_element.GetOrientation() == fase.Layout.HORIZONTAL:
+      layout.rowconfigure(ui_imp_parent.GetRow(), weight=1)
+    else:
+      raise ValueError(self._orientation)
+
     ui_imp_parent.Next()
     return ParentElement(layout, layout_element.GetOrientation())
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSizable()==fase.Label.MAX))
     label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetLabel())
+
     if label_element.GetFont() is not None:
       label_font = font.Font(font=label['font'])
       label_font.configure(size=int(label_font.actual()['size']*label_element.GetFont()))
       label.configure(font=label_font)
-    label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+
+    if label_element.GetAlight() is not None:
+      if label_element.GetAlight() == fase.Label.LEFT:
+        anchor = 'w'
+      elif label_element.GetAlight() == fase.Label.RIGHT:
+        anchor = 'e'
+      elif label_element.GetAlight() == fase.Label.CENTER:
+        anchor = 'center'
+      label.configure(anchor=anchor)
+
+    label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+               sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return label
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
     var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = var
     var.trace('w', UpdateCallBack(self, id_list))
     text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=var)
-    text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+              sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return text
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     # TODO(igushev): Draw actual image.
+    self._ConfigureParent(ui_imp_parent)
     label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=image_element.GetImage())
     label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
     return label 
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
     button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=button_element.GetText(), command=ClickCallBack(self, id_list))
     button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()

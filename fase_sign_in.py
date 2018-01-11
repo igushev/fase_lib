@@ -17,6 +17,7 @@ class FaseSignInButton(fase.Button):
     activation_code_entered = int(
         screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
+      service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
       screen.AddPopup('Wrong activation code!')
       return service, screen
 

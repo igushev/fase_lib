@@ -222,20 +222,27 @@ class VisualElement(Element):
 @json_util.JSONDecorator(
     {'_label': json_util.JSONString(),
      '_font': json_util.JSONFloat(),
-     '_sizable': json_util.JSONInt()})
+     '_sizable': json_util.JSONInt(),
+     '_alight': json_util.JSONInt()})
 class Label(VisualElement):
 
   MIN = 1
   MAX = 2
 
+  LEFT = 1
+  RIGHT = 2
+  CENTER = 3
+
   def __init__(self,
                label=None,
                font=None,
-               sizable=None):
+               sizable=None,
+               alight=None):
     super(Label, self).__init__()
     self._label = label
     self._font = font
     self._sizable = sizable
+    self._alight = alight
 
   def GetLabel(self):
     return self._label
@@ -245,6 +252,9 @@ class Label(VisualElement):
 
   def GetSizable(self):
     return self._sizable
+
+  def GetAlight(self):
+    return self._alight
 
 
 @json_util.JSONDecorator(
@@ -391,8 +401,9 @@ class BaseElementsContainer(VariableContainer):
   def AddLabel(self, id_,
                label=None,
                font=None,
-               sizable=None):
-    return self.AddElement(id_, Label(label=label, font=font, sizable=sizable))
+               sizable=None,
+               alight=None):
+    return self.AddElement(id_, Label(label=label, font=font, sizable=sizable, alight=alight))
   def GetLabel(self, id_):
     return self.GetElement(id_)
 
