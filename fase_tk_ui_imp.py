@@ -7,6 +7,7 @@ import fase
 ROOT_SIZE = '540x960+50+50'
 MAIN_MENU_TEXT = '|||'
 CONTEXT_MENU_TEXT = '...'
+TITLE_FONT = 2
 NAV_BUTTON_WIDTH = 75
 NAV_BUTTON_HEIGHT = 40
 MAIN_BUTTON_WIDTH = 75
@@ -141,6 +142,9 @@ class FaseTkUIImp(object):
         ui_imp_header_layout.columnconfigure(column_i, weight=1)
         if title is not None:
           ui_imp_header_label = tkinter.Label(ui_imp_header_layout, text=title)
+          label_font = font.Font(font=ui_imp_header_label['font'])
+          label_font.configure(size=int(label_font.actual()['size']*TITLE_FONT))
+          ui_imp_header_label.configure(font=label_font)
           ui_imp_header_label.grid(column=column_i, row=0)
       else:
         ui_imp_button_frame = tkinter.Frame(ui_imp_header_layout, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
