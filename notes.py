@@ -57,7 +57,6 @@ class NotesService(fase.Service):
     else:
       raise AssertionError()
 
-  # TODO(igushev): Clean up ids inside for-loop.
   def _DisplayNotesByFunc(self, key_func, reverse, filter_func, title, screen):
     screen = fase.Screen(self)
     screen.SetTitle(title)

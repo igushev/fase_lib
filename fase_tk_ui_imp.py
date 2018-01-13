@@ -304,21 +304,22 @@ class FaseTkUIImp(object):
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
-    var = tkinter.StringVar()
+    ui_imp_var = tkinter.StringVar()
     if text_element.GetText() is not None:
-      var.set(text_element.GetText())
-    self.id_list_to_var[tuple(id_list)] = var
-    var.trace('w', UpdateCallBack(self, id_list))
-    ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=var)
+      ui_imp_var.set(text_element.GetText())
+    self.id_list_to_var[tuple(id_list)] = ui_imp_var
+    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
     ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
                      sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ui_imp_text
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
-    # TODO(igushev): Draw actual image.
     self._ConfigureParent(ui_imp_parent)
-    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=image_element.GetImage())
+    ui_imp_photo = tkinter.PhotoImage(file=image_element.GetImage())
+    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
+    ui_imp_label.image = ui_imp_photo 
     ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
     return ui_imp_label 

@@ -42,7 +42,6 @@ class Element(data_util.AbstractObject):
     return service, screen
 
 
-# TODO(igushev): Reuse object when deserialized.
 @json_util.JSONDecorator(
     {'_id_element_list':
      json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
