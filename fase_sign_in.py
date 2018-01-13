@@ -9,6 +9,12 @@ import fase
 import json_util
 
 
+
+# TODO(igushev): Make logic below less hacky.
+def MockFunction():
+  pass
+
+
 @json_util.JSONDecorator({})
 class FaseSignInButton(fase.Button):
 
@@ -142,7 +148,7 @@ def _OnEnteredData(service, phone_number, user_id):
   screen = fase.Screen(service)
   enter_activation_layout = screen.AddLayout(id_='enter_activation_layout_id', orientation=fase.Layout.VERTICAL)
   enter_activation_layout.AddText(id_='activation_code_text_id', hint='Activation Code')
-  enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send'))
+  enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send', on_click=MockFunction))
   service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
   screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
@@ -159,7 +165,8 @@ def StartSignOut(service, cancel_option=False):
 
   screen = fase.Screen(service)
   sign_out_layout = screen.AddLayout(id_='sign_out_layout_id', orientation=fase.Layout.VERTICAL)
-  sign_out_layout.AddElement(id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out'))
+  sign_out_layout.AddElement(
+      id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=MockFunction))
   if cancel_option:
     screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen

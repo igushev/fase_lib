@@ -19,7 +19,7 @@ class ClickCallBack(object):
     self.ui_tk = ui_tk
     self.id_list = id_list 
 
-  def __call__(self):
+  def __call__(self, *args):
     self.ui_tk.ElementClicked(self.id_list)
 
 
@@ -35,9 +35,10 @@ class UpdateCallBack(object):
 
 class ParentElement(object):
   
-  def __init__(self, ui_imp_parent, orientation):
+  def __init__(self, ui_imp_parent, orientation, click_callback=None):
     self._ui_imp_parent = ui_imp_parent
     self._orientation = orientation
+    self._click_callback = click_callback
     self._column = 0
     self._row = 0
 
@@ -46,6 +47,9 @@ class ParentElement(object):
 
   def GetOrientation(self):
     return self._orientation
+
+  def GetClickCallBack(self):
+    return self._click_callback
 
   def GetColumn(self):
     return self._column
@@ -168,16 +172,21 @@ class FaseTkUIImp(object):
       self.ui_imp_next_button_frame = None
 
   def DrawMainMenuItem(self, id_list, menu_item_element):
-    self.ui_imp_main_menu.add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
+    self.ui_imp_main_menu.add_command(
+        label=menu_item_element.GetText(),
+        command=ClickCallBack(self, id_list) if menu_item_element.GetOnClick() is not None else None)
 
   def DrawContextMenuItem(self, id_list, menu_item_element):
+    assert menu_item_element.GetOnClick() is not None
     self.ui_imp_context_menu.add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
 
   def DrawNextStepButton(self, id_list, next_step_button_element):
+    assert next_step_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def DrawPrevStepButton(self, id_list, prev_step_button_element):
+    assert prev_step_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
@@ -212,10 +221,12 @@ class FaseTkUIImp(object):
       
   def DrawMainButton(self, id_list, main_button_element):
     assert self.ui_imp_main_button_frame is not None
+    assert main_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_main_button_frame, text=main_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def DrawNavButton(self, id_list, nav_button_element, nav_button_i):
+    assert nav_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_nav_button_frame_list[nav_button_i], text=nav_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
@@ -230,28 +241,37 @@ class FaseTkUIImp(object):
 
   def DrawLayout(self, id_list, layout_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(layout_element.GetSizable()==fase.Layout.MAX))
-    layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
-    layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-                sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
+    ui_imp_layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
     if layout_element.GetOrientation() == fase.Layout.VERTICAL:
-      layout.columnconfigure(ui_imp_parent.GetColumn(), weight=1)
+      ui_imp_layout.columnconfigure(ui_imp_parent.GetColumn(), weight=1)
     elif layout_element.GetOrientation() == fase.Layout.HORIZONTAL:
-      layout.rowconfigure(ui_imp_parent.GetRow(), weight=1)
+      ui_imp_layout.rowconfigure(ui_imp_parent.GetRow(), weight=1)
     else:
       raise ValueError(self._orientation)
 
+    click_callback = None
+    if layout_element.GetOnClick():
+      click_callback = ClickCallBack(self, id_list)
+    elif ui_imp_parent.GetClickCallBack():
+      click_callback = ui_imp_parent.GetClickCallBack()
+
+    if click_callback is not None:
+      ui_imp_layout.bind('<1>', click_callback)
+
     ui_imp_parent.Next()
-    return ParentElement(layout, layout_element.GetOrientation())
+    return ParentElement(ui_imp_layout, layout_element.GetOrientation(), click_callback=click_callback)
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSizable()==fase.Label.MAX))
-    label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetLabel())
+    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetLabel())
 
     if label_element.GetFont() is not None:
-      label_font = font.Font(font=label['font'])
+      label_font = font.Font(font=ui_imp_label['font'])
       label_font.configure(size=int(label_font.actual()['size']*label_element.GetFont()))
-      label.configure(font=label_font)
+      ui_imp_label.configure(font=label_font)
 
     if label_element.GetAlight() is not None:
       if label_element.GetAlight() == fase.Label.LEFT:
@@ -260,38 +280,53 @@ class FaseTkUIImp(object):
         anchor = 'e'
       elif label_element.GetAlight() == fase.Label.CENTER:
         anchor = 'center'
-      label.configure(anchor=anchor)
+      ui_imp_label.configure(anchor=anchor)
 
-    label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-               sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    click_callback = None
+    if label_element.GetOnClick():
+      click_callback = ClickCallBack(self, id_list)
+    elif ui_imp_parent.GetClickCallBack():
+      click_callback = ui_imp_parent.GetClickCallBack()
+
+    if click_callback is not None:
+      ui_imp_label.bind('<1>', click_callback)
+
+    ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                      sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
-    return label
+    return ui_imp_label
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     var = tkinter.StringVar()
+    if text_element.GetText() is not None:
+      var.set(text_element.GetText())
     self.id_list_to_var[tuple(id_list)] = var
     var.trace('w', UpdateCallBack(self, id_list))
-    text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=var)
-    text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-              sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=var)
+    ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                     sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
-    return text
+    return ui_imp_text
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     # TODO(igushev): Draw actual image.
     self._ConfigureParent(ui_imp_parent)
-    label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=image_element.GetImage())
-    label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=image_element.GetImage())
+    ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
-    return label 
+    return ui_imp_label 
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
-    button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=button_element.GetText(), command=ClickCallBack(self, id_list))
-    button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=button_element.GetText())
+
+    if button_element.GetOnClick():
+      ui_imp_button.configure(command=ClickCallBack(self, id_list))
+
+    ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
-    return button
+    return ui_imp_button
 
   def Run(self):
     self.ui_imp_root.mainloop()

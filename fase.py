@@ -223,7 +223,8 @@ class VisualElement(Element):
     {'_label': json_util.JSONString(),
      '_font': json_util.JSONFloat(),
      '_sizable': json_util.JSONInt(),
-     '_alight': json_util.JSONInt()})
+     '_alight': json_util.JSONInt(),
+     '_on_click': json_util.JSONFunction()})
 class Label(VisualElement):
 
   MIN = 1
@@ -237,12 +238,14 @@ class Label(VisualElement):
                label=None,
                font=None,
                sizable=None,
-               alight=None):
+               alight=None,
+               on_click=None):
     super(Label, self).__init__()
     self._label = label
     self._font = font
     self._sizable = sizable
     self._alight = alight
+    self._on_click = on_click
 
   def GetLabel(self):
     return self._label
@@ -255,6 +258,9 @@ class Label(VisualElement):
 
   def GetAlight(self):
     return self._alight
+
+  def GetOnClick(self):
+    return self._on_click
 
 
 @json_util.JSONDecorator(
@@ -319,6 +325,9 @@ class MenuItem(VisualElement):
   def GetText(self):
     return self._text
 
+  def GetOnClick(self):
+    return self._on_click
+
 
 @json_util.JSONDecorator({
     '_text': json_util.JSONString()})
@@ -362,6 +371,9 @@ class Button(VisualElement):
 
   def GetText(self):
     return self._text
+
+  def GetOnClick(self):
+    return self._on_click
 
 
 @json_util.JSONDecorator({})
@@ -462,6 +474,9 @@ class Layout(BaseElementsContainer):
 
   def GetSizable(self):
     return self._sizable
+
+  def GetOnClick(self):
+    return self._on_click
 
 
 @json_util.JSONDecorator(

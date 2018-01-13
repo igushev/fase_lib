@@ -3,14 +3,26 @@ import requests
 
 import fase
 import fase_model
+import json_util
+
+
+# TODO(igushev): Make logic below less hacky.
+def MockFunction():
+  pass
 
 
 def CleanSimple(simple):
   if isinstance(simple, list):
     return [CleanSimple(nested_simple) for nested_simple in simple]
   elif isinstance(simple, dict):
-    return {nested_key: CleanSimple(nested_simple) for nested_key, nested_simple in simple.items()
-            if nested_key not in ['_on_click']}
+    clean_simple = {}
+    for nested_key, nested_simple in simple.items():
+      if nested_key not in ['_on_click']:
+        clean_simple[nested_key] = CleanSimple(nested_simple)
+      else:
+        clean_simple[nested_key] = (
+            json_util.JSONFunction().ToSimple(MockFunction) if nested_simple is not None else None)
+    return clean_simple
   else:
     return simple
 
