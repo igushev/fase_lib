@@ -61,9 +61,10 @@ class NotesService(fase.Service):
   def _DisplayNotesByFunc(self, key_func, reverse, filter_func, title, screen):
     screen = fase.Screen(self)
     screen.SetTitle(title)
+    screen.SetScrollable(True)
     self._AddMainMenu(screen)
     self._AddButtons(screen)
-    notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL, scrollable=True)
+    notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(filter_func, notes)

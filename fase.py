@@ -400,11 +400,9 @@ class BaseElementsContainer(VariableContainer):
 
   def AddLayout(self, id_,
                orientation=None,
-               scrollable=None,
                size=None,
                on_click=None):
     return self.AddElement(id_, Layout(orientation=orientation,
-                                       scrollable=scrollable,
                                        size=size,
                                        on_click=on_click))
   def GetLayout(self, id_):
@@ -444,7 +442,6 @@ class BaseElementsContainer(VariableContainer):
 
 @json_util.JSONDecorator(
     {'_orientation': json_util.JSONInt(),
-     '_scrollable': json_util.JSONBool(),
      '_size': json_util.JSONInt(),
      '_on_click': json_util.JSONFunction()})
 class Layout(BaseElementsContainer):
@@ -457,20 +454,15 @@ class Layout(BaseElementsContainer):
 
   def __init__(self,
                orientation=None,
-               scrollable=None,
                size=None,
                on_click=None):
     super(Layout, self).__init__()
     self._orientation = orientation
-    self._scrollable = scrollable
     self._size = size
     self._on_click = on_click
 
   def GetOrientation(self):
     return self._orientation
-
-  def GetScrollable(self):
-    return self._scrollable
 
   def GetSize(self):
     return self._size
@@ -494,6 +486,7 @@ class Popup(VariableContainer):
 @json_util.JSONDecorator(
     {'_session_id': json_util.JSONString(),
      '_screen_id': json_util.JSONString(),
+     '_scrollable': json_util.JSONBool(),
      '_title': json_util.JSONString()})
 class Screen(BaseElementsContainer):
 
@@ -501,12 +494,18 @@ class Screen(BaseElementsContainer):
     super(Screen, self).__init__()
     self._session_id = service.GetSessionId()
     self._screen_id = GenerateScreenId()
+    self._scrollable = None
     self._title = None
 
   def GetSessionId(self):
     return self._session_id
   def GetScreenId(self):
     return self._screen_id
+
+  def SetScrollable(self, scrollable):
+    self._scrollable = scrollable
+  def GetScrollable(self):
+    return self._scrollable
 
   def SetTitle(self, title):
     self._title = title
