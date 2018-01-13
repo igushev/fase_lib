@@ -77,36 +77,42 @@ class FaseTkUIImp(object):
     self.ui_imp_root.rowconfigure(0, weight=1)
     self.ui_imp_frame = None
 
-  def InitScreen(self):
+  def InitScreen(self, scrollable=False):
     self.ui_imp_frame = tkinter.Frame(self.ui_imp_root)
     self.ui_imp_frame.grid(column=0, row=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
     # Middle layout take entire space.
     self.ui_imp_frame.columnconfigure(0, weight=1)
     self.ui_imp_frame.rowconfigure(1, weight=1)
     
-    ui_imp_middle_layout = tkinter.Frame(self.ui_imp_frame)
-    ui_imp_middle_layout.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
-    # Canvas take entire space and Scrollbar entire height.
-    ui_imp_middle_layout.columnconfigure(0, weight=1)
-    ui_imp_middle_layout.rowconfigure(0, weight=1)
-
-    ui_imp_widget_canvas = tkinter.Canvas(ui_imp_middle_layout)
-    ui_imp_widget_canvas.grid(column=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
-    
-    ui_imp_widget_scrollbar = tkinter.Scrollbar(
-        ui_imp_middle_layout, orient=tkinter.VERTICAL, command=ui_imp_widget_canvas.yview)
-    ui_imp_widget_canvas.configure(yscrollcommand=ui_imp_widget_scrollbar.set)
-    ui_imp_widget_scrollbar.grid(column=1, row=0, sticky=(tkinter.N, tkinter.S))
-    
-    def OnWidgetLayoutConfigure(event):
-      ui_imp_widget_canvas.configure(scrollregion=ui_imp_widget_canvas.bbox(tkinter.ALL))
-      ui_imp_width_layout.config(width=ui_imp_widget_canvas.winfo_width())
+    if scrollable:
+      ui_imp_middle_layout = tkinter.Frame(self.ui_imp_frame)
+      ui_imp_middle_layout.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
+      # Canvas take entire space and Scrollbar entire height.
+      ui_imp_middle_layout.columnconfigure(0, weight=1)
+      ui_imp_middle_layout.rowconfigure(0, weight=1)
   
-    ui_imp_widget_layout = tkinter.Frame(ui_imp_widget_canvas)
-    ui_imp_widget_canvas.create_window((0,0), window=ui_imp_widget_layout, anchor='nw')
-    ui_imp_widget_layout.bind("<Configure>", OnWidgetLayoutConfigure)
-    ui_imp_width_layout = tkinter.Frame(ui_imp_widget_layout)
-    ui_imp_width_layout.grid()
+      ui_imp_widget_canvas = tkinter.Canvas(ui_imp_middle_layout)
+      ui_imp_widget_canvas.grid(column=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
+      
+      ui_imp_widget_scrollbar = tkinter.Scrollbar(
+          ui_imp_middle_layout, orient=tkinter.VERTICAL, command=ui_imp_widget_canvas.yview)
+      ui_imp_widget_canvas.configure(yscrollcommand=ui_imp_widget_scrollbar.set)
+      ui_imp_widget_scrollbar.grid(column=1, row=0, sticky=(tkinter.N, tkinter.S))
+      
+      def OnWidgetLayoutConfigure(event):
+        ui_imp_widget_canvas.configure(scrollregion=ui_imp_widget_canvas.bbox(tkinter.ALL))
+        ui_imp_width_layout.config(width=ui_imp_widget_canvas.winfo_width())
+    
+      ui_imp_widget_layout = tkinter.Frame(ui_imp_widget_canvas)
+      ui_imp_widget_canvas.create_window((0,0), window=ui_imp_widget_layout, anchor='nw')
+      ui_imp_widget_layout.bind("<Configure>", OnWidgetLayoutConfigure)
+      ui_imp_width_layout = tkinter.Frame(ui_imp_widget_layout)
+      ui_imp_width_layout.grid()
+    else:
+      ui_imp_widget_layout = tkinter.Frame(self.ui_imp_frame)
+      ui_imp_widget_layout.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
+      ui_imp_widget_layout.columnconfigure(0, weight=1)
+      
 
     self.id_list_to_var = dict()
     return ParentElement(ui_imp_widget_layout, fase.Layout.VERTICAL)
@@ -114,10 +120,10 @@ class FaseTkUIImp(object):
   def SetUI(self, ui):
     self.ui = ui
 
-  def ResetScreen(self):
+  def ResetScreen(self, scrollable=False):
     if self.ui_imp_frame:
       self.ui_imp_frame.destroy()
-    return self.InitScreen()
+    return self.InitScreen(scrollable=scrollable)
 
   def PrepareMainContextMenusNextPrevButtons(
       self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None):

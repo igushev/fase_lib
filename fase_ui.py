@@ -15,7 +15,7 @@ class FaseUI(object):
     self.id_list_to_value = dict()
 
   def DrawScreen(self, screen):
-    ui_imp_window = self.ui_imp.ResetScreen()
+    ui_imp_window = self.ui_imp.ResetScreen(scrollable=screen.GetScrollable())
     self.DrawMainContextMenusNextPrevButtons(screen)
     self.DrawMainButtonAndNavigationButtons(screen)
     self.DrawBaseElementsContainer([], screen, ui_imp_window)
