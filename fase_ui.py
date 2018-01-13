@@ -90,6 +90,7 @@ class FaseUI(object):
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     self.ui_imp.DrawButton(id_list, button_element, ui_imp_parent)
 
+  # TODO(igushev): Add better support for popups.
   def ShowPopup(self, popup):
     assert len(popup.GetIdElementList()) == 1
     button_id, button_element = popup.GetIdElementList()[0]

@@ -470,6 +470,7 @@ class Layout(BaseElementsContainer):
     return self._on_click
 
 
+# TODO(igushev): Create better API for popups.
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString()})
 class Popup(ElementContainer):
