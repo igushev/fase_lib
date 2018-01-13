@@ -24,7 +24,9 @@ class FaseSignInButton(fase.Button):
         screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
-      screen.AddPopup('Wrong activation code!')
+      screen = fase.Screen(service)
+      popup = screen.AddPopup('Wrong activation code!')
+      popup.AddButton(id_="ok_id", text="OK", on_click=OnActivationCodeSent)
       return service, screen
 
     on_sign_in_done = service.PopFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
@@ -99,13 +101,20 @@ def OnSignInOption(service, screen, element):
 def OnSignInEnteredData(service, screen, element):
   sign_in_layout = screen.GetElement(id_='sign_in_layout_id')
   phone_number = sign_in_layout.GetText(id_='phone_number_text_id').GetText()
+  if not phone_number:
+    screen = fase.Screen(service)
+    popup = screen.AddPopup('Enter phone number!')
+    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignInOption)
+    return screen
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if not user_list:
-    screen.AddPopup('User with such phone number has not been found!')
+    screen = fase.Screen(service)
+    popup = screen.AddPopup('User with such phone number has not been found!')
+    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignInOption)
     return screen
   assert len(user_list) == 1
   user = user_list[0]
-  return _OnEnteredData(service, phone_number, user.user_id)
+  return _OnEnteredData(service, screen, element, phone_number, user.user_id)
 
 
 def OnSignUpOption(service, screen, element):
@@ -122,9 +131,16 @@ def OnSignUpOption(service, screen, element):
 def OnSignUpEnteredData(service, screen, element):
   sign_up_layout = screen.GetElement(id_='sign_up_layout_id')
   phone_number = sign_up_layout.GetText(id_='phone_number_text_id').GetText()
+  if not phone_number:
+    screen = fase.Screen(service)
+    popup = screen.AddPopup('Enter phone number!')
+    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignUpOption)
+    return screen
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if user_list:
-    screen.AddPopup('User with such phone number is already registered!')
+    screen = fase.Screen(service)
+    popup = screen.AddPopup('User with such phone number is already registered!')
+    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignUpOption)
     return screen
 
   datetime_now = datetime.datetime.now()
@@ -139,18 +155,22 @@ def OnSignUpEnteredData(service, screen, element):
                          last_name=sign_up_layout.GetText(id_='last_name_text_id').GetText(),
                          datetime_added=datetime_now)
   fase_database.FaseDatabaseInterface.Get().AddUser(user)
-  return _OnEnteredData(service, phone_number, user_id)
+  return _OnEnteredData(service, screen, element, phone_number, user_id)
 
 
-def _OnEnteredData(service, phone_number, user_id):
+def _OnEnteredData(service, screen, element, phone_number, user_id):
   activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
   sms_sender.SMSSender.Get().SendActivationCode(phone_number, activation_code)
+  service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
+  service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
+  return OnActivationCodeSent(service, screen, element)
+
+
+def OnActivationCodeSent(service, screen, element):
   screen = fase.Screen(service)
   enter_activation_layout = screen.AddLayout(id_='enter_activation_layout_id', orientation=fase.Layout.VERTICAL)
   enter_activation_layout.AddText(id_='activation_code_text_id', hint='Activation Code')
   enter_activation_layout.AddElement(id_='send_button_id', element=FaseSignInButton(text='Send', on_click=MockFunction))
-  service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
-  service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
   screen.AddPrevStepButton(on_click=OnSkipCancelOption, text='Cancel')
   return screen
 

@@ -1,5 +1,6 @@
 import uuid
 
+import fase
 import fase_model
 import fase_sign_in
 
@@ -16,9 +17,7 @@ class FaseClient(object):
 
   def Run(self):
     response = self.http_client.GetService(fase_model.Device('Python', str(uuid.getnode())))
-    self.session_info = response.session_info
-    self.screen_info = response.screen_info
-    self.ui.DrawScreen(response.screen)
+    self.ProcessResponse(response)
     self.ui.Run()
 
   def ElementClicked(self, id_list, id_list_to_value):
@@ -32,7 +31,15 @@ class FaseClient(object):
       self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
     element_clicked = fase_model.ElementClicked(id_list)
     response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
+    self.ProcessResponse(response)
+    self.ui.ResetValues()
+
+  def ProcessResponse(self, response):
+    while response.screen.HasElement(fase.POPUP_ID):
+      popup = response.screen.PopElement(fase.POPUP_ID)
+      id_list = self.ui.ShowPopup(popup)
+      element_clicked = fase_model.ElementClicked(id_list)
+      response = self.http_client.ElementClicked(element_clicked, response.session_info, response.screen_info)
     self.session_info = response.session_info
     self.screen_info = response.screen_info
     self.ui.DrawScreen(response.screen)
-    self.ui.ResetValues()

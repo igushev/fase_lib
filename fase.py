@@ -472,7 +472,7 @@ class Layout(BaseElementsContainer):
 
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString()})
-class Popup(VariableContainer):
+class Popup(ElementContainer):
 
   def __init__(self, text=None):
     super(Popup, self).__init__()
@@ -480,6 +480,17 @@ class Popup(VariableContainer):
 
   def GetText(self):
     return self._text
+
+  def AddButton(self, id_,
+                text=None,
+                on_click=None,
+                icon=None):
+    button = Button(text=text,
+                    on_click=on_click,
+                    icon=icon)
+    return self.AddElement(id_, button)
+  def GetButton(self, id_):
+    return self.GetElement(id_)
 
 
 @json_util.JSONDecorator(

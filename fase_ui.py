@@ -90,6 +90,13 @@ class FaseUI(object):
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     self.ui_imp.DrawButton(id_list, button_element, ui_imp_parent)
 
+  def ShowPopup(self, popup):
+    assert len(popup.GetIdElementList()) == 1
+    button_id, button_element = popup.GetIdElementList()[0]
+    assert button_element.GetText() == 'OK'
+    self.ui_imp.ShowPopup(popup)
+    return [fase.POPUP_ID, button_id]
+
   def Run(self):
     self.ui_imp.Run()
 

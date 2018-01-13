@@ -1,6 +1,6 @@
 import math
 import tkinter
-from tkinter import font
+from tkinter import font, messagebox
 
 import fase
 
@@ -334,6 +334,9 @@ class FaseTkUIImp(object):
     ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
     return ui_imp_button
+
+  def ShowPopup(self, popup):
+    messagebox.showinfo(message=popup.GetText())
 
   def Run(self):
     self.ui_imp_root.mainloop()
