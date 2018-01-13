@@ -222,7 +222,7 @@ class VisualElement(Element):
 @json_util.JSONDecorator(
     {'_label': json_util.JSONString(),
      '_font': json_util.JSONFloat(),
-     '_sizable': json_util.JSONInt(),
+     '_size': json_util.JSONInt(),
      '_alight': json_util.JSONInt(),
      '_on_click': json_util.JSONFunction()})
 class Label(VisualElement):
@@ -237,13 +237,13 @@ class Label(VisualElement):
   def __init__(self,
                label=None,
                font=None,
-               sizable=None,
+               size=None,
                alight=None,
                on_click=None):
     super(Label, self).__init__()
     self._label = label
     self._font = font
-    self._sizable = sizable
+    self._size = size
     self._alight = alight
     self._on_click = on_click
 
@@ -253,8 +253,8 @@ class Label(VisualElement):
   def GetFont(self):
     return self._font
 
-  def GetSizable(self):
-    return self._sizable
+  def GetSize(self):
+    return self._size
 
   def GetAlight(self):
     return self._alight
@@ -266,7 +266,7 @@ class Label(VisualElement):
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString(),
      '_hint': json_util.JSONString(),
-     '_sizable': json_util.JSONInt()})
+     '_size': json_util.JSONInt()})
 class Text(VisualElement):
 
   MIN = 1
@@ -275,11 +275,11 @@ class Text(VisualElement):
   def __init__(self,
                text=None,
                hint=None,
-               sizable=None):
+               size=None):
     super(Text, self).__init__()
     self._text = text
     self._hint = hint
-    self._sizable = sizable
+    self._size = size
 
   def Update(self, value):
     self._text = value
@@ -290,8 +290,8 @@ class Text(VisualElement):
   def GetText(self):
     return self._text
 
-  def GetSizable(self):
-    return self._sizable
+  def GetSize(self):
+    return self._size
 
 
 @json_util.JSONDecorator(
@@ -401,11 +401,11 @@ class BaseElementsContainer(VariableContainer):
   def AddLayout(self, id_,
                orientation=None,
                scrollable=None,
-               sizable=None,
+               size=None,
                on_click=None):
     return self.AddElement(id_, Layout(orientation=orientation,
                                        scrollable=scrollable,
-                                       sizable=sizable,
+                                       size=size,
                                        on_click=on_click))
   def GetLayout(self, id_):
     return self.GetElement(id_)
@@ -413,17 +413,17 @@ class BaseElementsContainer(VariableContainer):
   def AddLabel(self, id_,
                label=None,
                font=None,
-               sizable=None,
+               size=None,
                alight=None):
-    return self.AddElement(id_, Label(label=label, font=font, sizable=sizable, alight=alight))
+    return self.AddElement(id_, Label(label=label, font=font, size=size, alight=alight))
   def GetLabel(self, id_):
     return self.GetElement(id_)
 
   def AddText(self, id_,
                text=None,
                hint=None,
-               sizable=None):
-    return self.AddElement(id_, Text(text=text, hint=hint, sizable=sizable))
+               size=None):
+    return self.AddElement(id_, Text(text=text, hint=hint, size=size))
   def GetText(self, id_):
     return self.GetElement(id_)
 
@@ -445,7 +445,7 @@ class BaseElementsContainer(VariableContainer):
 @json_util.JSONDecorator(
     {'_orientation': json_util.JSONInt(),
      '_scrollable': json_util.JSONBool(),
-     '_sizable': json_util.JSONInt(),
+     '_size': json_util.JSONInt(),
      '_on_click': json_util.JSONFunction()})
 class Layout(BaseElementsContainer):
 
@@ -458,12 +458,12 @@ class Layout(BaseElementsContainer):
   def __init__(self,
                orientation=None,
                scrollable=None,
-               sizable=None,
+               size=None,
                on_click=None):
     super(Layout, self).__init__()
     self._orientation = orientation
     self._scrollable = scrollable
-    self._sizable = sizable
+    self._size = size
     self._on_click = on_click
 
   def GetOrientation(self):
@@ -472,8 +472,8 @@ class Layout(BaseElementsContainer):
   def GetScrollable(self):
     return self._scrollable
 
-  def GetSizable(self):
-    return self._sizable
+  def GetSize(self):
+    return self._size
 
   def GetOnClick(self):
     return self._on_click

@@ -240,7 +240,7 @@ class FaseTkUIImp(object):
         raise ValueError(self._orientation)
 
   def DrawLayout(self, id_list, layout_element, ui_imp_parent):
-    self._ConfigureParent(ui_imp_parent, maximize=(layout_element.GetSizable()==fase.Layout.MAX))
+    self._ConfigureParent(ui_imp_parent, maximize=(layout_element.GetSize()==fase.Layout.MAX))
     ui_imp_layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
     ui_imp_layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
                        sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
@@ -265,7 +265,7 @@ class FaseTkUIImp(object):
     return ParentElement(ui_imp_layout, layout_element.GetOrientation(), click_callback=click_callback)
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
-    self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSizable()==fase.Label.MAX))
+    self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSize()==fase.Label.MAX))
     ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetLabel())
 
     if label_element.GetFont() is not None:

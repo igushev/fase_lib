@@ -73,9 +73,9 @@ class NotesService(fase.Service):
       note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
 
       note_header_layout = note_layout.AddLayout(
-          id_='note_header_layout', orientation=fase.Layout.HORIZONTAL, sizable=fase.Label.MAX)
+          id_='note_header_layout', orientation=fase.Layout.HORIZONTAL, size=fase.Label.MAX)
       note_header_layout.AddLabel(
-          id_='note_header_label', label=note.header, font=1.5, sizable=fase.Label.MAX, alight=fase.Label.LEFT)
+          id_='note_header_label', label=note.header, font=1.5, size=fase.Label.MAX, alight=fase.Label.LEFT)
       note_header_layout.AddImage(
           id_='note_header_image', image=('favourite.pnp' if note.favourite else 'favourite_non.pnp'))
 
@@ -85,7 +85,7 @@ class NotesService(fase.Service):
       note_deails_layout = note_layout.AddLayout(id_='note_deails_layout', orientation=fase.Layout.HORIZONTAL)
       note_deails_layout.AddLabel(
           id_='note_deails_layout_datetime_text', label=datetime_text, font=0.7,
-          sizable=fase.Label.MAX, alight=fase.Label.RIGHT)
+          size=fase.Label.MAX, alight=fase.Label.RIGHT)
     return screen
 
   def _AddMainMenu(self, screen):
@@ -130,7 +130,7 @@ class NotesService(fase.Service):
     screen = fase.Screen(self)
     note_layout = screen.AddLayout(id_='note_layout', orientation=fase.Layout.VERTICAL)
     header_text = note_layout.AddText(id_='header_text')
-    text_text = note_layout.AddText(id_='text_text', sizable=fase.Label.MAX)
+    text_text = note_layout.AddText(id_='text_text', size=fase.Label.MAX)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
 
     note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None
