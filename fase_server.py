@@ -67,11 +67,18 @@ class FaseServer(object):
                                session_info=session_info,
                                screen_info=fase_model.ScreenInfo(screen.GetScreenId()))
 
-  def _GetElement(self, screen, id_list):
+  @staticmethod
+  def _GetElement(screen, id_list):
     element = screen
     for id_ in id_list:
       element = element.GetElement(id_)
     return element
+
+  @staticmethod
+  def _ScreenUpdate(screen, screen_update):
+    for id_list, value in zip(
+        screen_update.id_list_list, screen_update.value_list):
+      FaseServer._GetElement(screen, id_list).Update(value)
 
   def ScreenUpdate(self, screen_update, session_info, screen_info):
     service = (fase_database.FaseDatabaseInterface.Get().
@@ -85,9 +92,7 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen.GetScreenId()))
 
-    for id_list, value in zip(
-        screen_update.id_list_list, screen_update.value_list):
-      self._GetElement(screen, id_list).Update(value)
+    FaseServer._ScreenUpdate(screen, screen_update)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)
 
     return fase_model.Response(screen=screen,
@@ -106,7 +111,8 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen.GetScreenId()))
 
-    element = self._GetElement(screen, element_clicked.id_list)
+    FaseServer._ScreenUpdate(screen, element_clicked)
+    element = FaseServer._GetElement(screen, element_clicked.id_list)
     service, screen = element.FaseOnClick(service, screen)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreen(screen, overwrite=True)

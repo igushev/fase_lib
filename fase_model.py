@@ -67,23 +67,27 @@ class User(data_util.AbstractObject):
 @json_util.JSONDecorator(
     {'id_list_list':
      json_util.JSONList(json_util.JSONList(json_util.JSONString())),
-     'value_list': json_util.JSONList(json_util.JSONString())})
+     'value_list': json_util.JSONList(json_util.JSONString())},
+    inherited=True)
 class ScreenUpdate(data_util.AbstractObject):
 
   def __init__(self,
                id_list_list=None,
                value_list=None):
-    self.id_list_list = id_list_list
-    self.value_list = value_list
+    self.id_list_list = id_list_list or []
+    self.value_list = value_list or []
 
 
 @json_util.JSONDecorator(
     {'id_list':
      json_util.JSONList(json_util.JSONString())})
-class ElementClicked(data_util.AbstractObject):
+class ElementClicked(ScreenUpdate):
 
   def  __init__(self,
-                id_list=None):
+                id_list=None,
+                *args,
+                **kwargs):
+    super(ElementClicked, self).__init__(*args, **kwargs)
     self.id_list = id_list
 
 

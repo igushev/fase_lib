@@ -47,7 +47,7 @@ class FaseTest(unittest.TestCase):
     self.assertEqual(expected_screen, response.screen)
     response = fase_server.FaseServer.Get().GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
-    
+
     screen_update = fase_model.ScreenUpdate([['text_name_id']], ['Hanry Ford'])
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
@@ -72,6 +72,31 @@ class FaseTest(unittest.TestCase):
     expected_screen = fase.Screen(service)
     expected_screen.AddText(id_='text_name_id', hint='Enter Name')
     expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen._screen_id = screen_info.screen_id
+    self.assertEqual(expected_screen, response.screen)
+    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    self.assertEqual(expected_screen, response.screen)
+
+  def testHelloWorldElementClickedWithScreenUpdate(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    response = fase_server.FaseServer.Get().GetService(device)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    expected_screen = fase.Screen(service)
+    expected_screen.AddText(id_='text_name_id', hint='Enter Name')
+    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen._screen_id = screen_info.screen_id
+    self.assertEqual(expected_screen, response.screen)
+    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    self.assertEqual(expected_screen, response.screen)
+
+    element_clicked = fase_model.ElementClicked(['next_button_id'], [['text_name_id']], ['Hanry Ford'])
+    response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
+    screen_info = response.screen_info
+    expected_screen = fase.Screen(service)
+    expected_screen.AddLabel(id_='hello_label_id', label='Hello, Hanry Ford!')
+    expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = fase_server.FaseServer.Get().GetScreen(session_info)
