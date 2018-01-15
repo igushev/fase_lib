@@ -40,24 +40,35 @@ class FaseClient(object):
     self.ProcessResponse(response)
     self.ui.Run()
 
-  def ElementClicked(self, id_list, id_list_to_value):
+  @staticmethod
+  def _GetScreenUpdate(id_list_to_value):
     id_list_list = []
     value_list = []
     for id_list_update, value in id_list_to_value.items():
       id_list_list.append(list(id_list_update))
       value_list.append(value)
-    element_clicked = fase_model.ElementClicked(id_list, id_list_list=id_list_list, value_list=value_list)
+    return fase_model.ScreenUpdate(id_list_list=id_list_list, value_list=value_list)
+
+  def ScreenUpdate(self, id_list_to_value):
+    screen_update = FaseClient._GetScreenUpdate(id_list_to_value)
+    response = self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
+    self.ProcessResponse(response)
+
+  def ElementClicked(self, id_list, id_list_to_value):
+    screen_update = FaseClient._GetScreenUpdate(id_list_to_value)
+    element_clicked = fase_model.ElementClicked(
+        id_list=id_list, id_list_list=screen_update.id_list_list, value_list=screen_update.value_list)
     response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
     self.ProcessResponse(response)
-    self.ui.ResetValues()
 
   def ProcessResponse(self, response):
     while response.screen.HasElement(fase.POPUP_ID):
       popup = response.screen.PopElement(fase.POPUP_ID)
       id_list = self.ui.ShowPopup(popup)
-      element_clicked = fase_model.ElementClicked(id_list)
+      element_clicked = fase_model.ElementClicked(id_list=id_list)
       response = self.http_client.ElementClicked(element_clicked, response.session_info, response.screen_info)
     self.session_info = response.session_info
     self.screen_info = response.screen_info
     SaveSessionInfoIfNeeded(self.session_info_filepath, response.session_info)
     self.ui.DrawScreen(response.screen)
+    self.ui.ResetValues()

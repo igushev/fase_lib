@@ -55,7 +55,7 @@ class FaseTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -66,7 +66,7 @@ class FaseTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(['reset_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'])
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -91,7 +91,8 @@ class FaseTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(['next_button_id'], [['text_name_id']], ['Hanry Ford'])
+    element_clicked = fase_model.ElementClicked(
+        id_list=['next_button_id'], id_list_list=[['text_name_id']], value_list=['Hanry Ford'])
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -112,7 +113,7 @@ class FaseTest(unittest.TestCase):
     response_entered_text = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     screen_info_entered_text = response_entered_text.screen_info
 
-    element_clicked = fase_model.ElementClicked(['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
     response_clicked_next = fase_server.FaseServer.Get().ElementClicked(
         element_clicked, session_info, screen_info_entered_text)
     screen_info_clicked_next = response_clicked_next.screen_info
@@ -133,7 +134,7 @@ class FaseTest(unittest.TestCase):
     response_entered_text = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     screen_info_entered_text = response_entered_text.screen_info
 
-    element_clicked = fase_model.ElementClicked(['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
     response_clicked_next = fase_server.FaseServer.Get().ElementClicked(
         element_clicked, session_info, screen_info_entered_text)
     screen_info_clicked_next = response_clicked_next.screen_info

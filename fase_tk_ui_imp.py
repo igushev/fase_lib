@@ -12,6 +12,7 @@ NAV_BUTTON_WIDTH = 75
 NAV_BUTTON_HEIGHT = 40
 MAIN_BUTTON_WIDTH = 75
 MAIN_BUTTON_HEIGHT = 75
+SCREEN_UPDATE_INTERVAL = 1000
 
 
 class ClickCallBack(object):
@@ -343,10 +344,15 @@ class FaseTkUIImp(object):
     messagebox.showinfo(message=popup.GetText())
 
   def Run(self):
+    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)
     self.ui_imp_root.mainloop()
 
   def ElementClicked(self, id_list):
     self.ui.ElementClicked(id_list)
+
+  def ScreenUpdate(self):
+    self.ui.ScreenUpdate()
+    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)
 
   def ElementUpdated(self, id_list, *args):
     value = self.id_list_to_var[tuple(id_list)].get() 

@@ -123,7 +123,7 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
     response = self._ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -134,7 +134,7 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(['reset_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'])
     response = self._ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)

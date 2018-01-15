@@ -14,7 +14,7 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
 
   # Click on Sign In button.
   response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(sign_in_id_list), session_info, screen_info)
+      fase_model.ElementClicked(id_list=sign_in_id_list), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -25,7 +25,7 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
   if sign_in:
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
@@ -37,13 +37,13 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
   else:
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(['sign_in_layout_id', 'sign_up_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_up_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
@@ -61,7 +61,7 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(['sign_up_layout_id', 'sign_up_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_up_layout_id', 'sign_up_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
   
@@ -76,7 +76,7 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
   fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
   # Click on Send button.
   response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(['enter_activation_layout_id', 'send_button_id']), session_info, screen_info)
+      fase_model.ElementClicked(id_list=['enter_activation_layout_id', 'send_button_id']), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -86,7 +86,7 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
 def SignOutProcedure(session_info, screen_info, sign_out_id_list):
   # Click on Sign Out button.
   response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(sign_out_id_list), session_info, screen_info)
+      fase_model.ElementClicked(id_list=sign_out_id_list), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -95,7 +95,7 @@ def SignOutProcedure(session_info, screen_info, sign_out_id_list):
 
   # Click on Sign Out button.
   response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(['sign_out_layout_id', 'sign_out_button_id']), session_info, screen_info)
+      fase_model.ElementClicked(id_list=['sign_out_layout_id', 'sign_out_button_id']), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   return session_info, screen_info
