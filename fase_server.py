@@ -111,7 +111,8 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen.GetScreenId()))
 
-    FaseServer._ScreenUpdate(screen, element_clicked)
+    if element_clicked.screen_update is not None:
+      FaseServer._ScreenUpdate(screen, element_clicked.screen_update)
     element = FaseServer._GetElement(screen, element_clicked.id_list)
     service, screen = element.FaseOnClick(service, screen)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)

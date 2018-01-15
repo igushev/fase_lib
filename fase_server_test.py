@@ -91,8 +91,8 @@ class FaseTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(
-        id_list=['next_button_id'], id_list_list=[['text_name_id']], value_list=['Hanry Ford'])
+    screen_update = fase_model.ScreenUpdate([['text_name_id']], ['Hanry Ford'])
+    element_clicked = fase_model.ElementClicked(screen_update=screen_update, id_list=['next_button_id'])
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)

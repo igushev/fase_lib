@@ -56,8 +56,7 @@ class FaseClient(object):
 
   def ElementClicked(self, id_list, id_list_to_value):
     screen_update = FaseClient._GetScreenUpdate(id_list_to_value)
-    element_clicked = fase_model.ElementClicked(
-        id_list=id_list, id_list_list=screen_update.id_list_list, value_list=screen_update.value_list)
+    element_clicked = fase_model.ElementClicked(screen_update=screen_update, id_list=id_list)
     response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
     self.ProcessResponse(response)
 
