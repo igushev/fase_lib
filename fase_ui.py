@@ -101,11 +101,11 @@ class FaseUI(object):
   def Run(self):
     self.ui_imp.Run()
 
-  def ElementClicked(self, id_list):
-    self.client.ElementClicked(id_list, self.id_list_to_value)
+  def ElementUpdated(self, id_list, value):
+    self.id_list_to_value[tuple(id_list)] = value
 
   def ScreenUpdate(self):
     self.client.ScreenUpdate(self.id_list_to_value)
 
-  def ElementUpdated(self, id_list, value):
-    self.id_list_to_value[tuple(id_list)] = value
+  def ElementClicked(self, id_list):
+    self.client.ElementClicked(id_list, self.id_list_to_value)
