@@ -104,6 +104,9 @@ class FaseUI(object):
   def ElementUpdated(self, id_list, value):
     self.id_list_to_value[tuple(id_list)] = value
 
+  def ElementUpdatedPush(self, id_list, value):
+    self.ui_imp.ElementUpdatedPush(id_list, value)
+
   def ScreenUpdate(self):
     self.client.ScreenUpdate(self.id_list_to_value)
 

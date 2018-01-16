@@ -351,6 +351,9 @@ class FaseTkUIImp(object):
     value = self.id_list_to_var[tuple(id_list)].get() 
     self.ui.ElementUpdated(id_list, value)
 
+  def ElementUpdatedPush(self, id_list, value):
+    self.id_list_to_var[tuple(id_list)].set(value)
+
   def ScreenUpdate(self):
     self.ui.ScreenUpdate()
     self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)

@@ -285,7 +285,6 @@ class Text(VisualElement):
 
   def SetText(self, value):
     self._text = value
-
   def GetText(self):
     return self._text
 
@@ -367,7 +366,6 @@ class Button(VisualElement):
 
   def SetText(self, text):
     self._text = text
-
   def GetText(self):
     return self._text
 
