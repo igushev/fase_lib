@@ -67,7 +67,7 @@ class User(data_util.AbstractObject):
 @json_util.JSONDecorator({
     'id_list_list': json_util.JSONList(json_util.JSONList(json_util.JSONString())),
     'value_list': json_util.JSONList(json_util.JSONString())})
-class ScreenUpdate(data_util.AbstractObject):
+class ElementsUpdate(data_util.AbstractObject):
 
   def __init__(self,
                id_list_list=None,
@@ -77,46 +77,55 @@ class ScreenUpdate(data_util.AbstractObject):
 
 
 @json_util.JSONDecorator({
-    'screen_update': json_util.JSONObject(ScreenUpdate),
+    'elements_update': json_util.JSONObject(ElementsUpdate)})
+class ScreenUpdate(data_util.AbstractObject):
+
+  def  __init__(self,
+                elements_update=None):
+    self.elements_update = elements_update
+
+
+@json_util.JSONDecorator({
+    'elements_update': json_util.JSONObject(ElementsUpdate),
     'id_list': json_util.JSONList(json_util.JSONString())})
 class ElementClicked(data_util.AbstractObject):
 
   def  __init__(self,
-                screen_update=None,
+                elements_update=None,
                 id_list=None):
-    self.screen_update = screen_update
+    self.elements_update = elements_update
     self.id_list = id_list
 
 
 @json_util.JSONDecorator({
     'session_id': json_util.JSONString(),
     'screen': json_util.JSONObject(fase.Screen),
-    'screen_update': json_util.JSONObject(ScreenUpdate)})
+    'elements_update': json_util.JSONObject(ElementsUpdate)})
 class ScreenProg(data_util.AbstractObject):
 
   def __init__(self,
                session_id=None,
                screen=None,
-               screen_update=None):
+               elements_update=None):
     self.session_id = session_id
     self.screen = screen
-    self.screen_update = screen_update
+    self.elements_update = elements_update
 
 
 @json_util.JSONDecorator({
     'screen': json_util.JSONObject(fase.Screen),
-    'screen_update': json_util.JSONObject(ScreenUpdate),
+    'elements_update': json_util.JSONObject(ElementsUpdate),
     'session_info': json_util.JSONObject(SessionInfo),
     'screen_info': json_util.JSONObject(ScreenInfo)})
 class Response(data_util.AbstractObject):
   
   def __init__(self,
                screen=None,
-               screen_update=None,
+               elements_update=None,
                session_info=None,
                screen_info=None):
     self.screen = screen
-    self.screen_update = screen_update
+    self.elements_update = elements_update
     self.session_info = session_info
     self.screen_info = screen_info
 

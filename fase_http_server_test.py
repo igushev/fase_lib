@@ -116,7 +116,8 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(session_info)
     self.assertEqual(expected_screen, response.screen)
     
-    screen_update = fase_model.ScreenUpdate([['text_name_id']], ['Hanry Ford'])
+    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     response = self._ScreenUpdate(screen_update, session_info, screen_info)
     expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
     self.assertEqual(expected_screen, response.screen)

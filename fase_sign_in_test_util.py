@@ -33,7 +33,8 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
     screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
 
     # Enter phone number.
-    screen_update = fase_model.ScreenUpdate([['sign_in_layout_id', 'phone_number_text_id']], [phone_number])
+    elements_update=fase_model.ElementsUpdate([['sign_in_layout_id', 'phone_number_text_id']], [phone_number])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementClicked(
@@ -53,11 +54,12 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
     screen.GetElement(id_='sign_up_layout_id').GetElement(id_='sign_up_button_id')
 
     # Enter phone number.
-    screen_update = fase_model.ScreenUpdate([['sign_up_layout_id', 'phone_number_text_id'],
-                                             ['sign_up_layout_id', 'first_name_text_id'],
-                                             ['sign_up_layout_id', 'last_name_text_id']], [phone_number,
-                                                                                           first_name,
-                                                                                           last_name])
+    elements_update=fase_model.ElementsUpdate([['sign_up_layout_id', 'phone_number_text_id'],
+                                               ['sign_up_layout_id', 'first_name_text_id'],
+                                               ['sign_up_layout_id', 'last_name_text_id']], [phone_number,
+                                                                                             first_name,
+                                                                                             last_name])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementClicked(
@@ -70,9 +72,10 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
   screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='send_button_id')
 
   # Enter activation code.
-  screen_update = fase_model.ScreenUpdate(
+  elements_update=fase_model.ElementsUpdate(
       [['enter_activation_layout_id', 'activation_code_text_id']],
       [str(activation_code_generator.ActivationCodeGeneratorInterface.Get().codes[-1])])
+  screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
   fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
   # Click on Send button.
   response = fase_server.FaseServer.Get().ElementClicked(

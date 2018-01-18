@@ -41,22 +41,23 @@ class FaseClient(object):
     self.ui.Run()
 
   @staticmethod
-  def _GetScreenUpdate(id_list_to_value):
+  def _GetElementsUpdate(id_list_to_value):
     id_list_list = []
     value_list = []
     for id_list_update, value in id_list_to_value.items():
       id_list_list.append(list(id_list_update))
       value_list.append(value)
-    return fase_model.ScreenUpdate(id_list_list=id_list_list, value_list=value_list)
+    return fase_model.ElementsUpdate(id_list_list=id_list_list, value_list=value_list)
 
   def ScreenUpdate(self, id_list_to_value):
-    screen_update = FaseClient._GetScreenUpdate(id_list_to_value)
+    elements_update = FaseClient._GetElementsUpdate(id_list_to_value)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     response = self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
     self.ProcessResponse(response)
 
   def ElementClicked(self, id_list, id_list_to_value):
-    screen_update = FaseClient._GetScreenUpdate(id_list_to_value)
-    element_clicked = fase_model.ElementClicked(screen_update=screen_update, id_list=id_list)
+    elements_update = FaseClient._GetElementsUpdate(id_list_to_value)
+    element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=id_list)
     response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
     self.ProcessResponse(response)
 

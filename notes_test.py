@@ -93,9 +93,10 @@ class NotesTest(unittest.TestCase):
     screen.GetElement(id_='note_layout')
 
     # Enter note.
-    screen_update = fase_model.ScreenUpdate([['note_layout', 'header_text'],
-                                             ['note_layout', 'text_text']], [note.header,
-                                                                             note.text])
+    elements_update=fase_model.ElementsUpdate([['note_layout', 'header_text'],
+                                               ['note_layout', 'text_text']], [note.header,
+                                                                               note.text])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Save button.
@@ -127,9 +128,10 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, _ = self.SelectNote(session_info, screen_info, note)
 
     # Edit Note.
-    screen_update = fase_model.ScreenUpdate([['note_layout', 'header_text'],
-                                             ['note_layout', 'text_text']], [note_edited.header,
-                                                                             note_edited.text])
+    elements_update=fase_model.ElementsUpdate([['note_layout', 'header_text'],
+                                               ['note_layout', 'text_text']], [note_edited.header,
+                                                                               note_edited.text])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Save button.
@@ -380,9 +382,10 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = self.SelectNote(session_info, screen_info, self.note_2)
 
     # Edit Note.
-    screen_update = fase_model.ScreenUpdate([['note_layout', 'header_text'],
-                                             ['note_layout', 'text_text']], [note_2_edited.header,
-                                                                             note_2_edited.text])
+    elements_update=fase_model.ElementsUpdate([['note_layout', 'header_text'],
+                                               ['note_layout', 'text_text']], [note_2_edited.header,
+                                                                               note_2_edited.text])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Cancel button.

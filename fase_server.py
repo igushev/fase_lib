@@ -74,30 +74,30 @@ class FaseServer(object):
     return element
 
   @staticmethod
-  def _ScreenUpdate(screen, screen_update):
-    for id_list, value in zip(screen_update.id_list_list, screen_update.value_list):
+  def _UpdateScreen(screen, elements_update):
+    for id_list, value in zip(elements_update.id_list_list, elements_update.value_list):
       FaseServer._GetElement(screen, id_list).Update(value)
 
   @staticmethod
-  def ScreenUpdateToDict(screen_update):
-    return {tuple(id_list): value for id_list, value in zip(screen_update.id_list_list, screen_update.value_list)}
+  def _ElementsUpdateToDict(elements_update):
+    return {tuple(id_list): value for id_list, value in zip(elements_update.id_list_list, elements_update.value_list)}
 
   @staticmethod
-  def _DictToScreenUpdate(id_list_to_value):
+  def _DictToElementsUpdate(id_list_to_value):
     id_list_list = []
     value_list = []
     for id_list_update, value in id_list_to_value.items():
       id_list_list.append(list(id_list_update))
       value_list.append(value)
-    return fase_model.ScreenUpdate(id_list_list=id_list_list, value_list=value_list)
+    return fase_model.ElementsUpdate(id_list_list=id_list_list, value_list=value_list)
 
   @staticmethod
-  def _UpdateScreenUpdate(current_screen_update, screen_update):
+  def _UpdateElementsUpdate(current_elements_update, elements_update):
     current_id_list_to_value = (
-        FaseServer.ScreenUpdateToDict(current_screen_update) if current_screen_update is not None else {})
-    id_list_to_value = FaseServer.ScreenUpdateToDict(screen_update)
+        FaseServer._ElementsUpdateToDict(current_elements_update) if current_elements_update is not None else {})
+    id_list_to_value = FaseServer._ElementsUpdateToDict(elements_update)
     current_id_list_to_value.update(id_list_to_value)
-    return FaseServer._DictToScreenUpdate(current_id_list_to_value)
+    return FaseServer._DictToElementsUpdate(current_id_list_to_value)
 
   def ScreenUpdate(self, screen_update, session_info, screen_info):
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
@@ -109,12 +109,13 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
-    FaseServer._ScreenUpdate(screen_prog.screen, screen_update)
-    screen_prog.screen_update = FaseServer._UpdateScreenUpdate(screen_prog.screen_update, screen_update)
+    FaseServer._UpdateScreen(screen_prog.screen, screen_update.elements_update)
+    screen_prog.elements_update = (
+        FaseServer._UpdateElementsUpdate(screen_prog.elements_update, screen_update.elements_update))
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
     return fase_model.Response(screen=screen_prog.screen,
-                               screen_update=screen_prog.screen_update,
+                               elements_update=screen_prog.elements_update,
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=screen_info)
 
@@ -128,8 +129,8 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
-    if element_clicked.screen_update is not None:
-      FaseServer._ScreenUpdate(screen_prog.screen, element_clicked.screen_update)
+    if element_clicked.elements_update is not None:
+      FaseServer._UpdateScreen(screen_prog.screen, element_clicked.elements_update)
     element = FaseServer._GetElement(screen_prog.screen, element_clicked.id_list)
     service, screen = element.FaseOnClick(service, screen_prog.screen)
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
