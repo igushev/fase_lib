@@ -16,6 +16,11 @@ MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
 
 
+# TODO(igushev): Make logic below less hacky.
+def MockFunction():
+  pass
+
+
 def GenerateSessionId():
   datetime_now = datetime.datetime.now()
   session_id_hash = hashlib.md5()

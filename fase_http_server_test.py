@@ -110,7 +110,7 @@ class ApplicationTest(unittest.TestCase):
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
     expected_screen = fase.Screen(service)
     expected_screen.AddText(id_='text_name_id', hint='Enter Name')
-    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=fase.MockFunction)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = self._GetScreen(session_info)
@@ -128,7 +128,7 @@ class ApplicationTest(unittest.TestCase):
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
     expected_screen.AddLabel(id_='hello_label_id', label='Hello, Hanry Ford!')
-    expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
+    expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=fase.MockFunction)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = self._GetScreen(session_info)
@@ -139,7 +139,7 @@ class ApplicationTest(unittest.TestCase):
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
     expected_screen.AddText(id_='text_name_id', hint='Enter Name')
-    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=fase.MockFunction)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     response = self._GetScreen(session_info)

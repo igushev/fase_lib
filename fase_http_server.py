@@ -3,8 +3,10 @@ import traceback
 
 from flask import Flask, request, jsonify
 
+import fase
 import fase_model
 import fase_server
+import json_util
 
 application = Flask(__name__)
 application.secret_key = 'fase_flask_secret_key'
@@ -12,6 +14,22 @@ application.secret_key = 'fase_flask_secret_key'
 STATUS_OK = 200
 STATUS_BAD_REQUEST = 400
 STATUS_ERROR = 500
+
+
+def CleanSimple(simple):
+  if isinstance(simple, list):
+    return [CleanSimple(nested_simple) for nested_simple in simple]
+  elif isinstance(simple, dict):
+    clean_simple = {}
+    for nested_key, nested_simple in simple.items():
+      if nested_key not in ['_on_click']:
+        clean_simple[nested_key] = CleanSimple(nested_simple)
+      else:
+        clean_simple[nested_key] = (
+            json_util.JSONFunction().ToSimple(fase.MockFunction) if nested_simple is not None else None)
+    return clean_simple
+  else:
+    return simple
 
 
 def SafeCall(func, *args, **kwargs):
@@ -48,6 +66,7 @@ def getservice():
   device_simple = request.get_json(force=True) 
   device = fase_model.Device.FromSimple(device_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().GetService, device)
+  response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
 
 
@@ -55,6 +74,7 @@ def getservice():
 def getscreen():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   response_simple, code = SafeCall(fase_server.FaseServer.Get().GetScreen, session_info)
+  response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
 
 
@@ -65,6 +85,7 @@ def screenupdate():
   screen_update_simple = request.get_json(force=True) 
   screen_update = fase_model.ScreenUpdate.FromSimple(screen_update_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().ScreenUpdate, screen_update, session_info, screen_info)
+  response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
 
 
@@ -76,4 +97,5 @@ def elementclicked():
   element_clicked = fase_model.ElementClicked.FromSimple(element_clicked_simple)
   response_simple, code = SafeCall(
       fase_server.FaseServer.Get().ElementClicked, element_clicked, session_info, screen_info)
+  response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
