@@ -18,7 +18,7 @@ class ApplicationTest(unittest.TestCase):
     super(ApplicationTest, self).setUp()
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[], screen_list=[], user_list=[]), overwrite=True)
+            service_list=[], screen_prog_list=[], user_list=[]), overwrite=True)
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
     self.test_application = fase_http_server.application.test_client()
 

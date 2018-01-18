@@ -493,21 +493,17 @@ class Popup(ElementContainer):
 
 
 @json_util.JSONDecorator(
-    {'_session_id': json_util.JSONString(),
-     '_screen_id': json_util.JSONString(),
+    {'_screen_id': json_util.JSONString(),
      '_scrollable': json_util.JSONBool(),
      '_title': json_util.JSONString()})
 class Screen(BaseElementsContainer):
 
   def __init__(self, service):
     super(Screen, self).__init__()
-    self._session_id = service.GetSessionId()
     self._screen_id = GenerateScreenId()
     self._scrollable = None
     self._title = None
 
-  def GetSessionId(self):
-    return self._session_id
   def GetScreenId(self):
     return self._screen_id
 

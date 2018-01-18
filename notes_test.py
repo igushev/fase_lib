@@ -24,7 +24,7 @@ class NotesTest(unittest.TestCase):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
-            screen_list=[],
+            screen_prog_list=[],
             user_list=[
                 fase_model.User(user_id='321',
                                 phone_number='+13216549870',

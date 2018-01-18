@@ -64,10 +64,9 @@ class User(data_util.AbstractObject):
       return self.phone_number
 
 
-@json_util.JSONDecorator(
-    {'id_list_list':
-     json_util.JSONList(json_util.JSONList(json_util.JSONString())),
-     'value_list': json_util.JSONList(json_util.JSONString())})
+@json_util.JSONDecorator({
+    'id_list_list': json_util.JSONList(json_util.JSONList(json_util.JSONString())),
+    'value_list': json_util.JSONList(json_util.JSONString())})
 class ScreenUpdate(data_util.AbstractObject):
 
   def __init__(self,
@@ -77,16 +76,31 @@ class ScreenUpdate(data_util.AbstractObject):
     self.value_list = value_list
 
 
-@json_util.JSONDecorator(
-    {'screen_update': json_util.JSONObject(ScreenUpdate),
-     'id_list': json_util.JSONList(json_util.JSONString())})
-class ElementClicked(ScreenUpdate):
+@json_util.JSONDecorator({
+    'screen_update': json_util.JSONObject(ScreenUpdate),
+    'id_list': json_util.JSONList(json_util.JSONString())})
+class ElementClicked(data_util.AbstractObject):
 
   def  __init__(self,
                 screen_update=None,
                 id_list=None):
     self.screen_update = screen_update
     self.id_list = id_list
+
+
+@json_util.JSONDecorator({
+    'session_id': json_util.JSONString(),
+    'screen': json_util.JSONObject(fase.Screen),
+    'screen_update': json_util.JSONObject(ScreenUpdate)})
+class ScreenProg(data_util.AbstractObject):
+
+  def __init__(self,
+               session_id=None,
+               screen=None,
+               screen_update=None):
+    self.session_id = session_id
+    self.screen = screen
+    self.screen_update = screen_update
 
 
 @json_util.JSONDecorator({

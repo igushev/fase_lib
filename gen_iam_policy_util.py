@@ -1,4 +1,4 @@
-import StringIO
+import io
 
 
 BEGIN_POLICY="""{
@@ -36,7 +36,7 @@ END_POLICY="""    ]
 
 
 def GenerateIAMPolicty(table_name_list, tables_suffix):
-  iam_policy_io = StringIO.StringIO()
+  iam_policy_io = io.StringIO()
   iam_policy_io.write(BEGIN_POLICY)
   for i, table_name in enumerate(table_name_list):
     table_with_suffix = '%s%s' % (table_name, tables_suffix)

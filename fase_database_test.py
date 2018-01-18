@@ -38,6 +38,7 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     service_1 = hello_world.HelloWorldService()
     screen_1 = service_1.OnStart()
     session_id_1 = service_1.GetSessionId()
+    screen_prog_1 = fase_model.ScreenProg(session_id=session_id_1, screen=screen_1)
 
     service_2 = hello_world.HelloWorldService()
     screen_2 = service_2.OnStart()
@@ -45,6 +46,7 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     text_name.Update('Edward Igushev')
     screen_2 = service_2.OnNextButton(screen_2, text_name)
     session_id_2 = service_2.GetSessionId()
+    screen_prog_2 = fase_model.ScreenProg(session_id=session_id_2, screen=screen_2)
 
     self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetService(session_id_1))
     fase_database.FaseDatabaseInterface.Get().AddService(service_1)
@@ -55,14 +57,14 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     self.assertEqual(service_1, fase_database.FaseDatabaseInterface.Get().GetService(session_id_1))
     self.assertEqual(service_2, fase_database.FaseDatabaseInterface.Get().GetService(session_id_2))
 
-    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetScreen(session_id_1))
-    fase_database.FaseDatabaseInterface.Get().AddScreen(screen_1)
-    self.assertEqual(screen_1, fase_database.FaseDatabaseInterface.Get().GetScreen(session_id_1))
+    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_1))
+    fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog_1)
+    self.assertEqual(screen_prog_1, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_1))
 
-    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetScreen(session_id_2))
-    fase_database.FaseDatabaseInterface.Get().AddScreen(screen_2)
-    self.assertEqual(screen_1, fase_database.FaseDatabaseInterface.Get().GetScreen(session_id_1))
-    self.assertEqual(screen_2, fase_database.FaseDatabaseInterface.Get().GetScreen(session_id_2))
+    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_2))
+    fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog_2)
+    self.assertEqual(screen_prog_1, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_1))
+    self.assertEqual(screen_prog_2, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_2))
     
     user_1 = fase_model.User(user_id='321',
                              phone_number='+13216549870',

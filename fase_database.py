@@ -16,22 +16,18 @@ class FaseDatabaseInterface(object):
   def GetService(self, session_id):
     raise NotImplemented()
 
-  def AddScreen(self, screen, overwrite=False):
+  def AddScreenProg(self, screen_prog, overwrite=False):
     raise NotImplemented()
-
-  def GetScreen(self, session_id):
+  def GetScreenProg(self, session_id):
     raise NotImplemented()
 
 
 class MockFaseDatabase(FaseDatabaseInterface):
 
-  def __init__(self, service_list, screen_list, user_list):
-    self.session_id_to_service = {
-        service._session_id: service for service in service_list}
-    self.session_id_to_screen = {
-        screen._session_id: screen for screen in screen_list}
-    self.user_id_to_user = {
-        user.user_id: user for user in user_list}
+  def __init__(self, service_list, screen_prog_list, user_list):
+    self.session_id_to_service = {service._session_id: service for service in service_list}
+    self.session_id_to_screen_prog = {screen_prog.session_id: screen_prog for screen_prog in screen_prog_list}
+    self.user_id_to_user = {user.user_id: user for user in user_list}
 
   def CreateDatabase(self):
     pass
@@ -49,15 +45,15 @@ class MockFaseDatabase(FaseDatabaseInterface):
   def DeleteService(self, session_id):
     del self.session_id_to_service[session_id]
 
-  def AddScreen(self, screen, overwrite=False):
-    assert screen._session_id not in self.session_id_to_screen or overwrite
-    self.session_id_to_screen[screen._session_id] = screen
+  def AddScreenProg(self, screen_prog, overwrite=False):
+    assert screen_prog.session_id not in self.session_id_to_screen_prog or overwrite
+    self.session_id_to_screen_prog[screen_prog.session_id] = screen_prog
 
-  def GetScreen(self, session_id):
-    return self.session_id_to_screen.get(session_id)
+  def GetScreenProg(self, session_id):
+    return self.session_id_to_screen_prog.get(session_id)
 
-  def DeleteScreen(self, session_id):
-    del self.session_id_to_screen[session_id]
+  def DeleteScreenProg(self, session_id):
+    del self.session_id_to_screen_prog[session_id]
 
   def AddUser(self, user, overwrite=False):
     assert user.user_id not in self.user_id_to_user or overwrite
@@ -73,8 +69,8 @@ class MockFaseDatabase(FaseDatabaseInterface):
   def GetSessionIdToService(self):
     return self.session_id_to_service
   
-  def GetSessionIdToScreen(self):
-    return self.session_id_to_screen
+  def GetSessionIdToScreenProg(self):
+    return self.session_id_to_screen_prog
   
   def GetUserIdToUser(self):
     return self.user_id_to_user
@@ -88,8 +84,8 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
   def _GetServiceTableName(self):
     return 'fase_service'
 
-  def _GetScreenTableName(self):
-    return 'fase_screen'
+  def _GetScreenProgTableName(self):
+    return 'fase_screen_prog'
 
   def _GetUserTableName(self):
     return 'fase_user'
@@ -119,18 +115,18 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
           }
       )    
 
-    if self._GetScreenTableName() not in table_names:
+    if self._GetScreenProgTableName() not in table_names:
       self.dynamodb.create_table(
-          TableName=self._GetScreenTableName(),
+          TableName=self._GetScreenProgTableName(),
           AttributeDefinitions=[
               {
-                  'AttributeName': '_session_id',
+                  'AttributeName': 'session_id',
                   'AttributeType': 'S'
               },
           ],
           KeySchema=[
               {
-                  'AttributeName': '_session_id',
+                  'AttributeName': 'session_id',
                   'KeyType': 'HASH'
               },
           ],
@@ -193,7 +189,7 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
 
   def DeleteDatabase(self):
     self.dynamodb.delete_table(TableName=self._GetServiceTableName())
-    self.dynamodb.delete_table(TableName=self._GetScreenTableName())
+    self.dynamodb.delete_table(TableName=self._GetScreenProgTableName())
     self.dynamodb.delete_table(TableName=self._GetUserTableName())
 
   def AddService(self, service, overwrite=False):
@@ -221,28 +217,28 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
             }
     )
 
-  def AddScreen(self, screen, overwrite=False):
+  def AddScreenProg(self, screen_prog, overwrite=False):
     self.dynamodb.put_item(
-        TableName=self._GetScreenTableName(),
-        Item=dynamodb_util.SimpleToItem(screen.ToSimple()))
+        TableName=self._GetScreenProgTableName(),
+        Item=dynamodb_util.SimpleToItem(screen_prog.ToSimple()))
 
-  def GetScreen(self, session_id):
-    screen_response = self.dynamodb.get_item(
-        TableName=self._GetScreenTableName(),
+  def GetScreenProg(self, session_id):
+    screen_prog_response = self.dynamodb.get_item(
+        TableName=self._GetScreenProgTableName(),
         Key={
-            '_session_id': dynamodb_util.SimpleToField(session_id),
+            'session_id': dynamodb_util.SimpleToField(session_id),
             }
     )
-    if 'Item' not in screen_response:
+    if 'Item' not in screen_prog_response:
       return None
-    screen = fase.Screen.FromSimple(dynamodb_util.ItemToSimple(screen_response['Item']))
-    return screen
+    screen_prog = fase_model.ScreenProg.FromSimple(dynamodb_util.ItemToSimple(screen_prog_response['Item']))
+    return screen_prog
 
-  def DeleteScreen(self, session_id):
+  def DeleteScreenProg(self, session_id):
     self.dynamodb.delete_item(
-        TableName=self._GetScreenTableName(),
+        TableName=self._GetScreenProgTableName(),
         Key={
-            '_session_id': dynamodb_util.SimpleToField(session_id),
+            'session_id': dynamodb_util.SimpleToField(session_id),
             }
     )
 
