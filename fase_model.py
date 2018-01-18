@@ -105,15 +105,18 @@ class ScreenProg(data_util.AbstractObject):
 
 @json_util.JSONDecorator({
     'screen': json_util.JSONObject(fase.Screen),
+    'screen_update': json_util.JSONObject(ScreenUpdate),
     'session_info': json_util.JSONObject(SessionInfo),
     'screen_info': json_util.JSONObject(ScreenInfo)})
 class Response(data_util.AbstractObject):
   
   def __init__(self,
                screen=None,
+               screen_update=None,
                session_info=None,
                screen_info=None):
     self.screen = screen
+    self.screen_update = screen_update
     self.session_info = session_info
     self.screen_info = screen_info
 

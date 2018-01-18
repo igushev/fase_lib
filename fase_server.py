@@ -75,9 +75,29 @@ class FaseServer(object):
 
   @staticmethod
   def _ScreenUpdate(screen, screen_update):
-    for id_list, value in zip(
-        screen_update.id_list_list, screen_update.value_list):
+    for id_list, value in zip(screen_update.id_list_list, screen_update.value_list):
       FaseServer._GetElement(screen, id_list).Update(value)
+
+  @staticmethod
+  def ScreenUpdateToDict(screen_update):
+    return {tuple(id_list): value for id_list, value in zip(screen_update.id_list_list, screen_update.value_list)}
+
+  @staticmethod
+  def _DictToScreenUpdate(id_list_to_value):
+    id_list_list = []
+    value_list = []
+    for id_list_update, value in id_list_to_value.items():
+      id_list_list.append(list(id_list_update))
+      value_list.append(value)
+    return fase_model.ScreenUpdate(id_list_list=id_list_list, value_list=value_list)
+
+  @staticmethod
+  def _UpdateScreenUpdate(current_screen_update, screen_update):
+    current_id_list_to_value = (
+        FaseServer.ScreenUpdateToDict(current_screen_update) if current_screen_update is not None else {})
+    id_list_to_value = FaseServer.ScreenUpdateToDict(screen_update)
+    current_id_list_to_value.update(id_list_to_value)
+    return FaseServer._DictToScreenUpdate(current_id_list_to_value)
 
   def ScreenUpdate(self, screen_update, session_info, screen_info):
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
@@ -90,9 +110,11 @@ class FaseServer(object):
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
     FaseServer._ScreenUpdate(screen_prog.screen, screen_update)
+    screen_prog.screen_update = FaseServer._UpdateScreenUpdate(screen_prog.screen_update, screen_update)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
     return fase_model.Response(screen=screen_prog.screen,
+                               screen_update=screen_prog.screen_update,
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=screen_info)
 
