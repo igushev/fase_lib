@@ -46,21 +46,21 @@ class FaseTest(unittest.TestCase):
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    self.assertEqual(expected_screen, response.screen)
-    self.assertEqual(elements_update, response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    self.assertIsNone(response.screen)
+    self.assertIsNone(response.elements_update)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -69,11 +69,11 @@ class FaseTest(unittest.TestCase):
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
-    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'], device=device)
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -82,7 +82,7 @@ class FaseTest(unittest.TestCase):
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
@@ -98,12 +98,13 @@ class FaseTest(unittest.TestCase):
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=['next_button_id'])
+    element_clicked = fase_model.ElementClicked(
+        elements_update=elements_update, id_list=['next_button_id'], device=device)
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -112,7 +113,7 @@ class FaseTest(unittest.TestCase):
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
@@ -128,27 +129,27 @@ class FaseTest(unittest.TestCase):
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    self.assertEqual(expected_screen, response.screen)
-    self.assertEqual(elements_update, response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    self.assertIsNone(response.screen)
+    self.assertIsNone(response.elements_update)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Howard Hughes'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     expected_screen.GetElement(id_='text_name_id').Update('Howard Hughes')
-    self.assertEqual(expected_screen, response.screen)
-    self.assertEqual(elements_update, response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(session_info)
+    self.assertIsNone(response.screen)
+    self.assertIsNone(response.elements_update)
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
 
@@ -159,11 +160,11 @@ class FaseTest(unittest.TestCase):
     screen_info = response.screen_info
     
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response_entered_text = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     screen_info_entered_text = response_entered_text.screen_info
 
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
     response_clicked_next = fase_server.FaseServer.Get().ElementClicked(
         element_clicked, session_info, screen_info_entered_text)
     screen_info_clicked_next = response_clicked_next.screen_info
@@ -182,11 +183,11 @@ class FaseTest(unittest.TestCase):
     screen_info = response.screen_info
     
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response_entered_text = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     screen_info_entered_text = response_entered_text.screen_info
 
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
     response_clicked_next = fase_server.FaseServer.Get().ElementClicked(
         element_clicked, session_info, screen_info_entered_text)
     screen_info_clicked_next = response_clicked_next.screen_info

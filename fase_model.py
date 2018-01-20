@@ -77,39 +77,48 @@ class ElementsUpdate(data_util.AbstractObject):
 
 
 @json_util.JSONDecorator({
-    'elements_update': json_util.JSONObject(ElementsUpdate)})
+    'elements_update': json_util.JSONObject(ElementsUpdate),
+    'device': json_util.JSONObject(Device)})
 class ScreenUpdate(data_util.AbstractObject):
 
   def  __init__(self,
-                elements_update=None):
+                elements_update=None,
+                device=None):
     self.elements_update = elements_update
+    self.device = device
 
 
 @json_util.JSONDecorator({
     'elements_update': json_util.JSONObject(ElementsUpdate),
-    'id_list': json_util.JSONList(json_util.JSONString())})
+    'id_list': json_util.JSONList(json_util.JSONString()),
+    'device': json_util.JSONObject(Device)})
 class ElementClicked(data_util.AbstractObject):
 
   def  __init__(self,
                 elements_update=None,
-                id_list=None):
+                id_list=None,
+                device=None):
     self.elements_update = elements_update
     self.id_list = id_list
+    self.device = device
 
 
 @json_util.JSONDecorator({
     'session_id': json_util.JSONString(),
     'screen': json_util.JSONObject(fase.Screen),
-    'elements_update': json_util.JSONObject(ElementsUpdate)})
+    'elements_update': json_util.JSONObject(ElementsUpdate),
+    'recent_device': json_util.JSONObject(Device)})
 class ScreenProg(data_util.AbstractObject):
 
   def __init__(self,
                session_id=None,
                screen=None,
-               elements_update=None):
+               elements_update=None,
+               recent_device=None):
     self.session_id = session_id
     self.screen = screen
     self.elements_update = elements_update
+    self.recent_device = recent_device
 
 
 @json_util.JSONDecorator({

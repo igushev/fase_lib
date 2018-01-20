@@ -25,10 +25,11 @@ class FaseHTTPClient(object):
     response = fase_model.Response.FromSimple(response_simple)
     return response
 
-  def GetScreen(self, session_info):
+  def GetScreen(self, device, session_info):
     url = self.server_url + '/getscreen'
     headers = {'session-id': session_info.session_id}
-    http_response = requests.post(url, headers=headers)
+    device_simple = device.ToSimple()
+    http_response = requests.post(url, headers=headers, json=device_simple)
     http_response.raise_for_status()
     response_simple = http_response.json()
     response = fase_model.Response.FromSimple(response_simple)

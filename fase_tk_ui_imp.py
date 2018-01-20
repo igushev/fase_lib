@@ -22,7 +22,7 @@ class UpdateCallBack(object):
     self.id_list = id_list 
 
   def __call__(self, *args):
-    self.ui_tk.ElementUpdated(self.id_list, *args)
+    self.ui_tk.ElementUpdatedCallBack(self.id_list, *args)
 
 
 class ClickCallBack(object):
@@ -32,7 +32,7 @@ class ClickCallBack(object):
     self.id_list = id_list 
 
   def __call__(self, *args):
-    self.ui_tk.ElementClicked(self.id_list)
+    self.ui_tk.ElementClickedCallBack(self.id_list)
 
 
 class ParentElement(object):
@@ -344,19 +344,19 @@ class FaseTkUIImp(object):
     messagebox.showinfo(message=popup.GetText())
 
   def Run(self):
-    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)
+    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)
     self.ui_imp_root.mainloop()
 
-  def ElementUpdated(self, id_list, *args):
+  def ElementUpdatedCallBack(self, id_list, *args):
     value = self.id_list_to_var[tuple(id_list)].get() 
-    self.ui.ElementUpdated(id_list, value)
+    self.ui.ElementUpdatedCallBack(id_list, value)
 
-  def ElementUpdatedPush(self, id_list, value):
+  def ElementUpdatedReceived(self, id_list, value):
     self.id_list_to_var[tuple(id_list)].set(value)
 
-  def ScreenUpdate(self):
-    self.ui.ScreenUpdate()
-    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)
+  def ScreenUpdateCallBack(self):
+    self.ui.ScreenUpdateCallBack()
+    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)
 
-  def ElementClicked(self, id_list):
-    self.ui.ElementClicked(id_list)
+  def ElementClickedCallBack(self, id_list):
+    self.ui.ElementClickedCallBack(id_list)

@@ -73,7 +73,9 @@ def getservice():
 @application.route('/getscreen', methods=['POST', 'OPTIONS'])
 def getscreen():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
-  response_simple, code = SafeCall(fase_server.FaseServer.Get().GetScreen, session_info)
+  device_simple = request.get_json(force=True) 
+  device = fase_model.Device.FromSimple(device_simple)
+  response_simple, code = SafeCall(fase_server.FaseServer.Get().GetScreen, device, session_info)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
 

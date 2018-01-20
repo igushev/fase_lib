@@ -58,10 +58,11 @@ class ApplicationTest(unittest.TestCase):
     response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
 
-  def _GetScreen(self, session_info):
+  def _GetScreen(self, device, session_info):
     result = self.test_application.post(
         '/getscreen',
-        headers={'session_id': session_info.session_id})
+        headers={'session_id': session_info.session_id},
+        data=json.dumps(device.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
     response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
@@ -113,18 +114,18 @@ class ApplicationTest(unittest.TestCase):
     expected_screen.AddButton(id_='next_button_id', text='Next', on_click=fase.MockFunction)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
-    response = self._GetScreen(session_info)
+    response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
     
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response = self._ScreenUpdate(screen_update, session_info, screen_info)
     expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    self.assertEqual(expected_screen, response.screen)
-    response = self._GetScreen(session_info)
+    self.assertIsNone(response.screen)
+    response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
     response = self._ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -132,10 +133,10 @@ class ApplicationTest(unittest.TestCase):
     expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=fase.MockFunction)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
-    response = self._GetScreen(session_info)
+    response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'])
+    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'], device=device)
     response = self._ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = fase.Screen(service)
@@ -143,7 +144,7 @@ class ApplicationTest(unittest.TestCase):
     expected_screen.AddButton(id_='next_button_id', text='Next', on_click=fase.MockFunction)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
-    response = self._GetScreen(session_info)
+    response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
 
