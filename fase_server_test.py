@@ -34,170 +34,201 @@ class FaseTest(unittest.TestCase):
     status = fase_server.FaseServer.Get().SendServiceCommand(command)
     self.assertEqual('HelloWorld', status.message)
 
-  def testHelloWorld(self):
-    device = fase_model.Device('MockType', 'MockToken')
+  @staticmethod
+  def _GetEnterNameScreen(service, name=None):
+    screen = fase.Screen(service)
+    screen.AddText(id_='text_name_id', hint='Enter Name', text=name)
+    screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    return screen
+
+  @staticmethod
+  def _GetGreetingScreen(service, name):
+    screen = fase.Screen(service)
+    screen.AddLabel(id_='hello_label_id', label='Hello, %s!' % name)
+    screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
+    return screen
+
+  def _GetScreenProgAndAssert(self, session_info,
+                              expected_screen=None,
+                              expected_elements_update=None,
+                              expected_device=None):
+    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    self.assertEqual(expected_screen, screen_prog.screen)
+    self.assertEqual(expected_elements_update, screen_prog.elements_update)
+    self.assertEqual(expected_device, screen_prog.recent_device)
+
+  def _GetScreenAndAssert(self, device, session_info, screen_info, expected_screen=None, expected_elements_update=None):
+    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
+    self.assertEqual(expected_screen, response.screen)
+    self.assertEqual(expected_elements_update, response.elements_update)
+    self.assertEqual(session_info, response.session_info)
+    self.assertEqual(screen_info, response.screen_info)
+
+  def _GetServiceAndAssert(self, device, get_screen_and_assert=True):
     response = fase_server.FaseServer.Get().GetService(device)
     session_info = response.session_info
     screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = fase.Screen(service)
-    expected_screen.AddText(id_='text_name_id', hint='Enter Name')
-    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen = FaseTest._GetEnterNameScreen(service)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
 
-    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
+    self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
+    if get_screen_and_assert:
+      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen)
+    return session_info, screen_info
+
+  def _EnterNameAndAssert(self, name, device, session_info, screen_info, get_screen_and_assert=True):
+    elements_update=fase_model.ElementsUpdate([['text_name_id']], [name])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
-    expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    expected_screen = FaseTest._GetEnterNameScreen(service, name=name)
+    expected_screen._screen_id = screen_info.screen_id
     self.assertIsNone(response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
+    self.assertEqual(session_info, response.session_info)
+    self.assertEqual(screen_info, response.screen_info)
 
+    self._GetScreenProgAndAssert(session_info,
+                                 expected_screen=expected_screen,
+                                 expected_elements_update=elements_update,
+                                 expected_device=device)
+    if get_screen_and_assert:
+      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen)
+
+  def _EnterNextAndAssert(self, name, device, session_info, screen_info, get_screen_and_assert=True):
     element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
-    expected_screen = fase.Screen(service)
-    expected_screen.AddLabel(id_='hello_label_id', label='Hello, Hanry Ford!')
-    expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    expected_screen = FaseTest._GetGreetingScreen(service, name)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
+    self.assertEqual(session_info, response.session_info)
 
+    self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
+    if get_screen_and_assert:
+      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen)
+    return screen_info
+
+  def _EnterResetAndAssert(self, device, session_info, screen_info, get_screen_and_assert=True):
     element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'], device=device)
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
-    expected_screen = fase.Screen(service)
-    expected_screen.AddText(id_='text_name_id', hint='Enter Name')
-    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
-    expected_screen._screen_id = screen_info.screen_id
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
-
-  def testHelloWorldElementClickedWithScreenUpdate(self):
-    device = fase_model.Device('MockType', 'MockToken')
-    response = fase_server.FaseServer.Get().GetService(device)
-    session_info = response.session_info
-    screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = fase.Screen(service)
-    expected_screen.AddText(id_='text_name_id', hint='Enter Name')
-    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen = FaseTest._GetEnterNameScreen(service)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
+    self.assertEqual(session_info, response.session_info)
 
-    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
+    self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
+    if get_screen_and_assert:
+      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen)
+    return screen_info
+
+  def testHelloWorld(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info)
+    screen_info = self._EnterNextAndAssert('Henry Ford', device, session_info, screen_info)
+    self._EnterResetAndAssert(device, session_info, screen_info)
+
+  def testHelloWorldElementClickedWithElementsUpdate(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info = self._GetServiceAndAssert(device)
+
+    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Henry Ford'])
     element_clicked = fase_model.ElementClicked(
         elements_update=elements_update, id_list=['next_button_id'], device=device)
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
-    expected_screen = fase.Screen(service)
-    expected_screen.AddLabel(id_='hello_label_id', label='Hello, Hanry Ford!')
-    expected_screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
-    expected_screen._screen_id = screen_info.screen_id
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
-
-  def testHelloWorldUpdateScreenUpdate(self):
-    device = fase_model.Device('MockType', 'MockToken')
-    response = fase_server.FaseServer.Get().GetService(device)
-    session_info = response.session_info
-    screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = fase.Screen(service)
-    expected_screen.AddText(id_='text_name_id', hint='Enter Name')
-    expected_screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    expected_screen = FaseTest._GetGreetingScreen(service, 'Henry Ford')
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
+    self.assertEqual(session_info, response.session_info)
 
-    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
+    self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
+    self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen)
+    
+    self._EnterResetAndAssert(device, session_info, screen_info)
+
+  def testHelloWorldElementClickedWithDiffDevice(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info)
+    device_2 = fase_model.Device('MockType', 'MockToken2')
+    screen_info = self._EnterNextAndAssert('Henry Ford', device_2, session_info, screen_info)
+    self._EnterResetAndAssert(device_2, session_info, screen_info)
+
+  def testHelloWorldUpdateElementsUpdate(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info)
+    self._EnterNameAndAssert('Howard Hughes', device, session_info, screen_info)
+
+  def testHelloWorldScreenUpdateWithDiffDevice(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info)
+    
+    device_2 = fase_model.Device('MockType', 'MockToken2')
+    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Howard Hughes'])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device_2)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
-    expected_screen.GetElement(id_='text_name_id').Update('Hanry Ford')
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    expected_screen = FaseTest._GetEnterNameScreen(service, name='Howard Hughes')
+    expected_screen._screen_id = screen_info.screen_id
     self.assertIsNone(response.screen)
-    self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
+    self.assertEqual(elements_update, response.elements_update)
+    self.assertEqual(session_info, response.session_info)
+    self.assertEqual(screen_info, response.screen_info)
+
+    self._GetScreenProgAndAssert(session_info,
+                                 expected_screen=expected_screen,
+                                 expected_elements_update=elements_update,
+                                 expected_device=device_2)
+    self._GetScreenAndAssert(device_2, session_info, screen_info, expected_screen=expected_screen)
+
+  def testHelloWorldElementClickedScreenInfoObsolete(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info_entered_name)
+    screen_info_clicked_next = self._EnterNextAndAssert('Henry Ford', device, session_info, screen_info_entered_name)
+
+    screen_prog_clicked_next = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    screen_clicked_next = screen_prog_clicked_next.screen 
+
+    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
+    response_click_again = fase_server.FaseServer.Get().ElementClicked(
+        element_clicked, session_info, screen_info_entered_name)
+    self.assertEqual(screen_clicked_next, response_click_again.screen)
+    self.assertIsNone(response_click_again.elements_update)
+    self.assertEqual(session_info, response_click_again.session_info)
+    self.assertEqual(screen_info_clicked_next, response_click_again.screen_info)
+
+  def testHelloWorldScreenUpdateScreenInfoObsolete(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info_entered_name)
+    screen_info_clicked_next = self._EnterNextAndAssert('Henry Ford', device, session_info, screen_info_entered_name)
+
+    screen_prog_clicked_next = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    screen_clicked_next = screen_prog_clicked_next.screen 
 
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Howard Hughes'])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
-    expected_screen.GetElement(id_='text_name_id').Update('Howard Hughes')
-    self.assertIsNone(response.screen)
-    self.assertIsNone(response.elements_update)
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
-    self.assertEqual(expected_screen, response.screen)
-    self.assertIsNone(response.elements_update)
-
-  def testElementClickedScreenInfoObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
-    response = fase_server.FaseServer.Get().GetService(device)
-    session_info = response.session_info
-    screen_info = response.screen_info
-    
-    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    response_entered_text = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
-    screen_info_entered_text = response_entered_text.screen_info
-
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
-    response_clicked_next = fase_server.FaseServer.Get().ElementClicked(
-        element_clicked, session_info, screen_info_entered_text)
-    screen_info_clicked_next = response_clicked_next.screen_info
-    screen_clicked_next = response_clicked_next.screen
-
-    response_click_again = fase_server.FaseServer.Get().ElementClicked(
-        element_clicked, session_info, screen_info_entered_text)
-    self.assertEqual(screen_info_clicked_next, response_click_again.screen_info)
-    self.assertEqual(screen_clicked_next, response_click_again.screen)
-    self.assertIsNone(response_click_again.elements_update)
-
-  def testScreenUpdateScreenInfoObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
-    response = fase_server.FaseServer.Get().GetService(device)
-    session_info = response.session_info
-    screen_info = response.screen_info
-    
-    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Hanry Ford'])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    response_entered_text = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
-    screen_info_entered_text = response_entered_text.screen_info
-
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
-    response_clicked_next = fase_server.FaseServer.Get().ElementClicked(
-        element_clicked, session_info, screen_info_entered_text)
-    screen_info_clicked_next = response_clicked_next.screen_info
-    screen_clicked_next = response_clicked_next.screen
-
-    response_enter_text_again = fase_server.FaseServer.Get().ScreenUpdate(
-        screen_update, session_info, screen_info_entered_text)
-    self.assertEqual(screen_info_clicked_next, response_enter_text_again.screen_info)
-    self.assertEqual(screen_clicked_next, response_enter_text_again.screen)
-    self.assertIsNone(response_enter_text_again.elements_update)
+    response_enter_name_again = fase_server.FaseServer.Get().ScreenUpdate(
+        screen_update, session_info, screen_info_entered_name)
+    self.assertEqual(screen_clicked_next, response_enter_name_again.screen)
+    self.assertIsNone(response_enter_name_again.elements_update)
+    self.assertEqual(session_info, response_enter_name_again.session_info)
+    self.assertEqual(screen_info_clicked_next, response_enter_name_again.screen_info)
 
 
 if __name__ == '__main__':
