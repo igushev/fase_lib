@@ -82,27 +82,12 @@ class FaseServer(object):
       FaseServer._GetElement(screen, id_list).Update(value)
 
   @staticmethod
-  def _ElementsUpdateToDict(elements_update):
-    return {tuple(id_list): value for id_list, value in zip(elements_update.id_list_list, elements_update.value_list)}
-
-  @staticmethod
-  def _DictToElementsUpdate(id_list_to_value):
-    if not id_list_to_value:
-      return None
-    id_list_list = []
-    value_list = []
-    for id_list, value in id_list_to_value.items():
-      id_list_list.append(list(id_list))
-      value_list.append(value)
-    return fase_model.ElementsUpdate(id_list_list=id_list_list, value_list=value_list)
-
-  @staticmethod
   def _UpdateElementsUpdate(current_elements_update, elements_update):
     current_id_list_to_value = (
-        FaseServer._ElementsUpdateToDict(current_elements_update) if current_elements_update is not None else {})
-    id_list_to_value = FaseServer._ElementsUpdateToDict(elements_update)
+        fase_model.ElementsUpdateToDict(current_elements_update) if current_elements_update is not None else {})
+    id_list_to_value = fase_model.ElementsUpdateToDict(elements_update)
     current_id_list_to_value.update(id_list_to_value)
-    return FaseServer._DictToElementsUpdate(current_id_list_to_value)
+    return fase_model.DictToElementsUpdate(current_id_list_to_value)
 
   def ScreenUpdate(self, screen_update, session_info, screen_info):
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)

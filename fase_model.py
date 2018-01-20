@@ -163,3 +163,18 @@ class BadRequest(data_util.AbstractObject):
   def __init__(self, code, message):
     self.code = code
     self.message = message
+
+
+def ElementsUpdateToDict(elements_update):
+  return {tuple(id_list): value for id_list, value in zip(elements_update.id_list_list, elements_update.value_list)}
+
+
+def DictToElementsUpdate(id_list_to_value):
+  if not id_list_to_value:
+    return None
+  id_list_list = []
+  value_list = []
+  for id_list, value in id_list_to_value.items():
+    id_list_list.append(list(id_list))
+    value_list.append(value)
+  return ElementsUpdate(id_list_list=id_list_list, value_list=value_list)

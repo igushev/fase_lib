@@ -41,29 +41,14 @@ class FaseClient(object):
     self.ProcessResponse(response)
     self.ui.Run()
 
-  @staticmethod
-  def _ElementsUpdateToDict(elements_update):
-    return {tuple(id_list): value for id_list, value in zip(elements_update.id_list_list, elements_update.value_list)}
-
-  @staticmethod
-  def _DictToElementsUpdate(id_list_to_value):
-    if not id_list_to_value:
-      return None
-    id_list_list = []
-    value_list = []
-    for id_list, value in id_list_to_value.items():
-      id_list_list.append(list(id_list))
-      value_list.append(value)
-    return fase_model.ElementsUpdate(id_list_list=id_list_list, value_list=value_list)
-
   def ScreenUpdate(self, id_list_to_value):
-    elements_update = FaseClient._DictToElementsUpdate(id_list_to_value)
+    elements_update = fase_model.DictToElementsUpdate(id_list_to_value)
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
     response = self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
     self.ProcessResponse(response)
 
   def ElementClicked(self, id_list, id_list_to_value):
-    elements_update = FaseClient._DictToElementsUpdate(id_list_to_value)
+    elements_update = fase_model.DictToElementsUpdate(id_list_to_value)
     element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=id_list, device=self.device)
     response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
     self.ProcessResponse(response)
@@ -80,5 +65,5 @@ class FaseClient(object):
     if response.screen:
       self.ui.DrawScreen(response.screen)
     elif response.elements_update:
-      self.ui.ElementsUpdateReceived(FaseClient._ElementsUpdateToDict(response.elements_update))
+      self.ui.ElementsUpdateReceived(fase_model.ElementsUpdateToDict(response.elements_update))
     self.ui.ResetValues()
