@@ -78,6 +78,7 @@ class FaseTkUIImp(object):
     self.ui_imp_root.columnconfigure(0, weight=1)
     self.ui_imp_root.rowconfigure(0, weight=1)
     self.ui_imp_frame = None
+    self.element_updated_callback = True
 
   def InitScreen(self, scrollable=False):
     self.ui_imp_frame = tkinter.Frame(self.ui_imp_root)
@@ -348,8 +349,9 @@ class FaseTkUIImp(object):
     self.ui_imp_root.mainloop()
 
   def ElementUpdatedCallBack(self, id_list, *args):
-    value = self.id_list_to_var[tuple(id_list)].get() 
-    self.ui.ElementUpdatedCallBack(id_list, value)
+    if self.element_updated_callback:
+      value = self.id_list_to_var[tuple(id_list)].get() 
+      self.ui.ElementUpdatedCallBack(id_list, value)
 
   def ScreenUpdateCallBack(self):
     self.ui.ScreenUpdateCallBack()
@@ -359,4 +361,6 @@ class FaseTkUIImp(object):
     self.ui.ElementClickedCallBack(id_list)
 
   def ElementUpdatedReceived(self, id_list, value):
+    self.element_updated_callback = False
     self.id_list_to_var[tuple(id_list)].set(value)
+    self.element_updated_callback = True

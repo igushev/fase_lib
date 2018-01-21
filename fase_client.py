@@ -1,6 +1,8 @@
 import os
 import pickle
 import uuid
+import queue
+import threading
 
 import fase
 import fase_model
@@ -32,7 +34,15 @@ class FaseClient(object):
     self.screen = None
     self.session_info = LoadSessionInfoIfExists(self.session_info_filepath)
     self.screen_info = None
+
     self.id_list_to_value = dict()
+    self.id_list_to_value_lock = threading.Lock()
+
+    self.screen_lock = threading.Lock()
+    self.screen_update_condition = threading.Condition(self.screen_lock)
+    self.screen_update_response_queue = queue.Queue(maxsize=1)
+    self.screen_update_thread = threading.Thread(target=self._ScreenUpdateThread)
+    self.screen_update_thread.start()
 
   def Run(self):
     if self.session_info is None:
@@ -43,19 +53,41 @@ class FaseClient(object):
     self.ui.Run()
 
   def ElementUpdated(self, id_list, value):
-    self.id_list_to_value[tuple(id_list)] = value
+    with self.id_list_to_value_lock:
+      self.id_list_to_value[tuple(id_list)] = value
+
+  def _ScreenUpdateThread(self):
+    with self.screen_lock:
+      while True:
+        self.screen_update_condition.wait()
+        with self.id_list_to_value_lock:
+          elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
+          self._ResetValues()
+        screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
+        response = self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
+        self.screen_update_response_queue.put(response)
 
   def ScreenUpdate(self):
-    elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
-    response = self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
-    self.ProcessResponse(response)
+    if not self.screen_lock.acquire(blocking=False):
+      return
+    if not self.screen_update_response_queue.empty():
+      response = self.screen_update_response_queue.get(block=False)
+      self.ProcessResponse(response)
+    self.screen_update_condition.notify()
+    self.screen_lock.release()
 
   def ElementClicked(self, id_list):
-    elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
-    element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=id_list, device=self.device)
-    response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
-    self.ProcessResponse(response)
+    with self.screen_lock:
+      if not self.screen_update_response_queue.empty():
+        response = self.screen_update_response_queue.get(block=False)
+        if self.ProcessResponse(response):  # If screen has been updated, the click is obsolete.
+          return
+      with self.id_list_to_value_lock:
+        elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
+        self._ResetValues()
+      element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=id_list, device=self.device)
+      response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
+      self.ProcessResponse(response)
 
   def ProcessResponse(self, response):
     while response.screen is not None and response.screen.HasElement(fase.POPUP_ID):
@@ -68,9 +100,10 @@ class FaseClient(object):
     SaveSessionInfoIfNeeded(self.session_info_filepath, response.session_info)
     if response.screen:
       self.ui.DrawScreen(response.screen)
+      return True  # Screen has been updated.
     elif response.elements_update:
       self._ElementsUpdateReceived(fase_model.ElementsUpdateToDict(response.elements_update))
-    self._ResetValues()
+    return False  # Screen is the same.
 
   def _ElementsUpdateReceived(self, id_list_to_value):
     for id_list, value in id_list_to_value.items():
