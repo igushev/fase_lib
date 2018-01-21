@@ -7,10 +7,10 @@ import fase
 import hello_world
 
 
-class FaseTest(unittest.TestCase):
+class FaseServerTest(unittest.TestCase):
 
   def setUp(self):
-    super(FaseTest, self).setUp()
+    super(FaseServerTest, self).setUp()
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[], screen_prog_list=[], user_list=[]), overwrite=True)

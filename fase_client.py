@@ -42,6 +42,7 @@ class FaseClient(object):
     self.screen_update_condition = threading.Condition(self.screen_lock)
     self.screen_update_response_queue = queue.Queue(maxsize=1)
     self.screen_update_thread = threading.Thread(target=self._ScreenUpdateThread)
+    self.screen_update_thread.daemon = True
     self.screen_update_thread.start()
 
   def Run(self):
