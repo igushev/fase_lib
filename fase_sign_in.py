@@ -51,10 +51,9 @@ class FaseSignInButton(fase.Button):
 class FaseSignOutButton(fase.Button):
 
   def FaseOnClick(self, service, screen):
-    # Delete screen before.
-    screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue()
+    # Return to screen before on other devices.
+    OnSkipCancelOption(service, screen, self)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
-    fase_database.FaseDatabaseInterface.Get().DeleteScreenProg(session_id=screen_before_session_id)
 
     service_cls = fase.Service.service_cls
     service = service_cls()
