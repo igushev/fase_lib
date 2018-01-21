@@ -351,12 +351,12 @@ class FaseTkUIImp(object):
     value = self.id_list_to_var[tuple(id_list)].get() 
     self.ui.ElementUpdatedCallBack(id_list, value)
 
-  def ElementUpdatedReceived(self, id_list, value):
-    self.id_list_to_var[tuple(id_list)].set(value)
-
   def ScreenUpdateCallBack(self):
     self.ui.ScreenUpdateCallBack()
     self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)
 
   def ElementClickedCallBack(self, id_list):
     self.ui.ElementClickedCallBack(id_list)
+
+  def ElementUpdatedReceived(self, id_list, value):
+    self.id_list_to_var[tuple(id_list)].set(value)

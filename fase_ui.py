@@ -6,13 +6,9 @@ class FaseUI(object):
   def __init__(self, ui_imp):
     self.ui_imp = ui_imp
     self.ui_imp.SetUI(self)
-    self.id_list_to_value = dict()
 
   def SetClient(self, client):
     self.client = client
-
-  def ResetValues(self):
-    self.id_list_to_value = dict()
 
   def DrawScreen(self, screen):
     ui_imp_window = self.ui_imp.ResetScreen(scrollable=screen.GetScrollable())
@@ -102,14 +98,13 @@ class FaseUI(object):
     self.ui_imp.Run()
 
   def ElementUpdatedCallBack(self, id_list, value):
-    self.id_list_to_value[tuple(id_list)] = value
-
-  def ElementsUpdateReceived(self, id_list_to_value):
-    for id_list_update, value in id_list_to_value.items():
-      self.ui_imp.ElementUpdatedReceived(id_list_update, value)
+    self.client.ElementUpdated(id_list, value)
 
   def ScreenUpdateCallBack(self):
-    self.client.ScreenUpdate(self.id_list_to_value)
+    self.client.ScreenUpdate()
 
   def ElementClickedCallBack(self, id_list):
-    self.client.ElementClicked(id_list, self.id_list_to_value)
+    self.client.ElementClicked(id_list)
+
+  def ElementUpdatedReceived(self, id_list, value):
+    self.ui_imp.ElementUpdatedReceived(id_list, value)

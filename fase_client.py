@@ -32,6 +32,7 @@ class FaseClient(object):
     self.screen = None
     self.session_info = LoadSessionInfoIfExists(self.session_info_filepath)
     self.screen_info = None
+    self.id_list_to_value = dict()
 
   def Run(self):
     if self.session_info is None:
@@ -41,14 +42,17 @@ class FaseClient(object):
     self.ProcessResponse(response)
     self.ui.Run()
 
-  def ScreenUpdate(self, id_list_to_value):
-    elements_update = fase_model.DictToElementsUpdate(id_list_to_value)
+  def ElementUpdated(self, id_list, value):
+    self.id_list_to_value[tuple(id_list)] = value
+
+  def ScreenUpdate(self):
+    elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
     response = self.http_client.ScreenUpdate(screen_update, self.session_info, self.screen_info)
     self.ProcessResponse(response)
 
-  def ElementClicked(self, id_list, id_list_to_value):
-    elements_update = fase_model.DictToElementsUpdate(id_list_to_value)
+  def ElementClicked(self, id_list):
+    elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
     element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=id_list, device=self.device)
     response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
     self.ProcessResponse(response)
@@ -65,5 +69,12 @@ class FaseClient(object):
     if response.screen:
       self.ui.DrawScreen(response.screen)
     elif response.elements_update:
-      self.ui.ElementsUpdateReceived(fase_model.ElementsUpdateToDict(response.elements_update))
-    self.ui.ResetValues()
+      self._ElementsUpdateReceived(fase_model.ElementsUpdateToDict(response.elements_update))
+    self._ResetValues()
+
+  def _ElementsUpdateReceived(self, id_list_to_value):
+    for id_list, value in id_list_to_value.items():
+      self.ui.ElementUpdatedReceived(id_list, value)
+
+  def _ResetValues(self):
+    self.id_list_to_value = dict()
