@@ -30,7 +30,7 @@ class FaseHTTPClient(object):
     headers = {'session-id': session_info.session_id}
     device_simple = device.ToSimple()
     http_response = requests.post(url, headers=headers, json=device_simple)
-    http_response.raise_for_status()
+    self.AssertStatus(http_response)
     response_simple = http_response.json()
     response = fase_model.Response.FromSimple(response_simple)
     return response
@@ -40,7 +40,7 @@ class FaseHTTPClient(object):
     headers = {'session-id': session_info.session_id, 'screen-id': screen_info.screen_id}
     screen_update_simple = screen_update.ToSimple()
     http_response = requests.post(url, headers=headers, json=screen_update_simple)
-    http_response.raise_for_status()
+    self.AssertStatus(http_response)
     response_simple = http_response.json()
     response = fase_model.Response.FromSimple(response_simple)
     return response
@@ -50,7 +50,7 @@ class FaseHTTPClient(object):
     headers = {'session-id': session_info.session_id, 'screen-id': screen_info.screen_id}
     element_clicked_simple = element_clicked.ToSimple()
     http_response = requests.post(url, headers=headers, json=element_clicked_simple)
-    http_response.raise_for_status()
+    self.AssertStatus(http_response)
     response_simple = http_response.json()
     response = fase_model.Response.FromSimple(response_simple)
     return response
