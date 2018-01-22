@@ -108,7 +108,7 @@ class FaseClient(object):
 
   def _ElementsUpdateReceived(self, id_list_to_value):
     for id_list, value in id_list_to_value.items():
-      self.ui.ElementUpdatedReceived(id_list, value)
+      self.ui.ElementUpdatedReceived(list(id_list), value)
 
   def _ResetValues(self):
     self.id_list_to_value = dict()

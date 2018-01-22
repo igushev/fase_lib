@@ -69,7 +69,7 @@ class FaseServerTest(unittest.TestCase):
     session_info = response.session_info
     screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = FaseTest._GetEnterNameScreen(service)
+    expected_screen = FaseServerTest._GetEnterNameScreen(service)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
@@ -84,7 +84,7 @@ class FaseServerTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = FaseTest._GetEnterNameScreen(service, name=name)
+    expected_screen = FaseServerTest._GetEnterNameScreen(service, name=name)
     expected_screen._screen_id = screen_info.screen_id
     self.assertIsNone(response.screen)
     self.assertIsNone(response.elements_update)
@@ -103,7 +103,7 @@ class FaseServerTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = FaseTest._GetGreetingScreen(service, name)
+    expected_screen = FaseServerTest._GetGreetingScreen(service, name)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
@@ -119,7 +119,7 @@ class FaseServerTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = FaseTest._GetEnterNameScreen(service)
+    expected_screen = FaseServerTest._GetEnterNameScreen(service)
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
@@ -147,7 +147,7 @@ class FaseServerTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().ElementClicked(element_clicked, session_info, screen_info)
     screen_info = response.screen_info
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = FaseTest._GetGreetingScreen(service, 'Henry Ford')
+    expected_screen = FaseServerTest._GetGreetingScreen(service, 'Henry Ford')
     expected_screen._screen_id = screen_info.screen_id
     self.assertEqual(expected_screen, response.screen)
     self.assertIsNone(response.elements_update)
@@ -182,7 +182,7 @@ class FaseServerTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device_2)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    expected_screen = FaseTest._GetEnterNameScreen(service, name='Howard Hughes')
+    expected_screen = FaseServerTest._GetEnterNameScreen(service, name='Howard Hughes')
     expected_screen._screen_id = screen_info.screen_id
     self.assertIsNone(response.screen)
     self.assertEqual(elements_update, response.elements_update)
