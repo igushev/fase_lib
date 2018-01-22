@@ -1,6 +1,7 @@
 import math
 import tkinter
 from tkinter import font, messagebox
+from PIL import ImageTk, Image
 
 import fase
 
@@ -323,7 +324,7 @@ class FaseTkUIImp(object):
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
-    ui_imp_photo = tkinter.PhotoImage(file=image_element.GetImage())
+    ui_imp_photo = ImageTk.PhotoImage(Image.open(image_element.GetImage()))
     ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
     ui_imp_label.image = ui_imp_photo 
     ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
