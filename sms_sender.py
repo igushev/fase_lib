@@ -33,6 +33,12 @@ class NullSMSServiceProvider(SMSServiceProviderInterface):
     pass
 
 
+class PrintSMSServiceProvider(SMSServiceProviderInterface):
+
+  def Send(self, phone_number, message):
+    print('Sending %s to %s' % (message, phone_number))
+
+
 class MockSMSServiceProviderException(Exception):
   pass
 
