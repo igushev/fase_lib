@@ -172,6 +172,21 @@ class FaseServerTest(unittest.TestCase):
     self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info)
     self._EnterNameAndAssert('Howard Hughes', device, session_info, screen_info)
 
+  def testHelloWorldUpdateElementsEmpty(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info = self._GetServiceAndAssert(device)
+    # Enter name and assert update in database.
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info)
+    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    expected_elements_update = fase_model.ElementsUpdate([['text_name_id']], ['Henry Ford']) 
+    self.assertEqual(expected_elements_update, screen_prog.elements_update)
+    # Clean name and assert update has been deleted from database.
+    elements_update=fase_model.ElementsUpdate([['text_name_id']], [''])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    self.assertIsNone(screen_prog.elements_update)
+
   def testHelloWorldScreenUpdateWithDiffDevice(self):
     device = fase_model.Device('MockType', 'MockToken')
     session_info, screen_info = self._GetServiceAndAssert(device)

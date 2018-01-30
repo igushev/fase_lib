@@ -296,7 +296,7 @@ class Text(VisualElement):
     self._size = size
 
   def Update(self, value):
-    self._text = value
+    self._text = value if value else None
 
   def SetText(self, value):
     self._text = value
