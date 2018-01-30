@@ -9,6 +9,15 @@ import fase
 import json_util
 
 
+def GenerateSignedInSessionId(user_id):
+  service_cls = fase.Service.service_cls
+  session_id_signed_in_hash = hashlib.md5()
+  session_id_signed_in_hash.update(service_cls.GetServiceId().encode('utf-8'))
+  session_id_signed_in_hash.update(user_id.encode('utf-8'))
+  session_id_signed_in = session_id_signed_in_hash.hexdigest()
+  return session_id_signed_in
+
+
 @json_util.JSONDecorator({})
 class FaseSignInButton(fase.Button):
 
@@ -24,9 +33,12 @@ class FaseSignInButton(fase.Button):
       return service, screen
 
     on_sign_in_done = service.PopFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
-    screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
-    session_id_signed_in = service.PopStringVariable(id_='fase_sign_in_session_id_signed_in_str').GetValue()
+    screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue()
+    user_id = service.PopStringVariable('fase_sign_in_user_id_str').GetValue()
+    # NOTE(igushev): We should either lookup by user_id and service_id and have deterministic hash.
+    session_id_signed_in = GenerateSignedInSessionId(user_id)
     # Delete service and screen current.
+    user_id_before = service.GetUserId()
     session_id_current = service.GetSessionId()
     fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
     fase_database.FaseDatabaseInterface.Get().DeleteScreenProg(session_id=session_id_current)
@@ -36,14 +48,15 @@ class FaseSignInButton(fase.Button):
     service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
     if service_signed_in:
       # Retrieve sign in service and call.
-      screen_signed_in = on_sign_in_done(service_signed_in, user_id_before=session_id_current)
+      screen_signed_in = on_sign_in_done(service_signed_in, user_id_before=user_id_before)
       return service_signed_in, screen_signed_in
     else:
       # Assign signed in session id.
       service._session_id = session_id_signed_in
       service._if_signed_in = True
-      service._user_name = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=session_id_signed_in).DisplayName()
-      screen = on_sign_in_done(service, user_id_before=session_id_current)
+      service._user_id = user_id
+      service._user_name = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id).DisplayName()
+      screen = on_sign_in_done(service, user_id_before=user_id_before)
       return service, screen
 
 
@@ -63,7 +76,7 @@ class FaseSignOutButton(fase.Button):
 
 # TODO(igushev): fase_sign_in variables should be in separated better from services own variables.
 def StartSignIn(service, on_sign_in_done=None, skip_option=False, cancel_option=False):
-  assert fase_database.FaseDatabaseInterface.Get().GetUser(user_id=service.GetSessionId()) is None
+  assert not service._if_signed_in
   screen_prog_before = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id=service.GetSessionId())
   screen_before_session_id = fase.GenerateSessionId()
   screen_prog_before.session_id = screen_before_session_id
@@ -154,7 +167,7 @@ def OnSignUpEnteredData(service, screen, element):
 def _OnEnteredData(service, screen, element, phone_number, user_id):
   activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
   sms_sender.SMSSender.Get().SendActivationCode(phone_number, activation_code)
-  service.AddStringVariable(id_='fase_sign_in_session_id_signed_in_str', value=user_id)
+  service.AddStringVariable(id_='fase_sign_in_user_id_str', value=user_id)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
   return OnActivationCodeSent(service, screen, element)
 
@@ -170,7 +183,7 @@ def OnActivationCodeSent(service, screen, element):
 
 
 def StartSignOut(service, cancel_option=False):
-  assert fase_database.FaseDatabaseInterface.Get().GetUser(user_id=service.GetSessionId()) is not None
+  assert service._if_signed_in
   screen_prog_before = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id=service.GetSessionId())
   screen_before_session_id = fase.GenerateSessionId()
   screen_prog_before.session_id = screen_before_session_id
@@ -189,9 +202,9 @@ def StartSignOut(service, cancel_option=False):
 def OnSkipCancelOption(service, screen, element):
   if service.HasStringVariable(id_='fase_sign_in_on_sign_in_done_class_method'):
     service.PopStringVariable(id_='fase_sign_in_on_sign_in_done_class_method')
-  screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue() 
-  if service.HasStringVariable(id_='fase_sign_in_session_id_signed_in_str'):
-    service.PopStringVariable(id_='fase_sign_in_session_id_signed_in_str')
+  screen_before_session_id = service.PopStringVariable(id_='fase_sign_in_screen_before_session_id_str').GetValue()
+  if service.HasStringVariable(id_='fase_sign_in_user_id_str'):
+    service.PopStringVariable('fase_sign_in_user_id_str')
   if service.HasIntVariable(id_='fase_sign_in_activation_code_int'):
     service.PopIntVariable(id_='fase_sign_in_activation_code_int')
   screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id=screen_before_session_id)

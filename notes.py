@@ -20,6 +20,10 @@ PREVIEW_LENGTH = 50
 class NotesService(fase.Service):
 
   @staticmethod
+  def GetServiceId():
+    return 'Notes'
+
+  @staticmethod
   def ServiceCommand(command):
     if command.command == CREATE_DB_COMMAND:
       notes_database.NotesDatabaseInterface.Get().CreateDatabase()

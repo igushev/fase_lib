@@ -29,9 +29,19 @@ def GenerateSessionId():
   return session_id
 
 
-def GenerateScreenId():
+def GenerateScreenId(session_id):
   datetime_now = datetime.datetime.now()
   screen_id_hash = hashlib.md5()
+  screen_id_hash.update(session_id.encode('utf-8'))
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
+  screen_id = screen_id_hash.hexdigest()
+  return screen_id
+
+
+def GenerateUserId(session_id):
+  datetime_now = datetime.datetime.now()
+  screen_id_hash = hashlib.md5()
+  screen_id_hash.update(session_id.encode('utf-8'))
   screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
   screen_id = screen_id_hash.hexdigest()
   return screen_id
@@ -505,7 +515,7 @@ class Screen(BaseElementsContainer):
 
   def __init__(self, service):
     super(Screen, self).__init__()
-    self._screen_id = GenerateScreenId()
+    self._screen_id = GenerateScreenId(service.GetSessionId())
     self._scrollable = None
     self._title = None
 
@@ -562,6 +572,7 @@ class Screen(BaseElementsContainer):
     {'_session_id': json_util.JSONString(),
      '_if_signed_in': json_util.JSONBool(),
      '_user_name': json_util.JSONString(),
+     '_user_id': json_util.JSONString(),
      '_datetime_added': json_util.JSONDateTime()})
 class Service(VariableContainer):
   
@@ -577,13 +588,14 @@ class Service(VariableContainer):
     super(Service, self).__init__()
     self._session_id = GenerateSessionId()
     self._if_signed_in = False
+    self._user_id = GenerateUserId(self._session_id)
     self._user_name = None
     self._datetime_added = datetime.datetime.now()
 
   def GetSessionId(self):
     return self._session_id
   def GetUserId(self):
-    return self._session_id
+    return self._user_id
   def IfSignedIn(self):
     return self._if_signed_in
   def GetUserName(self):

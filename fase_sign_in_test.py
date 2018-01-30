@@ -12,12 +12,14 @@ import sms_sender
 
 class SignInTestService(fase.Service):
   
+  @staticmethod
+  def GetServiceId():
+    return 'SignInTest'
+
   def OnStart(self):
     screen = fase.Screen(self)
     screen.AddButton(id_='sign_in_button_id',
                      text='Sign In', on_click=SignInTestService.OnSignIn)
-    screen.AddButton(id_='sign_out_button_id',
-                     text='Sign Out', on_click=SignInTestService.OnSignOut)
     screen.AddButton(id_='about_button_id',
                      text='Abount', on_click=SignInTestService.OnAbount)
     return screen
@@ -32,6 +34,8 @@ class SignInTestService(fase.Service):
   def OnSignInDone(self, user_id_before=None):
     screen = fase.Screen(self)
     screen.AddLabel(id_='user_id_before_label_id', label=user_id_before)
+    screen.AddButton(id_='sign_out_button_id',
+                     text='Sign Out', on_click=SignInTestService.OnSignOut)
     return screen
 
   def OnAbount(self, screen, element):
@@ -98,7 +102,7 @@ class FaseSignInTest(unittest.TestCase):
       screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
   
       if return_phone_enter:
-        return session_info, screen_info
+        return response
   
       # Enter phone number.
       elements_update=fase_model.ElementsUpdate([['sign_in_layout_id', 'phone_number_text_id']], [phone_number])
@@ -125,7 +129,7 @@ class FaseSignInTest(unittest.TestCase):
       screen.GetElement(id_='sign_up_layout_id').GetElement(id_='sign_up_button_id')
   
       if return_phone_enter:
-        return session_info, screen_info
+        return response
   
       # Enter phone number.
       elements_update = fase_model.ElementsUpdate([['sign_up_layout_id', 'phone_number_text_id'],
@@ -149,7 +153,11 @@ class FaseSignInTest(unittest.TestCase):
     screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='send_button_id')
   
     if return_activation_code_enter:
-      return session_info, screen_info
+      return response
+
+    # Assign user_id before entering activation code.
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    user_id_before = service.GetUserId()
 
     # Enter activation code.
     elements_update=fase_model.ElementsUpdate(
@@ -158,8 +166,10 @@ class FaseSignInTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Send button.
-    fase_server.FaseServer.Get().ElementClicked(
+    response = fase_server.FaseServer.Get().ElementClicked(
         fase_model.ElementClicked(id_list=['enter_activation_layout_id', 'send_button_id']), session_info, screen_info)
+    screen_info = response.screen_info
+    screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
@@ -171,13 +181,19 @@ class FaseSignInTest(unittest.TestCase):
     else:
       self.assertEqual(expected_user_id, actual_user_id)
     # Check present of main elements.
-    fase_database.FaseDatabaseInterface.Get().GetService(expected_user_id)
-    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(expected_user_id)
-    self.assertEqual(session_info.session_id, screen_prog.screen.GetElement(id_='user_id_before_label_id').GetLabel())
+    screen.GetElement(id_='user_id_before_label_id')
+    # Assert user_id_before equal to actual user_id before entering the activation code.
+    self.assertEqual(user_id_before, screen.GetElement(id_='user_id_before_label_id').GetLabel())
+    return response
 
   def testSignIn_Existing_Service_Screen_User(self):
+    user = fase_model.User(user_id='321',
+                           phone_number='+13216549870',
+                           first_name='Edward',
+                           last_name='Igushev',
+                           datetime_added=datetime.datetime.now())
     service = SignInTestService()
-    service._session_id = '321'
+    service._session_id = fase_sign_in.GenerateSignedInSessionId(user.user_id)
     screen = service.OnStart()
     screen = service.OnAbount(screen, screen.GetElement(id_='about_button_id'))
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
@@ -186,12 +202,7 @@ class FaseSignInTest(unittest.TestCase):
         fase_database.MockFaseDatabase(
             service_list=[service],
             screen_prog_list=[screen_prog],
-            user_list=[
-                fase_model.User(user_id='321',
-                                phone_number='+13216549870',
-                                first_name='Edward',
-                                last_name='Igushev',
-                                datetime_added=datetime.datetime.now())]),
+            user_list=[user]),
         overwrite=True)
 
     self.SignInProcedure(service_num_before=2, screen_num_before=2,
@@ -201,16 +212,16 @@ class FaseSignInTest(unittest.TestCase):
                          expected_user_id='321')
 
   def testSignIn_Non_Existing_Service_Screen_Existing_User(self):
+    user = fase_model.User(user_id='321',
+                           phone_number='+13216549870',
+                           first_name='Edward',
+                           last_name='Igushev',
+                           datetime_added=datetime.datetime.now())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
             screen_prog_list=[],
-            user_list=[
-                fase_model.User(user_id='321',
-                                phone_number='+13216549870',
-                                first_name='Edward',
-                                last_name='Igushev',
-                                datetime_added=datetime.datetime.now())]),
+            user_list=[user]),
         overwrite=True)
 
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
@@ -227,12 +238,13 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    session_info, screen_info = (
-        self.SignInProcedure(service_num_before=1, screen_num_before=1,
-                             service_num_during=1, screen_num_during=2,
-                             sign_in=True,
-                             phone_number='+13216549870',
-                             return_phone_enter=True))
+    response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
+                                    service_num_during=1, screen_num_during=2,
+                                    sign_in=True,
+                                    phone_number='+13216549870',
+                                    return_phone_enter=True)
+    session_info = response.session_info
+    screen_info = response.screen_info
 
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_in_layout_id', 'phone_number_text_id']], ['+13216549870'])
@@ -262,24 +274,25 @@ class FaseSignInTest(unittest.TestCase):
                          phone_number='+13216549870', first_name='Edward', last_name='Igushev')
 
   def testSignUp_Existing_PhoneNumber(self):
+    user = fase_model.User(user_id='321',
+                           phone_number='+13216549870',
+                           first_name='Edward',
+                           last_name='Igushev',
+                           datetime_added=datetime.datetime.now())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
             screen_prog_list=[],
-            user_list=[
-                fase_model.User(user_id='321',
-                                phone_number='+13216549870',
-                                first_name='Edward',
-                                last_name='Igushev',
-                                datetime_added=datetime.datetime.now())]),
+            user_list=[user]),
         overwrite=True)
 
-    session_info, screen_info = (
-        self.SignInProcedure(service_num_before=1, screen_num_before=1,
-                             service_num_during=1, screen_num_during=2,
-                             sign_in=False,
-                             phone_number='+13216549870', first_name='Edward', last_name='Igushev',
-                             return_phone_enter=True))
+    response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
+                                    service_num_during=1, screen_num_during=2,
+                                    sign_in=False,
+                                    phone_number='+13216549870', first_name='Edward', last_name='Igushev',
+                                    return_phone_enter=True)
+    session_info = response.session_info
+    screen_info = response.screen_info
 
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_up_layout_id', 'phone_number_text_id'],
@@ -307,12 +320,13 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    session_info, screen_info = (
-        self.SignInProcedure(service_num_before=1, screen_num_before=1,
-                             service_num_during=1, screen_num_during=2,
-                             sign_in=False,
-                             phone_number='+13216549870', first_name='Edward', last_name='Igushev',
-                             return_activation_code_enter=True))
+    response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
+                                    service_num_during=1, screen_num_during=2,
+                                    sign_in=False,
+                                    phone_number='+13216549870', first_name='Edward', last_name='Igushev',
+                                    return_activation_code_enter=True)
+    session_info = response.session_info
+    screen_info = response.screen_info
 
     # Enter activation code.
     elements_update=fase_model.ElementsUpdate([['enter_activation_layout_id', 'activation_code_text_id']], '1234')
@@ -336,18 +350,14 @@ class FaseSignInTest(unittest.TestCase):
             user_list=[]),
         overwrite=True)
 
-    # Create Service.
-    response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
+    # Sign Up and create service.
+    response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
+                                    service_num_during=1, screen_num_during=2,
+                                    sign_in=False,
+                                    phone_number='+13216549870', first_name='Edward', last_name='Igushev')
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
-
-    fase_database.FaseDatabaseInterface.Get().AddUser(
-        fase_model.User(user_id=session_info.session_id,
-                        phone_number='+13216549870',
-                        first_name='Edward',
-                        last_name='Igushev',
-                        datetime_added=datetime.datetime.now()))
 
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -391,7 +401,7 @@ class FaseSignInTest(unittest.TestCase):
     
     # Check present of main elements.
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(actual_service_session_id)
-    screen_prog.screen.GetElement(id_='sign_out_button_id')
+    screen_prog.screen.GetElement(id_='sign_in_button_id')
 
   def testSkip(self):
     fase_database.FaseDatabaseInterface.Set(
