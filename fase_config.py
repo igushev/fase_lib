@@ -10,10 +10,6 @@ def GetFaseDatabase(config):
       region_name=config.get('dynamodb', 'region_name'))
 
 
-def GetActivationCodeGenerator(config):
-  return activation_code_generator.ActivationCodeGenerator()
-
-
 def GetSMSSender(config):
   if config.has_section('sns'):
     sms_service_provider = sms_sender.SNSSMSServiceProvider(
@@ -30,6 +26,6 @@ def GetSMSSender(config):
 
 fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
 fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
-activation_code_generator.ActivationCodeGenerator.Set(GetActivationCodeGenerator(fase_config))
+activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
 fase_server.FaseServer.Set(fase_server.FaseServer())
