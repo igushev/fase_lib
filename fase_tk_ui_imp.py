@@ -322,6 +322,30 @@ class FaseTkUIImp(object):
     ui_imp_parent.Next()
     return ui_imp_text
 
+  def DrawSwitch(self, id_list, switch_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_var = tkinter.StringVar()
+    if switch_element.GetValue() is not None:
+      ui_imp_var.set(str(switch_element.GetValue()))
+    self.id_list_to_var[tuple(id_list)] = ui_imp_var
+    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_switch = tkinter.Checkbutton(ui_imp_parent.GetUIImpParent(), text=switch_element.GetText(),
+                                        variable=ui_imp_var, onvalue=str(True), offvalue=str(False))
+
+    if switch_element.GetAlight() is not None:
+      if switch_element.GetAlight() == fase.Switch.LEFT:
+        anchor = 'w'
+      elif switch_element.GetAlight() == fase.Switch.RIGHT:
+        anchor = 'e'
+      elif switch_element.GetAlight() == fase.Switch.CENTER:
+        anchor = 'center'
+      ui_imp_switch.configure(anchor=anchor)
+    
+    ui_imp_switch.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ui_imp_switch
+
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_photo = ImageTk.PhotoImage(Image.open(image_element.GetImage()))

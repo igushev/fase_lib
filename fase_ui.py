@@ -61,6 +61,8 @@ class FaseUI(object):
       self.DrawLabel(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Text):
       self.DrawText(id_list, element, ui_imp_parent)
+    elif isinstance(element, fase.Switch):
+      self.DrawSwitch(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Image):
       self.DrawImage(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Button):
@@ -79,6 +81,9 @@ class FaseUI(object):
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
     self.ui_imp.DrawText(id_list, text_element, ui_imp_parent)
+
+  def DrawSwitch(self, id_list, switch_element, ui_imp_parent):
+    self.ui_imp.DrawSwitch(id_list, switch_element, ui_imp_parent)
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self.ui_imp.DrawImage(id_list, image_element, ui_imp_parent)

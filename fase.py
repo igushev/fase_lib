@@ -308,6 +308,40 @@ class Text(VisualElement):
 
 
 @json_util.JSONDecorator(
+    {'_value': json_util.JSONBool(),
+     '_text': json_util.JSONString(),
+     '_alight': json_util.JSONInt()})
+class Switch(VisualElement):
+
+  LEFT = 1
+  RIGHT = 2
+  CENTER = 3
+  
+  def __init__(self,
+               value=None,
+               text=None,
+               alight=None):
+    super(Switch, self).__init__()
+    self._value = value
+    self._text = text
+    self._alight = alight
+
+  def Update(self, value):
+    self._value = bool(value)
+
+  def SetValue(self, value):
+    self._value = value
+  def GetValue(self):
+    return self._value
+
+  def GetText(self):
+    return self._text
+
+  def GetAlight(self):
+    return self._alight
+
+
+@json_util.JSONDecorator(
     {'_image': json_util.JSONString()})
 class Image(VisualElement):
 
@@ -435,6 +469,14 @@ class BaseElementsContainer(VariableContainer):
                size=None):
     return self.AddElement(id_, Text(text=text, hint=hint, size=size))
   def GetText(self, id_):
+    return self.GetElement(id_)
+
+  def AddSwitch(self, id_,
+                value=None,
+                text=None,
+                alight=None):
+    return self.AddElement(id_, Switch(value=value, text=text, alight=alight))
+  def GetSwitch(self, id_):
     return self.GetElement(id_)
 
   def AddImage(self, id_,
