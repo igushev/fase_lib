@@ -52,10 +52,12 @@ class FaseSignInButton(fase.Button):
       return service_signed_in, screen_signed_in
     else:
       # Assign signed in session id.
+      user = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id)
       service._session_id = session_id_signed_in
       service._if_signed_in = True
       service._user_id = user_id
-      service._user_name = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id).DisplayName()
+      service._user_phone_number = user.PhoneNumber()
+      service._user_name = user.DisplayName()
       screen = on_sign_in_done(service, user_id_before=user_id_before)
       return service, screen
 

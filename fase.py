@@ -625,6 +625,7 @@ class Screen(BaseElementsContainer):
 @json_util.JSONDecorator(
     {'_session_id': json_util.JSONString(),
      '_if_signed_in': json_util.JSONBool(),
+     '_user_phone_number': json_util.JSONString(),
      '_user_name': json_util.JSONString(),
      '_user_id': json_util.JSONString(),
      '_datetime_added': json_util.JSONDateTime()})
@@ -643,6 +644,7 @@ class Service(VariableContainer):
     self._session_id = GenerateSessionId()
     self._if_signed_in = False
     self._user_id = GenerateUserId(self._session_id)
+    self._user_phone_number = None
     self._user_name = None
     self._datetime_added = datetime.datetime.now()
 
@@ -652,6 +654,8 @@ class Service(VariableContainer):
     return self._user_id
   def IfSignedIn(self):
     return self._if_signed_in
+  def GetUserPhoneNumber(self):
+    return self._user_phone_number
   def GetUserName(self):
     return self._user_name
 

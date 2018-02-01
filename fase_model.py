@@ -53,6 +53,9 @@ class User(data_util.AbstractObject):
     self.last_name = last_name
     self.datetime_added = datetime_added
 
+  def PhoneNumber(self):
+    return self.phone_number
+
   def DisplayName(self):
     if self.first_name and self.last_name:
       return ' '.join([self.first_name, self.last_name])
