@@ -129,7 +129,7 @@ class FaseTkUIImp(object):
       self.ui_imp_frame.destroy()
     return self.InitScreen(scrollable=scrollable)
 
-  def PrepareMainContextMenusNextPrevButtons(
+  def PrepareScreenMainContextMenusNextPrevButtons(
       self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None):
     if not (main_menu or context_menu or next_button or prev_button or title):
       return
@@ -184,26 +184,26 @@ class FaseTkUIImp(object):
     else:
       self.ui_imp_next_button_frame = None
 
-  def DrawMainMenuItem(self, id_list, menu_item_element):
+  def DrawScreenMainMenuItem(self, id_list, menu_item_element):
     self.ui_imp_main_menu.add_command(
         label=menu_item_element.GetText(),
         command=ClickCallBack(self, id_list) if menu_item_element.GetOnClick() is not None else None)
 
-  def DrawContextMenuItem(self, id_list, menu_item_element):
+  def DrawScreenContextMenuItem(self, id_list, menu_item_element):
     assert menu_item_element.GetOnClick() is not None
     self.ui_imp_context_menu.add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
 
-  def DrawNextStepButton(self, id_list, next_step_button_element):
+  def DrawScreenNextStepButton(self, id_list, next_step_button_element):
     assert next_step_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
-  def DrawPrevStepButton(self, id_list, prev_step_button_element):
+  def DrawScreenPrevStepButton(self, id_list, prev_step_button_element):
     assert prev_step_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
-  def PrepareMainButtonAndNavigationButtons(self, main_button=False, nav_button_num=0):
+  def PrepareScreenMainButtonAndNavigationButtons(self, main_button=False, nav_button_num=0):
     if not (main_button or nav_button_num):
       return
     if main_button:
@@ -232,13 +232,13 @@ class FaseTkUIImp(object):
       else:
         self.ui_imp_nav_button_frame_list.append(ui_imp_button_frame)
       
-  def DrawMainButton(self, id_list, main_button_element):
+  def DrawScreenMainButton(self, id_list, main_button_element):
     assert self.ui_imp_main_button_frame is not None
     assert main_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_main_button_frame, text=main_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
-  def DrawNavButton(self, id_list, nav_button_element, nav_button_i):
+  def DrawScreenNavButton(self, id_list, nav_button_element, nav_button_i):
     assert nav_button_element.GetOnClick() is not None
     tkinter.Button(self.ui_imp_nav_button_frame_list[nav_button_i], text=nav_button_element.GetText(),
                    command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))

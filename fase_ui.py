@@ -23,32 +23,32 @@ class FaseUI(object):
                            if screen.HasElement(fase.NEXT_STEP_BUTTON_ID) else None)
     prev_button_element = (screen.PopElement(fase.PREV_STEP_BUTTON_ID)
                            if screen.HasElement(fase.PREV_STEP_BUTTON_ID) else None)
-    self.ui_imp.PrepareMainContextMenusNextPrevButtons(
+    self.ui_imp.PrepareScreenMainContextMenusNextPrevButtons(
         main_menu=main_menu_element is not None, context_menu=context_menu_element is not None,
         next_button=next_button_element is not None, prev_button=prev_button_element is not None,
         title=screen.GetTitle())
     if main_menu_element:
       for menu_item_id, menu_item_element in main_menu_element.GetIdElementList():
-        self.ui_imp.DrawMainMenuItem([fase.MAIN_MENU_ID, menu_item_id], menu_item_element)
+        self.ui_imp.DrawScreenMainMenuItem([fase.MAIN_MENU_ID, menu_item_id], menu_item_element)
     if context_menu_element:
       for menu_item_id, menu_item_element in context_menu_element.GetIdElementList():
-        self.ui_imp.DrawContextMenuItem([fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element)
+        self.ui_imp.DrawScreenContextMenuItem([fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element)
     if next_button_element:
-      self.ui_imp.DrawNextStepButton([fase.NEXT_STEP_BUTTON_ID], next_button_element)
+      self.ui_imp.DrawScreenNextStepButton([fase.NEXT_STEP_BUTTON_ID], next_button_element)
     if prev_button_element:
-      self.ui_imp.DrawPrevStepButton([fase.PREV_STEP_BUTTON_ID], prev_button_element)
+      self.ui_imp.DrawScreenPrevStepButton([fase.PREV_STEP_BUTTON_ID], prev_button_element)
 
   def DrawMainButtonAndNavigationButtons(self, screen):
     main_button_element = screen.PopElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
     button_bar_element = screen.PopElement(fase.BUTTON_BAR_ID) if screen.HasElement(fase.BUTTON_BAR_ID) else None 
     nav_button_id_element_list = button_bar_element.GetIdElementList() if button_bar_element else []
-    self.ui_imp.PrepareMainButtonAndNavigationButtons(
+    self.ui_imp.PrepareScreenMainButtonAndNavigationButtons(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
     if main_button_element:
-      self.ui_imp.DrawMainButton([fase.MAIN_BUTTON_ID], main_button_element)
+      self.ui_imp.DrawScreenMainButton([fase.MAIN_BUTTON_ID], main_button_element)
     # NOTE(igushev): Button Bar Layout will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
-      self.ui_imp.DrawNavButton([fase.BUTTON_BAR_ID, nav_button_id], nav_button_element, nav_button_i)
+      self.ui_imp.DrawScreenNavButton([fase.BUTTON_BAR_ID, nav_button_id], nav_button_element, nav_button_i)
 
   def DrawBaseElementsContainer(self, id_list, parent_element, ui_imp_parent):
     for id_, element in parent_element.GetIdElementList():
