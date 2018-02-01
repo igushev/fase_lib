@@ -234,11 +234,12 @@ class FaseTkUIImp(object):
       
   def DrawScreenMainButton(self, id_list, main_button_element):
     assert self.ui_imp_main_button_frame is not None
-    command = ClickCallBack(self, id_list) if main_button_element.GetOnClick() is not None else None
-    ui_imp_main_button = tkinter.Button(
-        self.ui_imp_main_button_frame, text=main_button_element.GetText(), command=command)
+    ui_imp_main_button = tkinter.Button(self.ui_imp_main_button_frame, text=main_button_element.GetText())
     ui_imp_main_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
-    if main_button_element.GetContextMenu():
+
+    if main_button_element.GetOnClick():
+      ui_imp_main_button.configure(command=ClickCallBack(self, id_list))
+    elif main_button_element.GetContextMenu():
       ui_imp_main_button_context_menu = tkinter.Menu()
       ui_imp_main_button.bind('<1>', lambda e: ui_imp_main_button_context_menu.post(e.x_root, e.y_root))
       return ParentElement(ui_imp_main_button_context_menu)
@@ -266,9 +267,9 @@ class FaseTkUIImp(object):
                        sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
     if layout_element.GetOrientation() == fase.Layout.VERTICAL:
-      ui_imp_layout.columnconfigure(ui_imp_parent.GetColumn(), weight=1)
+      ui_imp_layout.columnconfigure(0, weight=1)
     elif layout_element.GetOrientation() == fase.Layout.HORIZONTAL:
-      ui_imp_layout.rowconfigure(ui_imp_parent.GetRow(), weight=1)
+      ui_imp_layout.rowconfigure(0, weight=1)
     else:
       raise ValueError(self._orientation)
 
@@ -314,7 +315,7 @@ class FaseTkUIImp(object):
     ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
-    return ui_imp_label
+    return ParentElement(ui_imp_label)
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
@@ -327,7 +328,7 @@ class FaseTkUIImp(object):
     ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
                      sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
-    return ui_imp_text
+    return ParentElement(ui_imp_text)
 
   def DrawSwitch(self, id_list, switch_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
@@ -351,7 +352,7 @@ class FaseTkUIImp(object):
     ui_imp_switch.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
                        sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
-    return ui_imp_switch
+    return ParentElement(ui_imp_switch)
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
@@ -360,7 +361,7 @@ class FaseTkUIImp(object):
     ui_imp_label.image = ui_imp_photo 
     ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
-    return ui_imp_label 
+    return ParentElement(ui_imp_label) 
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
@@ -368,10 +369,17 @@ class FaseTkUIImp(object):
 
     if button_element.GetOnClick():
       ui_imp_button.configure(command=ClickCallBack(self, id_list))
+    elif button_element.GetContextMenu():
+      ui_imp_button_context_menu = tkinter.Menu()
+      ui_imp_button.bind('<1>', lambda e: ui_imp_button_context_menu.post(e.x_root, e.y_root))
 
     ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
-    return ui_imp_button
+
+    if button_element.GetContextMenu():
+      return ParentElement(ui_imp_button_context_menu)
+    else:
+      return ParentElement(ui_imp_button) 
 
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None

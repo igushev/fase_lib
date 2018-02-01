@@ -500,8 +500,9 @@ class BaseElementsContainer(VariableContainer):
   def AddButton(self, id_,
                text=None,
                on_click=None,
+               context_menu=None,
                icon=None):
-    return self.AddElement(id_, Button(text=text, on_click=on_click, icon=icon))
+    return self.AddElement(id_, Button(text=text, on_click=on_click, context_menu=context_menu, icon=icon))
   def GetButton(self, id_):
     return self.GetElement(id_)
 
