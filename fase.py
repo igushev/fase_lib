@@ -401,16 +401,20 @@ class Menu(ElementContainer):
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString(),
      '_on_click': json_util.JSONFunction(),
+     '_context_menu': json_util.JSONObject(Menu),
      '_icon': json_util.JSONString()})
 class Button(VisualElement):
 
   def __init__(self,
                text=None,
                on_click=None,
+               context_menu=None,
                icon=None):
+    assert int(on_click is None) + int(context_menu is None) == 1
     super(Button, self).__init__()
     self._text = text
     self._on_click = on_click
+    self._context_menu = context_menu
     self._icon = icon
 
   def SetText(self, text):
@@ -420,6 +424,14 @@ class Button(VisualElement):
 
   def GetOnClick(self):
     return self._on_click
+
+  def GetContextMenu(self):
+    return self._context_menu
+
+  def GetElement(self, id_):
+    if id_ == CONTEXT_MENU_ID:
+      return self._context_menu
+    raise KeyError(id_)
 
 
 @json_util.JSONDecorator({})
@@ -579,8 +591,8 @@ class Screen(BaseElementsContainer):
   def GetMainMenu(self):
     return self.GetElement(MAIN_MENU_ID)
 
-  def AddMainButton(self, text=None, on_click=None, icon=None):
-    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
+  def AddMainButton(self, text=None, on_click=None, context_menu=None, icon=None):
+    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, context_menu=context_menu, icon=icon))
   def GetMainButton(self):
     return self.GetElement(MAIN_BUTTON_ID)
 

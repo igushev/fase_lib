@@ -38,7 +38,7 @@ class ClickCallBack(object):
 
 class ParentElement(object):
   
-  def __init__(self, ui_imp_parent, orientation, click_callback=None):
+  def __init__(self, ui_imp_parent, orientation=None, click_callback=None):
     self._ui_imp_parent = ui_imp_parent
     self._orientation = orientation
     self._click_callback = click_callback
@@ -119,7 +119,7 @@ class FaseTkUIImp(object):
       
 
     self.id_list_to_var = dict()
-    return ParentElement(ui_imp_widget_layout, fase.Layout.VERTICAL)
+    return ParentElement(ui_imp_widget_layout, orientation=fase.Layout.VERTICAL)
 
   def SetUI(self, ui):
     self.ui = ui
@@ -234,9 +234,16 @@ class FaseTkUIImp(object):
       
   def DrawScreenMainButton(self, id_list, main_button_element):
     assert self.ui_imp_main_button_frame is not None
-    assert main_button_element.GetOnClick() is not None
-    tkinter.Button(self.ui_imp_main_button_frame, text=main_button_element.GetText(),
-                   command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    command = ClickCallBack(self, id_list) if main_button_element.GetOnClick() is not None else None
+    ui_imp_main_button = tkinter.Button(
+        self.ui_imp_main_button_frame, text=main_button_element.GetText(), command=command)
+    ui_imp_main_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    if main_button_element.GetContextMenu():
+      ui_imp_main_button_context_menu = tkinter.Menu()
+      ui_imp_main_button.bind('<1>', lambda e: ui_imp_main_button_context_menu.post(e.x_root, e.y_root))
+      return ParentElement(ui_imp_main_button_context_menu)
+    else:
+      return ParentElement(ui_imp_main_button) 
 
   def DrawScreenNavButton(self, id_list, nav_button_element, nav_button_i):
     assert nav_button_element.GetOnClick() is not None
@@ -275,7 +282,7 @@ class FaseTkUIImp(object):
       ui_imp_layout.bind('<1>', click_callback)
 
     ui_imp_parent.Next()
-    return ParentElement(ui_imp_layout, layout_element.GetOrientation(), click_callback=click_callback)
+    return ParentElement(ui_imp_layout, orientation=layout_element.GetOrientation(), click_callback=click_callback)
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSize()==fase.Label.MAX))
@@ -365,6 +372,10 @@ class FaseTkUIImp(object):
     ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
     return ui_imp_button
+
+  def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
+    assert menu_item_element.GetOnClick() is not None
+    ui_imp_parent.GetUIImpParent().add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
 
   def ShowPopup(self, popup):
     messagebox.showinfo(message=popup.GetText())

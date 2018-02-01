@@ -45,7 +45,11 @@ class FaseUI(object):
     self.ui_imp.PrepareScreenMainButtonAndNavigationButtons(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
     if main_button_element:
-      self.ui_imp.DrawScreenMainButton([fase.MAIN_BUTTON_ID], main_button_element)
+      ui_imp_main_button = self.ui_imp.DrawScreenMainButton([fase.MAIN_BUTTON_ID], main_button_element)
+      if main_button_element.GetContextMenu():
+        for menu_item_id, menu_item_element in main_button_element.GetContextMenu().GetIdElementList():
+          self.ui_imp.DrawContextMenuItem(
+              [fase.MAIN_BUTTON_ID, fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_main_button)
     # NOTE(igushev): Button Bar Layout will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
       self.ui_imp.DrawScreenNavButton([fase.BUTTON_BAR_ID, nav_button_id], nav_button_element, nav_button_i)
