@@ -59,7 +59,7 @@ class NotesService(fase.Service):
     elif screen_label == 'recent':
       return self._DisplayNotesByFunc(lambda note: note.datetime, True, None, 'Recent', screen)
     else:
-      raise AssertionError()
+      raise AssertionError(screen_label)
 
   def _DisplayNotesByFunc(self, key_func, reverse, filter_func, title, screen):
     screen = fase.Screen(self)

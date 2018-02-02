@@ -223,7 +223,7 @@ class VariableContainer(ElementContainer):
 
 @json_util.JSONDecorator(
     {'_displayed': json_util.JSONBool()})
-class VisualElement(Element):
+class VisualElement(VariableContainer):
   def __init__(self):
     super(VisualElement, self).__init__()
     self._displayed = True
