@@ -13,7 +13,7 @@ class KarmaCounter(fase.Service):
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
-    return fase_sign_in.StartSignIn(self, on_sign_in_done=KarmaCounter.OnSignInDone)
+    return fase_sign_in.StartSignIn(self, on_done=KarmaCounter.OnSignInDone)
 
   def OnSignInDone(self, user_id_before=None):
     new_user = kc_data.NewUser(phone_number=self.GetUserPhoneNumber(),

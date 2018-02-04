@@ -26,7 +26,7 @@ class SignInTestService(fase.Service):
 
   def OnSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(
-        self, on_sign_in_done=SignInTestService.OnSignInDone, on_skip=SignInTestService.OnSignInSkip,
+        self, on_done=SignInTestService.OnSignInDone, on_skip=SignInTestService.OnSignInSkip,
         on_cancel=SignInTestService.OnSignInCancel)
 
   def OnSignOut(self, screen, element):

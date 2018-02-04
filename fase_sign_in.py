@@ -32,7 +32,7 @@ class FaseSignInButton(fase.Button):
       popup.AddButton(id_="ok_id", text="OK", on_click=OnActivationCodeSent)
       return service, screen
 
-    on_sign_in_done = service.PopFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method').GetValue()
+    on_done = service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method').GetValue()
     if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
@@ -49,7 +49,7 @@ class FaseSignInButton(fase.Button):
     service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
     if service_signed_in:
       # Retrieve sign in service and call.
-      screen_signed_in = on_sign_in_done(service_signed_in, user_id_before=user_id_before)
+      screen_signed_in = on_done(service_signed_in, user_id_before=user_id_before)
       return service_signed_in, screen_signed_in
     else:
       # Assign signed in session id.
@@ -59,7 +59,7 @@ class FaseSignInButton(fase.Button):
       service._user_id = user_id
       service._user_phone_number = user.PhoneNumber()
       service._user_name = user.DisplayName()
-      screen = on_sign_in_done(service, user_id_before=user_id_before)
+      screen = on_done(service, user_id_before=user_id_before)
       return service, screen
 
 
@@ -77,9 +77,9 @@ class FaseSignOutButton(fase.Button):
     return service, screen
 
 
-def StartSignIn(service, on_sign_in_done=None, on_skip=None, on_cancel=None):
+def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None):
   assert not service._if_signed_in
-  service.AddFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method', value=on_sign_in_done)
+  service.AddFunctionVariable(id_='fase_sign_in_on_done_class_method', value=on_done)
   if on_skip is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_skip_class_method', value=on_skip)
   if on_cancel is not None:
@@ -93,9 +93,9 @@ def OnSignInStart(service, screen, element):
   sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInOption)
   sign_in_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpOption)
   if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
-    sign_in_layout.AddButton(id_='skip_button_id', text='Skip', on_click=OnSkipOption)
+    sign_in_layout.AddButton(id_='skip_button_id', text='Skip', on_click=OnSignInSkipOption)
   if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
-    screen.AddPrevStepButton(text='Cancel', on_click=OnCancelOption)
+    screen.AddPrevStepButton(text='Cancel', on_click=OnSignInCancelOption)
   return screen
 
 
@@ -187,21 +187,8 @@ def OnActivationCodeSent(service, screen, element):
   return screen
 
 
-def StartSignOut(service, on_cancel=None):
-  assert service._if_signed_in
-
-  screen = fase.Screen(service)
-  sign_out_layout = screen.AddLayout(id_='sign_out_layout_id', orientation=fase.Layout.VERTICAL)
-  sign_out_layout.AddElement(
-      id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.MockFunction))
-  if on_cancel is not None:
-    service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
-    screen.AddPrevStepButton(on_click=OnSignOutCancelOption, text='Cancel')
-  return screen
-
-
-def OnSkipOption(service, screen, element):
-  service.PopFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method')
+def OnSignInSkipOption(service, screen, element):
+  service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method')
   on_skip = service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method').GetValue()
   if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
     service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
@@ -210,8 +197,8 @@ def OnSkipOption(service, screen, element):
   return screen
 
 
-def OnCancelOption(service, screen, element):
-  service.PopFunctionVariable(id_='fase_sign_in_on_sign_in_done_class_method')
+def OnSignInCancelOption(service, screen, element):
+  service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method')
   if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
     service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
   on_cancel = service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method').GetValue()
@@ -225,6 +212,19 @@ def _CleanActivationVariables(service):
     service.PopStringVariable('fase_sign_in_user_id_str')
   if service.HasIntVariable(id_='fase_sign_in_activation_code_int'):
     service.PopIntVariable(id_='fase_sign_in_activation_code_int')
+
+
+def StartSignOut(service, on_cancel=None):
+  assert service._if_signed_in
+
+  screen = fase.Screen(service)
+  sign_out_layout = screen.AddLayout(id_='sign_out_layout_id', orientation=fase.Layout.VERTICAL)
+  sign_out_layout.AddElement(
+      id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.MockFunction))
+  if on_cancel is not None:
+    service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
+    screen.AddPrevStepButton(on_click=OnSignOutCancelOption, text='Cancel')
+  return screen
 
 
 def OnSignOutCancelOption(service, screen, element):

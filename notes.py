@@ -110,8 +110,7 @@ class NotesService(fase.Service):
     button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent, icon='recent.pnp')
 
   def OnSignIn(self, screen, element):
-    return fase_sign_in.StartSignIn(
-        self, on_sign_in_done=NotesService.OnSignInDone, on_cancel=NotesService.OnSignInOutCancel)
+    return fase_sign_in.StartSignIn(self, on_done=NotesService.OnSignInDone, on_cancel=NotesService.OnSignInOutCancel)
 
   def OnSignInDone(self, user_id_before=None):
     assert user_id_before is not None
@@ -122,11 +121,11 @@ class NotesService(fase.Service):
       
     return self._DisplayNotes(None)
 
-  def OnSignInOutCancel(self):
-    return self._DisplayNotes(None)
-
   def OnSignOut(self, screen, element):
     return fase_sign_in.StartSignOut(self, on_cancel=NotesService.OnSignInOutCancel)
+
+  def OnSignInOutCancel(self):
+    return self._DisplayNotes(None)
 
   def OnNew(self, screen, element):
     return self._DisplayNote(None, screen)
