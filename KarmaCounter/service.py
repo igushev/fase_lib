@@ -13,11 +13,6 @@ class KarmaCounter(fase.Service):
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
-    screen = fase.Screen(self)
-    screen.AddButton(id_='start_sign_in', text='Start Sign In', on_click=KarmaCounter.OnStartSignIn)
-    return screen
-
-  def OnStartSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(self, on_sign_in_done=KarmaCounter.OnSignInDone)
 
   def OnSignInDone(self, user_id_before=None):
@@ -66,7 +61,10 @@ class KarmaCounter(fase.Service):
     return self.DisplayStatisticsByCities(screen, element)
 
   def OnSignOut(self, screen, element):
-    return fase_sign_in.StartSignOut(self, cancel_option=True)
+    return fase_sign_in.StartSignOut(self, on_cancel=KarmaCounter.OnSignOutCancel)
+
+  def OnSignOutCancel(self):
+    return self.DisplayCurrentScreen(None, None)
 
   def _AddButtons(self, screen):
     main_menu = screen.AddMainMenu()
