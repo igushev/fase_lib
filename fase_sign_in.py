@@ -76,7 +76,6 @@ class FaseSignOutButton(fase.Button):
     return service, screen
 
 
-# TODO(igushev): fase_sign_in variables should be in separated better from services own variables.
 def StartSignIn(service, on_sign_in_done=None, skip_option=False, cancel_option=False):
   assert not service._if_signed_in
   screen_prog_before = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id=service.GetSessionId())

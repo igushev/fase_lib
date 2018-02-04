@@ -99,7 +99,6 @@ class FaseUI(object):
         self.ui_imp.DrawContextMenuItem(
             id_list + [fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_button)
 
-  # TODO(igushev): Add better support for popups.
   def ShowPopup(self, popup):
     assert len(popup.GetIdElementList()) == 1
     button_id, button_element = popup.GetIdElementList()[0]

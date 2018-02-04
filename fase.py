@@ -16,7 +16,6 @@ MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
 
 
-# TODO(igushev): Make logic below less hacky.
 def MockFunction():
   pass
 
@@ -538,7 +537,6 @@ class Layout(BaseElementsContainer):
     return self._on_click
 
 
-# TODO(igushev): Create better API for popups.
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString()})
 class Popup(ElementContainer):

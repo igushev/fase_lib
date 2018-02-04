@@ -5,12 +5,6 @@ from KarmaCounter import client as kc_client
 from KarmaCounter import data as kc_data
 
 
-# TODO(igushev): Avoid this unnecessary screen.
-# TODO(igushev): Have a way to provide city and DOB.
-# TODO(igushev): Make phone choose from phone book.
-# TODO(igushev): Make switch hide and show within screen update.
-# TODO(igushev): Add some separator.
-# TODO(igushev): Make notifications.
 class KarmaCounter(fase.Service):
 
   @staticmethod
