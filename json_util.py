@@ -130,12 +130,12 @@ class JSONTuple(JSONObjectInterface):
     
   def ToSimple(self, field_obj):
     util.AssertIsInstance(field_obj, tuple)
-    return [json_obj.ToSimple(item_obj)
+    return [(json_obj.ToSimple(item_obj) if item_obj is not None else None)
             for json_obj, item_obj in zip(self._json_obj_list, field_obj)]
   
   def FromSimple(self, simple):
     util.AssertIsInstance(simple, list)
-    return tuple(json_obj.FromSimple(item_simple)
+    return tuple((json_obj.FromSimple(item_simple) if item_simple is not None else None)
                  for json_obj, item_simple in zip(self._json_obj_list, simple))
 
 
@@ -147,11 +147,13 @@ class JSONList(JSONObjectInterface):
     
   def ToSimple(self, field_obj):
     util.AssertIsInstance(field_obj, list)
-    return [self._json_obj.ToSimple(item_obj) for item_obj in field_obj]
+    return [(self._json_obj.ToSimple(item_obj) if item_obj is not None else None) 
+            for item_obj in field_obj]
   
   def FromSimple(self, simple):
     util.AssertIsInstance(simple, list)
-    return [self._json_obj.FromSimple(item_simple) for item_simple in simple]
+    return [(self._json_obj.FromSimple(item_simple) if item_simple is not None else None)
+            for item_simple in simple]
 
 
 class JSONDict(object):
@@ -165,13 +167,13 @@ class JSONDict(object):
   def ToSimple(self, field_obj):
     util.AssertIsInstance(field_obj, dict)
     return {self._key_json_obj.ToSimple(key_obj):
-            self._value_json_obj.ToSimple(value_obj)
+            (self._value_json_obj.ToSimple(value_obj) if value_obj is not None else None)
             for key_obj, value_obj in field_obj.items()}
   
   def FromSimple(self, simple):
     util.AssertIsInstance(simple, dict)
     return {self._key_json_obj.FromSimple(key_simple):
-            self._value_json_obj.FromSimple(value_simple)
+            (self._value_json_obj.FromSimple(value_simple) if value_simple is not None else None) 
             for key_simple, value_simple in simple.items()}
 
 

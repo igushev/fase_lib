@@ -9,7 +9,6 @@ from KarmaCounter import data as kc_data
 # TODO(igushev): Have a way to provide city and DOB.
 # TODO(igushev): Make phone choose from phone book.
 # TODO(igushev): Make switch hide and show within screen update.
-# TODO(igushev): Make empty string sync as well.
 # TODO(igushev): Add some separator.
 # TODO(igushev): Make notifications.
 class KarmaCounter(fase.Service):
@@ -111,7 +110,7 @@ class KarmaCounter(fase.Service):
     screen.AddText(id_='score_text', hint='Score')
     screen.AddText(id_='friend_phone_number_text', hint='Friend\'s Phone Number')
     screen.AddText(id_='friend_display_name_text', hint='Friend\'s Name')
-    screen.AddSwitch(id_='invite_switch', text='Invite Friend', alight=fase.Switch.LEFT)
+    screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
     screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.DisplayCurrentScreen)

@@ -36,6 +36,36 @@ class ClickCallBack(object):
     self.ui_tk.ElementClickedCallBack(self.id_list)
 
 
+class ElementVariable(object):
+  
+  def Update(self, value):
+    raise NotImplementedError()
+
+
+class TextElementVariable(object):
+
+  def __init__(self, ui_imp_var):
+    self._ui_imp_var = ui_imp_var
+
+  def Get(self):
+    return self._ui_imp_var.get()
+
+  def Update(self, value):
+    self._ui_imp_var.set(value if value is not None else '') 
+
+
+class SwitchElementVariable(object):
+  
+  def __init__(self, ui_imp_var):
+    self._ui_imp_var = ui_imp_var
+
+  def Get(self):
+    return self._ui_imp_var.get()
+
+  def Update(self, value):
+    self._ui_imp_var.set(value) 
+
+
 class ParentElement(object):
   
   def __init__(self, ui_imp_parent, orientation=None, click_callback=None):
@@ -322,7 +352,7 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     if text_element.GetText() is not None:
       ui_imp_var.set(text_element.GetText())
-    self.id_list_to_var[tuple(id_list)] = ui_imp_var
+    self.id_list_to_var[tuple(id_list)] = TextElementVariable(ui_imp_var)
     ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
     ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -335,7 +365,7 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     if switch_element.GetValue() is not None:
       ui_imp_var.set(str(switch_element.GetValue()))
-    self.id_list_to_var[tuple(id_list)] = ui_imp_var
+    self.id_list_to_var[tuple(id_list)] = SwitchElementVariable(ui_imp_var)
     ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_switch = tkinter.Checkbutton(ui_imp_parent.GetUIImpParent(), text=switch_element.GetText(),
                                         variable=ui_imp_var, onvalue=str(True), offvalue=str(False))
@@ -394,7 +424,7 @@ class FaseTkUIImp(object):
 
   def ElementUpdatedCallBack(self, id_list, *args):
     if self.element_updated_callback:
-      value = self.id_list_to_var[tuple(id_list)].get() 
+      value = self.id_list_to_var[tuple(id_list)].Get() 
       self.ui.ElementUpdatedCallBack(id_list, value)
 
   def ScreenUpdateCallBack(self):
@@ -406,5 +436,5 @@ class FaseTkUIImp(object):
 
   def ElementUpdatedReceived(self, id_list, value):
     self.element_updated_callback = False
-    self.id_list_to_var[tuple(id_list)].set(value)
+    self.id_list_to_var[tuple(id_list)].Update(value)
     self.element_updated_callback = True

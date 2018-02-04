@@ -9,20 +9,28 @@ import json_util
     {'_int_field': json_util.JSONInt(),
      'float_field': json_util.JSONFloat(),
      '_string_field': json_util.JSONString(),
+     '_bool_value': json_util.JSONBool(),
      'date_field': json_util.JSONDate(),
      'datetime_field': json_util.JSONDateTime()})
 class WithFields(data_util.AbstractObject):
   
-  def __init__(self, int_field, float_field, string_field, date_field,
-               datetime_field):
-    assert isinstance(int_field, int)
-    assert isinstance(float_field, float)
-    assert isinstance(string_field, str)
-    assert isinstance(date_field, datetime.date)
-    assert isinstance(datetime_field, datetime.datetime)
+  def __init__(self, int_field, float_field, string_field, bool_value, date_field, datetime_field):
+    if int_field is not None:
+      assert isinstance(int_field, int)
+    if float_field is not None:
+      assert isinstance(float_field, float)
+    if string_field is not None:
+      assert isinstance(string_field, str)
+    if bool_value is not None:
+      assert isinstance(bool_value, bool)
+    if date_field is not None:
+      assert isinstance(date_field, datetime.date)
+    if datetime_field is not None:
+      assert isinstance(datetime_field, datetime.datetime)
     self._int_field = int_field  # With underscore.
     self.float_field = float_field
     self._string_field = string_field  # With underscore.
+    self._bool_value = bool_value  # With underscore.
     self.date_field = date_field
     self.datetime_field = datetime_field
 
@@ -42,37 +50,18 @@ class WithListAndDict(data_util.AbstractObject):
 
 @json_util.JSONDecorator(
     {'_nested_with_fields': json_util.JSONObject(WithFields),
-     '_nested_with_list_and_dict': json_util.JSONObject(WithListAndDict),
-     '_none_value': json_util.JSONString(),
-     '_bool_value': json_util.JSONBool()})
+     '_nested_with_list_and_dict': json_util.JSONObject(WithListAndDict)})
 class WithNestedFields(data_util.AbstractObject):
 
-  def __init__(self, nested_with_fields, nested_with_list_and_dict,
-               none_value, bool_value):
-    assert isinstance(nested_with_fields, WithFields)
-    assert isinstance(nested_with_list_and_dict, WithListAndDict)
+  def __init__(self, nested_with_fields, nested_with_list_and_dict):
+    if nested_with_fields is not None:
+      assert isinstance(nested_with_fields, WithFields)
+    if nested_with_list_and_dict is not None:
+      assert isinstance(nested_with_list_and_dict, WithListAndDict)
     # With underscore.
     self._nested_with_fields = nested_with_fields
     # With underscore.
     self._nested_with_list_and_dict = nested_with_list_and_dict
-    self._none_value = none_value
-    self._bool_value = bool_value
-
-
-# We declare _nested_with_fields_2 to be WithFields but allow None.
-@json_util.JSONDecorator(
-    {'_nested_with_fields_1': json_util.JSONObject(WithFields),
-     '_nested_with_fields_2': json_util.JSONObject(WithFields)})
-class WithNestedNoneObjectsFields(data_util.AbstractObject):
-
-  def __init__(self, nested_with_fields_1, nested_with_fields_2):
-    assert isinstance(nested_with_fields_1, WithFields)
-    if nested_with_fields_2 is not None:
-      assert isinstance(nested_with_fields_2, WithFields)
-    # With underscore.
-    self._nested_with_fields_1 = nested_with_fields_1
-    # With underscore.
-    self._nested_with_fields_2 = nested_with_fields_2
 
 
 @json_util.JSONDecorator(
@@ -240,13 +229,12 @@ class JSONUtilsTest(unittest.TestCase):
     datetime_2 = datetime.datetime(1986, 8, 21, 13, 0, 0)
     datetime_3 = datetime.datetime(2014, 1, 3, 9, 54, 0)
     obj = WithNestedFields(
-        WithFields(3, 5., u'seven', date_1, datetime_1),
+        WithFields(3, 5., u'seven', True, date_1, datetime_1),
         WithListAndDict(
-            [WithFields(2, 4., u'six', date_2, datetime_2),
-             WithFields(8, 10., u'twelve', date_2, datetime_2)],
-            {u'one': WithFields(15, 17., u'nineteen', date_3, datetime_3),
-             u'two': WithFields(21, 23., u'twenty five', date_3, datetime_3)}),
-        None, True)
+            [WithFields(2, 4., u'six', True, date_2, datetime_2),
+             WithFields(8, 10., u'twelve', False, date_2, datetime_2)],
+            {u'one': WithFields(15, 17., u'nineteen', True, date_3, datetime_3),
+             u'two': WithFields(21, 23., u'twenty five', False, date_3, datetime_3)}))
     self.AssertToFrom(obj, WithNestedFields)
 
   def testInheritance(self):
@@ -273,16 +261,49 @@ class JSONUtilsTest(unittest.TestCase):
     datetime_1 = datetime.datetime(1986, 5, 22, 13, 0, 0)
     datetime_2 = datetime.datetime(1986, 8, 21, 13, 0, 0)
     datetime_3 = datetime.datetime(2014, 1, 3, 9, 54, 0)
+    with_fields = WithFields(3, 5., u'seven', True, date_1, datetime_1)
+    with_list_and_dict = WithListAndDict(
+        [WithFields(2, 4., u'six', True, date_2, datetime_2),
+         WithFields(8, 10., u'twelve', False, date_2, datetime_2)],
+        {u'one': WithFields(15, 17., u'nineteen', True, date_3, datetime_3),
+         u'two': WithFields(21, 23., u'twenty five', False, date_3, datetime_3)})
+    
     # Both fields are set.
-    obj = WithNestedNoneObjectsFields(
-        WithFields(3, 5., u'seven', date_1, datetime_1),
-        WithFields(2, 4., u'six', date_2, datetime_2))
-    self.AssertToFrom(obj, WithNestedNoneObjectsFields)
+    obj = WithNestedFields(with_fields, with_list_and_dict)
+    self.AssertToFrom(obj, WithNestedFields)
+    
+    # First field is None.
+    obj = WithNestedFields(None, with_list_and_dict)
+    self.AssertToFrom(obj, WithNestedFields)
 
     # Second field is None.
-    obj = WithNestedNoneObjectsFields(
-        WithFields(15, 17., u'nineteen', date_3, datetime_3), None)
-    self.AssertToFrom(obj, WithNestedNoneObjectsFields)
+    obj = WithNestedFields(with_fields, None)
+    self.AssertToFrom(obj, WithNestedFields)
+
+    # Both fields are None.
+    obj = WithNestedFields(None, None)
+    self.AssertToFrom(obj, WithNestedFields)
+
+  def testNestedFieldNone(self):
+    date_1 = datetime.date(1986, 5, 22)
+    date_2 = datetime.date(1986, 8, 21)
+    date_3 = datetime.date(2014, 1, 3)
+    datetime_1 = datetime.datetime(1986, 5, 22, 13, 0, 0)
+    datetime_2 = datetime.datetime(1986, 8, 21, 13, 0, 0)
+    datetime_3 = datetime.datetime(2014, 1, 3, 9, 54, 0)
+    with_fields_1 = WithFields(None, 5., None, True, None, datetime_1)
+    with_fields_2 = WithFields(3, None, u'seven', None, date_1, None)
+    with_list_and_dict = WithListAndDict(
+        [WithFields(2, 4., u'six', True, date_2, datetime_2),
+         None],
+        {u'one': None,
+         u'two': WithFields(21, 23., u'twenty five', False, date_3, datetime_3)})
+
+    obj = WithNestedFields(with_fields_1, with_list_and_dict)
+    self.AssertToFrom(obj, WithNestedFields)
+
+    obj = WithNestedFields(with_fields_2, None)
+    self.AssertToFrom(obj, WithNestedFields)
 
   def testStateFull(self):
     state_not_full = StateNotFull(u'one', u'two')
@@ -334,6 +355,12 @@ class JSONUtilsTest(unittest.TestCase):
     obj = WithListOfTuples([(1, WithFloat(0.1)),
                             (2, WithFloat(0.2)),
                             (3, WithFloat(0.3))])
+    self.AssertToFrom(obj, WithListOfTuples)
+
+  def testWithListOfTuplesNone(self):
+    obj = WithListOfTuples([(1, None),
+                            (None, WithFloat(0.2)),
+                            (None, None)])
     self.AssertToFrom(obj, WithListOfTuples)
     
 
