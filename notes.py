@@ -73,7 +73,8 @@ class NotesService(fase.Service):
       notes = filter(filter_func, notes)
     for note in sorted(notes, key=key_func, reverse=reverse):
       note_layout = notes_layout.AddLayout(
-          id_='note_layout_%s' % note.note_id, orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote)
+          id_='note_layout_%s' % note.note_id, orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote,
+          border=True)
       note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
 
       note_header_layout = note_layout.AddLayout(

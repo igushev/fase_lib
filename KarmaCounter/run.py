@@ -19,7 +19,7 @@ def main(argv):
                              if IGNORE_SESSION_INFO not in arg_list else None)
     if RESET_FLAG in arg_list:
       os.remove(session_info_filepath)
-    fase_run.Run(FASE_SERVER_URL, session_info_filepath=session_info_filepath)
+    fase_run.RunClient(FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
     from KarmaCounter import service as kc_service 
     dynamodb_process = fase_run.RunServerThread()

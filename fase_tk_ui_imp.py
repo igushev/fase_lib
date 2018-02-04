@@ -312,6 +312,10 @@ class FaseTkUIImp(object):
     if click_callback is not None:
       ui_imp_layout.bind('<1>', click_callback)
 
+    if layout_element.GetBorder():
+      ui_imp_layout.configure(borderwidth=1)
+      ui_imp_layout.configure(relief='raised')
+
     ui_imp_parent.Next()
     return ParentElement(ui_imp_layout, orientation=layout_element.GetOrientation(), click_callback=click_callback)
 

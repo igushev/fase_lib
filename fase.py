@@ -458,10 +458,12 @@ class BaseElementsContainer(VariableContainer):
   def AddLayout(self, id_,
                orientation=None,
                size=None,
-               on_click=None):
+               on_click=None,
+               border=None):
     return self.AddElement(id_, Layout(orientation=orientation,
                                        size=size,
-                                       on_click=on_click))
+                                       on_click=on_click,
+                                       border=border))
   def GetLayout(self, id_):
     return self.GetElement(id_)
 
@@ -509,7 +511,8 @@ class BaseElementsContainer(VariableContainer):
 @json_util.JSONDecorator(
     {'_orientation': json_util.JSONInt(),
      '_size': json_util.JSONInt(),
-     '_on_click': json_util.JSONFunction()})
+     '_on_click': json_util.JSONFunction(),
+     '_border': json_util.JSONBool()})
 class Layout(BaseElementsContainer):
 
   VERTICAL = 1
@@ -521,11 +524,13 @@ class Layout(BaseElementsContainer):
   def __init__(self,
                orientation=None,
                size=None,
-               on_click=None):
+               on_click=None,
+               border=None):
     super(Layout, self).__init__()
     self._orientation = orientation
     self._size = size
     self._on_click = on_click
+    self._border = border
 
   def GetOrientation(self):
     return self._orientation
@@ -535,6 +540,9 @@ class Layout(BaseElementsContainer):
 
   def GetOnClick(self):
     return self._on_click
+
+  def GetBorder(self):
+    return self._border
 
 
 @json_util.JSONDecorator(

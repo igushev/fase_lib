@@ -145,7 +145,7 @@ class KarmaCounter(fase.Service):
     screen.SetScrollable(True)
     for user_event in user_events.events:
       user_event_layout = screen.AddLayout(
-          id_='user_event_layout_%s' % user_event.event_id, orientation=fase.Layout.VERTICAL)
+          id_='user_event_layout_%s' % user_event.event_id, orientation=fase.Layout.VERTICAL, border=True)
       user_event_header_layout = user_event_layout.AddLayout(
           id_='user_event_header_layout', orientation=fase.Layout.HORIZONTAL)
       user_event_header_layout.AddLabel(
