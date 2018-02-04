@@ -1,3 +1,4 @@
+# TODO(igushev): Add phone normalization like in KarmaCounter.
 # TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
 # TODO(igushev): Make phone choose from phone book when adding an event in KarmaCounter.
 # TODO(igushev): Make switch hide and show within screen update when adding an event in KarmaCounter.
