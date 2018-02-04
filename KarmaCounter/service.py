@@ -106,6 +106,7 @@ class KarmaCounter(fase.Service):
 
   def _AddUserEvent(self, screen, element, users_own=True):
     screen = fase.Screen(self)
+    screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
     screen.AddText(id_='score_text', hint='Score')
     screen.AddText(id_='friend_phone_number_text', hint='Friend\'s Phone Number')
