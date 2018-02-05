@@ -66,6 +66,16 @@ def GetOtherUserEvents(session_info):
   return _GetUserEvents('/getotheruserevents', session_info)
 
 
+def GetRegisteredUsers(request_registered_users, session_info):
+  url = URL + '/getregisteredusers'
+  headers = {'session-id': session_info.session_id}
+  request_registered_users_simple = request_registered_users.ToSimple()
+  http_response = requests.post(url, headers=headers, json=request_registered_users_simple)
+  AssertStatus(http_response)
+  registered_users_simple = http_response.json()
+  return kc_data.RegisteredUsers.FromSimple(registered_users_simple)
+
+
 def CitiesStatisticsTopBottom(session_info):
   url = URL + '/citiesstatisticsstopbottom'
   headers = {'session-id': session_info.session_id}

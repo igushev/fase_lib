@@ -101,11 +101,29 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
     screen.AddText(id_='score_text', hint='Score')
-    screen.AddContactPicker(id_='friend_contact_picker', hint='Friend')
+    screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
     screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.DisplayCurrentScreen)
+    self.OnFriendPick(screen, None)
+    return screen
+
+  def OnFriendPick(self, screen, element):
+    friend_contact_picker = screen.GetContactPicker(id_='friend_contact_picker')
+    invite_switch = screen.GetSwitch(id_='invite_switch')
+    if friend_contact_picker.GetPhoneNumber():
+      request_registered_users = (
+          kc_data.RequestRegisteredUsers(phone_number_list=[friend_contact_picker.GetPhoneNumber()]))
+      session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
+      registered_users = kc_client.GetRegisteredUsers(request_registered_users, session_info)
+      if registered_users.users:
+        friend_contact_picker.SetDisplayName(registered_users.users[0].display_name)
+        invite_switch.SetDisplayed(False)
+      else:
+        invite_switch.SetDisplayed(True)
+    else:
+      invite_switch.SetDisplayed(False)
     return screen
 
   def OnAddUserEvent(self, screen, element):

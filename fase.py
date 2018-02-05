@@ -232,8 +232,9 @@ class VisualElement(VariableContainer):
     self._displayed = True
 
   def SetDisplayed(self, displayed):
-    util.AssertIsInstance(displayed, bool)
     self._displayed = displayed
+  def GetDisplayed(self):
+    return self._displayed
 
 
 @json_util.JSONDecorator(
@@ -303,8 +304,8 @@ class Text(VisualElement):
   def Get(self):
     return self._text
 
-  def SetText(self, value):
-    self._text = value
+  def SetText(self, text):
+    self._text = text
   def GetText(self):
     return self._text
 
@@ -438,7 +439,7 @@ class Button(VisualElement):
   def GetElement(self, id_):
     if id_ == CONTEXT_MENU_ID:
       return self._context_menu
-    raise KeyError(id_)
+    return super(Button, self).GetElement(id_)
 
 
 @json_util.JSONDecorator({})
@@ -462,7 +463,8 @@ class ButtonBar(ElementContainer):
     {'_display_name': json_util.JSONString(),
      '_phone_number': json_util.JSONString(),
      '_hint': json_util.JSONString(),
-     '_size': json_util.JSONInt()})
+     '_size': json_util.JSONInt(),
+     '_on_pick': json_util.JSONFunction()})
 class ContactPicker(VisualElement):
 
   MIN = 1
@@ -472,12 +474,14 @@ class ContactPicker(VisualElement):
                display_name=None,
                phone_number=None,
                hint=None,
-               size=None):
+               size=None,
+               on_pick=None):
     super(ContactPicker, self).__init__()
     self._display_name = display_name
     self._phone_number = phone_number
     self._hint = hint
     self._size = size
+    self._on_pick = on_pick
 
   def Update(self, value):
     contact_match = re.match(CONTACT_REGEXP, value)
@@ -487,18 +491,29 @@ class ContactPicker(VisualElement):
     return CONTACT_FORMAT.format(display_name=self._display_name or '',
                                  phone_number=self._phone_number or '')    
 
+  def SetDisplayName(self, display_name):
+    self._display_name = display_name
   def GetDisplayName(self):
     return self._display_name
 
+  def SetPhoneNumber(self, phone_number):
+    self._phone_number = phone_number
   def GetPhoneNumber(self):
     return self._phone_number
 
   def GetSize(self):
     return self._size
 
+  def GetOnPick(self):
+    return self._on_pick
+
+  def FaseOnClick(self, service, screen):
+    screen = self._on_pick(service, screen, self)
+    return service, screen
+
 
 @json_util.JSONDecorator({})
-class BaseElementsContainer(VariableContainer):
+class BaseElementsContainer(VisualElement):
   def __init__(self):
     super(BaseElementsContainer, self).__init__()
 
@@ -558,10 +573,10 @@ class BaseElementsContainer(VariableContainer):
                        display_name=None,
                        phone_number=None,
                        hint=None,
-                       size=None):
-    return self.AddElement(id_, ContactPicker(display_name=display_name,
-                                              phone_number=phone_number,
-                                              hint=hint, size=size))
+                       size=None,
+                       on_pick=None):
+    return self.AddElement(id_, ContactPicker(display_name=display_name, phone_number=phone_number,
+                                              hint=hint, size=size, on_pick=on_pick))
   def GetContactPicker(self, id_):
     return self.GetElement(id_)
 
@@ -638,6 +653,8 @@ class Screen(BaseElementsContainer):
     self._scrollable = None
     self._title = None
 
+  def UpdateScreenId(self, service):
+    self._screen_id = GenerateScreenId(service.GetSessionId())
   def GetScreenId(self):
     return self._screen_id
 

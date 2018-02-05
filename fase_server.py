@@ -129,6 +129,7 @@ class FaseServer(object):
       FaseServer._UpdateScreen(screen_prog.screen, element_clicked.elements_update)
     element = FaseServer._GetElement(screen_prog.screen, element_clicked.id_list)
     service, screen = element.FaseOnClick(service, screen_prog.screen)
+    screen.UpdateScreenId(service)
     screen_prog = fase_model.ScreenProg(
         session_id=service.GetSessionId(), screen=screen, recent_device=element_clicked.device)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)

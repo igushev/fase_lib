@@ -309,8 +309,6 @@ class FaseTkUIImp(object):
   def DrawLayout(self, id_list, layout_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(layout_element.GetSize()==fase.Layout.MAX))
     ui_imp_layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
-    ui_imp_layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
     if layout_element.GetOrientation() == fase.Layout.VERTICAL:
       ui_imp_layout.columnconfigure(0, weight=1)
@@ -332,6 +330,9 @@ class FaseTkUIImp(object):
       ui_imp_layout.configure(borderwidth=1)
       ui_imp_layout.configure(relief='raised')
 
+    if layout_element.GetDisplayed():
+      ui_imp_layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                         sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_layout, orientation=layout_element.GetOrientation(), click_callback=click_callback)
 
@@ -362,8 +363,9 @@ class FaseTkUIImp(object):
     if click_callback is not None:
       ui_imp_label.bind('<1>', click_callback)
 
-    ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-                      sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    if label_element.GetDisplayed():
+      ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                        sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_label)
 
@@ -374,8 +376,9 @@ class FaseTkUIImp(object):
     self.id_list_to_var[tuple(id_list)].Update(text_element.Get())
     ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
-    ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-                     sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    if text_element.GetDisplayed():
+      ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_text)
 
@@ -396,9 +399,10 @@ class FaseTkUIImp(object):
       elif switch_element.GetAlight() == fase.Switch.CENTER:
         anchor = 'center'
       ui_imp_switch.configure(anchor=anchor)
-    
-    ui_imp_switch.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+
+    if switch_element.GetDisplayed():
+      ui_imp_switch.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                         sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_switch)
 
@@ -406,8 +410,9 @@ class FaseTkUIImp(object):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_photo = ImageTk.PhotoImage(Image.open(image_element.GetImage()))
     ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
-    ui_imp_label.image = ui_imp_photo 
-    ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_label.image = ui_imp_photo
+    if image_element.GetDisplayed(): 
+      ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
     return ParentElement(ui_imp_label) 
 
@@ -421,7 +426,8 @@ class FaseTkUIImp(object):
       ui_imp_button_context_menu = tkinter.Menu()
       ui_imp_button.bind('<1>', lambda e: ui_imp_button_context_menu.post(e.x_root, e.y_root))
 
-    ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    if button_element.GetDisplayed():
+      ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
 
     if button_element.GetContextMenu():
@@ -436,8 +442,13 @@ class FaseTkUIImp(object):
     self.id_list_to_var[tuple(id_list)].Update(contact_picker_element.Get())
     ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
-    ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
-                     sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    
+    if contact_picker_element.GetOnPick():
+      ui_imp_text.bind('<FocusOut>', ClickCallBack(self, id_list))
+
+    if contact_picker_element.GetDisplayed():
+      ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_text)
 

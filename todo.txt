@@ -1,10 +1,10 @@
 # TODO(igushev): Add phone normalization like in KarmaCounter.
 # TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
-# TODO(igushev): Make phone choose from phone book when adding an event in KarmaCounter.
-# TODO(igushev): Make switch hide and show within screen update when adding an event in KarmaCounter.
 # TODO(igushev): Variables in fase_sign_in variables should be in separated better from services.
 # TODO(igushev): Support better Popups.
 # TODO(igushev): Avoid using MockFunctions.
 # TODO(igushev): Make internal objects for Contanct, Date, etc. different classes instead of always simple string.
+# TODO(igushev): Make on_pick event handled in its way instead of through on_click.
+# TODO(igushev): Do not Generate and later Update Screen Id during ElementClick, generate Screen Id only once.
 # TODO(igushev): Make Push Notifications.
-  
+# TODO(igushev): Organize flat strcuture into directories.
