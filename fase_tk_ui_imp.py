@@ -2,6 +2,7 @@ import math
 import tkinter
 from tkinter import font, messagebox
 from PIL import ImageTk, Image
+import re
 
 import fase
 
@@ -63,6 +64,21 @@ class SwitchElementVariable(object):
     return self._ui_imp_var.get()
 
   def Update(self, value):
+    self._ui_imp_var.set(value) 
+
+
+class ContactPickerElementVariable(object):
+
+  def __init__(self, ui_imp_var):
+    self._ui_imp_var = ui_imp_var
+
+  def Get(self):
+    value = self._ui_imp_var.get()
+    assert re.match(fase.CONTACT_REGEXP, value)
+    return value
+
+  def Update(self, value):
+    assert re.match(fase.CONTACT_REGEXP, value)
     self._ui_imp_var.set(value) 
 
 
@@ -354,9 +370,8 @@ class FaseTkUIImp(object):
   def DrawText(self, id_list, text_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
-    if text_element.GetText() is not None:
-      ui_imp_var.set(text_element.GetText())
     self.id_list_to_var[tuple(id_list)] = TextElementVariable(ui_imp_var)
+    self.id_list_to_var[tuple(id_list)].Update(text_element.Get())
     ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
     ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -367,9 +382,8 @@ class FaseTkUIImp(object):
   def DrawSwitch(self, id_list, switch_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
-    if switch_element.GetValue() is not None:
-      ui_imp_var.set(str(switch_element.GetValue()))
     self.id_list_to_var[tuple(id_list)] = SwitchElementVariable(ui_imp_var)
+    self.id_list_to_var[tuple(id_list)].Update(switch_element.Get())
     ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_switch = tkinter.Checkbutton(ui_imp_parent.GetUIImpParent(), text=switch_element.GetText(),
                                         variable=ui_imp_var, onvalue=str(True), offvalue=str(False))
@@ -413,7 +427,19 @@ class FaseTkUIImp(object):
     if button_element.GetContextMenu():
       return ParentElement(ui_imp_button_context_menu)
     else:
-      return ParentElement(ui_imp_button) 
+      return ParentElement(ui_imp_button)
+    
+  def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_var = tkinter.StringVar()
+    self.id_list_to_var[tuple(id_list)] = ContactPickerElementVariable(ui_imp_var)
+    self.id_list_to_var[tuple(id_list)].Update(contact_picker_element.Get())
+    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
+    ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                     sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_text)
 
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None

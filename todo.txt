@@ -5,5 +5,6 @@
 # TODO(igushev): Variables in fase_sign_in variables should be in separated better from services.
 # TODO(igushev): Support better Popups.
 # TODO(igushev): Avoid using MockFunctions.
+# TODO(igushev): Make internal objects for Contanct, Date, etc. different classes instead of always simple string.
 # TODO(igushev): Make Push Notifications.
   

@@ -101,8 +101,7 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
     screen.AddText(id_='score_text', hint='Score')
-    screen.AddText(id_='friend_phone_number_text', hint='Friend\'s Phone Number')
-    screen.AddText(id_='friend_display_name_text', hint='Friend\'s Name')
+    screen.AddContactPicker(id_='friend_contact_picker', hint='Friend')
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
@@ -121,16 +120,16 @@ class KarmaCounter(fase.Service):
       new_user_event = kc_data.NewUserEvent(
           score=int(screen.GetText(id_='score_text').GetText()),
           description=screen.GetText(id_='description_text').GetText(),
-          witness_phone_number=screen.GetText(id_='friend_phone_number_text').GetText(),
-          witness_display_name=screen.GetText(id_='friend_display_name_text').GetText(),
+          witness_phone_number=screen.GetContactPicker(id_='friend_contact_picker').GetPhoneNumber(),
+          witness_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetDisplayName(),
           invite_witness=screen.GetSwitch(id_='invite_switch').GetValue())
       kc_client.AddUserEvent(new_user_event, session_info)
     else:
       new_other_user_event = kc_data.NewOtherUserEvent(
           score=int(screen.GetText(id_='score_text').GetText()),
           description=screen.GetText(id_='description_text').GetText(),
-          phone_number=screen.GetText(id_='friend_phone_number_text').GetText(),
-          other_user_display_name=screen.GetText(id_='friend_display_name_text').GetText(),
+          phone_number=screen.GetContactPicker(id_='friend_contact_picker').GetPhoneNumber(),
+          other_user_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetDisplayName(),
           invite_other_user=screen.GetSwitch(id_='invite_switch').GetValue())
       kc_client.AddOtherUserEvent(new_other_user_event, session_info)
     return self.DisplayCurrentScreen(screen, element)

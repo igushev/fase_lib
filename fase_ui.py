@@ -71,6 +71,8 @@ class FaseUI(object):
       self.DrawImage(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Button):
       self.DrawButton(id_list, element, ui_imp_parent)
+    elif isinstance(element, fase.ContactPicker):
+      self.DrawContactPicker(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Variable):
       pass
     else:
@@ -98,6 +100,9 @@ class FaseUI(object):
       for menu_item_id, menu_item_element in button_element.GetContextMenu().GetIdElementList():
         self.ui_imp.DrawContextMenuItem(
             id_list + [fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_button)
+
+  def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
+    self.ui_imp.DrawContactPicker(id_list, contact_picker_element, ui_imp_parent)
 
   def ShowPopup(self, popup):
     assert len(popup.GetIdElementList()) == 1

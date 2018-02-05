@@ -1,11 +1,15 @@
 import datetime
 import hashlib
+import re
 
 import data_util
 import json_util
 import util
 
 DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
+# Name and Phone Number from Contact List.
+CONTACT_FORMAT = '{display_name}|{phone_number}'
+CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'
 
 NEXT_STEP_BUTTON_ID = 'next_step_button'
 PREV_STEP_BUTTON_ID = 'prev_step_button'
@@ -296,6 +300,8 @@ class Text(VisualElement):
 
   def Update(self, value):
     self._text = value if value else None
+  def Get(self):
+    return self._text
 
   def SetText(self, value):
     self._text = value
@@ -327,6 +333,8 @@ class Switch(VisualElement):
 
   def Update(self, value):
     self._value = bool(value)
+  def Get(self):
+    return str(self._value)
 
   def SetValue(self, value):
     self._value = value
@@ -450,6 +458,45 @@ class ButtonBar(ElementContainer):
     return self.GetElement(id_)
     
 
+@json_util.JSONDecorator(
+    {'_display_name': json_util.JSONString(),
+     '_phone_number': json_util.JSONString(),
+     '_hint': json_util.JSONString(),
+     '_size': json_util.JSONInt()})
+class ContactPicker(VisualElement):
+
+  MIN = 1
+  MAX = 2
+  
+  def __init__(self,
+               display_name=None,
+               phone_number=None,
+               hint=None,
+               size=None):
+    super(ContactPicker, self).__init__()
+    self._display_name = display_name
+    self._phone_number = phone_number
+    self._hint = hint
+    self._size = size
+
+  def Update(self, value):
+    contact_match = re.match(CONTACT_REGEXP, value)
+    self._display_name = contact_match.group('display_name') or None
+    self._phone_number = contact_match.group('phone_number') or None
+  def Get(self):
+    return CONTACT_FORMAT.format(display_name=self._display_name or '',
+                                 phone_number=self._phone_number or '')    
+
+  def GetDisplayName(self):
+    return self._display_name
+
+  def GetPhoneNumber(self):
+    return self._phone_number
+
+  def GetSize(self):
+    return self._size
+
+
 @json_util.JSONDecorator({})
 class BaseElementsContainer(VariableContainer):
   def __init__(self):
@@ -505,6 +552,17 @@ class BaseElementsContainer(VariableContainer):
                icon=None):
     return self.AddElement(id_, Button(text=text, on_click=on_click, context_menu=context_menu, icon=icon))
   def GetButton(self, id_):
+    return self.GetElement(id_)
+
+  def AddContactPicker(self, id_,
+                       display_name=None,
+                       phone_number=None,
+                       hint=None,
+                       size=None):
+    return self.AddElement(id_, ContactPicker(display_name=display_name,
+                                              phone_number=phone_number,
+                                              hint=hint, size=size))
+  def GetContactPicker(self, id_):
     return self.GetElement(id_)
 
 
