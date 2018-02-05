@@ -1,7 +1,5 @@
-# TODO(igushev): Add phone normalization like in KarmaCounter.
 # TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
-
-# TODO(igushev): Support better Popups.
+# TODO(igushev): Support Popups to confirm Yes/No question for Deleting.
 # TODO(igushev): Make Push Notifications.
 
 # TODO(igushev): Organize flat structure into directories.

@@ -7,6 +7,7 @@ import fase_database
 import fase_model
 import fase
 import json_util
+import phone_number_verifier
 
 
 def GenerateSignedInSessionId(user_id):
@@ -77,6 +78,13 @@ class FaseSignOutButton(fase.Button):
     return service, screen
 
 
+def _ErrorPopup(service, message, on_click):
+  screen = fase.Screen(service)
+  popup = screen.AddPopup(message)
+  popup.AddButton(id_="ok_id", text="OK", on_click=on_click)
+  return screen
+
+
 def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None):
   assert not service._if_signed_in
   service.AddFunctionVariable(id_='fase_sign_in_on_done_class_method', value=on_done)
@@ -112,17 +120,26 @@ def OnSignInOption(service, screen, element):
 def OnSignInEnteredData(service, screen, element):
   sign_in_layout = screen.GetElement(id_='sign_in_layout_id')
   phone_number = sign_in_layout.GetText(id_='phone_number_text_id').GetText()
+  country_code = element.GetLocale().country_code
+
+  if country_code:
+    country_code = country_code.upper()
+
   if not phone_number:
-    screen = fase.Screen(service)
-    popup = screen.AddPopup('Enter phone number!')
-    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignInOption)
-    return screen
+    return _ErrorPopup(service, message='Phone number is not specified!', on_click=OnSignInOption)
+  phone_number_verifier_ = phone_number_verifier.PhoneNumberVerifier()
+  try:
+    phone_number = phone_number_verifier_.Format(phone_number, country_code)
+  except phone_number_verifier.NoCountryCodeException:
+    return _ErrorPopup(service,
+                       message='Phone number country code could not be inferred! Please try to add explicitly!',
+                       on_click=OnSignInOption)
+  except phone_number_verifier.InvalidPhoneNumberException:
+    return _ErrorPopup(service, message='Phone number format is invalid!', on_click=OnSignInOption)
+
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if not user_list:
-    screen = fase.Screen(service)
-    popup = screen.AddPopup('User with such phone number has not been found!')
-    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignInOption)
-    return screen
+    return _ErrorPopup(service, message='User with such phone number has not been found!', on_click=OnSignInOption)
   assert len(user_list) == 1
   user = user_list[0]
   return _OnEnteredData(service, screen, element, phone_number, user.user_id)
@@ -143,17 +160,26 @@ def OnSignUpOption(service, screen, element):
 def OnSignUpEnteredData(service, screen, element):
   sign_up_layout = screen.GetElement(id_='sign_up_layout_id')
   phone_number = sign_up_layout.GetText(id_='phone_number_text_id').GetText()
+  country_code = element.GetLocale().country_code
+
+  if country_code:
+    country_code = country_code.upper()
+
   if not phone_number:
-    screen = fase.Screen(service)
-    popup = screen.AddPopup('Enter phone number!')
-    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignUpOption)
-    return screen
+    return _ErrorPopup(service, message='Phone number is not specified!', on_click=OnSignUpOption)
+  phone_number_verifier_ = phone_number_verifier.PhoneNumberVerifier()
+  try:
+    phone_number = phone_number_verifier_.Format(phone_number, country_code)
+  except phone_number_verifier.NoCountryCodeException:
+    return _ErrorPopup(service,
+                       message='Phone number country code could not be inferred! Please try to add explicitly!',
+                       on_click=OnSignUpOption)
+  except phone_number_verifier.InvalidPhoneNumberException:
+    return _ErrorPopup(service, message='Phone number format is invalid!', on_click=OnSignUpOption)
+  
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if user_list:
-    screen = fase.Screen(service)
-    popup = screen.AddPopup('User with such phone number is already registered!')
-    popup.AddButton(id_="ok_id", text="OK", on_click=OnSignUpOption)
-    return screen
+    return _ErrorPopup(service, message='User with such phone number is already registered!', on_click=OnSignUpOption)
 
   datetime_now = datetime.datetime.now()
   user_id_hash = hashlib.md5()
@@ -162,7 +188,7 @@ def OnSignUpEnteredData(service, screen, element):
   user_id = user_id_hash.hexdigest()
   
   user = fase_model.User(user_id=user_id,
-                         phone_number=sign_up_layout.GetText(id_='phone_number_text_id').GetText(),
+                         phone_number=phone_number,
                          first_name=sign_up_layout.GetText(id_='first_name_text_id').GetText(),
                          last_name=sign_up_layout.GetText(id_='last_name_text_id').GetText(),
                          datetime_added=datetime_now)
