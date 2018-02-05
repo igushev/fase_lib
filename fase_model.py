@@ -94,16 +94,19 @@ class ScreenUpdate(data_util.AbstractObject):
 @json_util.JSONDecorator({
     'elements_update': json_util.JSONObject(ElementsUpdate),
     'id_list': json_util.JSONList(json_util.JSONString()),
-    'device': json_util.JSONObject(Device)})
+    'device': json_util.JSONObject(Device),
+    'locale': json_util.JSONObject(fase.Locale)})
 class ElementClicked(data_util.AbstractObject):
 
   def  __init__(self,
                 elements_update=None,
                 id_list=None,
-                device=None):
+                device=None,
+                locale=None):
     self.elements_update = elements_update
     self.id_list = id_list
     self.device = device
+    self.locale = locale
 
 
 @json_util.JSONDecorator({
@@ -181,3 +184,10 @@ def DictToElementsUpdate(id_list_to_value):
     id_list_list.append(list(id_list))
     value_list.append(value)
   return ElementsUpdate(id_list_list=id_list_list, value_list=value_list)
+
+
+def GetScreenElement(screen, id_list):
+  element = screen
+  for id_ in id_list:
+    element = element.GetElement(id_)
+  return element

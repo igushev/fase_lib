@@ -103,7 +103,8 @@ def OnSignInOption(service, screen, element):
   screen = fase.Screen(service)
   sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
   sign_in_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
-  sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
+  sign_in_button = sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
+  sign_in_button.SetRequestLocale(True)
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
 
@@ -133,7 +134,8 @@ def OnSignUpOption(service, screen, element):
   sign_up_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
   sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
   sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
-  sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
+  sign_up_button = sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
+  sign_up_button.SetRequestLocale(True)
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
   

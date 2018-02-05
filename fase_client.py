@@ -8,6 +8,9 @@ import fase
 import fase_model
 import fase_sign_in
 
+COUNTRY_CODE = 'US'
+DEVICE_TYPE = 'Python'
+
 
 def LoadSessionInfoIfExists(session_info_filepath):
   if session_info_filepath is None or not os.path.exists(session_info_filepath):
@@ -30,8 +33,9 @@ class FaseClient(object):
     self.ui = ui
     self.ui.SetClient(self)
     self.session_info_filepath = session_info_filepath
-    self.device = fase_model.Device('Python', str(uuid.uuid4()))
+    self.device = fase_model.Device(DEVICE_TYPE, str(uuid.uuid4()))
     self.screen = None
+    self.elements_update = None
     self.session_info = LoadSessionInfoIfExists(self.session_info_filepath)
     self.screen_info = None
 
@@ -77,6 +81,12 @@ class FaseClient(object):
     self.screen_update_condition.notify()
     self.screen_lock.release()
 
+  def _GetElementClicked(self, elements_update, id_list):
+    element = fase_model.GetScreenElement(self.screen, id_list)
+    locale = fase.Locale(country_code=COUNTRY_CODE) if element.GetRequestLocale() else None
+    return fase_model.ElementClicked(
+        elements_update=elements_update, id_list=id_list, device=self.device, locale=locale)
+
   def ElementClicked(self, id_list):
     with self.screen_lock:
       if not self.screen_update_response_queue.empty():
@@ -86,7 +96,7 @@ class FaseClient(object):
       with self.id_list_to_value_lock:
         elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
         self._ResetValues()
-      element_clicked = fase_model.ElementClicked(elements_update=elements_update, id_list=id_list, device=self.device)
+      element_clicked = self._GetElementClicked(elements_update=elements_update, id_list=id_list)
       response = self.http_client.ElementClicked(element_clicked, self.session_info, self.screen_info)
       self.ProcessResponse(response)
 
@@ -100,9 +110,11 @@ class FaseClient(object):
     self.screen_info = response.screen_info
     SaveSessionInfoIfNeeded(self.session_info_filepath, response.session_info)
     if response.screen:
+      self.screen = response.screen
       self.ui.DrawScreen(response.screen)
       return True  # Screen has been updated.
     elif response.elements_update:
+      self.elements_update = response.elements_update 
       self._ElementsUpdateReceived(fase_model.ElementsUpdateToDict(response.elements_update))
     return False  # Screen is the same.
 

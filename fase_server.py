@@ -70,16 +70,9 @@ class FaseServer(object):
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
   @staticmethod
-  def _GetElement(screen, id_list):
-    element = screen
-    for id_ in id_list:
-      element = element.GetElement(id_)
-    return element
-
-  @staticmethod
   def _UpdateScreen(screen, elements_update):
     for id_list, value in zip(elements_update.id_list_list, elements_update.value_list):
-      FaseServer._GetElement(screen, id_list).Update(value)
+      fase_model.GetScreenElement(screen, id_list).Update(value)
 
   @staticmethod
   def _UpdateElementsUpdate(current_elements_update, elements_update):
@@ -115,6 +108,11 @@ class FaseServer(object):
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=screen_info)
 
+  def _GetElement(self, screen, element_clicked):
+    element = fase_model.GetScreenElement(screen, element_clicked.id_list)
+    element.SetLocale(element_clicked.locale)
+    return element
+
   def ElementClicked(self, element_clicked, session_info, screen_info):
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
@@ -127,7 +125,7 @@ class FaseServer(object):
 
     if element_clicked.elements_update is not None:
       FaseServer._UpdateScreen(screen_prog.screen, element_clicked.elements_update)
-    element = FaseServer._GetElement(screen_prog.screen, element_clicked.id_list)
+    element = self._GetElement(screen_prog.screen, element_clicked)
     service, screen = element.FaseOnClick(service, screen_prog.screen)
     screen.UpdateScreenId(service)
     screen_prog = fase_model.ScreenProg(

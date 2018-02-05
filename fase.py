@@ -50,6 +50,14 @@ def GenerateUserId(session_id):
   return screen_id
 
 
+@json_util.JSONDecorator({
+    'country_code': json_util.JSONString()})
+class Locale(data_util.AbstractObject):
+
+  def __init__(self, country_code):
+    self.country_code = country_code
+
+
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
   def __init__(self):
@@ -225,16 +233,29 @@ class VariableContainer(ElementContainer):
 
 
 @json_util.JSONDecorator(
-    {'_displayed': json_util.JSONBool()})
+    {'_displayed': json_util.JSONBool(),
+     '_request_locale': json_util.JSONBool(),
+     '_locale': json_util.JSONObject(Locale)})
 class VisualElement(VariableContainer):
   def __init__(self):
     super(VisualElement, self).__init__()
     self._displayed = True
+    self._request_locale = False
+    self._locale = None
 
   def SetDisplayed(self, displayed):
     self._displayed = displayed
   def GetDisplayed(self):
     return self._displayed
+
+  def SetRequestLocale(self, request_locale):
+    self._request_locale = request_locale
+  def GetRequestLocale(self):
+    return self._request_locale
+  def SetLocale(self, locale):
+    self._locale = locale
+  def GetLocale(self):
+    return self._locale
 
 
 @json_util.JSONDecorator(

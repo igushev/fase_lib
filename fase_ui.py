@@ -1,6 +1,15 @@
 import fase
 
 
+BUILT_IN_IDS = set([fase.NEXT_STEP_BUTTON_ID,
+                    fase.PREV_STEP_BUTTON_ID,
+                    fase.CONTEXT_MENU_ID,
+                    fase.POPUP_ID,
+                    fase.MAIN_MENU_ID,
+                    fase.MAIN_BUTTON_ID,
+                    fase.BUTTON_BAR_ID])
+
+
 class FaseUI(object):
 
   def __init__(self, ui_imp):
@@ -17,11 +26,11 @@ class FaseUI(object):
     self.DrawBaseElementsContainer([], screen, ui_imp_window)
 
   def DrawMainContextMenusNextPrevButtons(self, screen):
-    main_menu_element = screen.PopElement(fase.MAIN_MENU_ID) if screen.HasElement(fase.MAIN_MENU_ID) else None
-    context_menu_element = screen.PopElement(fase.CONTEXT_MENU_ID) if screen.HasElement(fase.CONTEXT_MENU_ID) else None
-    next_button_element = (screen.PopElement(fase.NEXT_STEP_BUTTON_ID)
+    main_menu_element = screen.GetElement(fase.MAIN_MENU_ID) if screen.HasElement(fase.MAIN_MENU_ID) else None
+    context_menu_element = screen.GetElement(fase.CONTEXT_MENU_ID) if screen.HasElement(fase.CONTEXT_MENU_ID) else None
+    next_button_element = (screen.GetElement(fase.NEXT_STEP_BUTTON_ID)
                            if screen.HasElement(fase.NEXT_STEP_BUTTON_ID) else None)
-    prev_button_element = (screen.PopElement(fase.PREV_STEP_BUTTON_ID)
+    prev_button_element = (screen.GetElement(fase.PREV_STEP_BUTTON_ID)
                            if screen.HasElement(fase.PREV_STEP_BUTTON_ID) else None)
     self.ui_imp.PrepareScreenMainContextMenusNextPrevButtons(
         main_menu=main_menu_element is not None, context_menu=context_menu_element is not None,
@@ -39,8 +48,8 @@ class FaseUI(object):
       self.ui_imp.DrawScreenPrevStepButton([fase.PREV_STEP_BUTTON_ID], prev_button_element)
 
   def DrawMainButtonAndNavigationButtons(self, screen):
-    main_button_element = screen.PopElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
-    button_bar_element = screen.PopElement(fase.BUTTON_BAR_ID) if screen.HasElement(fase.BUTTON_BAR_ID) else None 
+    main_button_element = screen.GetElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
+    button_bar_element = screen.GetElement(fase.BUTTON_BAR_ID) if screen.HasElement(fase.BUTTON_BAR_ID) else None 
     nav_button_id_element_list = button_bar_element.GetIdElementList() if button_bar_element else []
     self.ui_imp.PrepareScreenMainButtonAndNavigationButtons(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
@@ -56,6 +65,8 @@ class FaseUI(object):
 
   def DrawBaseElementsContainer(self, id_list, parent_element, ui_imp_parent):
     for id_, element in parent_element.GetIdElementList():
+      if id_ in BUILT_IN_IDS:
+        continue
       self._DispatchDraw(id_list + [id_], element, ui_imp_parent)
 
   def _DispatchDraw(self, id_list, element, ui_imp_parent):
