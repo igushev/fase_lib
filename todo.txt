@@ -1,11 +1,16 @@
+# Before Making iOS and Android
 # TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
-# TODO(igushev): Actually support icons on Buttons, etc. and add icons for Notes.
 # TODO(igushev): Support Popups to confirm Yes/No question for Deleting.
-# TODO(igushev): Make Push Notifications.
+# TODO(igushev): Actually support icons on Buttons, etc. and add icons for Notes.
 
+# Server Side
+# TODO(igushev): Make Push Notifications.
+# TODO(igushev): Add User custom byte field for Notes and delete Notes database.
+
+# Clean Ups
+# TODO(igushev): Organize flat structure into directories.
 # TODO(igushev): Put all callback arguments at the end of list of arguments.
 # TODO(igushev): Make all arguments are keyword argument only.
-# TODO(igushev): Organize flat structure into directories.
 # TODO(igushev): Variables in fase_sign_in variables should be in separated better from services.
 # TODO(igushev): Avoid using MockFunctions.
 # TODO(igushev): Make internal objects for Contact, Date, etc. different classes instead of always simple string.
