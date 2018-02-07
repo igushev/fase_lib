@@ -404,6 +404,9 @@ class MenuItem(VisualElement):
   def GetOnClick(self):
     return self._on_click
 
+  def GetIcon(self):
+    return self._icon
+
 
 @json_util.JSONDecorator({
     '_text': json_util.JSONString()})
@@ -456,6 +459,9 @@ class Button(VisualElement):
 
   def GetContextMenu(self):
     return self._context_menu
+
+  def GetIcon(self):
+    return self._icon
 
   def GetElement(self, id_):
     if id_ == CONTEXT_MENU_ID:

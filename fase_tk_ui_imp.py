@@ -175,6 +175,18 @@ class FaseTkUIImp(object):
       self.ui_imp_frame.destroy()
     return self.InitScreen(scrollable=scrollable)
 
+  def _ConfigureButtonImage(self, button_element, ui_imp_button):
+    if button_element.GetIcon() is not None:
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(button_element.GetIcon()))
+      ui_imp_button.ui_imp_photo = ui_imp_photo
+      ui_imp_button.configure(image=ui_imp_photo, compound=tkinter.TOP)
+
+  def _ConfigureMenuItemImage(self, menu_item_element, ui_imp_menu, index):
+    if menu_item_element.GetIcon() is not None:
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(menu_item_element.GetIcon()))
+      setattr(ui_imp_menu, 'ui_imp_photo_%d' % index, ui_imp_photo)
+      ui_imp_menu.entryconfigure(index=index, image=ui_imp_photo, compound=tkinter.TOP)
+
   def PrepareScreenMainContextMenusNextPrevButtons(
       self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None):
     if not (main_menu or context_menu or next_button or prev_button or title):
@@ -234,20 +246,27 @@ class FaseTkUIImp(object):
     self.ui_imp_main_menu.add_command(
         label=menu_item_element.GetText(),
         command=ClickCallBack(self, id_list) if menu_item_element.GetOnClick() is not None else None)
+    self._ConfigureMenuItemImage(menu_item_element, self.ui_imp_main_menu, self.ui_imp_main_menu.index(tkinter.END))
 
   def DrawScreenContextMenuItem(self, id_list, menu_item_element):
     assert menu_item_element.GetOnClick() is not None
     self.ui_imp_context_menu.add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
+    self._ConfigureMenuItemImage(menu_item_element, self.ui_imp_context_menu,
+                                 self.ui_imp_context_menu.index(tkinter.END))
 
   def DrawScreenNextStepButton(self, id_list, next_step_button_element):
     assert next_step_button_element.GetOnClick() is not None
-    tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText(),
-                   command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_next_step_button = tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText(),
+                                             command=ClickCallBack(self, id_list))
+    self._ConfigureButtonImage(next_step_button_element, ui_imp_next_step_button)
+    ui_imp_next_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def DrawScreenPrevStepButton(self, id_list, prev_step_button_element):
     assert prev_step_button_element.GetOnClick() is not None
-    tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText(),
-                   command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_prev_step_button = tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText(),
+                                             command=ClickCallBack(self, id_list))
+    self._ConfigureButtonImage(prev_step_button_element, ui_imp_prev_step_button)
+    ui_imp_prev_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def PrepareScreenMainButtonAndNavigationButtons(self, main_button=False, nav_button_num=0):
     if not (main_button or nav_button_num):
@@ -277,25 +296,29 @@ class FaseTkUIImp(object):
         self.ui_imp_main_button_frame = ui_imp_button_frame
       else:
         self.ui_imp_nav_button_frame_list.append(ui_imp_button_frame)
-      
+
   def DrawScreenMainButton(self, id_list, main_button_element):
     assert self.ui_imp_main_button_frame is not None
     ui_imp_main_button = tkinter.Button(self.ui_imp_main_button_frame, text=main_button_element.GetText())
+    self._ConfigureButtonImage(main_button_element, ui_imp_main_button)
     ui_imp_main_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
     if main_button_element.GetOnClick():
       ui_imp_main_button.configure(command=ClickCallBack(self, id_list))
+      return ParentElement(ui_imp_main_button) 
     elif main_button_element.GetContextMenu():
       ui_imp_main_button_context_menu = tkinter.Menu()
       ui_imp_main_button.bind('<1>', lambda e: ui_imp_main_button_context_menu.post(e.x_root, e.y_root))
       return ParentElement(ui_imp_main_button_context_menu)
     else:
-      return ParentElement(ui_imp_main_button) 
+      return ParentElement(ui_imp_main_button)
 
   def DrawScreenNavButton(self, id_list, nav_button_element, nav_button_i):
     assert nav_button_element.GetOnClick() is not None
-    tkinter.Button(self.ui_imp_nav_button_frame_list[nav_button_i], text=nav_button_element.GetText(),
-                   command=ClickCallBack(self, id_list)).grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_nav_button = tkinter.Button(self.ui_imp_nav_button_frame_list[nav_button_i],
+                                       text=nav_button_element.GetText(), command=ClickCallBack(self, id_list))
+    self._ConfigureButtonImage(nav_button_element, ui_imp_nav_button)
+    ui_imp_nav_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def _ConfigureParent(self, ui_imp_parent, maximize=False):
     if maximize:
@@ -419,6 +442,7 @@ class FaseTkUIImp(object):
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=button_element.GetText())
+    self._ConfigureButtonImage(button_element, ui_imp_button)
 
     if button_element.GetOnClick():
       ui_imp_button.configure(command=ClickCallBack(self, id_list))
@@ -455,6 +479,7 @@ class FaseTkUIImp(object):
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None
     ui_imp_parent.GetUIImpParent().add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
+    self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.index(tkinter.END))
 
   def ShowPopup(self, popup):
     messagebox.showinfo(message=popup.GetText())

@@ -1,11 +1,10 @@
 # Before Making iOS and Android
 # TODO(igushev): Support Popups to confirm Yes/No question for Deleting.
-# TODO(igushev): Actually support icons on Buttons, etc. and add icons for Notes.
 # TODO(igushev): Organize flat structure into directories.
+# TODO(igushev): Getting resources from Server to Client.
+# TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
 
 # Server Side
-# TODO(igushev): Gettings resources from Server to Client.
-# TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
 # TODO(igushev): Make Push Notifications.
 # TODO(igushev): Add User custom byte field for Notes and delete Notes database.
 
