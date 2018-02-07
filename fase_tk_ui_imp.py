@@ -16,6 +16,13 @@ MAIN_BUTTON_WIDTH = 75
 MAIN_BUTTON_HEIGHT = 75
 SCREEN_UPDATE_INTERVAL = 200
 
+BUTTON_TEXT_LIST_TO_INFO_TYPE = {('ok', ): messagebox.OK,
+                                 ('ok', 'cancel'): messagebox.OKCANCEL,
+                                 ('yes', 'no'): messagebox.YESNO,
+                                 ('yes', 'no', 'cancel'): messagebox.YESNOCANCEL,
+                                 ('retry', 'cancel'): messagebox.RETRYCANCEL,
+                                 ('abort', 'retry', 'ignore'): messagebox.ABORTRETRYIGNORE}
+
 
 class UpdateCallBack(object):
   
@@ -481,8 +488,9 @@ class FaseTkUIImp(object):
     ui_imp_parent.GetUIImpParent().add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
     self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.index(tkinter.END))
 
-  def ShowPopup(self, popup):
-    messagebox.showinfo(message=popup.GetText())
+  # NOTE(igushev): tkinter has limitation on what dialog boxes can be displayed.
+  def ShowPopup(self, popup, button_text_tuple):
+    return messagebox.showinfo(type=BUTTON_TEXT_LIST_TO_INFO_TYPE[button_text_tuple], message=popup.GetText())
 
   def Run(self):
     self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)

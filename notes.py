@@ -197,9 +197,21 @@ class NotesService(fase.Service):
 
   def OnDeleteNote(self, screen, element):
     note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
+    screen = fase.Screen(self)
+    popup = screen.AddPopup('Delete the Note?')
+    popup.AddButton(id_="ok_id", text="OK", on_click=NotesService.OnDeleteNoteOK)
+    popup.AddButton(id_="cancel_id", text="Cancel", on_click=NotesService.OnDeleteNoteCancel)
+    screen.AddStringVariable(id_='current_note_id', value=note_id)
+    return screen
+
+  def OnDeleteNoteOK(self, screen, element):
+    note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
     if note_id is not None:
       notes_database.NotesDatabaseInterface.Get().DeleteNote(note_id)
     return self._DisplayNotes(screen)
 
+  def OnDeleteNoteCancel(self, screen, element):
+    note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
+    return self._DisplayNote(note_id, screen)
 
 fase.Service.RegisterService(NotesService)

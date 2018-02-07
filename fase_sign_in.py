@@ -19,6 +19,13 @@ def GenerateSignedInSessionId(user_id):
   return session_id_signed_in
 
 
+def _ErrorPopup(service, message, on_click):
+  screen = fase.Screen(service)
+  popup = screen.AddPopup(message)
+  popup.AddButton(id_="ok_id", text="OK", on_click=on_click)
+  return screen
+
+
 @json_util.JSONDecorator({})
 class FaseSignInButton(fase.Button):
 
@@ -28,10 +35,7 @@ class FaseSignInButton(fase.Button):
         screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
-      screen = fase.Screen(service)
-      popup = screen.AddPopup('Wrong activation code!')
-      popup.AddButton(id_="ok_id", text="OK", on_click=OnActivationCodeSent)
-      return service, screen
+      return service, _ErrorPopup(service, message='Wrong activation code!', on_click=OnActivationCodeSent)
 
     on_done = service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method').GetValue()
     if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
@@ -76,13 +80,6 @@ class FaseSignOutButton(fase.Button):
     service = service_cls()
     screen = service.OnStart()
     return service, screen
-
-
-def _ErrorPopup(service, message, on_click):
-  screen = fase.Screen(service)
-  popup = screen.AddPopup(message)
-  popup.AddButton(id_="ok_id", text="OK", on_click=on_click)
-  return screen
 
 
 def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None):

@@ -1,8 +1,8 @@
 # Before Making iOS and Android
-# TODO(igushev): Support Popups to confirm Yes/No question for Deleting.
-# TODO(igushev): Organize flat structure into directories.
-# TODO(igushev): Getting resources from Server to Client.
 # TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
+# TODO(igushev): Getting resources from Server to Client.
+# TODO(igushev): Organize flat structure into directories.
+# TODO(igushev): Rename icon to image, popup to dialog box.
 
 # Server Side
 # TODO(igushev): Make Push Notifications.

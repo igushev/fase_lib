@@ -116,11 +116,15 @@ class FaseUI(object):
     self.ui_imp.DrawContactPicker(id_list, contact_picker_element, ui_imp_parent)
 
   def ShowPopup(self, popup):
-    assert len(popup.GetIdElementList()) == 1
-    button_id, button_element = popup.GetIdElementList()[0]
-    assert button_element.GetText() == 'OK'
-    self.ui_imp.ShowPopup(popup)
-    return [fase.POPUP_ID, button_id]
+    button_text_to_button_id = {}
+    button_text_list = []
+    for button_id, button_element in popup.GetIdElementList():
+      button_text = button_element.GetText().lower()
+      assert not button_text in button_text_to_button_id
+      button_text_to_button_id[button_text] = button_id
+      button_text_list.append(button_text)
+    button_text_clicked = self.ui_imp.ShowPopup(popup, tuple(button_text_list))
+    return [fase.POPUP_ID, button_text_to_button_id[button_text_clicked]]
 
   def Run(self):
     self.ui_imp.Run()
