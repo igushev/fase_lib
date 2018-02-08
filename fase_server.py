@@ -12,7 +12,7 @@ DELETE_DB_COMMAND = 'deletedb'
 TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
-DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
+DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
 
 WRONG_COMMAND = fase_model.BadRequest(
   code=401,
@@ -79,8 +79,7 @@ class FaseServer(object):
     current_id_list_to_value = (
         fase_model.ElementsUpdateToDict(current_elements_update) if current_elements_update is not None else {})
     id_list_to_value = fase_model.ElementsUpdateToDict(elements_update)
-    for id_list, value in id_list_to_value.items():
-      current_id_list_to_value[id_list] = value if value else None
+    current_id_list_to_value.update(id_list_to_value)
     return fase_model.DictToElementsUpdate(current_id_list_to_value) if current_id_list_to_value else None
 
   def ScreenUpdate(self, screen_update, session_info, screen_info):

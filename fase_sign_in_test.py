@@ -9,6 +9,8 @@ import fase_sign_in
 import fase
 import sms_sender
 
+COUNTRY_CODE = 'US'
+
 
 class SignInTestService(fase.Service):
   
@@ -121,7 +123,8 @@ class FaseSignInTest(unittest.TestCase):
       fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign In button.
       response = fase_server.FaseServer.Get().ElementClicked(
-          fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
+          fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id'],
+                                    locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
     else:
@@ -152,7 +155,8 @@ class FaseSignInTest(unittest.TestCase):
       fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
       # Click on Sign Up button.
       response = fase_server.FaseServer.Get().ElementClicked(
-          fase_model.ElementClicked(id_list=['sign_up_layout_id', 'sign_up_button_id']), session_info, screen_info)
+          fase_model.ElementClicked(id_list=['sign_up_layout_id', 'sign_up_button_id'],
+                                    locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
     
@@ -263,7 +267,8 @@ class FaseSignInTest(unittest.TestCase):
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id'],
+                                  locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
@@ -315,7 +320,8 @@ class FaseSignInTest(unittest.TestCase):
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_up_layout_id', 'sign_up_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_up_layout_id', 'sign_up_button_id'],
+                                  locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))

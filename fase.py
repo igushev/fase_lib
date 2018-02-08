@@ -6,10 +6,11 @@ import data_util
 import json_util
 import util
 
-DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
-# Name and Phone Number from Contact List.
+DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
 CONTACT_FORMAT = '{display_name}|{phone_number}'
 CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'
+PLACE_FORMAT = '{google_place_id}|{city}|{state}|{country}'
+PLACE_REGEXP = '(?P<google_place_id>.*)\|(?P<city>.*)\|(?P<state>.*)\|(?P<country>.*)'
 
 NEXT_STEP_BUTTON_ID = 'next_step_button'
 PREV_STEP_BUTTON_ID = 'prev_step_button'
@@ -27,7 +28,7 @@ def MockFunction():
 def GenerateSessionId():
   datetime_now = datetime.datetime.now()
   session_id_hash = hashlib.md5()
-  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
+  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
   session_id = session_id_hash.hexdigest()
   return session_id
 
@@ -36,7 +37,7 @@ def GenerateScreenId(session_id):
   datetime_now = datetime.datetime.now()
   screen_id_hash = hashlib.md5()
   screen_id_hash.update(session_id.encode('utf-8'))
-  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
   screen_id = screen_id_hash.hexdigest()
   return screen_id
 
@@ -45,7 +46,7 @@ def GenerateUserId(session_id):
   datetime_now = datetime.datetime.now()
   screen_id_hash = hashlib.md5()
   screen_id_hash.update(session_id.encode('utf-8'))
-  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
   screen_id = screen_id_hash.hexdigest()
   return screen_id
 
@@ -56,6 +57,67 @@ class Locale(data_util.AbstractObject):
 
   def __init__(self, country_code):
     self.country_code = country_code
+
+
+@json_util.JSONDecorator(
+    {'display_name': json_util.JSONString(),
+     'phone_number': json_util.JSONString()})
+class Contact(data_util.AbstractObject):
+
+  def __init__(self,
+               display_name=None,
+               phone_number=None):
+    self.display_name = display_name
+    self.phone_number = phone_number
+
+  def Update(self, value):
+    contact_match = re.match(CONTACT_REGEXP, value)
+    self.display_name = contact_match.group('display_name') or None
+    self.phone_number = contact_match.group('phone_number') or None
+  def Get(self):
+    return CONTACT_FORMAT.format(display_name=self.display_name or '',
+                                 phone_number=self.phone_number or '')    
+
+  def SetDisplayName(self, display_name):
+    self.display_name = display_name
+  def GetDisplayName(self):
+    return self.display_name
+
+  def SetPhoneNumber(self, phone_number):
+    self.phone_number = phone_number
+  def GetPhoneNumber(self):
+    return self.phone_number
+
+
+@json_util.JSONDecorator({
+    'google_place_id': json_util.JSONString(),
+    'city': json_util.JSONString(),
+    'state': json_util.JSONString(),
+    'country': json_util.JSONString()})
+class Place(data_util.AbstractObject):
+
+  def __init__(self,
+               google_place_id=None,
+               city=None,
+               state=None,
+               country=None):
+    self.google_place_id = google_place_id
+    self.city = city
+    self.state = state
+    self.country = country
+
+  def Update(self, value):
+    place_match = re.match(PLACE_REGEXP, value)
+    self.google_place_id = place_match.group('google_place_id') or None
+    self.city = place_match.group('city') or None
+    self.state = place_match.group('state') or None
+    self.country = place_match.group('country') or None
+
+  def Get(self):
+    return PLACE_FORMAT.format(google_place_id=self.google_place_id or '',
+                               city=self.city or '',
+                               state=self.state or '',
+                               country=self.country or '')
 
 
 @json_util.JSONDecorator({}, inherited=True)
@@ -321,7 +383,7 @@ class Text(VisualElement):
     self._size = size
 
   def Update(self, value):
-    self._text = value if value else None
+    self._text = value
   def Get(self):
     return self._text
 
@@ -354,7 +416,7 @@ class Switch(VisualElement):
     self._alight = alight
 
   def Update(self, value):
-    self._value = bool(value)
+    self._value = (value == str(True))
   def Get(self):
     return str(self._value)
 
@@ -487,8 +549,7 @@ class ButtonBar(ElementContainer):
     
 
 @json_util.JSONDecorator(
-    {'_display_name': json_util.JSONString(),
-     '_phone_number': json_util.JSONString(),
+    {'_contact': json_util.JSONObject(Contact),
      '_hint': json_util.JSONString(),
      '_size': json_util.JSONInt(),
      '_on_pick': json_util.JSONFunction()})
@@ -498,35 +559,23 @@ class ContactPicker(VisualElement):
   MAX = 2
   
   def __init__(self,
-               display_name=None,
-               phone_number=None,
+               contact=None,
                hint=None,
                size=None,
                on_pick=None):
     super(ContactPicker, self).__init__()
-    self._display_name = display_name
-    self._phone_number = phone_number
+    self._contact = contact or Contact()
     self._hint = hint
     self._size = size
     self._on_pick = on_pick
 
   def Update(self, value):
-    contact_match = re.match(CONTACT_REGEXP, value)
-    self._display_name = contact_match.group('display_name') or None
-    self._phone_number = contact_match.group('phone_number') or None
+    self._contact.Update(value)
   def Get(self):
-    return CONTACT_FORMAT.format(display_name=self._display_name or '',
-                                 phone_number=self._phone_number or '')    
+    return self._contact.Get()
 
-  def SetDisplayName(self, display_name):
-    self._display_name = display_name
-  def GetDisplayName(self):
-    return self._display_name
-
-  def SetPhoneNumber(self, phone_number):
-    self._phone_number = phone_number
-  def GetPhoneNumber(self):
-    return self._phone_number
+  def GetContact(self):
+    return self._contact
 
   def GetSize(self):
     return self._size
@@ -537,6 +586,88 @@ class ContactPicker(VisualElement):
   def FaseOnClick(self, service, screen):
     screen = self._on_pick(service, screen, self)
     return service, screen
+
+
+@json_util.JSONDecorator(
+    {'_datetime': json_util.JSONDateTime(),
+     '_type': json_util.JSONInt(),
+     '_hint': json_util.JSONString(),
+     '_size': json_util.JSONInt()})
+class DateTimePicker(VisualElement):
+
+  DATE = 1
+  TIME = 2
+  DATETIME = 3
+
+  MIN = 1
+  MAX = 2
+  
+  def __init__(self,
+               datetime_=None,
+               type_=None,
+               hint=None,
+               size=None):
+    super(DateTimePicker, self).__init__()
+    assert type_ is not None
+    self._datetime = datetime_
+    self._type = type_
+    self._hint = hint
+    self._size = size
+
+  def Update(self, value):
+    self._datetime = datetime.datetime.strptime(value, DATETIME_FORMAT) if value is not None else None
+
+  def Get(self):
+    return self._datetime.strftime(DATETIME_FORMAT) if self._datetime is not None else None
+
+  def GetDateTime(self):
+    return self._datetime
+
+  def GetType(self):
+    return self._type
+
+  def GetSize(self):
+    return self._size
+
+
+@json_util.JSONDecorator(
+    {'_place': json_util.JSONObject(Place),
+     '_type': json_util.JSONInt(),
+     '_hint': json_util.JSONString(),
+     '_size': json_util.JSONInt()})
+class PlacePicker(VisualElement):
+
+  CITY = 1
+
+  MIN = 1
+  MAX = 2
+  
+  def __init__(self,
+               place=None,
+               type_=None,
+               hint=None,
+               size=None):
+    super(PlacePicker, self).__init__()
+    assert type_ is not None
+    self._place = place or Place()
+    self._type = type_
+    self._hint = hint
+    self._size = size
+    
+  def Update(self, value):
+    self._place.Update(value)
+    
+  def Get(self):
+    return self._place.Get()
+
+  def GetPlace(self):
+    return self._place
+
+  def GetType(self):
+    return self._type
+
+  def GetSize(self):
+    return self._size
 
 
 @json_util.JSONDecorator({})
@@ -597,14 +728,30 @@ class BaseElementsContainer(VisualElement):
     return self.GetElement(id_)
 
   def AddContactPicker(self, id_,
-                       display_name=None,
-                       phone_number=None,
+                       contact=None,
                        hint=None,
                        size=None,
                        on_pick=None):
-    return self.AddElement(id_, ContactPicker(display_name=display_name, phone_number=phone_number,
-                                              hint=hint, size=size, on_pick=on_pick))
+    return self.AddElement(id_, ContactPicker(contact=contact, hint=hint, size=size, on_pick=on_pick))
   def GetContactPicker(self, id_):
+    return self.GetElement(id_)
+
+  def AddDateTimePicker(self, id_,
+                        datetime_=None,
+                        type_=None,
+                        hint=None,
+                        size=None):
+    return self.AddElement(id_, DateTimePicker(datetime_=datetime_, type_=type_, hint=hint, size=size))
+  def GetDateTimePicker(self, id_):
+    return self.GetElement(id_)
+
+  def AddPlacePicker(self, id_,
+                     place=None,
+                     type_=None,
+                     hint=None,
+                     size=None):
+    return self.AddElement(id_, PlacePicker(place=place, type_=type_, hint=hint, size=size))
+  def GetPlacePicker(self, id_):
     return self.GetElement(id_)
 
 

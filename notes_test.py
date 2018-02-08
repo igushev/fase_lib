@@ -73,7 +73,7 @@ class NotesTest(unittest.TestCase):
         self.assertEqual(expected_note.note_id, actual_note_layout.GetStringVariable(id_='layout_note_id').GetValue())
       actual_note_header_layout = actual_note_layout.GetLayout(id_='note_header_layout')
       self.assertEqual(expected_note.header, actual_note_header_layout.GetLabel(id_='note_header_label').GetLabel())
-      self.assertEqual('favourite.pnp' if expected_note.favourite else 'favourite_non.pnp',
+      self.assertEqual('notes_images/favourite.png' if expected_note.favourite else 'notes_images/favourite_non.png',
                        actual_note_header_layout.GetImage(id_='note_header_image').GetImage())
       self.assertEqual(expected_note.text, actual_note_layout.GetLabel(id_='note_layout_label').GetLabel())
       if expected_note.datetime:
@@ -151,6 +151,14 @@ class NotesTest(unittest.TestCase):
     # Click on Delete context menu.
     response = fase_server.FaseServer.Get().ElementClicked(
         fase_model.ElementClicked(id_list=[fase.CONTEXT_MENU_ID, 'delete_context_menu']), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+    # Check present of main elements.
+    screen.GetElement(id_=fase.POPUP_ID)
+    # Click on Yes.
+    response = fase_server.FaseServer.Get().ElementClicked(
+        fase_model.ElementClicked(id_list=[fase.POPUP_ID, 'ok_id']), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -262,7 +270,7 @@ class NotesTest(unittest.TestCase):
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
             sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=False,
-            phone_number='+1987654321', first_name='Edward Junior', last_name='Igushev'))
+            phone_number='+19876543210', first_name='Edward Junior', last_name='Igushev'))
     self.AssertNotes([note_4], screen)
 
   def testNotes_Signin_SignOut(self):

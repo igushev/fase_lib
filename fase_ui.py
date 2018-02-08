@@ -84,6 +84,10 @@ class FaseUI(object):
       self.DrawButton(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.ContactPicker):
       self.DrawContactPicker(id_list, element, ui_imp_parent)
+    elif isinstance(element, fase.DateTimePicker):
+      self.DrawDateTimePicker(id_list, element, ui_imp_parent)
+    elif isinstance(element, fase.PlacePicker):
+      self.DrawPlacePicker(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Variable):
       pass
     else:
@@ -114,6 +118,12 @@ class FaseUI(object):
 
   def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
     self.ui_imp.DrawContactPicker(id_list, contact_picker_element, ui_imp_parent)
+
+  def DrawDateTimePicker(self, id_list, datetime_picker_element, ui_imp_parent):
+    self.ui_imp.DrawDateTimePicker(id_list, datetime_picker_element, ui_imp_parent)
+
+  def DrawPlacePicker(self, id_list, place_picker_element, ui_imp_parent):
+    self.ui_imp.DrawPlacePicker(id_list, place_picker_element, ui_imp_parent)
 
   def ShowPopup(self, popup):
     button_text_to_button_id = {}

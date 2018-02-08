@@ -1,4 +1,5 @@
 import math
+import datetime
 import tkinter
 from tkinter import font, messagebox
 from PIL import ImageTk, Image
@@ -22,6 +23,11 @@ BUTTON_TEXT_LIST_TO_INFO_TYPE = {('ok', ): messagebox.OK,
                                  ('yes', 'no', 'cancel'): messagebox.YESNOCANCEL,
                                  ('retry', 'cancel'): messagebox.RETRYCANCEL,
                                  ('abort', 'retry', 'ignore'): messagebox.ABORTRETRYIGNORE}
+
+
+DATETIME_TYPE_TO_FORMAT = {fase.DateTimePicker.DATE: '%Y-%m-%d',
+                           fase.DateTimePicker.TIME: '%H:%M:%S',
+                           fase.DateTimePicker.DATETIME: '%Y-%m-%d %H:%M:%S'}
 
 
 class UpdateCallBack(object):
@@ -56,7 +62,8 @@ class TextElementVariable(object):
     self._ui_imp_var = ui_imp_var
 
   def Get(self):
-    return self._ui_imp_var.get()
+    value = self._ui_imp_var.get()
+    return value if value else None  # Replace empty string with None.
 
   def Update(self, value):
     self._ui_imp_var.set(value if value is not None else '') 
@@ -86,6 +93,44 @@ class ContactPickerElementVariable(object):
 
   def Update(self, value):
     assert re.match(fase.CONTACT_REGEXP, value)
+    self._ui_imp_var.set(value) 
+
+
+class DateTimePickerElementVariable(object):
+
+  def __init__(self, ui_imp_var, type_):
+    self._ui_imp_var = ui_imp_var
+    self._type = type_
+
+  def Get(self):
+    value = self._ui_imp_var.get()
+    if not value:  # Replace empty string with None.
+      return None
+    datetime_format = DATETIME_TYPE_TO_FORMAT[self._type]
+    return datetime.datetime.strptime(value, datetime_format).strftime(fase.DATETIME_FORMAT)
+
+  def Update(self, value):
+    if value is not None:
+      datetime_format = DATETIME_TYPE_TO_FORMAT[self._type]
+      displayed_value = datetime.datetime.strptime(value, fase.DATETIME_FORMAT).strftime(datetime_format)
+    else:
+      displayed_value = ''
+    self._ui_imp_var.set(displayed_value) 
+
+
+class PlacePickerElementVariable(object):
+
+  def __init__(self, ui_imp_var, type_):
+    self._ui_imp_var = ui_imp_var
+    assert type_ == fase.PlacePicker.CITY
+
+  def Get(self):
+    value = self._ui_imp_var.get()
+    assert re.match(fase.PLACE_REGEXP, value)
+    return value
+
+  def Update(self, value):
+    assert re.match(fase.PLACE_REGEXP, value)
     self._ui_imp_var.set(value) 
 
 
@@ -465,7 +510,7 @@ class FaseTkUIImp(object):
       return ParentElement(ui_imp_button_context_menu)
     else:
       return ParentElement(ui_imp_button)
-    
+
   def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
@@ -483,10 +528,39 @@ class FaseTkUIImp(object):
     ui_imp_parent.Next()
     return ParentElement(ui_imp_text)
 
+  def DrawDateTimePicker(self, id_list, datetime_picker_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_var = tkinter.StringVar()
+    self.id_list_to_var[tuple(id_list)] = (
+        DateTimePickerElementVariable(ui_imp_var, type_=datetime_picker_element.GetType()))
+    self.id_list_to_var[tuple(id_list)].Update(datetime_picker_element.Get())
+    ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
+    ui_imp_text.bind('<FocusOut>', UpdateCallBack(self, id_list))
+
+    if datetime_picker_element.GetDisplayed():
+      ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_text)
+
+  def DrawPlacePicker(self, id_list, place_picker_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_var = tkinter.StringVar()
+    self.id_list_to_var[tuple(id_list)] = PlacePickerElementVariable(ui_imp_var, type_=place_picker_element.GetType())
+    self.id_list_to_var[tuple(id_list)].Update(place_picker_element.Get())
+    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
+    
+    if place_picker_element.GetDisplayed():
+      ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                       sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_text)
+
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None
     ui_imp_parent.GetUIImpParent().add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
-    self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.index(tkinter.END))
+    self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.GetUIImpParent().index(tkinter.END))
 
   # NOTE(igushev): tkinter has limitation on what dialog boxes can be displayed.
   def ShowPopup(self, popup, button_text_tuple):
