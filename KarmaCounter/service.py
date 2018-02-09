@@ -112,7 +112,7 @@ class KarmaCounter(fase.Service):
   def OnFriendPick(self, screen, element):
     friend_contact_picker = screen.GetContactPicker(id_='friend_contact_picker')
     invite_switch = screen.GetSwitch(id_='invite_switch')
-    if friend_contact_picker.GetContact().GetPhoneNumber():
+    if friend_contact_picker.GetContact() and friend_contact_picker.GetContact().GetPhoneNumber():
       request_registered_users = (
           kc_data.RequestRegisteredUsers(phone_number_list=[friend_contact_picker.GetContact().GetPhoneNumber()]))
       session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())

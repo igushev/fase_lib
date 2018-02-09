@@ -37,7 +37,7 @@ class UpdateCallBack(object):
     self.id_list = id_list 
 
   def __call__(self, *args):
-    self.ui_tk.ElementUpdatedCallBack(self.id_list, *args)
+    self.ui_tk.ElementUpdatedCallBack(self.id_list)
 
 
 class ClickCallBack(object):
@@ -47,6 +47,17 @@ class ClickCallBack(object):
     self.id_list = id_list 
 
   def __call__(self, *args):
+    self.ui_tk.ElementClickedCallBack(self.id_list)
+
+
+class UpdateAndClickCallBack(object):
+  
+  def __init__(self, ui_tk, id_list):
+    self.ui_tk = ui_tk
+    self.id_list = id_list 
+
+  def __call__(self, *args):
+    self.ui_tk.ElementUpdatedCallBack(self.id_list)
     self.ui_tk.ElementClickedCallBack(self.id_list)
 
 
@@ -88,12 +99,17 @@ class ContactPickerElementVariable(object):
 
   def Get(self):
     value = self._ui_imp_var.get()
+    if not value:  # Replace empty string with None.
+      return None
     assert re.match(fase.CONTACT_REGEXP, value)
     return value
 
   def Update(self, value):
-    assert re.match(fase.CONTACT_REGEXP, value)
-    self._ui_imp_var.set(value) 
+    if value is not None:
+      assert re.match(fase.CONTACT_REGEXP, value)
+      self._ui_imp_var.set(value)
+    else:
+      self._ui_imp_var.set('') 
 
 
 class DateTimePickerElementVariable(object):
@@ -126,12 +142,17 @@ class PlacePickerElementVariable(object):
 
   def Get(self):
     value = self._ui_imp_var.get()
+    if not value:  # Replace empty string with None.
+      return None
     assert re.match(fase.PLACE_REGEXP, value)
     return value
 
   def Update(self, value):
-    assert re.match(fase.PLACE_REGEXP, value)
-    self._ui_imp_var.set(value) 
+    if value is not None:
+      assert re.match(fase.PLACE_REGEXP, value)
+      self._ui_imp_var.set(value)
+    else: 
+      self._ui_imp_var.set('')
 
 
 class ParentElement(object):
@@ -516,11 +537,12 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = ContactPickerElementVariable(ui_imp_var)
     self.id_list_to_var[tuple(id_list)].Update(contact_picker_element.Get())
-    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
-    
+
     if contact_picker_element.GetOnPick():
-      ui_imp_text.bind('<FocusOut>', ClickCallBack(self, id_list))
+      ui_imp_text.bind('<FocusOut>', UpdateAndClickCallBack(self, id_list))
+    else:
+      ui_imp_text.bind('<FocusOut>', UpdateCallBack(self, id_list))
 
     if contact_picker_element.GetDisplayed():
       ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -548,8 +570,8 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = PlacePickerElementVariable(ui_imp_var, type_=place_picker_element.GetType())
     self.id_list_to_var[tuple(id_list)].Update(place_picker_element.Get())
-    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
+    ui_imp_text.bind('<FocusOut>', UpdateCallBack(self, id_list))
     
     if place_picker_element.GetDisplayed():
       ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -570,7 +592,7 @@ class FaseTkUIImp(object):
     self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)
     self.ui_imp_root.mainloop()
 
-  def ElementUpdatedCallBack(self, id_list, *args):
+  def ElementUpdatedCallBack(self, id_list):
     if self.element_updated_callback:
       value = self.id_list_to_var[tuple(id_list)].Get() 
       self.ui.ElementUpdatedCallBack(id_list, value)

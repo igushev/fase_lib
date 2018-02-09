@@ -564,15 +564,20 @@ class ContactPicker(VisualElement):
                size=None,
                on_pick=None):
     super(ContactPicker, self).__init__()
-    self._contact = contact or Contact()
+    self._contact = contact
     self._hint = hint
     self._size = size
     self._on_pick = on_pick
 
   def Update(self, value):
+    if value is None:
+      self._contact = None
+      return
+    if self._contact is None:
+      self._contact = Contact()
     self._contact.Update(value)
   def Get(self):
-    return self._contact.Get()
+    return self._contact.Get() if self._contact is not None else None
 
   def GetContact(self):
     return self._contact
@@ -649,16 +654,20 @@ class PlacePicker(VisualElement):
                size=None):
     super(PlacePicker, self).__init__()
     assert type_ is not None
-    self._place = place or Place()
+    self._place = place
     self._type = type_
     self._hint = hint
     self._size = size
     
   def Update(self, value):
+    if value is None:
+      self._place = None
+      return
+    if self._place is None:
+      self._place = Place()
     self._place.Update(value)
-    
   def Get(self):
-    return self._place.Get()
+    return self._place.Get() if self._place is not None else None
 
   def GetPlace(self):
     return self._place
