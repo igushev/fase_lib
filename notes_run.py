@@ -7,9 +7,16 @@ import fase_run
 
 FASE_SERVER_URL = 'http://fasenotes-env.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'notes_session_info'
+
 IGNORE_SESSION_INFO = 'ignore'
 RESET_FLAG = 'reset'
 LOCAL_SERVER = 'local_server'
+
+DYNAMODB_PORT = 8000
+DYNAMODB_URL = 'http://localhost:%d'
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 5000
+SERVER_URL = 'http://localhost:%d'
 
 
 def CreateDatabase(server_url):
@@ -19,13 +26,12 @@ def CreateDatabase(server_url):
   fase_run.SendCommand(url, command_message)
 
 
-def SetupServer():
+def SetupServer(dynamodb_url):
     import notes_database
     notes_database.NotesDatabaseInterface.Set(
-        notes_database.DynamoDBNotesDatabase(endpoint_url=fase_run.DYNAMODB_URL, region_name=fase_run.DYNAMODB_REGION,
+        notes_database.DynamoDBNotesDatabase(endpoint_url=dynamodb_url, region_name=fase_run.DYNAMODB_REGION,
                                              aws_access_key_id='KeyId', aws_secret_access_key='AccessKey'))
     time.sleep(1)
-    CreateDatabase(fase_run.SERVER_URL)
 
 
 def main(argv):
@@ -36,12 +42,15 @@ def main(argv):
                              if IGNORE_SESSION_INFO not in arg_list else None)
     if RESET_FLAG in arg_list:
       os.remove(session_info_filepath)
-    fase_run.RunClient(FASE_SERVER_URL, session_info_filepath=session_info_filepath)
+    fase_run.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
     import notes
-    dynamodb_process = fase_run.RunServerThread()
-    SetupServer()
-    fase_run.RunClient(fase_run.SERVER_URL)
+    dynamodb_process = fase_run.RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL % DYNAMODB_PORT)
+    fase_run.RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
+    fase_run.CreateDatabase(server_url=SERVER_URL % SERVER_PORT)
+    SetupServer(DYNAMODB_URL % DYNAMODB_PORT)
+    CreateDatabase(SERVER_URL % SERVER_PORT)
+    fase_run.RunClient(fase_server_url=SERVER_URL % SERVER_PORT)
     os.killpg(dynamodb_process.pid, signal.SIGKILL)
 
 

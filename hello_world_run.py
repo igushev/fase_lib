@@ -6,9 +6,16 @@ import fase_run
 
 FASE_SERVER_URL = 'http://fasehelloworld-env.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'hello_world_session_info'
+
 IGNORE_SESSION_INFO = 'ignore'
 RESET_FLAG = 'reset'
 LOCAL_SERVER = 'local_server'
+
+DYNAMODB_PORT = 8000
+DYNAMODB_URL = 'http://localhost:%d'
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 5000
+SERVER_URL = 'http://localhost:%d'
 
 
 def main(argv):
@@ -19,11 +26,13 @@ def main(argv):
                              if IGNORE_SESSION_INFO not in arg_list else None)
     if RESET_FLAG in arg_list:
       os.remove(session_info_filepath)
-    fase_run.Run(FASE_SERVER_URL, session_info_filepath=session_info_filepath)
+    fase_run.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
     import hello_world
-    dynamodb_process = fase_run.RunServerThread()
-    fase_run.RunClient(fase_run.SERVER_URL)
+    dynamodb_process = fase_run.RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL % DYNAMODB_PORT)
+    fase_run.RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
+    fase_run.CreateDatabase(server_url=SERVER_URL % SERVER_PORT)
+    fase_run.RunClient(fase_server_url=SERVER_URL % SERVER_PORT)
     os.killpg(dynamodb_process.pid, signal.SIGKILL)
 
 
