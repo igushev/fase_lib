@@ -13,10 +13,12 @@ COUNTRY_CODE = 'US'
 
 
 class SignInTestService(fase.Service):
-  
+
+  service_id = 'SignInTest'
+
   @staticmethod
   def GetServiceId():
-    return 'SignInTest'
+    return SignInTestService.service_id
 
   def OnStart(self):
     screen = fase.Screen(self)
@@ -26,10 +28,12 @@ class SignInTestService(fase.Service):
                      text='About', on_click=SignInTestService.OnAbount)
     return screen
 
+  request_user_data = None
+
   def OnSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(
         self, on_done=SignInTestService.OnSignInDone, on_skip=SignInTestService.OnSignInSkip,
-        on_cancel=SignInTestService.OnSignInCancel)
+        on_cancel=SignInTestService.OnSignInCancel, request_user_data=SignInTestService.request_user_data)
 
   def OnSignOut(self, screen, element):
     return fase_sign_in.StartSignOut(self)
@@ -72,9 +76,12 @@ class FaseSignInTest(unittest.TestCase):
   def SignInProcedure(self,
                       service_num_before, screen_num_before,
                       service_num_during, screen_num_during,
+                      service_num_after, screen_num_after,
                       sign_in=None,
                       phone_number=None, first_name=None, last_name=None,
+                      date_of_birth=None, home_city=None,
                       expected_user_id=None,
+                      request_user_data=None,
                       return_phone_enter=False,
                       return_activation_code_enter=False):
     assert sign_in is not None
@@ -127,6 +134,38 @@ class FaseSignInTest(unittest.TestCase):
                                     locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
+      
+      if request_user_data is not None:
+        # Check.
+        self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+        self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
+        # Check present of main elements.
+        if request_user_data.date_of_birth:
+          self.assertEqual(request_user_data.date_of_birth,
+                           screen.GetElement(id_='enter_layout_id').HasElement(id_='date_of_birth_date_picker'))
+          self.assertEqual(
+              request_user_data.home_city,
+              screen.GetElement(id_='enter_layout_id').HasElement(id_='fase_sign_in_request_user_data_home_city'))
+    
+        # Enter Requested User Data.
+        id_list_list = []
+        value_list = []
+        if request_user_data.date_of_birth:
+          id_list_list.append(['enter_layout_id', 'date_of_birth_date_picker'])
+          value_list.append(date_of_birth.strftime(fase.DATETIME_FORMAT))
+        if request_user_data.home_city:
+          id_list_list.append(['enter_layout_id', 'home_city_place_picker'])
+          value_list.append(home_city.Get())
+        elements_update = fase_model.ElementsUpdate(id_list_list, value_list)
+        screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+        fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+        # Click on Enter button.
+        response = fase_server.FaseServer.Get().ElementClicked(
+            fase_model.ElementClicked(id_list=['enter_layout_id', 'enter_button_id'],
+                                      locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
+        screen_info = response.screen_info
+        screen = response.screen
+
     else:
       # Click on Sign Up button.
       response = fase_server.FaseServer.Get().ElementClicked(
@@ -159,7 +198,7 @@ class FaseSignInTest(unittest.TestCase):
                                     locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
-    
+
     # Check.
     self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
@@ -186,8 +225,8 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check.
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
+    self.assertEqual(service_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(screen_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     user_id_to_user = fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()
     self.assertEqual(1, len(user_id_to_user))
     actual_user_id = list(user_id_to_user.keys())[0]
@@ -202,11 +241,11 @@ class FaseSignInTest(unittest.TestCase):
     return response
 
   def testSignIn_Existing_Service_Screen_User(self):
-    user = fase_model.User(user_id='321',
-                           phone_number='+13216549870',
-                           first_name='Edward',
-                           last_name='Igushev',
-                           datetime_added=datetime.datetime.now())
+    user = fase.User(user_id='321',
+                     phone_number='+13216549870',
+                     first_name='Edward',
+                     last_name='Igushev',
+                     datetime_added=datetime.datetime.now())
     service = SignInTestService()
     service._session_id = fase_sign_in.GenerateSignedInSessionId(user.user_id)
     screen = service.OnStart()
@@ -222,16 +261,17 @@ class FaseSignInTest(unittest.TestCase):
 
     self.SignInProcedure(service_num_before=2, screen_num_before=2,
                          service_num_during=2, screen_num_during=2,
+                         service_num_after=1, screen_num_after=1,
                          sign_in=True,
                          phone_number='+13216549870',
                          expected_user_id='321')
 
   def testSignIn_Non_Existing_Service_Screen_Existing_User(self):
-    user = fase_model.User(user_id='321',
-                           phone_number='+13216549870',
-                           first_name='Edward',
-                           last_name='Igushev',
-                           datetime_added=datetime.datetime.now())
+    user = fase.User(user_id='321',
+                     phone_number='+13216549870',
+                     first_name='Edward',
+                     last_name='Igushev',
+                     datetime_added=datetime.datetime.now())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
@@ -241,6 +281,7 @@ class FaseSignInTest(unittest.TestCase):
 
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=1,
+                         service_num_after=1, screen_num_after=1,
                          sign_in=True,
                          phone_number='+13216549870',
                          expected_user_id='321')
@@ -255,6 +296,7 @@ class FaseSignInTest(unittest.TestCase):
 
     response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
                                     service_num_during=1, screen_num_during=1,
+                                    service_num_after=1, screen_num_after=1,
                                     sign_in=True,
                                     phone_number='+13216549870',
                                     return_phone_enter=True)
@@ -286,15 +328,16 @@ class FaseSignInTest(unittest.TestCase):
 
     self.SignInProcedure(service_num_before=1, screen_num_before=1,
                          service_num_during=1, screen_num_during=1,
+                         service_num_after=1, screen_num_after=1,
                          sign_in=False,
                          phone_number='+13216549870', first_name='Edward', last_name='Igushev')
 
   def testSignUp_Existing_PhoneNumber(self):
-    user = fase_model.User(user_id='321',
-                           phone_number='+13216549870',
-                           first_name='Edward',
-                           last_name='Igushev',
-                           datetime_added=datetime.datetime.now())
+    user = fase.User(user_id='321',
+                     phone_number='+13216549870',
+                     first_name='Edward',
+                     last_name='Igushev',
+                     datetime_added=datetime.datetime.now())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
@@ -304,6 +347,7 @@ class FaseSignInTest(unittest.TestCase):
 
     response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
                                     service_num_during=1, screen_num_during=1,
+                                    service_num_after=1, screen_num_after=1,
                                     sign_in=False,
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev',
                                     return_phone_enter=True)
@@ -339,6 +383,7 @@ class FaseSignInTest(unittest.TestCase):
 
     response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
                                     service_num_during=1, screen_num_during=1,
+                                    service_num_after=1, screen_num_after=1,
                                     sign_in=False,
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev',
                                     return_activation_code_enter=True)
@@ -370,6 +415,7 @@ class FaseSignInTest(unittest.TestCase):
     # Sign Up and create service.
     response = self.SignInProcedure(service_num_before=1, screen_num_before=1,
                                     service_num_during=1, screen_num_during=1,
+                                    service_num_after=1, screen_num_after=1,
                                     sign_in=False,
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev')
     session_info = response.session_info
@@ -419,6 +465,72 @@ class FaseSignInTest(unittest.TestCase):
     # Check present of main elements.
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(actual_service_session_id)
     screen_prog.screen.GetElement(id_='sign_in_button_id')
+
+  def testRequestUserData(self):
+    fase_database.FaseDatabaseInterface.Set(
+        fase_database.MockFaseDatabase(
+            service_list=[],
+            screen_prog_list=[],
+            user_list=[]),
+        overwrite=True)
+
+    # Sign Up and create service.
+    self.SignInProcedure(service_num_before=1, screen_num_before=1,
+                         service_num_during=1, screen_num_during=1,
+                         service_num_after=1, screen_num_after=1,
+                         sign_in=False,
+                         phone_number='+13216549870', first_name='Edward', last_name='Igushev')
+
+    service_id_bck = SignInTestService.service_id
+    request_user_data_bck = SignInTestService.request_user_data
+
+    # Request with Date of Birth.
+    SignInTestService.service_id = 'SignInTest_DateOfBirth'
+    SignInTestService.request_user_data = fase.RequestUserData(date_of_birth=True)
+
+    # Sign In Procedure must request Date of Birth. 
+    self.SignInProcedure(service_num_before=2, screen_num_before=2,
+                         service_num_during=2, screen_num_during=2,
+                         service_num_after=2, screen_num_after=2,
+                         sign_in=True,
+                         phone_number='+13216549870',
+                         date_of_birth=datetime.datetime(year=1986, month=5, day=22),
+                         request_user_data=fase.RequestUserData(date_of_birth=True))
+
+    SignInTestService.service_id = 'SignInTest_DateOfBirth_Second'
+
+    # Date of Birth has been entered. 
+    self.SignInProcedure(service_num_before=3, screen_num_before=3,
+                         service_num_during=3, screen_num_during=3,
+                         service_num_after=3, screen_num_after=3,
+                         sign_in=True,
+                         phone_number='+13216549870')
+
+    # Request with Date of Birth and Home City.
+    SignInTestService.service_id = 'SignInTest_DateOfBirth_HomeCity'
+    SignInTestService.request_user_data = fase.RequestUserData(date_of_birth=True,
+                                                               home_city=True)
+
+    # Sign In Procedure must request HomeCity only since Date of Birth has been entered. 
+    self.SignInProcedure(service_num_before=4, screen_num_before=4,
+                         service_num_during=4, screen_num_during=4,
+                         service_num_after=4, screen_num_after=4,
+                         sign_in=True,
+                         phone_number='+13216549870',
+                         home_city=fase.Place(google_place_id='new-york-city-id'),
+                         request_user_data=fase.RequestUserData(home_city=True))
+
+    SignInTestService.service_id = 'SignInTest_DateOfBirth_HomeCity_Second'
+
+    # Both Date of Birth and HomeCity has been entered.
+    self.SignInProcedure(service_num_before=5, screen_num_before=5,
+                         service_num_during=5, screen_num_during=5,
+                         service_num_after=5, screen_num_after=5,
+                         sign_in=True,
+                         phone_number='+13216549870')
+    
+    SignInTestService.service_id = service_id_bck
+    SignInTestService.request_user_data = request_user_data_bck 
 
   def testSkipCancel(self):
     for element_clicked_id_list, expected_element_id in [(['sign_in_layout_id', 'skip_button_id'], 'skip_label'),

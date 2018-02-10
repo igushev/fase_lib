@@ -97,7 +97,7 @@ class NotesService(fase.Service):
   def _AddMainMenu(self, screen):
     menu = screen.AddMainMenu()
     if self.IfSignedIn():
-      menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUserName())
+      menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUser().DisplayName())
       menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut,
                        icon='notes_images/sign_out.png')
     else:

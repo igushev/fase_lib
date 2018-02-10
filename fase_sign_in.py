@@ -42,6 +42,8 @@ class FaseSignInButton(fase.Button):
       service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
+    service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue()
+    service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue()
     user_id = service.PopStringVariable('fase_sign_in_user_id_str').GetValue()
     # NOTE(igushev): We should either lookup by user_id and service_id and have deterministic hash.
     session_id_signed_in = GenerateSignedInSessionId(user_id)
@@ -62,8 +64,7 @@ class FaseSignInButton(fase.Button):
       service._session_id = session_id_signed_in
       service._if_signed_in = True
       service._user_id = user_id
-      service._user_phone_number = user.PhoneNumber()
-      service._user_name = user.DisplayName()
+      service._user = user
       screen = on_done(service, user_id_before=user_id_before)
       return service, screen
 
@@ -82,13 +83,20 @@ class FaseSignOutButton(fase.Button):
     return service, screen
 
 
-def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None):
+def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_user_data=None):
   assert not service._if_signed_in
   service.AddFunctionVariable(id_='fase_sign_in_on_done_class_method', value=on_done)
   if on_skip is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_skip_class_method', value=on_skip)
   if on_cancel is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
+  
+  # Requested user data.
+  service.AddBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth',
+                          value=(request_user_data is not None and request_user_data.date_of_birth))
+  service.AddBoolVariable(id_='fase_sign_in_request_user_data_home_city',
+                          value=(request_user_data is not None and request_user_data.home_city))
+
   return OnSignInStart(service, None, None)
 
 
@@ -139,7 +147,58 @@ def OnSignInEnteredData(service, screen, element):
     return _ErrorPopup(service, message='User with such phone number has not been found!', on_click=OnSignInOption)
   assert len(user_list) == 1
   user = user_list[0]
-  return _OnEnteredData(service, screen, element, phone_number, user.user_id)
+  _CleanUserVariables(service)
+  service.AddStringVariable(id_='fase_sign_in_user_id_str', value=user.user_id)
+
+  # Requested user data.
+  request_user_data = fase.RequestUserData(
+      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
+      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue())
+  if ((request_user_data.date_of_birth and user.date_of_birth is None) or
+      (request_user_data.home_city and user.home_city is None)):
+    return _OnRequestUserData(service, screen, element, request_user_data, user)
+  
+  return _OnEnteredData(service, screen, element, phone_number)
+
+
+def _OnRequestUserData(service, screen, element, request_user_data, user):
+  screen = fase.Screen(service)
+  screen.SetTitle('Enter Data')
+  enter_layout = screen.AddLayout(id_='enter_layout_id', orientation=fase.Layout.VERTICAL)
+
+  if request_user_data.date_of_birth and user.date_of_birth is None:
+    enter_layout.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
+                                   hint='Date of Birth')
+  if request_user_data.home_city and user.home_city is None:
+    enter_layout.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
+
+  enter_button = enter_layout.AddButton(id_='enter_button_id', text='Enter', on_click=OnRequestUserDataEnteredData)
+  enter_button.SetRequestLocale(True)
+  screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
+  return screen
+
+
+def OnRequestUserDataEnteredData(service, screen, element):
+  user_id = service.GetStringVariable('fase_sign_in_user_id_str').GetValue()
+  user = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id)
+  request_user_data = fase.RequestUserData(
+      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
+      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue())
+  enter_layout = screen.GetElement(id_='enter_layout_id')
+
+  if request_user_data.date_of_birth and user.date_of_birth is None:
+    date_of_birth = enter_layout.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
+    if date_of_birth is None:
+      return _ErrorPopup(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
+    user.date_of_birth = date_of_birth
+  if request_user_data.home_city and user.home_city is None:
+    home_city = enter_layout.GetPlacePicker(id_='home_city_place_picker').GetPlace()
+    if home_city is None:
+      return _ErrorPopup(service, message='Please enter Home City!', on_click=OnSignUpOption)
+    user.home_city = home_city
+
+  fase_database.FaseDatabaseInterface.Get().AddUser(user, overwrite=True)
+  return _OnEnteredData(service, screen, element, user.GetPhoneNumber())
 
 
 def OnSignUpOption(service, screen, element):
@@ -148,6 +207,14 @@ def OnSignUpOption(service, screen, element):
   sign_up_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
   sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
   sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
+
+  # Requested user data.
+  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
+    sign_up_layout.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
+                                     hint='Date of Birth')
+  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
+    sign_up_layout.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
+
   sign_up_button = sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
   sign_up_button.SetRequestLocale(True)
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
@@ -183,21 +250,41 @@ def OnSignUpEnteredData(service, screen, element):
   user_id_hash.update(datetime_now.strftime(fase.DATETIME_FORMAT).encode('utf-8'))
   user_id_hash.update(phone_number.encode('utf-8'))
   user_id = user_id_hash.hexdigest()
-  
-  user = fase_model.User(user_id=user_id,
-                         phone_number=phone_number,
-                         first_name=sign_up_layout.GetText(id_='first_name_text_id').GetText(),
-                         last_name=sign_up_layout.GetText(id_='last_name_text_id').GetText(),
-                         datetime_added=datetime_now)
+
+  first_name = sign_up_layout.GetText(id_='first_name_text_id').GetText()
+  last_name = sign_up_layout.GetText(id_='last_name_text_id').GetText()
+
+  # Requested user data.
+  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
+    date_of_birth = sign_up_layout.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
+    if date_of_birth is None:
+      return _ErrorPopup(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
+  else:
+    date_of_birth = None
+  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
+    home_city = sign_up_layout.GetPlacePicker(id_='home_city_place_picker').GetPlace()
+    if home_city is None:
+      return _ErrorPopup(service, message='Please enter Home City!', on_click=OnSignUpOption)
+  else:
+    home_city = None
+
+  user = fase.User(user_id=user_id,
+                   phone_number=phone_number,
+                   first_name=first_name,
+                   last_name=last_name,
+                   date_of_birth=date_of_birth,
+                   home_city=home_city,
+                   datetime_added=datetime_now)
   fase_database.FaseDatabaseInterface.Get().AddUser(user)
-  return _OnEnteredData(service, screen, element, phone_number, user_id)
+  _CleanUserVariables(service)
+  service.AddStringVariable(id_='fase_sign_in_user_id_str', value=user_id)
+  return _OnEnteredData(service, screen, element, phone_number)
 
 
-def _OnEnteredData(service, screen, element, phone_number, user_id):
+def _OnEnteredData(service, screen, element, phone_number):
   activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
   sms_sender.SMSSender.Get().SendActivationCode(phone_number, activation_code)
   _CleanActivationVariables(service)
-  service.AddStringVariable(id_='fase_sign_in_user_id_str', value=user_id)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
   return OnActivationCodeSent(service, screen, element)
 
@@ -217,6 +304,9 @@ def OnSignInSkipOption(service, screen, element):
   on_skip = service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method').GetValue()
   if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
     service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
+  service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
+  service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
+  _CleanUserVariables(service)
   _CleanActivationVariables(service)
   screen = on_skip(service)
   return screen
@@ -227,14 +317,20 @@ def OnSignInCancelOption(service, screen, element):
   if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
     service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
   on_cancel = service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method').GetValue()
+  service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
+  service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
+  _CleanUserVariables(service)
   _CleanActivationVariables(service)
   screen = on_cancel(service)
   return screen
 
 
-def _CleanActivationVariables(service):
+def _CleanUserVariables(service):
   if service.HasStringVariable(id_='fase_sign_in_user_id_str'):
     service.PopStringVariable('fase_sign_in_user_id_str')
+
+
+def _CleanActivationVariables(service):
   if service.HasIntVariable(id_='fase_sign_in_activation_code_int'):
     service.PopIntVariable(id_='fase_sign_in_activation_code_int')
 

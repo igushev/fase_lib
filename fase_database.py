@@ -256,7 +256,7 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
     )
     if 'Item' not in user_response:
       return None
-    user = fase_model.User.FromSimple(dynamodb_util.ItemToSimple(user_response['Item']))
+    user = fase.User.FromSimple(dynamodb_util.ItemToSimple(user_response['Item']))
     return user
 
   def GetUserListByPhoneNumber(self, phone_number):
@@ -265,6 +265,6 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
         IndexName='phone_number_index',
         KeyConditionExpression='phone_number = :phone_number',
         ExpressionAttributeValues={':phone_number': dynamodb_util.SimpleToField(phone_number)})
-    user_list = [fase_model.User.FromSimple(dynamodb_util.ItemToSimple(user_item))
+    user_list = [fase.User.FromSimple(dynamodb_util.ItemToSimple(user_item))
              for user_item in user_list_response['Items']]
     return user_list

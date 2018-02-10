@@ -26,11 +26,11 @@ class NotesTest(unittest.TestCase):
             service_list=[],
             screen_prog_list=[],
             user_list=[
-                fase_model.User(user_id='321',
-                                phone_number='+13216549870',
-                                first_name='Edward',
-                                last_name='Igushev',
-                                datetime_added=datetime.datetime.now())]),
+                fase.User(user_id='321',
+                          phone_number='+13216549870',
+                          first_name='Edward',
+                          last_name='Igushev',
+                          datetime_added=datetime.datetime.now())]),
         overwrite=True)
 
     datetime_now = datetime.datetime.now()

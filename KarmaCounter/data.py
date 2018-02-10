@@ -84,9 +84,9 @@ class CommonCity(data_util.AbstractObject):
   def ComputeCityId(self):
     m = hashlib.md5()
     # TODO(igushev): Switch to codes.
-    m.update(self.city.encode('utf-8'))
+    m.update((self.city or '').encode('utf-8'))
     m.update((self.state or '').encode('utf-8'))
-    m.update(self.country.encode('utf-8'))
+    m.update((self.country or '').encode('utf-8'))
     self.city_id = m.hexdigest()
 
   def WithoutCityId(self):

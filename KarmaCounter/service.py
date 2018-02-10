@@ -13,19 +13,18 @@ class KarmaCounter(fase.Service):
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
-    return fase_sign_in.StartSignIn(self, on_done=KarmaCounter.OnSignInDone)
+    return fase_sign_in.StartSignIn(self, on_done=KarmaCounter.OnSignInDone,
+                                    request_user_data=fase.RequestUserData(date_of_birth=True, home_city=True))
 
   def OnSignInDone(self, user_id_before=None):
-    new_user = kc_data.NewUser(phone_number=self.GetUserPhoneNumber(),
-                               first_name=self.GetUserName(),
-                               last_name=None,
-                               city=kc_data.CommonCity(google_place_id='fake_id',
-                                                       city='New York City',
-                                                       state=None,
-                                                       country='US'),
-                               date_of_birth=None,
-                               device=None,
-                               locale=None)
+    new_user = kc_data.NewUser(phone_number=self.GetUser().GetPhoneNumber(),
+                               first_name=self.GetUser().GetFirstName(),
+                               last_name=self.GetUser().GetLastName(),
+                               city=kc_data.CommonCity(google_place_id=self.GetUser().GetHomeCity().google_place_id,
+                                                       city=self.GetUser().GetHomeCity().city,
+                                                       state=self.GetUser().GetHomeCity().state,
+                                                       country=self.GetUser().GetHomeCity().country),
+                               date_of_birth=self.GetUser().GetDateOfBirth())
     session_info = kc_client.GetUserSession(new_user)
     if not self.HasStringVariable(id_='session_id_str'):
       self.AddStringVariable(id_='session_id_str', value=session_info.session_id)
@@ -68,7 +67,7 @@ class KarmaCounter(fase.Service):
 
   def _AddButtons(self, screen):
     main_menu = screen.AddMainMenu()
-    main_menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUserName())
+    main_menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUser().DisplayName())
     main_menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=KarmaCounter.OnSignOut)
     button_bar = screen.AddButtonBar()
     button_bar.AddButton(id_='dashboard_button', text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
@@ -249,6 +248,7 @@ class KarmaCounter(fase.Service):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
     cities_statistics_top_bottom = kc_client.CitiesStatisticsTopBottom(session_info)
     screen = fase.Screen(self)
+    screen.SetTitle('Statistics by Cities')
     screen.AddLabel(id_='top_label', label='Cities With Highest Score')
     top_layout = screen.AddLayout(id_='top_layout', orientation=fase.Layout.VERTICAL)
     self._DisplayCitiesStatistics(top_layout, cities_statistics_top_bottom.external_cities_statistics_top)

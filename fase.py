@@ -89,6 +89,21 @@ class Contact(data_util.AbstractObject):
     return self.phone_number
 
 
+class RequestUserData(object):
+
+  def __init__(self,
+               date_of_birth=False,
+               home_city=False):
+    self.date_of_birth = date_of_birth
+    self.home_city = home_city
+
+  def GetDateOfBirth(self):
+    return self.date_of_birth
+
+  def GetHomeCity(self):
+    return self.home_city
+
+
 @json_util.JSONDecorator({
     'google_place_id': json_util.JSONString(),
     'city': json_util.JSONString(),
@@ -118,6 +133,57 @@ class Place(data_util.AbstractObject):
                                city=self.city or '',
                                state=self.state or '',
                                country=self.country or '')
+
+
+@json_util.JSONDecorator({
+    'user_id': json_util.JSONString(),
+    'phone_number': json_util.JSONString(),
+    'first_name': json_util.JSONString(),
+    'last_name': json_util.JSONString(),
+    'date_of_birth': json_util.JSONDateTime(),
+    'home_city': json_util.JSONObject(Place),
+    'datetime_added': json_util.JSONDateTime()})
+class User(data_util.AbstractObject):
+  def __init__(self,
+               user_id=None,
+               phone_number=None,
+               first_name=None,
+               last_name=None,
+               date_of_birth=None,
+               home_city=None,
+               datetime_added=None):
+    self.user_id = user_id
+    self.phone_number = phone_number
+    self.first_name = first_name
+    self.last_name = last_name
+    self.date_of_birth = date_of_birth
+    self.home_city=home_city 
+    self.datetime_added = datetime_added
+
+  def GetPhoneNumber(self):
+    return self.phone_number
+
+  def GetFirstName(self):
+    return self.first_name
+
+  def GetLastName(self):
+    return self.last_name
+
+  def GetDateOfBirth(self):
+    return self.date_of_birth
+
+  def GetHomeCity(self):
+    return self.home_city
+
+  def DisplayName(self):
+    if self.first_name and self.last_name:
+      return ' '.join([self.first_name, self.last_name])
+    elif self.first_name:
+      return self.first_name
+    elif self.last_name:
+      return self.last_name
+    else:
+      return self.phone_number
 
 
 @json_util.JSONDecorator({}, inherited=True)
@@ -890,9 +956,8 @@ class Screen(BaseElementsContainer):
 @json_util.JSONDecorator(
     {'_session_id': json_util.JSONString(),
      '_if_signed_in': json_util.JSONBool(),
-     '_user_phone_number': json_util.JSONString(),
-     '_user_name': json_util.JSONString(),
      '_user_id': json_util.JSONString(),
+     '_user': json_util.JSONObject(User),
      '_datetime_added': json_util.JSONDateTime()})
 class Service(VariableContainer):
   
@@ -909,8 +974,7 @@ class Service(VariableContainer):
     self._session_id = GenerateSessionId()
     self._if_signed_in = False
     self._user_id = GenerateUserId(self._session_id)
-    self._user_phone_number = None
-    self._user_name = None
+    self._user = None
     self._datetime_added = datetime.datetime.now()
 
   def GetSessionId(self):
@@ -919,8 +983,6 @@ class Service(VariableContainer):
     return self._user_id
   def IfSignedIn(self):
     return self._if_signed_in
-  def GetUserPhoneNumber(self):
-    return self._user_phone_number
-  def GetUserName(self):
-    return self._user_name
+  def GetUser(self):
+    return self._user
 

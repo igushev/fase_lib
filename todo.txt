@@ -1,9 +1,9 @@
 # Before Making iOS and Android
-# TODO(igushev): Have a way to provide city and DOB in KarmaCounter.
+# TODO(igushev): Add ComboBox to choose KarmaCounter score.
+# TODO(igushev): Add ability to infinite scroll.
 # TODO(igushev): Getting resources from Server to Client.
 # TODO(igushev): Organize flat structure into directories.
 # TODO(igushev): Rename icon to image, popup to dialog box.
-# TODO(igushev): Add ability to infinite scroll.
 
 # Server Side
 # TODO(igushev): Make Push Notifications.

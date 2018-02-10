@@ -605,6 +605,7 @@ class FaseTkUIImp(object):
     self.ui.ElementClickedCallBack(id_list)
 
   def ElementUpdatedReceived(self, id_list, value):
+    # NOTE(igushev): We turn off element_updated_callback not to register change as user's change.
     self.element_updated_callback = False
     self.id_list_to_var[tuple(id_list)].Update(value)
     self.element_updated_callback = True

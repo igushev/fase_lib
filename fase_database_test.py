@@ -66,21 +66,21 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     self.assertEqual(screen_prog_1, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_1))
     self.assertEqual(screen_prog_2, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_2))
     
-    user_1 = fase_model.User(user_id='321',
-                             phone_number='+13216549870',
-                             first_name='Edward',
-                             last_name='Igushev',
-                             datetime_added=datetime.datetime.now())    
-    user_2 = fase_model.User(user_id='987',
-                             phone_number='+19876543210',
-                             first_name='Edward Junior',
-                             last_name='Igushev',
-                             datetime_added=datetime.datetime.now())    
-    user_2b = fase_model.User(user_id='987b',
-                             phone_number='+19876543210',
-                             first_name='Edward Junior',
-                             last_name='Igushev (One more account)',
-                             datetime_added=datetime.datetime.now())    
+    user_1 = fase.User(user_id='321',
+                       phone_number='+13216549870',
+                       first_name='Edward',
+                       last_name='Igushev',
+                       datetime_added=datetime.datetime.now())    
+    user_2 = fase.User(user_id='987',
+                       phone_number='+19876543210',
+                       first_name='Edward Junior',
+                       last_name='Igushev',
+                       datetime_added=datetime.datetime.now())    
+    user_2b = fase.User(user_id='987b',
+                        phone_number='+19876543210',
+                        first_name='Edward Junior',
+                        last_name='Igushev (One more account)',
+                        datetime_added=datetime.datetime.now())    
 
     self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetUser(user_1.user_id))
     self.assertEqual([], fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(user_1.phone_number))
