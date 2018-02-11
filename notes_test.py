@@ -155,10 +155,10 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_=fase.POPUP_ID)
+    screen.GetElement(id_=fase.ALERT_ID)
     # Click on Yes.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.POPUP_ID, 'ok_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=[fase.ALERT_ID, 'ok_id']), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen

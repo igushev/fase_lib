@@ -19,10 +19,10 @@ def GenerateSignedInSessionId(user_id):
   return session_id_signed_in
 
 
-def _ErrorPopup(service, message, on_click):
+def _ErrorAlert(service, message, on_click):
   screen = fase.Screen(service)
-  popup = screen.AddPopup(message)
-  popup.AddButton(id_="ok_id", text="OK", on_click=on_click)
+  alert = screen.AddAlert(message)
+  alert.AddButton(id_="ok_id", text="OK", on_click=on_click)
   return screen
 
 
@@ -35,7 +35,7 @@ class FaseSignInButton(fase.Button):
         screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
-      return service, _ErrorPopup(service, message='Wrong activation code!', on_click=OnActivationCodeSent)
+      return service, _ErrorAlert(service, message='Wrong activation code!', on_click=OnActivationCodeSent)
 
     on_done = service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method').GetValue()
     if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
@@ -131,20 +131,20 @@ def OnSignInEnteredData(service, screen, element):
     country_code = country_code.upper()
 
   if not phone_number:
-    return _ErrorPopup(service, message='Phone number is not specified!', on_click=OnSignInOption)
+    return _ErrorAlert(service, message='Phone number is not specified!', on_click=OnSignInOption)
   phone_number_verifier_ = phone_number_verifier.PhoneNumberVerifier()
   try:
     phone_number = phone_number_verifier_.Format(phone_number, country_code)
   except phone_number_verifier.NoCountryCodeException:
-    return _ErrorPopup(service,
+    return _ErrorAlert(service,
                        message='Phone number country code could not be inferred! Please try to add explicitly!',
                        on_click=OnSignInOption)
   except phone_number_verifier.InvalidPhoneNumberException:
-    return _ErrorPopup(service, message='Phone number format is invalid!', on_click=OnSignInOption)
+    return _ErrorAlert(service, message='Phone number format is invalid!', on_click=OnSignInOption)
 
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if not user_list:
-    return _ErrorPopup(service, message='User with such phone number has not been found!', on_click=OnSignInOption)
+    return _ErrorAlert(service, message='User with such phone number has not been found!', on_click=OnSignInOption)
   assert len(user_list) == 1
   user = user_list[0]
   _CleanUserVariables(service)
@@ -189,12 +189,12 @@ def OnRequestUserDataEnteredData(service, screen, element):
   if request_user_data.date_of_birth and user.date_of_birth is None:
     date_of_birth = enter_layout.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
-      return _ErrorPopup(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
     user.date_of_birth = date_of_birth
   if request_user_data.home_city and user.home_city is None:
     home_city = enter_layout.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
-      return _ErrorPopup(service, message='Please enter Home City!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message='Please enter Home City!', on_click=OnSignUpOption)
     user.home_city = home_city
 
   fase_database.FaseDatabaseInterface.Get().AddUser(user, overwrite=True)
@@ -230,20 +230,20 @@ def OnSignUpEnteredData(service, screen, element):
     country_code = country_code.upper()
 
   if not phone_number:
-    return _ErrorPopup(service, message='Phone number is not specified!', on_click=OnSignUpOption)
+    return _ErrorAlert(service, message='Phone number is not specified!', on_click=OnSignUpOption)
   phone_number_verifier_ = phone_number_verifier.PhoneNumberVerifier()
   try:
     phone_number = phone_number_verifier_.Format(phone_number, country_code)
   except phone_number_verifier.NoCountryCodeException:
-    return _ErrorPopup(service,
+    return _ErrorAlert(service,
                        message='Phone number country code could not be inferred! Please try to add explicitly!',
                        on_click=OnSignUpOption)
   except phone_number_verifier.InvalidPhoneNumberException:
-    return _ErrorPopup(service, message='Phone number format is invalid!', on_click=OnSignUpOption)
+    return _ErrorAlert(service, message='Phone number format is invalid!', on_click=OnSignUpOption)
   
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if user_list:
-    return _ErrorPopup(service, message='User with such phone number is already registered!', on_click=OnSignUpOption)
+    return _ErrorAlert(service, message='User with such phone number is already registered!', on_click=OnSignUpOption)
 
   datetime_now = datetime.datetime.now()
   user_id_hash = hashlib.md5()
@@ -258,13 +258,13 @@ def OnSignUpEnteredData(service, screen, element):
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
     date_of_birth = sign_up_layout.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
-      return _ErrorPopup(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
   else:
     date_of_birth = None
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
     home_city = sign_up_layout.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
-      return _ErrorPopup(service, message='Please enter Home City!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message='Please enter Home City!', on_click=OnSignUpOption)
   else:
     home_city = None
 

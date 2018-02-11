@@ -15,7 +15,7 @@ PLACE_REGEXP = '(?P<google_place_id>.*)\|(?P<city>.*)\|(?P<state>.*)\|(?P<countr
 NEXT_STEP_BUTTON_ID = 'next_step_button'
 PREV_STEP_BUTTON_ID = 'prev_step_button'
 CONTEXT_MENU_ID = 'context_menu'
-POPUP_ID = 'popup'
+ALERT_ID = 'alert'
 MAIN_MENU_ID = 'main_menu'
 MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
@@ -869,10 +869,10 @@ class Layout(BaseElementsContainer):
 
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString()})
-class Popup(ElementContainer):
+class Alert(ElementContainer):
 
   def __init__(self, text=None):
-    super(Popup, self).__init__()
+    super(Alert, self).__init__()
     self._text = text
 
   def GetText(self):
@@ -947,10 +947,10 @@ class Screen(BaseElementsContainer):
   def GetContextMenu(self):
     return self.GetElement(CONTEXT_MENU_ID)
 
-  def AddPopup(self, text=None):
-    return self.AddElement(POPUP_ID, Popup(text=text))
-  def GetPopup(self):
-    return self.GetElement(POPUP_ID) 
+  def AddAlert(self, text=None):
+    return self.AddElement(ALERT_ID, Alert(text=text))
+  def GetAlert(self):
+    return self.GetElement(ALERT_ID) 
 
 
 @json_util.JSONDecorator(

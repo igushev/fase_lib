@@ -585,8 +585,8 @@ class FaseTkUIImp(object):
     self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.GetUIImpParent().index(tkinter.END))
 
   # NOTE(igushev): tkinter has limitation on what dialog boxes can be displayed.
-  def ShowPopup(self, popup, button_text_tuple):
-    return messagebox.showinfo(type=BUTTON_TEXT_LIST_TO_INFO_TYPE[button_text_tuple], message=popup.GetText())
+  def ShowAlert(self, alert, button_text_tuple):
+    return messagebox.showinfo(type=BUTTON_TEXT_LIST_TO_INFO_TYPE[button_text_tuple], message=alert.GetText())
 
   def Run(self):
     self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)

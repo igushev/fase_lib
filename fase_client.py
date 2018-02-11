@@ -101,9 +101,9 @@ class FaseClient(object):
       self.ProcessResponse(response)
 
   def ProcessResponse(self, response):
-    while response.screen is not None and response.screen.HasElement(fase.POPUP_ID):
-      popup = response.screen.PopElement(fase.POPUP_ID)
-      id_list = self.ui.ShowPopup(popup)
+    while response.screen is not None and response.screen.HasElement(fase.ALERT_ID):
+      alert = response.screen.PopElement(fase.ALERT_ID)
+      id_list = self.ui.ShowAlert(alert)
       element_clicked = fase_model.ElementClicked(id_list=id_list, device=self.device)
       response = self.http_client.ElementClicked(element_clicked, response.session_info, response.screen_info)
     self.session_info = response.session_info

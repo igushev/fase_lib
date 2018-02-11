@@ -7,6 +7,7 @@ import unittest
 import hello_world
 import fase_database
 import fase_model
+import fase
 
 
 DYNAMODB_CMD = (

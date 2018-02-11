@@ -315,8 +315,8 @@ class FaseSignInTest(unittest.TestCase):
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
-    # Check Popup window.
-    self.assertEqual('User with such phone number has not been found!', screen.GetPopup().GetText())
+    # Check Alert window.
+    self.assertEqual('User with such phone number has not been found!', screen.GetAlert().GetText())
 
   def testSignUp_Non_Existing_Service_Screen_User(self):
     fase_database.FaseDatabaseInterface.Set(
@@ -370,8 +370,8 @@ class FaseSignInTest(unittest.TestCase):
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
-    # Check Popup window.
-    self.assertEqual('User with such phone number is already registered!', screen.GetPopup().GetText())
+    # Check Alert window.
+    self.assertEqual('User with such phone number is already registered!', screen.GetAlert().GetText())
 
   def testSignUp_Wrong_ActivationCode(self):
     fase_database.FaseDatabaseInterface.Set(
@@ -401,8 +401,8 @@ class FaseSignInTest(unittest.TestCase):
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
-    # Check Popup window.
-    self.assertEqual('Wrong activation code!', screen.GetPopup().GetText())
+    # Check Alert window.
+    self.assertEqual('Wrong activation code!', screen.GetAlert().GetText())
 
   def testSignOut_Existing_Service_Screen_User(self):
     fase_database.FaseDatabaseInterface.Set(

@@ -3,7 +3,6 @@
 # TODO(igushev): Add ability to infinite scroll.
 # TODO(igushev): Getting resources from Server to Client.
 # TODO(igushev): Organize flat structure into directories.
-# TODO(igushev): Rename icon to image, popup to dialog box.
 
 # Server Side
 # TODO(igushev): Make Push Notifications.

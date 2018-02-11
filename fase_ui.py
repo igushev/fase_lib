@@ -4,7 +4,7 @@ import fase
 BUILT_IN_IDS = set([fase.NEXT_STEP_BUTTON_ID,
                     fase.PREV_STEP_BUTTON_ID,
                     fase.CONTEXT_MENU_ID,
-                    fase.POPUP_ID,
+                    fase.ALERT_ID,
                     fase.MAIN_MENU_ID,
                     fase.MAIN_BUTTON_ID,
                     fase.BUTTON_BAR_ID])
@@ -125,16 +125,16 @@ class FaseUI(object):
   def DrawPlacePicker(self, id_list, place_picker_element, ui_imp_parent):
     self.ui_imp.DrawPlacePicker(id_list, place_picker_element, ui_imp_parent)
 
-  def ShowPopup(self, popup):
+  def ShowAlert(self, alert):
     button_text_to_button_id = {}
     button_text_list = []
-    for button_id, button_element in popup.GetIdElementList():
+    for button_id, button_element in alert.GetIdElementList():
       button_text = button_element.GetText().lower()
       assert not button_text in button_text_to_button_id
       button_text_to_button_id[button_text] = button_id
       button_text_list.append(button_text)
-    button_text_clicked = self.ui_imp.ShowPopup(popup, tuple(button_text_list))
-    return [fase.POPUP_ID, button_text_to_button_id[button_text_clicked]]
+    button_text_clicked = self.ui_imp.ShowAlert(alert, tuple(button_text_list))
+    return [fase.ALERT_ID, button_text_to_button_id[button_text_clicked]]
 
   def Run(self):
     self.ui_imp.Run()
