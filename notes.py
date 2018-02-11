@@ -67,30 +67,30 @@ class NotesService(fase.Service):
     screen.SetScrollable(True)
     self._AddMainMenu(screen)
     self._AddButtons(screen)
-    notes_layout = screen.AddLayout(id_='notes_layout', orientation=fase.Layout.VERTICAL)
+    notes_frame = screen.AddFrame(id_='notes_frame', orientation=fase.Frame.VERTICAL)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
       notes = filter(filter_func, notes)
     for note in sorted(notes, key=key_func, reverse=reverse):
-      note_layout = notes_layout.AddLayout(
-          id_='note_layout_%s' % note.note_id, orientation=fase.Layout.VERTICAL, on_click=NotesService.OnNote,
+      note_frame = notes_frame.AddFrame(
+          id_='note_frame_%s' % note.note_id, orientation=fase.Frame.VERTICAL, on_click=NotesService.OnNote,
           border=True)
-      note_layout.AddStringVariable(id_='layout_note_id', value=note.note_id)
+      note_frame.AddStringVariable(id_='frame_note_id', value=note.note_id)
 
-      note_header_layout = note_layout.AddLayout(
-          id_='note_header_layout', orientation=fase.Layout.HORIZONTAL, size=fase.Label.MAX)
-      note_header_layout.AddLabel(
+      note_header_frame = note_frame.AddFrame(
+          id_='note_header_frame', orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
+      note_header_frame.AddLabel(
           id_='note_header_label', label=note.header, font=1.5, size=fase.Label.MAX, alight=fase.Label.LEFT)
-      note_header_layout.AddImage(
+      note_header_frame.AddImage(
           id_='note_header_image', image=('notes_images/favourite.png' if note.favourite else
                                           'notes_images/favourite_non.png'))
 
-      note_layout.AddLabel(id_='note_layout_label', label=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
+      note_frame.AddLabel(id_='note_frame_label', label=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
 
       datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.now())
-      note_deails_layout = note_layout.AddLayout(id_='note_deails_layout', orientation=fase.Layout.HORIZONTAL)
-      note_deails_layout.AddLabel(
-          id_='note_deails_layout_datetime_text', label=datetime_text, font=0.7,
+      note_deails_frame = note_frame.AddFrame(id_='note_deails_frame', orientation=fase.Frame.HORIZONTAL)
+      note_deails_frame.AddLabel(
+          id_='note_deails_frame_datetime_text', label=datetime_text, font=0.7,
           size=fase.Label.MAX, alight=fase.Label.RIGHT)
     return screen
 
@@ -136,14 +136,14 @@ class NotesService(fase.Service):
     return self._DisplayNote(None, screen)
 
   def OnNote(self, screen, element):
-    note_id = element.GetStringVariable(id_='layout_note_id').GetValue()
+    note_id = element.GetStringVariable(id_='frame_note_id').GetValue()
     return self._DisplayNote(note_id, screen)
 
   def _DisplayNote(self, note_id, screen):
     screen = fase.Screen(self)
-    note_layout = screen.AddLayout(id_='note_layout', orientation=fase.Layout.VERTICAL)
-    header_text = note_layout.AddText(id_='header_text')
-    text_text = note_layout.AddText(id_='text_text', size=fase.Label.MAX)
+    note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL)
+    header_text = note_frame.AddText(id_='header_text')
+    text_text = note_frame.AddText(id_='text_text', size=fase.Label.MAX)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
 
     note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None
@@ -178,11 +178,11 @@ class NotesService(fase.Service):
       note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
       note_id_hash.update(user_id.encode('utf-8'))
       note_id = note_id_hash.hexdigest()
-    note_layout = screen.GetLayout(id_='note_layout')
+    note_frame = screen.GetFrame(id_='note_frame')
     note = notes_model.Note(note_id=note_id,
                             user_id=user_id,
-                            header=note_layout.GetElement(id_='header_text').GetText(),
-                            text=note_layout.GetElement(id_='text_text').GetText(),
+                            header=note_frame.GetElement(id_='header_text').GetText(),
+                            text=note_frame.GetElement(id_='text_text').GetText(),
                             datetime=datetime_now,
                             favourite=screen.GetStringVariable(id_='favourite_bool').GetValue())
     notes_database.NotesDatabaseInterface.Get().AddNote(note, overwrite=True)

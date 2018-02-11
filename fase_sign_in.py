@@ -32,7 +32,7 @@ class FaseSignInButton(fase.Button):
   def FaseOnClick(self, service, screen):
     activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_int').GetValue()
     activation_code_entered = int(
-        screen.GetLayout(id_='enter_activation_layout_id').GetText(id_='activation_code_text_id').GetText())
+        screen.GetFrame(id_='enter_activation_frame_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
       return service, _ErrorAlert(service, message='Wrong activation code!', on_click=OnActivationCodeSent)
@@ -102,11 +102,11 @@ def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_use
 
 def OnSignInStart(service, screen, element):
   screen = fase.Screen(service)
-  sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
-  sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInOption)
-  sign_in_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpOption)
+  sign_in_frame = screen.AddFrame(id_='sign_in_frame_id', orientation=fase.Frame.VERTICAL)
+  sign_in_frame.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInOption)
+  sign_in_frame.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpOption)
   if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
-    sign_in_layout.AddButton(id_='skip_button_id', text='Skip', on_click=OnSignInSkipOption)
+    sign_in_frame.AddButton(id_='skip_button_id', text='Skip', on_click=OnSignInSkipOption)
   if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
     screen.AddPrevStepButton(text='Cancel', on_click=OnSignInCancelOption)
   return screen
@@ -114,17 +114,17 @@ def OnSignInStart(service, screen, element):
 
 def OnSignInOption(service, screen, element):
   screen = fase.Screen(service)
-  sign_in_layout = screen.AddLayout(id_='sign_in_layout_id', orientation=fase.Layout.VERTICAL)
-  sign_in_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
-  sign_in_button = sign_in_layout.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
+  sign_in_frame = screen.AddFrame(id_='sign_in_frame_id', orientation=fase.Frame.VERTICAL)
+  sign_in_frame.AddText(id_='phone_number_text_id', hint='Phone Number')
+  sign_in_button = sign_in_frame.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
   sign_in_button.SetRequestLocale(True)
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
 
 
 def OnSignInEnteredData(service, screen, element):
-  sign_in_layout = screen.GetElement(id_='sign_in_layout_id')
-  phone_number = sign_in_layout.GetText(id_='phone_number_text_id').GetText()
+  sign_in_frame = screen.GetElement(id_='sign_in_frame_id')
+  phone_number = sign_in_frame.GetText(id_='phone_number_text_id').GetText()
   country_code = element.GetLocale().country_code
 
   if country_code:
@@ -164,15 +164,15 @@ def OnSignInEnteredData(service, screen, element):
 def _OnRequestUserData(service, screen, element, request_user_data, user):
   screen = fase.Screen(service)
   screen.SetTitle('Enter Data')
-  enter_layout = screen.AddLayout(id_='enter_layout_id', orientation=fase.Layout.VERTICAL)
+  enter_frame = screen.AddFrame(id_='enter_frame_id', orientation=fase.Frame.VERTICAL)
 
   if request_user_data.date_of_birth and user.date_of_birth is None:
-    enter_layout.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
+    enter_frame.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
                                    hint='Date of Birth')
   if request_user_data.home_city and user.home_city is None:
-    enter_layout.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
+    enter_frame.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
 
-  enter_button = enter_layout.AddButton(id_='enter_button_id', text='Enter', on_click=OnRequestUserDataEnteredData)
+  enter_button = enter_frame.AddButton(id_='enter_button_id', text='Enter', on_click=OnRequestUserDataEnteredData)
   enter_button.SetRequestLocale(True)
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
@@ -184,15 +184,15 @@ def OnRequestUserDataEnteredData(service, screen, element):
   request_user_data = fase.RequestUserData(
       date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
       home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue())
-  enter_layout = screen.GetElement(id_='enter_layout_id')
+  enter_frame = screen.GetElement(id_='enter_frame_id')
 
   if request_user_data.date_of_birth and user.date_of_birth is None:
-    date_of_birth = enter_layout.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
+    date_of_birth = enter_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
       return _ErrorAlert(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
     user.date_of_birth = date_of_birth
   if request_user_data.home_city and user.home_city is None:
-    home_city = enter_layout.GetPlacePicker(id_='home_city_place_picker').GetPlace()
+    home_city = enter_frame.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
       return _ErrorAlert(service, message='Please enter Home City!', on_click=OnSignUpOption)
     user.home_city = home_city
@@ -203,27 +203,27 @@ def OnRequestUserDataEnteredData(service, screen, element):
 
 def OnSignUpOption(service, screen, element):
   screen = fase.Screen(service)
-  sign_up_layout = screen.AddLayout(id_='sign_up_layout_id', orientation=fase.Layout.VERTICAL)
-  sign_up_layout.AddText(id_='phone_number_text_id', hint='Phone Number')
-  sign_up_layout.AddText(id_='first_name_text_id', hint='First Name')
-  sign_up_layout.AddText(id_='last_name_text_id', hint='Last Name')
+  sign_up_frame = screen.AddFrame(id_='sign_up_frame_id', orientation=fase.Frame.VERTICAL)
+  sign_up_frame.AddText(id_='phone_number_text_id', hint='Phone Number')
+  sign_up_frame.AddText(id_='first_name_text_id', hint='First Name')
+  sign_up_frame.AddText(id_='last_name_text_id', hint='Last Name')
 
   # Requested user data.
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
-    sign_up_layout.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
+    sign_up_frame.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
                                      hint='Date of Birth')
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
-    sign_up_layout.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
+    sign_up_frame.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
 
-  sign_up_button = sign_up_layout.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
+  sign_up_button = sign_up_frame.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
   sign_up_button.SetRequestLocale(True)
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
   
 
 def OnSignUpEnteredData(service, screen, element):
-  sign_up_layout = screen.GetElement(id_='sign_up_layout_id')
-  phone_number = sign_up_layout.GetText(id_='phone_number_text_id').GetText()
+  sign_up_frame = screen.GetElement(id_='sign_up_frame_id')
+  phone_number = sign_up_frame.GetText(id_='phone_number_text_id').GetText()
   country_code = element.GetLocale().country_code
 
   if country_code:
@@ -251,18 +251,18 @@ def OnSignUpEnteredData(service, screen, element):
   user_id_hash.update(phone_number.encode('utf-8'))
   user_id = user_id_hash.hexdigest()
 
-  first_name = sign_up_layout.GetText(id_='first_name_text_id').GetText()
-  last_name = sign_up_layout.GetText(id_='last_name_text_id').GetText()
+  first_name = sign_up_frame.GetText(id_='first_name_text_id').GetText()
+  last_name = sign_up_frame.GetText(id_='last_name_text_id').GetText()
 
   # Requested user data.
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
-    date_of_birth = sign_up_layout.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
+    date_of_birth = sign_up_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
       return _ErrorAlert(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
   else:
     date_of_birth = None
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
-    home_city = sign_up_layout.GetPlacePicker(id_='home_city_place_picker').GetPlace()
+    home_city = sign_up_frame.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
       return _ErrorAlert(service, message='Please enter Home City!', on_click=OnSignUpOption)
   else:
@@ -291,9 +291,9 @@ def _OnEnteredData(service, screen, element, phone_number):
 
 def OnActivationCodeSent(service, screen, element):
   screen = fase.Screen(service)
-  enter_activation_layout = screen.AddLayout(id_='enter_activation_layout_id', orientation=fase.Layout.VERTICAL)
-  enter_activation_layout.AddText(id_='activation_code_text_id', hint='Activation Code')
-  enter_activation_layout.AddElement(
+  enter_activation_frame = screen.AddFrame(id_='enter_activation_frame_id', orientation=fase.Frame.VERTICAL)
+  enter_activation_frame.AddText(id_='activation_code_text_id', hint='Activation Code')
+  enter_activation_frame.AddElement(
       id_='send_button_id', element=FaseSignInButton(text='Send', on_click=fase.MockFunction))
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
@@ -339,8 +339,8 @@ def StartSignOut(service, on_cancel=None):
   assert service._if_signed_in
 
   screen = fase.Screen(service)
-  sign_out_layout = screen.AddLayout(id_='sign_out_layout_id', orientation=fase.Layout.VERTICAL)
-  sign_out_layout.AddElement(
+  sign_out_frame = screen.AddFrame(id_='sign_out_frame_id', orientation=fase.Frame.VERTICAL)
+  sign_out_frame.AddElement(
       id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.MockFunction))
   if on_cancel is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)

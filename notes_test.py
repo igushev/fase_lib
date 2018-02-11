@@ -62,25 +62,25 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='notes_layout')
+    screen.GetElement(id_='notes_frame')
     
     return session_info, screen_info, screen
 
   def AssertNotes(self, expected_notes, screen):
-    notes_layout = screen.GetElement(id_='notes_layout')
-    for expected_note, (_, actual_note_layout) in zip(expected_notes, notes_layout.GetIdElementList()):
+    notes_frame = screen.GetElement(id_='notes_frame')
+    for expected_note, (_, actual_note_frame) in zip(expected_notes, notes_frame.GetIdElementList()):
       if expected_note.note_id:
-        self.assertEqual(expected_note.note_id, actual_note_layout.GetStringVariable(id_='layout_note_id').GetValue())
-      actual_note_header_layout = actual_note_layout.GetLayout(id_='note_header_layout')
-      self.assertEqual(expected_note.header, actual_note_header_layout.GetLabel(id_='note_header_label').GetLabel())
+        self.assertEqual(expected_note.note_id, actual_note_frame.GetStringVariable(id_='frame_note_id').GetValue())
+      actual_note_header_frame = actual_note_frame.GetFrame(id_='note_header_frame')
+      self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetLabel())
       self.assertEqual('notes_images/favourite.png' if expected_note.favourite else 'notes_images/favourite_non.png',
-                       actual_note_header_layout.GetImage(id_='note_header_image').GetImage())
-      self.assertEqual(expected_note.text, actual_note_layout.GetLabel(id_='note_layout_label').GetLabel())
+                       actual_note_header_frame.GetImage(id_='note_header_image').GetImage())
+      self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetLabel())
       if expected_note.datetime:
         expected_datetime_text = datetime_util.GetDatetimeDiffStr(expected_note.datetime, datetime.datetime.now())
-        actual_note_deails_layout = actual_note_layout.GetLayout(id_='note_deails_layout')
+        actual_note_deails_frame = actual_note_frame.GetFrame(id_='note_deails_frame')
         self.assertEqual(expected_datetime_text,
-                         actual_note_deails_layout.GetLabel(id_='note_deails_layout_datetime_text').GetLabel())
+                         actual_note_deails_frame.GetLabel(id_='note_deails_frame_datetime_text').GetLabel())
 
   def AddNote(self, session_info, screen_info, note):
     # Click on New button.
@@ -90,12 +90,12 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='note_layout')
+    screen.GetElement(id_='note_frame')
 
     # Enter note.
-    elements_update=fase_model.ElementsUpdate([['note_layout', 'header_text'],
-                                               ['note_layout', 'text_text']], [note.header,
-                                                                               note.text])
+    elements_update=fase_model.ElementsUpdate([['note_frame', 'header_text'],
+                                               ['note_frame', 'text_text']], [note.header,
+                                                                              note.text])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
@@ -106,21 +106,21 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='notes_layout')
+    screen.GetElement(id_='notes_frame')
 
     return session_info, screen_info, screen
 
   def SelectNote(self, session_info, screen_info, note):
     # Click on the Note.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['notes_layout', 'note_layout_%s' % note.note_id]), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['notes_frame', 'note_frame_%s' % note.note_id]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements and content.
-    screen.GetElement(id_='note_layout')
-    self.assertEqual(note.header, screen.GetElement(id_='note_layout').GetElement(id_='header_text').GetText())
-    self.assertEqual(note.text, screen.GetElement(id_='note_layout').GetElement(id_='text_text').GetText())
+    screen.GetElement(id_='note_frame')
+    self.assertEqual(note.header, screen.GetElement(id_='note_frame').GetElement(id_='header_text').GetText())
+    self.assertEqual(note.text, screen.GetElement(id_='note_frame').GetElement(id_='text_text').GetText())
 
     return session_info, screen_info, screen
 
@@ -128,8 +128,8 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, _ = self.SelectNote(session_info, screen_info, note)
 
     # Edit Note.
-    elements_update=fase_model.ElementsUpdate([['note_layout', 'header_text'],
-                                               ['note_layout', 'text_text']], [note_edited.header,
+    elements_update=fase_model.ElementsUpdate([['note_frame', 'header_text'],
+                                               ['note_frame', 'text_text']], [note_edited.header,
                                                                                note_edited.text])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
@@ -141,7 +141,7 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='notes_layout')
+    screen.GetElement(id_='notes_frame')
 
     return session_info, screen_info, screen
 
@@ -163,7 +163,7 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='notes_layout')
+    screen.GetElement(id_='notes_frame')
 
     return session_info, screen_info, screen
 
@@ -183,7 +183,7 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='notes_layout')
+    screen.GetElement(id_='notes_frame')
 
     return session_info, screen_info, screen
 
@@ -390,9 +390,9 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = self.SelectNote(session_info, screen_info, self.note_2)
 
     # Edit Note.
-    elements_update=fase_model.ElementsUpdate([['note_layout', 'header_text'],
-                                               ['note_layout', 'text_text']], [note_2_edited.header,
-                                                                               note_2_edited.text])
+    elements_update=fase_model.ElementsUpdate([['note_frame', 'header_text'],
+                                               ['note_frame', 'text_text']], [note_2_edited.header,
+                                                                              note_2_edited.text])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
@@ -403,7 +403,7 @@ class NotesTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='notes_layout')
+    screen.GetElement(id_='notes_frame')
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
 

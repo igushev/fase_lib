@@ -750,16 +750,16 @@ class BaseElementsContainer(VisualElement):
   def __init__(self):
     super(BaseElementsContainer, self).__init__()
 
-  def AddLayout(self, id_,
+  def AddFrame(self, id_,
                orientation=None,
                size=None,
                on_click=None,
                border=None):
-    return self.AddElement(id_, Layout(orientation=orientation,
-                                       size=size,
-                                       on_click=on_click,
-                                       border=border))
-  def GetLayout(self, id_):
+    return self.AddElement(id_, Frame(orientation=orientation,
+                                      size=size,
+                                      on_click=on_click,
+                                      border=border))
+  def GetFrame(self, id_):
     return self.GetElement(id_)
 
   def AddLabel(self, id_,
@@ -835,7 +835,7 @@ class BaseElementsContainer(VisualElement):
      '_size': json_util.JSONInt(),
      '_on_click': json_util.JSONFunction(),
      '_border': json_util.JSONBool()})
-class Layout(BaseElementsContainer):
+class Frame(BaseElementsContainer):
 
   VERTICAL = 1
   HORIZONTAL = 2
@@ -848,7 +848,7 @@ class Layout(BaseElementsContainer):
                size=None,
                on_click=None,
                border=None):
-    super(Layout, self).__init__()
+    super(Frame, self).__init__()
     self._orientation = orientation
     self._size = size
     self._on_click = on_click

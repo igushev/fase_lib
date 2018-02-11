@@ -22,69 +22,69 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
   screen_info = response.screen_info
   screen = response.screen
   # Check present of main elements.
-  screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
-  screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_up_button_id')
+  screen.GetElement(id_='sign_in_frame_id').GetElement(id_='sign_in_button_id')
+  screen.GetElement(id_='sign_in_frame_id').GetElement(id_='sign_up_button_id')
 
   if sign_in:
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_in_frame_id', 'sign_in_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='sign_in_layout_id').GetElement(id_='phone_number_text_id')
-    screen.GetElement(id_='sign_in_layout_id').GetElement(id_='sign_in_button_id')
+    screen.GetElement(id_='sign_in_frame_id').GetElement(id_='phone_number_text_id')
+    screen.GetElement(id_='sign_in_frame_id').GetElement(id_='sign_in_button_id')
 
     # Enter phone number.
-    elements_update=fase_model.ElementsUpdate([['sign_in_layout_id', 'phone_number_text_id']], [phone_number])
+    elements_update=fase_model.ElementsUpdate([['sign_in_frame_id', 'phone_number_text_id']], [phone_number])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_in_button_id'],
+        fase_model.ElementClicked(id_list=['sign_in_frame_id', 'sign_in_button_id'],
                                   locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
   else:
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_layout_id', 'sign_up_button_id']), session_info, screen_info)
+        fase_model.ElementClicked(id_list=['sign_in_frame_id', 'sign_up_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
-    screen.GetElement(id_='sign_up_layout_id').GetElement(id_='phone_number_text_id')
-    screen.GetElement(id_='sign_up_layout_id').GetElement(id_='first_name_text_id')
-    screen.GetElement(id_='sign_up_layout_id').GetElement(id_='last_name_text_id')
-    screen.GetElement(id_='sign_up_layout_id').GetElement(id_='sign_up_button_id')
+    screen.GetElement(id_='sign_up_frame_id').GetElement(id_='phone_number_text_id')
+    screen.GetElement(id_='sign_up_frame_id').GetElement(id_='first_name_text_id')
+    screen.GetElement(id_='sign_up_frame_id').GetElement(id_='last_name_text_id')
+    screen.GetElement(id_='sign_up_frame_id').GetElement(id_='sign_up_button_id')
 
     # Enter phone number.
-    elements_update=fase_model.ElementsUpdate([['sign_up_layout_id', 'phone_number_text_id'],
-                                               ['sign_up_layout_id', 'first_name_text_id'],
-                                               ['sign_up_layout_id', 'last_name_text_id']], [phone_number,
+    elements_update=fase_model.ElementsUpdate([['sign_up_frame_id', 'phone_number_text_id'],
+                                               ['sign_up_frame_id', 'first_name_text_id'],
+                                               ['sign_up_frame_id', 'last_name_text_id']], [phone_number,
                                                                                              first_name,
                                                                                              last_name])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_up_layout_id', 'sign_up_button_id'],
+        fase_model.ElementClicked(id_list=['sign_up_frame_id', 'sign_up_button_id'],
                                   locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
   
   # Check present of main elements.
-  screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='activation_code_text_id')
-  screen.GetElement(id_='enter_activation_layout_id').GetElement(id_='send_button_id')
+  screen.GetElement(id_='enter_activation_frame_id').GetElement(id_='activation_code_text_id')
+  screen.GetElement(id_='enter_activation_frame_id').GetElement(id_='send_button_id')
 
   # Enter activation code.
   elements_update=fase_model.ElementsUpdate(
-      [['enter_activation_layout_id', 'activation_code_text_id']],
+      [['enter_activation_frame_id', 'activation_code_text_id']],
       [str(activation_code_generator.ActivationCodeGeneratorInterface.Get().codes[-1])])
   screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
   fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
   # Click on Send button.
   response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(id_list=['enter_activation_layout_id', 'send_button_id']), session_info, screen_info)
+      fase_model.ElementClicked(id_list=['enter_activation_frame_id', 'send_button_id']), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -99,11 +99,11 @@ def SignOutProcedure(session_info, screen_info, sign_out_id_list):
   screen_info = response.screen_info
   screen = response.screen
   # Check present of main elements.
-  screen.GetElement(id_='sign_out_layout_id').GetElement(id_='sign_out_button_id')
+  screen.GetElement(id_='sign_out_frame_id').GetElement(id_='sign_out_button_id')
 
   # Click on Sign Out button.
   response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(id_list=['sign_out_layout_id', 'sign_out_button_id']), session_info, screen_info)
+      fase_model.ElementClicked(id_list=['sign_out_frame_id', 'sign_out_button_id']), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   return session_info, screen_info

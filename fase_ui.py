@@ -59,7 +59,7 @@ class FaseUI(object):
         for menu_item_id, menu_item_element in main_button_element.GetContextMenu().GetIdElementList():
           self.ui_imp.DrawContextMenuItem(
               [fase.MAIN_BUTTON_ID, fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_main_button)
-    # NOTE(igushev): Button Bar Layout will have id_list of Button Bar.
+    # NOTE(igushev): Button Bar Frame will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
       self.ui_imp.DrawScreenNavButton([fase.BUTTON_BAR_ID, nav_button_id], nav_button_element, nav_button_i)
 
@@ -70,8 +70,8 @@ class FaseUI(object):
       self._DispatchDraw(id_list + [id_], element, ui_imp_parent)
 
   def _DispatchDraw(self, id_list, element, ui_imp_parent):
-    if isinstance(element, fase.Layout):
-      self.DrawLayout(id_list, element, ui_imp_parent)
+    if isinstance(element, fase.Frame):
+      self.DrawFrame(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Label):
       self.DrawLabel(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Text):
@@ -93,9 +93,9 @@ class FaseUI(object):
     else:
       raise AssertionError('Unknown element type %s' % type(element))
 
-  def DrawLayout(self, id_list, layout_element, ui_imp_parent):
-    ui_imp_element = self.ui_imp.DrawLayout(id_list, layout_element, ui_imp_parent)
-    self.DrawBaseElementsContainer(id_list, layout_element, ui_imp_element)
+  def DrawFrame(self, id_list, frame_element, ui_imp_parent):
+    ui_imp_element = self.ui_imp.DrawFrame(id_list, frame_element, ui_imp_parent)
+    self.DrawBaseElementsContainer(id_list, frame_element, ui_imp_element)
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
     self.ui_imp.DrawLabel(id_list, label_element, ui_imp_parent)

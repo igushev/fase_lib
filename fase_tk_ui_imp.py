@@ -180,9 +180,9 @@ class ParentElement(object):
     return self._row
 
   def Next(self):
-    if self._orientation == fase.Layout.VERTICAL:
+    if self._orientation == fase.Frame.VERTICAL:
       self._row += 1
-    elif self._orientation == fase.Layout.HORIZONTAL:
+    elif self._orientation == fase.Frame.HORIZONTAL:
       self._column += 1
     else:
       raise ValueError(self._orientation)
@@ -203,42 +203,42 @@ class FaseTkUIImp(object):
   def InitScreen(self, scrollable=False):
     self.ui_imp_frame = tkinter.Frame(self.ui_imp_root)
     self.ui_imp_frame.grid(column=0, row=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
-    # Middle layout take entire space.
+    # Middle frame take entire space.
     self.ui_imp_frame.columnconfigure(0, weight=1)
     self.ui_imp_frame.rowconfigure(1, weight=1)
     
     if scrollable:
-      ui_imp_middle_layout = tkinter.Frame(self.ui_imp_frame)
-      ui_imp_middle_layout.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
+      ui_imp_middle_frame = tkinter.Frame(self.ui_imp_frame)
+      ui_imp_middle_frame.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
       # Canvas take entire space and Scrollbar entire height.
-      ui_imp_middle_layout.columnconfigure(0, weight=1)
-      ui_imp_middle_layout.rowconfigure(0, weight=1)
+      ui_imp_middle_frame.columnconfigure(0, weight=1)
+      ui_imp_middle_frame.rowconfigure(0, weight=1)
   
-      ui_imp_widget_canvas = tkinter.Canvas(ui_imp_middle_layout)
+      ui_imp_widget_canvas = tkinter.Canvas(ui_imp_middle_frame)
       ui_imp_widget_canvas.grid(column=0, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
       
       ui_imp_widget_scrollbar = tkinter.Scrollbar(
-          ui_imp_middle_layout, orient=tkinter.VERTICAL, command=ui_imp_widget_canvas.yview)
+          ui_imp_middle_frame, orient=tkinter.VERTICAL, command=ui_imp_widget_canvas.yview)
       ui_imp_widget_canvas.configure(yscrollcommand=ui_imp_widget_scrollbar.set)
       ui_imp_widget_scrollbar.grid(column=1, row=0, sticky=(tkinter.N, tkinter.S))
       
-      def OnWidgetLayoutConfigure(event):
+      def OnWidgetFrameConfigure(event):
         ui_imp_widget_canvas.configure(scrollregion=ui_imp_widget_canvas.bbox(tkinter.ALL))
-        ui_imp_width_layout.config(width=ui_imp_widget_canvas.winfo_width())
+        ui_imp_width_frame.config(width=ui_imp_widget_canvas.winfo_width())
     
-      ui_imp_widget_layout = tkinter.Frame(ui_imp_widget_canvas)
-      ui_imp_widget_canvas.create_window((0,0), window=ui_imp_widget_layout, anchor='nw')
-      ui_imp_widget_layout.bind("<Configure>", OnWidgetLayoutConfigure)
-      ui_imp_width_layout = tkinter.Frame(ui_imp_widget_layout)
-      ui_imp_width_layout.grid()
+      ui_imp_widget_frame = tkinter.Frame(ui_imp_widget_canvas)
+      ui_imp_widget_canvas.create_window((0,0), window=ui_imp_widget_frame, anchor='nw')
+      ui_imp_widget_frame.bind("<Configure>", OnWidgetFrameConfigure)
+      ui_imp_width_frame = tkinter.Frame(ui_imp_widget_frame)
+      ui_imp_width_frame.grid()
     else:
-      ui_imp_widget_layout = tkinter.Frame(self.ui_imp_frame)
-      ui_imp_widget_layout.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
-      ui_imp_widget_layout.columnconfigure(0, weight=1)
+      ui_imp_widget_frame = tkinter.Frame(self.ui_imp_frame)
+      ui_imp_widget_frame.grid(row=1, sticky=(tkinter.N, tkinter.S, tkinter.W, tkinter.E))
+      ui_imp_widget_frame.columnconfigure(0, weight=1)
       
 
     self.id_list_to_var = dict()
-    return ParentElement(ui_imp_widget_layout, orientation=fase.Layout.VERTICAL)
+    return ParentElement(ui_imp_widget_frame, orientation=fase.Frame.VERTICAL)
 
   def SetUI(self, ui):
     self.ui = ui
@@ -264,8 +264,8 @@ class FaseTkUIImp(object):
       self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None):
     if not (main_menu or context_menu or next_button or prev_button or title):
       return
-    ui_imp_header_layout = tkinter.Frame(self.ui_imp_frame)
-    ui_imp_header_layout.grid(row=0, sticky=(tkinter.W, tkinter.E))
+    ui_imp_header_frame = tkinter.Frame(self.ui_imp_frame)
+    ui_imp_header_frame.grid(row=0, sticky=(tkinter.W, tkinter.E))
 
     side_button_num = max(int(main_menu) + int(prev_button), int(context_menu) + int(next_button))
     total_column_num = side_button_num * 2 + 1
@@ -273,15 +273,15 @@ class FaseTkUIImp(object):
     for column_i in range(total_column_num):
       if column_i == side_button_num:
         # Header label take entire space.
-        ui_imp_header_layout.columnconfigure(column_i, weight=1)
+        ui_imp_header_frame.columnconfigure(column_i, weight=1)
         if title is not None:
-          ui_imp_header_label = tkinter.Label(ui_imp_header_layout, text=title)
+          ui_imp_header_label = tkinter.Label(ui_imp_header_frame, text=title)
           label_font = font.Font(font=ui_imp_header_label['font'])
           label_font.configure(size=int(label_font.actual()['size']*TITLE_FONT))
           ui_imp_header_label.configure(font=label_font)
           ui_imp_header_label.grid(column=column_i, row=0)
       else:
-        ui_imp_button_frame = tkinter.Frame(ui_imp_header_layout, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
+        ui_imp_button_frame = tkinter.Frame(ui_imp_header_frame, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
         ui_imp_button_frame.grid_propagate(False)
         ui_imp_button_frame.grid(column=column_i, row=0)
         ui_imp_button_frame.columnconfigure(0, weight=1)
@@ -351,20 +351,20 @@ class FaseTkUIImp(object):
       total_button_num = nav_button_num
       main_button_i = None
 
-    ui_imp_footer_layout = tkinter.Frame(self.ui_imp_frame)
-    ui_imp_footer_layout.grid(row=2, sticky=(tkinter.W, tkinter.E))
+    ui_imp_footer_frame = tkinter.Frame(self.ui_imp_frame)
+    ui_imp_footer_frame.grid(row=2, sticky=(tkinter.W, tkinter.E))
     self.ui_imp_main_button_frame = None
     self.ui_imp_nav_button_frame_list = []
     for button_i in range(total_button_num):
       if button_i == main_button_i:
-        ui_imp_button_frame = tkinter.Frame(ui_imp_footer_layout, width=MAIN_BUTTON_WIDTH, height=MAIN_BUTTON_HEIGHT)
+        ui_imp_button_frame = tkinter.Frame(ui_imp_footer_frame, width=MAIN_BUTTON_WIDTH, height=MAIN_BUTTON_HEIGHT)
       else: 
-        ui_imp_button_frame = tkinter.Frame(ui_imp_footer_layout, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
+        ui_imp_button_frame = tkinter.Frame(ui_imp_footer_frame, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)
       ui_imp_button_frame.grid_propagate(False)
       ui_imp_button_frame.grid(column=button_i, row=0)
       ui_imp_button_frame.columnconfigure(0, weight=1)
       ui_imp_button_frame.rowconfigure(0, weight=1)
-      ui_imp_footer_layout.columnconfigure(button_i, weight=1)
+      ui_imp_footer_frame.columnconfigure(button_i, weight=1)
       if button_i == main_button_i:
         self.ui_imp_main_button_frame = ui_imp_button_frame
       else:
@@ -395,42 +395,42 @@ class FaseTkUIImp(object):
 
   def _ConfigureParent(self, ui_imp_parent, maximize=False):
     if maximize:
-      if ui_imp_parent.GetOrientation() == fase.Layout.VERTICAL:
+      if ui_imp_parent.GetOrientation() == fase.Frame.VERTICAL:
         ui_imp_parent.GetUIImpParent().rowconfigure(ui_imp_parent.GetRow(), weight=1)
-      elif ui_imp_parent.GetOrientation() == fase.Layout.HORIZONTAL:
+      elif ui_imp_parent.GetOrientation() == fase.Frame.HORIZONTAL:
         ui_imp_parent.GetUIImpParent().columnconfigure(ui_imp_parent.GetColumn(), weight=1)
       else:
         raise ValueError(self._orientation)
 
-  def DrawLayout(self, id_list, layout_element, ui_imp_parent):
-    self._ConfigureParent(ui_imp_parent, maximize=(layout_element.GetSize()==fase.Layout.MAX))
-    ui_imp_layout = tkinter.Frame(ui_imp_parent.GetUIImpParent())
+  def DrawFrame(self, id_list, frame_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent, maximize=(frame_element.GetSize()==fase.Frame.MAX))
+    ui_imp_frame = tkinter.Frame(ui_imp_parent.GetUIImpParent())
 
-    if layout_element.GetOrientation() == fase.Layout.VERTICAL:
-      ui_imp_layout.columnconfigure(0, weight=1)
-    elif layout_element.GetOrientation() == fase.Layout.HORIZONTAL:
-      ui_imp_layout.rowconfigure(0, weight=1)
+    if frame_element.GetOrientation() == fase.Frame.VERTICAL:
+      ui_imp_frame.columnconfigure(0, weight=1)
+    elif frame_element.GetOrientation() == fase.Frame.HORIZONTAL:
+      ui_imp_frame.rowconfigure(0, weight=1)
     else:
       raise ValueError(self._orientation)
 
     click_callback = None
-    if layout_element.GetOnClick():
+    if frame_element.GetOnClick():
       click_callback = ClickCallBack(self, id_list)
     elif ui_imp_parent.GetClickCallBack():
       click_callback = ui_imp_parent.GetClickCallBack()
 
     if click_callback is not None:
-      ui_imp_layout.bind('<1>', click_callback)
+      ui_imp_frame.bind('<1>', click_callback)
 
-    if layout_element.GetBorder():
-      ui_imp_layout.configure(borderwidth=1)
-      ui_imp_layout.configure(relief='raised')
+    if frame_element.GetBorder():
+      ui_imp_frame.configure(borderwidth=1)
+      ui_imp_frame.configure(relief='raised')
 
-    if layout_element.GetDisplayed():
-      ui_imp_layout.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+    if frame_element.GetDisplayed():
+      ui_imp_frame.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
                          sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
-    return ParentElement(ui_imp_layout, orientation=layout_element.GetOrientation(), click_callback=click_callback)
+    return ParentElement(ui_imp_frame, orientation=frame_element.GetOrientation(), click_callback=click_callback)
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSize()==fase.Label.MAX))
@@ -505,12 +505,12 @@ class FaseTkUIImp(object):
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_photo = ImageTk.PhotoImage(Image.open(image_element.GetImage()))
-    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
-    ui_imp_label.image = ui_imp_photo
+    ui_imp_image = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
+    ui_imp_image.image = ui_imp_photo
     if image_element.GetDisplayed(): 
-      ui_imp_label.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+      ui_imp_image.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
-    return ParentElement(ui_imp_label) 
+    return ParentElement(ui_imp_image) 
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)

@@ -89,9 +89,9 @@ class KarmaCounter(fase.Service):
     starting_page = kc_client.GetStartingPage(session_info)
     screen = fase.Screen(self)
     screen.SetTitle('Dashboard')
-    dashboard_layout = screen.AddLayout(id_='dashboard_layout', orientation=fase.Layout.VERTICAL)
-    dashboard_layout.AddLabel(id_='score_title_label', label='Score', size=fase.Label.MAX)
-    dashboard_layout.AddLabel(id_='score_label', label=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
+    dashboard_frame = screen.AddFrame(id_='dashboard_frame', orientation=fase.Frame.VERTICAL)
+    dashboard_frame.AddLabel(id_='score_title_label', label='Score', size=fase.Label.MAX)
+    dashboard_frame.AddLabel(id_='score_label', label=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
     self._AddButtons(screen)
     return screen
 
@@ -158,33 +158,33 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('Your Events' if users_own else 'Your Friend\'s Events')
     screen.SetScrollable(True)
     for user_event in user_events.events:
-      user_event_layout = screen.AddLayout(
-          id_='user_event_layout_%s' % user_event.event_id, orientation=fase.Layout.VERTICAL, border=True)
-      user_event_header_layout = user_event_layout.AddLayout(
-          id_='user_event_header_layout', orientation=fase.Layout.HORIZONTAL)
-      user_event_header_layout.AddLabel(
+      user_event_frame = screen.AddFrame(
+          id_='user_event_frame_%s' % user_event.event_id, orientation=fase.Frame.VERTICAL, border=True)
+      user_event_header_frame = user_event_frame.AddFrame(
+          id_='user_event_header_frame', orientation=fase.Frame.HORIZONTAL)
+      user_event_header_frame.AddLabel(
           id_='user_event_score_label', label=str(user_event.score), font=1.5)
       if users_own:
         friend_name = user_event.witness.display_name if user_event.witness is not None else None
-        user_event_header_layout.AddLabel(id_='user_event_friend_name_label', label=friend_name, size=fase.Label.MAX)
+        user_event_header_frame.AddLabel(id_='user_event_friend_name_label', label=friend_name, size=fase.Label.MAX)
       else:
-        user_event_header_layout.AddLabel(
+        user_event_header_frame.AddLabel(
             id_='user_event_friend_name_label', label=user_event.user.display_name, size=fase.Label.MAX)
-      user_event_header_layout.AddLabel(id_='user_event_date_label', label=user_event.display_datetime)
-      user_event_layout.AddLabel(
+      user_event_header_frame.AddLabel(id_='user_event_date_label', label=user_event.display_datetime)
+      user_event_frame.AddLabel(
           id_='user_event_description_label', label=user_event.description, alight=fase.Label.LEFT)
-      user_event_layout.AddLabel(id_='user_event_status_label', label=user_event.display_status, alight=fase.Label.LEFT)
-      user_event_button_layout = user_event_layout.AddLayout(
-          id_='user_event_button_layout', orientation=fase.Layout.HORIZONTAL)
-      user_event_button_layout.AddLayout(
-          id_='button_emtpy_layout', orientation=fase.Layout.HORIZONTAL, size=fase.Label.MAX)
+      user_event_frame.AddLabel(id_='user_event_status_label', label=user_event.display_status, alight=fase.Label.LEFT)
+      user_event_button_frame = user_event_frame.AddFrame(
+          id_='user_event_button_frame', orientation=fase.Frame.HORIZONTAL)
+      user_event_button_frame.AddFrame(
+          id_='button_emtpy_frame', orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
 
       if user_event.verification_status == kc_data.VerificationStatus.pending:
         if (users_own and not user_event.self_added) or (not users_own and user_event.self_added):
-          accept_button = user_event_button_layout.AddButton(
+          accept_button = user_event_button_frame.AddButton(
               id_='user_event_accept_button', text='Accept', on_click=KarmaCounter.OnAccept)
           accept_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
-          reject_button = user_event_button_layout.AddButton(
+          reject_button = user_event_button_frame.AddButton(
               id_='user_event_reject_button', text='Reject', on_click=KarmaCounter.OnReject)
           reject_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
 
@@ -203,7 +203,7 @@ class KarmaCounter(fase.Service):
         delete_button = user_event_context_menu.AddMenuItem(
             id_='delete_menu_item', text='Delete', on_click=KarmaCounter.OnDelete)
         delete_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
-      user_event_button_layout.AddButton(id_='user_event_context_menu_button', context_menu=user_event_context_menu)
+      user_event_button_frame.AddButton(id_='user_event_context_menu_button', context_menu=user_event_context_menu)
 
     self._AddButtons(screen)
     return screen
@@ -238,11 +238,11 @@ class KarmaCounter(fase.Service):
   def OnBlockUser(self, screen, element):
     return self._SendUserEventInfo(kc_client.BlockUser, screen, element)
 
-  def _DisplayCitiesStatistics(self, layout, cities_statistics):
+  def _DisplayCitiesStatistics(self, frame, cities_statistics):
     for i, city_statistics in enumerate(cities_statistics):
-      city_layout = layout.AddLayout(id_='city_layout_%d' % i, orientation=fase.Layout.HORIZONTAL)
-      city_layout.AddLabel(id_='city_name_label', label=city_statistics.display_name)
-      city_layout.AddLabel(id_='city_score_label', label=city_statistics.display_score)
+      city_frame = frame.AddFrame(id_='city_frame_%d' % i, orientation=fase.Frame.HORIZONTAL)
+      city_frame.AddLabel(id_='city_name_label', label=city_statistics.display_name)
+      city_frame.AddLabel(id_='city_score_label', label=city_statistics.display_score)
 
   def DisplayStatisticsByCities(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
@@ -250,12 +250,12 @@ class KarmaCounter(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('Statistics by Cities')
     screen.AddLabel(id_='top_label', label='Cities With Highest Score')
-    top_layout = screen.AddLayout(id_='top_layout', orientation=fase.Layout.VERTICAL)
-    self._DisplayCitiesStatistics(top_layout, cities_statistics_top_bottom.external_cities_statistics_top)
+    top_frame = screen.AddFrame(id_='top_frame', orientation=fase.Frame.VERTICAL)
+    self._DisplayCitiesStatistics(top_frame, cities_statistics_top_bottom.external_cities_statistics_top)
 
     screen.AddLabel(id_='bottom_label', label='Cities With Lowest Score')
-    bottom_layout = screen.AddLayout(id_='bottom_layout', orientation=fase.Layout.VERTICAL)
-    self._DisplayCitiesStatistics(bottom_layout, cities_statistics_top_bottom.external_cities_statistics_bottom)
+    bottom_frame = screen.AddFrame(id_='bottom_frame', orientation=fase.Frame.VERTICAL)
+    self._DisplayCitiesStatistics(bottom_frame, cities_statistics_top_bottom.external_cities_statistics_bottom)
     self._AddButtons(screen)
     return screen
 
