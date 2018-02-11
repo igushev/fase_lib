@@ -40,24 +40,24 @@ class SignInTestService(fase.Service):
 
   def OnSignInDone(self, user_id_before=None):
     screen = fase.Screen(self)
-    screen.AddLabel(id_='user_id_before_label_id', label=user_id_before)
+    screen.AddLabel(id_='user_id_before_label_id', text=user_id_before)
     screen.AddButton(id_='sign_out_button_id',
                      text='Sign Out', on_click=SignInTestService.OnSignOut)
     return screen
 
   def OnSignInSkip(self):
     screen = fase.Screen(self)
-    screen.AddLabel(id_='skip_label', label='Sign In Skipped')
+    screen.AddLabel(id_='skip_label', text='Sign In Skipped')
     return screen
 
   def OnSignInCancel(self):
     screen = fase.Screen(self)
-    screen.AddLabel(id_='cancel_label', label='Sign In Cancelled')
+    screen.AddLabel(id_='cancel_label', text='Sign In Cancelled')
     return screen
 
   def OnAbount(self, screen, element):
     screen = fase.Screen(self)
-    screen.AddLabel(id_='about_label_id', label='Sign In Test Service')
+    screen.AddLabel(id_='about_label_id', text='Sign In Test Service')
     return screen
 
 fase.Service.RegisterService(SignInTestService)
@@ -237,7 +237,7 @@ class FaseSignInTest(unittest.TestCase):
     # Check present of main elements.
     screen.GetElement(id_='user_id_before_label_id')
     # Assert user_id_before equal to actual user_id before entering the activation code.
-    self.assertEqual(user_id_before, screen.GetElement(id_='user_id_before_label_id').GetLabel())
+    self.assertEqual(user_id_before, screen.GetElement(id_='user_id_before_label_id').GetText())
     return response
 
   def testSignIn_Existing_Service_Screen_User(self):

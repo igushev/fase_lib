@@ -434,7 +434,7 @@ class FaseTkUIImp(object):
 
   def DrawLabel(self, id_list, label_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSize()==fase.Label.MAX))
-    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetLabel())
+    ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetText())
 
     if label_element.GetFont() is not None:
       label_font = font.Font(font=ui_imp_label['font'])
@@ -466,6 +466,8 @@ class FaseTkUIImp(object):
     return ParentElement(ui_imp_label)
 
   def DrawText(self, id_list, text_element, ui_imp_parent):
+    if text_element.GetHint():
+      self.DrawLabel(id_list, fase.Label(text=text_element.GetHint()), ui_imp_parent)
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = TextElementVariable(ui_imp_var)
@@ -533,6 +535,8 @@ class FaseTkUIImp(object):
       return ParentElement(ui_imp_button)
 
   def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
+    if contact_picker_element.GetHint():
+      self.DrawLabel(id_list, fase.Label(text=contact_picker_element.GetHint()), ui_imp_parent)
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = ContactPickerElementVariable(ui_imp_var)
@@ -551,6 +555,8 @@ class FaseTkUIImp(object):
     return ParentElement(ui_imp_text)
 
   def DrawDateTimePicker(self, id_list, datetime_picker_element, ui_imp_parent):
+    if datetime_picker_element.GetHint():
+      self.DrawLabel(id_list, fase.Label(text=datetime_picker_element.GetHint()), ui_imp_parent)
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = (
@@ -566,6 +572,8 @@ class FaseTkUIImp(object):
     return ParentElement(ui_imp_text)
 
   def DrawPlacePicker(self, id_list, place_picker_element, ui_imp_parent):
+    if place_picker_element.GetHint():
+      self.DrawLabel(id_list, fase.Label(text=place_picker_element.GetHint()), ui_imp_parent)
     self._ConfigureParent(ui_imp_parent)
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = PlacePickerElementVariable(ui_imp_var, type_=place_picker_element.GetType())

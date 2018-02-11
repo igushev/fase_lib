@@ -80,17 +80,17 @@ class NotesService(fase.Service):
       note_header_frame = note_frame.AddFrame(
           id_='note_header_frame', orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
       note_header_frame.AddLabel(
-          id_='note_header_label', label=note.header, font=1.5, size=fase.Label.MAX, alight=fase.Label.LEFT)
+          id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, alight=fase.Label.LEFT)
       note_header_frame.AddImage(
           id_='note_header_image', image=('notes_images/favourite.png' if note.favourite else
                                           'notes_images/favourite_non.png'))
 
-      note_frame.AddLabel(id_='note_frame_label', label=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
+      note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
 
       datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.now())
       note_deails_frame = note_frame.AddFrame(id_='note_deails_frame', orientation=fase.Frame.HORIZONTAL)
       note_deails_frame.AddLabel(
-          id_='note_deails_frame_datetime_text', label=datetime_text, font=0.7,
+          id_='note_deails_frame_datetime_text', text=datetime_text, font=0.7,
           size=fase.Label.MAX, alight=fase.Label.RIGHT)
     return screen
 
@@ -142,8 +142,8 @@ class NotesService(fase.Service):
   def _DisplayNote(self, note_id, screen):
     screen = fase.Screen(self)
     note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL)
-    header_text = note_frame.AddText(id_='header_text')
-    text_text = note_frame.AddText(id_='text_text', size=fase.Label.MAX)
+    header_text = note_frame.AddText(id_='header_text', hint='Header')
+    text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
 
     note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None

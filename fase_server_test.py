@@ -44,7 +44,7 @@ class FaseServerTest(unittest.TestCase):
   @staticmethod
   def _GetGreetingScreen(service, name):
     screen = fase.Screen(service)
-    screen.AddLabel(id_='hello_label_id', label='Hello, %s!' % name)
+    screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
     screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
     return screen
 

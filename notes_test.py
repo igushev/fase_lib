@@ -72,15 +72,15 @@ class NotesTest(unittest.TestCase):
       if expected_note.note_id:
         self.assertEqual(expected_note.note_id, actual_note_frame.GetStringVariable(id_='frame_note_id').GetValue())
       actual_note_header_frame = actual_note_frame.GetFrame(id_='note_header_frame')
-      self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetLabel())
+      self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetText())
       self.assertEqual('notes_images/favourite.png' if expected_note.favourite else 'notes_images/favourite_non.png',
                        actual_note_header_frame.GetImage(id_='note_header_image').GetImage())
-      self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetLabel())
+      self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetText())
       if expected_note.datetime:
         expected_datetime_text = datetime_util.GetDatetimeDiffStr(expected_note.datetime, datetime.datetime.now())
         actual_note_deails_frame = actual_note_frame.GetFrame(id_='note_deails_frame')
         self.assertEqual(expected_datetime_text,
-                         actual_note_deails_frame.GetLabel(id_='note_deails_frame_datetime_text').GetLabel())
+                         actual_note_deails_frame.GetLabel(id_='note_deails_frame_datetime_text').GetText())
 
   def AddNote(self, session_info, screen_info, note):
     # Click on New button.

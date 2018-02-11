@@ -399,7 +399,7 @@ class VisualElement(VariableContainer):
 
 
 @json_util.JSONDecorator(
-    {'label': json_util.JSONString(),
+    {'text': json_util.JSONString(),
      'font': json_util.JSONFloat(),
      'size': json_util.JSONInt(),
      'alight': json_util.JSONInt(),
@@ -414,20 +414,20 @@ class Label(VisualElement):
   CENTER = 3
 
   def __init__(self,
-               label=None,
+               text=None,
                font=None,
                size=None,
                alight=None,
                on_click=None):
     super(Label, self).__init__()
-    self.label = label
+    self.text = text
     self.font = font
     self.size = size
     self.alight = alight
     self.on_click = on_click
 
-  def GetLabel(self):
-    return self.label
+  def GetText(self):
+    return self.text
 
   def GetFont(self):
     return self.font
@@ -469,6 +469,9 @@ class Text(VisualElement):
     self.text = text
   def GetText(self):
     return self.text
+
+  def GetHint(self):
+    return self.hint
 
   def GetSize(self):
     return self.size
@@ -660,6 +663,9 @@ class ContactPicker(VisualElement):
   def GetContact(self):
     return self.contact
 
+  def GetHint(self):
+    return self.hint
+
   def GetSize(self):
     return self.size
 
@@ -709,6 +715,9 @@ class DateTimePicker(VisualElement):
   def GetType(self):
     return self.type
 
+  def GetHint(self):
+    return self.hint
+
   def GetSize(self):
     return self.size
 
@@ -753,6 +762,9 @@ class PlacePicker(VisualElement):
   def GetType(self):
     return self.type
 
+  def GetHint(self):
+    return self.hint
+
   def GetSize(self):
     return self.size
 
@@ -775,11 +787,11 @@ class BaseElementsContainer(VisualElement):
     return self.GetElement(id_)
 
   def AddLabel(self, id_,
-               label=None,
+               text=None,
                font=None,
                size=None,
                alight=None):
-    return self.AddElement(id_, Label(label=label, font=font, size=size, alight=alight))
+    return self.AddElement(id_, Label(text=text, font=font, size=size, alight=alight))
   def GetLabel(self, id_):
     return self.GetElement(id_)
 

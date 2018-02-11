@@ -90,8 +90,8 @@ class KarmaCounter(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('Dashboard')
     dashboard_frame = screen.AddFrame(id_='dashboard_frame', orientation=fase.Frame.VERTICAL)
-    dashboard_frame.AddLabel(id_='score_title_label', label='Score', size=fase.Label.MAX)
-    dashboard_frame.AddLabel(id_='score_label', label=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
+    dashboard_frame.AddLabel(id_='score_title_label', text='Score', size=fase.Label.MAX)
+    dashboard_frame.AddLabel(id_='score_label', text=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
     self._AddButtons(screen)
     return screen
 
@@ -163,17 +163,17 @@ class KarmaCounter(fase.Service):
       user_event_header_frame = user_event_frame.AddFrame(
           id_='user_event_header_frame', orientation=fase.Frame.HORIZONTAL)
       user_event_header_frame.AddLabel(
-          id_='user_event_score_label', label=str(user_event.score), font=1.5)
+          id_='user_event_score_label', text=str(user_event.score), font=1.5)
       if users_own:
         friend_name = user_event.witness.display_name if user_event.witness is not None else None
-        user_event_header_frame.AddLabel(id_='user_event_friend_name_label', label=friend_name, size=fase.Label.MAX)
+        user_event_header_frame.AddLabel(id_='user_event_friend_name_label', text=friend_name, size=fase.Label.MAX)
       else:
         user_event_header_frame.AddLabel(
-            id_='user_event_friend_name_label', label=user_event.user.display_name, size=fase.Label.MAX)
-      user_event_header_frame.AddLabel(id_='user_event_date_label', label=user_event.display_datetime)
+            id_='user_event_friend_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
+      user_event_header_frame.AddLabel(id_='user_event_date_label', text=user_event.display_datetime)
       user_event_frame.AddLabel(
-          id_='user_event_description_label', label=user_event.description, alight=fase.Label.LEFT)
-      user_event_frame.AddLabel(id_='user_event_status_label', label=user_event.display_status, alight=fase.Label.LEFT)
+          id_='user_event_description_label', text=user_event.description, alight=fase.Label.LEFT)
+      user_event_frame.AddLabel(id_='user_event_status_label', text=user_event.display_status, alight=fase.Label.LEFT)
       user_event_button_frame = user_event_frame.AddFrame(
           id_='user_event_button_frame', orientation=fase.Frame.HORIZONTAL)
       user_event_button_frame.AddFrame(
@@ -241,19 +241,19 @@ class KarmaCounter(fase.Service):
   def _DisplayCitiesStatistics(self, frame, cities_statistics):
     for i, city_statistics in enumerate(cities_statistics):
       city_frame = frame.AddFrame(id_='city_frame_%d' % i, orientation=fase.Frame.HORIZONTAL)
-      city_frame.AddLabel(id_='city_name_label', label=city_statistics.display_name)
-      city_frame.AddLabel(id_='city_score_label', label=city_statistics.display_score)
+      city_frame.AddLabel(id_='city_name_label', text=city_statistics.display_name)
+      city_frame.AddLabel(id_='city_score_label', text=city_statistics.display_score)
 
   def DisplayStatisticsByCities(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
     cities_statistics_top_bottom = kc_client.CitiesStatisticsTopBottom(session_info)
     screen = fase.Screen(self)
     screen.SetTitle('Statistics by Cities')
-    screen.AddLabel(id_='top_label', label='Cities With Highest Score')
+    screen.AddLabel(id_='top_label', text='Cities With Highest Score')
     top_frame = screen.AddFrame(id_='top_frame', orientation=fase.Frame.VERTICAL)
     self._DisplayCitiesStatistics(top_frame, cities_statistics_top_bottom.external_cities_statistics_top)
 
-    screen.AddLabel(id_='bottom_label', label='Cities With Lowest Score')
+    screen.AddLabel(id_='bottom_label', text='Cities With Lowest Score')
     bottom_frame = screen.AddFrame(id_='bottom_frame', orientation=fase.Frame.VERTICAL)
     self._DisplayCitiesStatistics(bottom_frame, cities_statistics_top_bottom.external_cities_statistics_bottom)
     self._AddButtons(screen)
