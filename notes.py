@@ -99,19 +99,20 @@ class NotesService(fase.Service):
     if self.IfSignedIn():
       menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUser().DisplayName())
       menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut,
-                       icon='notes_images/sign_out.png')
+                       image='notes_images/sign_out.png')
     else:
       menu.AddMenuItem(id_='sign_in_menu_item', text='Sign In', on_click=NotesService.OnSignIn,
-                       icon='notes_images/sign_in.png')
+                       image='notes_images/sign_in.png')
 
   def _AddButtons(self, screen):
-    screen.AddMainButton(text='New', on_click=NotesService.OnNew, icon='notes_images/new.png')
+    screen.AddMainButton(text='New', on_click=NotesService.OnNew, image='notes_images/new.png')
     button_bar = screen.AddButtonBar()
-    button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes, icon='notes_images/notes.png')
+    button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes,
+                         image='notes_images/notes.png')
     button_bar.AddButton(id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites,
-                         icon='notes_images/favourite_non.png')
+                         image='notes_images/favourite_non.png')
     button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent,
-                         icon='notes_images/recent.png')
+                         image='notes_images/recent.png')
 
   def OnSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(self, on_done=NotesService.OnSignInDone, on_cancel=NotesService.OnSignInOutCancel)
@@ -160,11 +161,11 @@ class NotesService(fase.Service):
     context_menu.AddMenuItem(id_='favourite_context_menu',
                              text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
                              on_click=NotesService.OnReverseFavouriteNote,
-                             icon=('notes_images/favourite.png' if favourite_bool.GetValue() else
+                             image=('notes_images/favourite.png' if favourite_bool.GetValue() else
                                    'notes_images/favourite_non.png'))
     if note_id is not None:
       context_menu.AddMenuItem(
-          id_='delete_context_menu', text='Delete', icon='notes_images/delete.png', on_click=NotesService.OnDeleteNote)
+          id_='delete_context_menu', text='Delete', image='notes_images/delete.png', on_click=NotesService.OnDeleteNote)
     return screen
 
   def OnSaveNote(self, screen, element):

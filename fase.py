@@ -514,17 +514,17 @@ class Image(VisualElement):
 @json_util.JSONDecorator(
     {'_text': json_util.JSONString(),
      '_on_click': json_util.JSONFunction(),
-     '_icon': json_util.JSONString()})
+     '_image': json_util.JSONString()})
 class MenuItem(VisualElement):
 
   def __init__(self,
                text=None,
                on_click=None,
-               icon=None):
+               image=None):
     super(MenuItem, self).__init__()
     self._text = text
     self._on_click = on_click
-    self._icon = icon
+    self._image = image
 
   def GetText(self):
     return self._text
@@ -532,8 +532,8 @@ class MenuItem(VisualElement):
   def GetOnClick(self):
     return self._on_click
 
-  def GetIcon(self):
-    return self._icon
+  def GetImage(self):
+    return self._image
 
 
 @json_util.JSONDecorator({
@@ -549,10 +549,10 @@ class Menu(ElementContainer):
   def AddMenuItem(self, id_,
                   text=None,
                   on_click=None,
-                  icon=None):
+                  image=None):
     menu_item = MenuItem(text=text,
                          on_click=on_click,
-                         icon=icon)
+                         image=image)
     return self.AddElement(id_, menu_item)
   def GetMenuItem(self, id_):
     return self.GetElement(id_)
@@ -562,20 +562,20 @@ class Menu(ElementContainer):
     {'_text': json_util.JSONString(),
      '_on_click': json_util.JSONFunction(),
      '_context_menu': json_util.JSONObject(Menu),
-     '_icon': json_util.JSONString()})
+     '_image': json_util.JSONString()})
 class Button(VisualElement):
 
   def __init__(self,
                text=None,
                on_click=None,
                context_menu=None,
-               icon=None):
+               image=None):
     assert int(on_click is None) + int(context_menu is None) == 1
     super(Button, self).__init__()
     self._text = text
     self._on_click = on_click
     self._context_menu = context_menu
-    self._icon = icon
+    self._image = image
 
   def SetText(self, text):
     self._text = text
@@ -588,8 +588,8 @@ class Button(VisualElement):
   def GetContextMenu(self):
     return self._context_menu
 
-  def GetIcon(self):
-    return self._icon
+  def GetImage(self):
+    return self._image
 
   def GetElement(self, id_):
     if id_ == CONTEXT_MENU_ID:
@@ -605,10 +605,10 @@ class ButtonBar(ElementContainer):
   def AddButton(self, id_,
                 text=None,
                 on_click=None,
-                icon=None):
+                image=None):
     button = Button(text=text,
                     on_click=on_click,
-                    icon=icon)
+                    image=image)
     return self.AddElement(id_, button)
   def GetButton(self, id_):
     return self.GetElement(id_)
@@ -797,8 +797,8 @@ class BaseElementsContainer(VisualElement):
                text=None,
                on_click=None,
                context_menu=None,
-               icon=None):
-    return self.AddElement(id_, Button(text=text, on_click=on_click, context_menu=context_menu, icon=icon))
+               image=None):
+    return self.AddElement(id_, Button(text=text, on_click=on_click, context_menu=context_menu, image=image))
   def GetButton(self, id_):
     return self.GetElement(id_)
 
@@ -881,10 +881,10 @@ class Popup(ElementContainer):
   def AddButton(self, id_,
                 text=None,
                 on_click=None,
-                icon=None):
+                image=None):
     button = Button(text=text,
                     on_click=on_click,
-                    icon=icon)
+                    image=image)
     return self.AddElement(id_, button)
   def GetButton(self, id_):
     return self.GetElement(id_)
@@ -922,8 +922,8 @@ class Screen(BaseElementsContainer):
   def GetMainMenu(self):
     return self.GetElement(MAIN_MENU_ID)
 
-  def AddMainButton(self, text=None, on_click=None, context_menu=None, icon=None):
-    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, context_menu=context_menu, icon=icon))
+  def AddMainButton(self, text=None, on_click=None, context_menu=None, image=None):
+    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, context_menu=context_menu, image=image))
   def GetMainButton(self):
     return self.GetElement(MAIN_BUTTON_ID)
 
@@ -932,13 +932,13 @@ class Screen(BaseElementsContainer):
   def GetButtonBar(self):
     return self.GetElement(BUTTON_BAR_ID)
 
-  def AddNextStepButton(self, text=None, on_click=None, icon=None):
-    return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
+  def AddNextStepButton(self, text=None, on_click=None, image=None):
+    return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
   def GetNextStepButton(self):
     return self.GetElement(NEXT_STEP_BUTTON_ID)
 
-  def AddPrevStepButton(self, text=None, on_click=None, icon=None):
-    return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, on_click=on_click, icon=icon))
+  def AddPrevStepButton(self, text=None, on_click=None, image=None):
+    return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
   def GetPrevStepButton(self):
     return self.GetElement(PREV_STEP_BUTTON_ID)
 

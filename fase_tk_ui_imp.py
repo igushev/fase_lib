@@ -249,14 +249,14 @@ class FaseTkUIImp(object):
     return self.InitScreen(scrollable=scrollable)
 
   def _ConfigureButtonImage(self, button_element, ui_imp_button):
-    if button_element.GetIcon() is not None:
-      ui_imp_photo = ImageTk.PhotoImage(Image.open(button_element.GetIcon()))
+    if button_element.GetImage() is not None:
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(button_element.GetImage()))
       ui_imp_button.ui_imp_photo = ui_imp_photo
       ui_imp_button.configure(image=ui_imp_photo, compound=tkinter.TOP)
 
   def _ConfigureMenuItemImage(self, menu_item_element, ui_imp_menu, index):
-    if menu_item_element.GetIcon() is not None:
-      ui_imp_photo = ImageTk.PhotoImage(Image.open(menu_item_element.GetIcon()))
+    if menu_item_element.GetImage() is not None:
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(menu_item_element.GetImage()))
       setattr(ui_imp_menu, 'ui_imp_photo_%d' % index, ui_imp_photo)
       ui_imp_menu.entryconfigure(index=index, image=ui_imp_photo, compound=tkinter.TOP)
 
