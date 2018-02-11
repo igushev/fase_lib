@@ -92,6 +92,18 @@ class SwitchElementVariable(object):
     self._ui_imp_var.set(value) 
 
 
+class SelectElementVariable(object):
+  
+  def __init__(self, ui_imp_var):
+    self._ui_imp_var = ui_imp_var
+
+  def Get(self):
+    return self._ui_imp_var.get()
+
+  def Update(self, value):
+    self._ui_imp_var.set(value) 
+
+
 class ContactPickerElementVariable(object):
 
   def __init__(self, ui_imp_var):
@@ -503,6 +515,32 @@ class FaseTkUIImp(object):
                          sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_switch)
+
+  def DrawSelect(self, id_list, select_element, ui_imp_parent):
+    if select_element.GetHint():
+      self.DrawLabel(id_list, fase.Label(text=select_element.GetHint()), ui_imp_parent)
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_var = tkinter.StringVar()
+    self.id_list_to_var[tuple(id_list)] = SelectElementVariable(ui_imp_var)
+    self.id_list_to_var[tuple(id_list)].Update(select_element.Get())
+    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_select = tkinter.Spinbox(ui_imp_parent.GetUIImpParent(), values=select_element.GetItems(),
+                                    textvariable=ui_imp_var)
+
+    if select_element.GetAlight() is not None:
+      if select_element.GetAlight() == fase.Switch.LEFT:
+        anchor = 'w'
+      elif select_element.GetAlight() == fase.Switch.RIGHT:
+        anchor = 'e'
+      elif select_element.GetAlight() == fase.Switch.CENTER:
+        anchor = 'center'
+      ui_imp_select.configure(anchor=anchor)
+
+    if select_element.GetDisplayed():
+      ui_imp_select.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                         sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_select)
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)

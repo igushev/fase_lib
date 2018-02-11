@@ -514,6 +514,48 @@ class Switch(VisualElement):
 
 
 @json_util.JSONDecorator(
+    {'value': json_util.JSONString(),
+     'items': json_util.JSONList(json_util.JSONString()),
+     'hint': json_util.JSONString(),
+     'alight': json_util.JSONInt()})
+class Select(VisualElement):
+
+  LEFT = 1
+  RIGHT = 2
+  CENTER = 3
+  
+  def __init__(self,
+               value=None,
+               items=None,
+               hint=None,
+               alight=None):
+    super(Select, self).__init__()
+    self.value = value
+    self.items = items
+    self.hint = hint
+    self.alight = alight
+
+  def Update(self, value):
+    self.value = value
+  def Get(self):
+    return self.value
+
+  def SetValue(self, value):
+    self.value = value
+  def GetValue(self):
+    return self.value
+
+  def GetItems(self):
+    return self.items
+
+  def GetHint(self):
+    return self.hint
+
+  def GetAlight(self):
+    return self.alight
+
+
+@json_util.JSONDecorator(
     {'image': json_util.JSONString()})
 class Image(VisualElement):
 
@@ -809,6 +851,15 @@ class BaseElementsContainer(VisualElement):
                 alight=None):
     return self.AddElement(id_, Switch(value=value, text=text, alight=alight))
   def GetSwitch(self, id_):
+    return self.GetElement(id_)
+
+  def AddSelect(self, id_,
+                value=None,
+                items=None,
+                hint=None,
+                alight=None):
+    return self.AddElement(id_, Select(value=value, items=items, hint=hint, alight=alight))
+  def GetSelect(self, id_):
     return self.GetElement(id_)
 
   def AddImage(self, id_,

@@ -99,7 +99,7 @@ class KarmaCounter(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
-    screen.AddText(id_='score_text', hint='Score')
+    screen.AddSelect(id_='score_select', items=['-10-', '-3', '-1', '0', '1', '3', '10'], hint='Score')
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
@@ -135,15 +135,19 @@ class KarmaCounter(fase.Service):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
     if screen.GetBoolVariable(id_='adding_users_own_bool').GetValue():
       new_user_event = kc_data.NewUserEvent(
-          score=int(screen.GetText(id_='score_text').GetText()),
+          score=int(screen.GetSelect(id_='score_select').GetValue()),
           description=screen.GetText(id_='description_text').GetText(),
-          witness_phone_number=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber(),
-          witness_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName(),
+          witness_phone_number=(screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber()
+                                if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
+                                None),
+          witness_display_name=(screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName()
+                                if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
+                                None),
           invite_witness=screen.GetSwitch(id_='invite_switch').GetValue())
       kc_client.AddUserEvent(new_user_event, session_info)
     else:
       new_other_user_event = kc_data.NewOtherUserEvent(
-          score=int(screen.GetText(id_='score_text').GetText()),
+          score=int(screen.GetSelect(id_='score_select').GetValue()),
           description=screen.GetText(id_='description_text').GetText(),
           phone_number=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber(),
           other_user_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName(),
