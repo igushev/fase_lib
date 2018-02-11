@@ -84,7 +84,7 @@ class FaseSignOutButton(fase.Button):
 
 
 def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_user_data=None):
-  assert not service._if_signed_in
+  assert not service.IfSignedIn()
   service.AddFunctionVariable(id_='fase_sign_in_on_done_class_method', value=on_done)
   if on_skip is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_skip_class_method', value=on_skip)
@@ -336,7 +336,7 @@ def _CleanActivationVariables(service):
 
 
 def StartSignOut(service, on_cancel=None):
-  assert service._if_signed_in
+  assert service.IfSignedIn()
 
   screen = fase.Screen(service)
   sign_out_frame = screen.AddFrame(id_='sign_out_frame_id', orientation=fase.Frame.VERTICAL)

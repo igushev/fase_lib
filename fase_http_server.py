@@ -22,7 +22,7 @@ def CleanSimple(simple):
   elif isinstance(simple, dict):
     clean_simple = {}
     for nested_key, nested_simple in simple.items():
-      if nested_key not in ['_on_click', '_on_pick']:
+      if nested_key not in ['on_click', 'on_pick']:
         clean_simple[nested_key] = CleanSimple(nested_simple)
       else:
         clean_simple[nested_key] = (

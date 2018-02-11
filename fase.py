@@ -134,6 +134,18 @@ class Place(data_util.AbstractObject):
                                state=self.state or '',
                                country=self.country or '')
 
+  def GetGooglePlaceId(self):
+    return self.google_place_id
+
+  def GetCity(self):
+    return self.city
+
+  def GetState(self):
+    return self.state
+
+  def GetCountry(self):
+    return self.country
+
 
 @json_util.JSONDecorator({
     'user_id': json_util.JSONString(),
@@ -192,45 +204,45 @@ class Element(data_util.AbstractObject):
     super(Element, self).__init__()
 
   def FaseOnClick(self, service, screen):
-    screen = self._on_click(service, screen, self)
+    screen = self.on_click(service, screen, self)
     return service, screen
 
 
 @json_util.JSONDecorator(
-    {'_id_element_list':
+    {'id_element_list':
      json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
                                              json_util.JSONObject(Element)]))})
 class ElementContainer(Element):
   def __init__(self):
     super(ElementContainer, self).__init__()
-    self._id_element_list = []
+    self.id_element_list = []
 
   def AddElement(self, id_, element):
     assert not self.HasElement(id_)
-    self._id_element_list.append((id_, element))
+    self.id_element_list.append((id_, element))
     return element
 
   def HasElement(self, id_):
-    for id_in_list, _ in self._id_element_list:
+    for id_in_list, _ in self.id_element_list:
       if id_in_list == id_:
         return True
     return False
 
   def GetElement(self, id_):
-    for id_in_list, value in self._id_element_list:
+    for id_in_list, value in self.id_element_list:
       if id_in_list == id_:
         return value
     raise KeyError(id_)
 
   def PopElement(self, id_):
-    for i, (id_in_list, value) in enumerate(self._id_element_list):
+    for i, (id_in_list, value) in enumerate(self.id_element_list):
       if id_in_list == id_:
-        del self._id_element_list[i]
+        del self.id_element_list[i]
         return value
     raise KeyError(id_)
 
   def GetIdElementList(self):
-    return self._id_element_list
+    return self.id_element_list
 
 
 @json_util.JSONDecorator({})
@@ -240,7 +252,7 @@ class Variable(Element):
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONInt()})
+    {'value': json_util.JSONInt()})
 class IntVariable(Variable):
   def __init__(self, value):
     super(IntVariable, self).__init__()
@@ -248,13 +260,13 @@ class IntVariable(Variable):
 
   def SetValue(self, value):
     util.AssertIsInstanceOrNone(value, int)
-    self._value = value
+    self.value = value
   def GetValue(self):
-    return self._value
+    return self.value
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONFloat()})
+    {'value': json_util.JSONFloat()})
 class FloatVariable(Variable):
   def __init__(self, value):
     super(FloatVariable, self).__init__()
@@ -262,13 +274,13 @@ class FloatVariable(Variable):
 
   def SetValue(self, value):
     util.AssertIsInstanceOrNone(value, float)
-    self._value = value
+    self.value = value
   def GetValue(self):
-    return self._value
+    return self.value
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONString()})
+    {'value': json_util.JSONString()})
 class StringVariable(Variable):
   def __init__(self, value):
     super(StringVariable, self).__init__()
@@ -276,13 +288,13 @@ class StringVariable(Variable):
 
   def SetValue(self, value):
     util.AssertIsInstanceOrNone(value, str)
-    self._value = value
+    self.value = value
   def GetValue(self):
-    return self._value
+    return self.value
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONBool()})
+    {'value': json_util.JSONBool()})
 class BoolVariable(Variable):
   def __init__(self, value):
     super(BoolVariable, self).__init__()
@@ -290,13 +302,13 @@ class BoolVariable(Variable):
 
   def SetValue(self, value):
     util.AssertIsInstanceOrNone(value, bool)
-    self._value = value
+    self.value = value
   def GetValue(self):
-    return self._value
+    return self.value
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONFunction()})
+    {'value': json_util.JSONFunction()})
 class FunctionVariable(Variable):
   def __init__(self, value):
     super(FunctionVariable, self).__init__()
@@ -304,9 +316,9 @@ class FunctionVariable(Variable):
 
   def SetValue(self, value):
     assert callable(value)
-    self._value = value
+    self.value = value
   def GetValue(self):
-    return self._value
+    return self.value
 
 
 @json_util.JSONDecorator({})
@@ -361,37 +373,37 @@ class VariableContainer(ElementContainer):
 
 
 @json_util.JSONDecorator(
-    {'_displayed': json_util.JSONBool(),
-     '_request_locale': json_util.JSONBool(),
-     '_locale': json_util.JSONObject(Locale)})
+    {'displayed': json_util.JSONBool(),
+     'request_locale': json_util.JSONBool(),
+     'locale': json_util.JSONObject(Locale)})
 class VisualElement(VariableContainer):
   def __init__(self):
     super(VisualElement, self).__init__()
-    self._displayed = True
-    self._request_locale = False
-    self._locale = None
+    self.displayed = True
+    self.request_locale = False
+    self.locale = None
 
   def SetDisplayed(self, displayed):
-    self._displayed = displayed
+    self.displayed = displayed
   def GetDisplayed(self):
-    return self._displayed
+    return self.displayed
 
   def SetRequestLocale(self, request_locale):
-    self._request_locale = request_locale
+    self.request_locale = request_locale
   def GetRequestLocale(self):
-    return self._request_locale
+    return self.request_locale
   def SetLocale(self, locale):
-    self._locale = locale
+    self.locale = locale
   def GetLocale(self):
-    return self._locale
+    return self.locale
 
 
 @json_util.JSONDecorator(
-    {'_label': json_util.JSONString(),
-     '_font': json_util.JSONFloat(),
-     '_size': json_util.JSONInt(),
-     '_alight': json_util.JSONInt(),
-     '_on_click': json_util.JSONFunction()})
+    {'label': json_util.JSONString(),
+     'font': json_util.JSONFloat(),
+     'size': json_util.JSONInt(),
+     'alight': json_util.JSONInt(),
+     'on_click': json_util.JSONFunction()})
 class Label(VisualElement):
 
   MIN = 1
@@ -408,32 +420,32 @@ class Label(VisualElement):
                alight=None,
                on_click=None):
     super(Label, self).__init__()
-    self._label = label
-    self._font = font
-    self._size = size
-    self._alight = alight
-    self._on_click = on_click
+    self.label = label
+    self.font = font
+    self.size = size
+    self.alight = alight
+    self.on_click = on_click
 
   def GetLabel(self):
-    return self._label
+    return self.label
 
   def GetFont(self):
-    return self._font
+    return self.font
 
   def GetSize(self):
-    return self._size
+    return self.size
 
   def GetAlight(self):
-    return self._alight
+    return self.alight
 
   def GetOnClick(self):
-    return self._on_click
+    return self.on_click
 
 
 @json_util.JSONDecorator(
-    {'_text': json_util.JSONString(),
-     '_hint': json_util.JSONString(),
-     '_size': json_util.JSONInt()})
+    {'text': json_util.JSONString(),
+     'hint': json_util.JSONString(),
+     'size': json_util.JSONInt()})
 class Text(VisualElement):
 
   MIN = 1
@@ -444,28 +456,28 @@ class Text(VisualElement):
                hint=None,
                size=None):
     super(Text, self).__init__()
-    self._text = text
-    self._hint = hint
-    self._size = size
+    self.text = text
+    self.hint = hint
+    self.size = size
 
   def Update(self, value):
-    self._text = value
+    self.text = value
   def Get(self):
-    return self._text
+    return self.text
 
   def SetText(self, text):
-    self._text = text
+    self.text = text
   def GetText(self):
-    return self._text
+    return self.text
 
   def GetSize(self):
-    return self._size
+    return self.size
 
 
 @json_util.JSONDecorator(
-    {'_value': json_util.JSONBool(),
-     '_text': json_util.JSONString(),
-     '_alight': json_util.JSONInt()})
+    {'value': json_util.JSONBool(),
+     'text': json_util.JSONString(),
+     'alight': json_util.JSONInt()})
 class Switch(VisualElement):
 
   LEFT = 1
@@ -477,44 +489,44 @@ class Switch(VisualElement):
                text=None,
                alight=None):
     super(Switch, self).__init__()
-    self._value = value
-    self._text = text
-    self._alight = alight
+    self.value = value
+    self.text = text
+    self.alight = alight
 
   def Update(self, value):
-    self._value = (value == str(True))
+    self.value = (value == str(True))
   def Get(self):
-    return str(self._value)
+    return str(self.value)
 
   def SetValue(self, value):
-    self._value = value
+    self.value = value
   def GetValue(self):
-    return self._value
+    return self.value
 
   def GetText(self):
-    return self._text
+    return self.text
 
   def GetAlight(self):
-    return self._alight
+    return self.alight
 
 
 @json_util.JSONDecorator(
-    {'_image': json_util.JSONString()})
+    {'image': json_util.JSONString()})
 class Image(VisualElement):
 
   def __init__(self,
                image=None):
     super(Image, self).__init__()
-    self._image = image
+    self.image = image
 
   def GetImage(self):
-    return self._image
+    return self.image
 
 
 @json_util.JSONDecorator(
-    {'_text': json_util.JSONString(),
-     '_on_click': json_util.JSONFunction(),
-     '_image': json_util.JSONString()})
+    {'text': json_util.JSONString(),
+     'on_click': json_util.JSONFunction(),
+     'image': json_util.JSONString()})
 class MenuItem(VisualElement):
 
   def __init__(self,
@@ -522,29 +534,29 @@ class MenuItem(VisualElement):
                on_click=None,
                image=None):
     super(MenuItem, self).__init__()
-    self._text = text
-    self._on_click = on_click
-    self._image = image
+    self.text = text
+    self.on_click = on_click
+    self.image = image
 
   def GetText(self):
-    return self._text
+    return self.text
 
   def GetOnClick(self):
-    return self._on_click
+    return self.on_click
 
   def GetImage(self):
-    return self._image
+    return self.image
 
 
 @json_util.JSONDecorator({
-    '_text': json_util.JSONString()})
+    'text': json_util.JSONString()})
 class Menu(ElementContainer):
   def __init__(self, text=None):
     super(Menu, self).__init__()
-    self._text = text
+    self.text = text
 
   def GetText(self):
-    return self._text
+    return self.text
 
   def AddMenuItem(self, id_,
                   text=None,
@@ -559,10 +571,10 @@ class Menu(ElementContainer):
 
 
 @json_util.JSONDecorator(
-    {'_text': json_util.JSONString(),
-     '_on_click': json_util.JSONFunction(),
-     '_context_menu': json_util.JSONObject(Menu),
-     '_image': json_util.JSONString()})
+    {'text': json_util.JSONString(),
+     'on_click': json_util.JSONFunction(),
+     'context_menu': json_util.JSONObject(Menu),
+     'image': json_util.JSONString()})
 class Button(VisualElement):
 
   def __init__(self,
@@ -572,28 +584,28 @@ class Button(VisualElement):
                image=None):
     assert int(on_click is None) + int(context_menu is None) == 1
     super(Button, self).__init__()
-    self._text = text
-    self._on_click = on_click
-    self._context_menu = context_menu
-    self._image = image
+    self.text = text
+    self.on_click = on_click
+    self.context_menu = context_menu
+    self.image = image
 
   def SetText(self, text):
-    self._text = text
+    self.text = text
   def GetText(self):
-    return self._text
+    return self.text
 
   def GetOnClick(self):
-    return self._on_click
+    return self.on_click
 
   def GetContextMenu(self):
-    return self._context_menu
+    return self.context_menu
 
   def GetImage(self):
-    return self._image
+    return self.image
 
   def GetElement(self, id_):
     if id_ == CONTEXT_MENU_ID:
-      return self._context_menu
+      return self.context_menu
     return super(Button, self).GetElement(id_)
 
 
@@ -615,10 +627,10 @@ class ButtonBar(ElementContainer):
     
 
 @json_util.JSONDecorator(
-    {'_contact': json_util.JSONObject(Contact),
-     '_hint': json_util.JSONString(),
-     '_size': json_util.JSONInt(),
-     '_on_pick': json_util.JSONFunction()})
+    {'contact': json_util.JSONObject(Contact),
+     'hint': json_util.JSONString(),
+     'size': json_util.JSONInt(),
+     'on_pick': json_util.JSONFunction()})
 class ContactPicker(VisualElement):
 
   MIN = 1
@@ -630,40 +642,40 @@ class ContactPicker(VisualElement):
                size=None,
                on_pick=None):
     super(ContactPicker, self).__init__()
-    self._contact = contact
-    self._hint = hint
-    self._size = size
-    self._on_pick = on_pick
+    self.contact = contact
+    self.hint = hint
+    self.size = size
+    self.on_pick = on_pick
 
   def Update(self, value):
     if value is None:
-      self._contact = None
+      self.contact = None
       return
-    if self._contact is None:
-      self._contact = Contact()
-    self._contact.Update(value)
+    if self.contact is None:
+      self.contact = Contact()
+    self.contact.Update(value)
   def Get(self):
-    return self._contact.Get() if self._contact is not None else None
+    return self.contact.Get() if self.contact is not None else None
 
   def GetContact(self):
-    return self._contact
+    return self.contact
 
   def GetSize(self):
-    return self._size
+    return self.size
 
   def GetOnPick(self):
-    return self._on_pick
+    return self.on_pick
 
   def FaseOnClick(self, service, screen):
-    screen = self._on_pick(service, screen, self)
+    screen = self.on_pick(service, screen, self)
     return service, screen
 
 
 @json_util.JSONDecorator(
-    {'_datetime': json_util.JSONDateTime(),
-     '_type': json_util.JSONInt(),
-     '_hint': json_util.JSONString(),
-     '_size': json_util.JSONInt()})
+    {'datetime': json_util.JSONDateTime(),
+     'type': json_util.JSONInt(),
+     'hint': json_util.JSONString(),
+     'size': json_util.JSONInt()})
 class DateTimePicker(VisualElement):
 
   DATE = 1
@@ -680,32 +692,32 @@ class DateTimePicker(VisualElement):
                size=None):
     super(DateTimePicker, self).__init__()
     assert type_ is not None
-    self._datetime = datetime_
-    self._type = type_
-    self._hint = hint
-    self._size = size
+    self.datetime = datetime_
+    self.type = type_
+    self.hint = hint
+    self.size = size
 
   def Update(self, value):
-    self._datetime = datetime.datetime.strptime(value, DATETIME_FORMAT) if value is not None else None
+    self.datetime = datetime.datetime.strptime(value, DATETIME_FORMAT) if value is not None else None
 
   def Get(self):
-    return self._datetime.strftime(DATETIME_FORMAT) if self._datetime is not None else None
+    return self.datetime.strftime(DATETIME_FORMAT) if self.datetime is not None else None
 
   def GetDateTime(self):
-    return self._datetime
+    return self.datetime
 
   def GetType(self):
-    return self._type
+    return self.type
 
   def GetSize(self):
-    return self._size
+    return self.size
 
 
 @json_util.JSONDecorator(
-    {'_place': json_util.JSONObject(Place),
-     '_type': json_util.JSONInt(),
-     '_hint': json_util.JSONString(),
-     '_size': json_util.JSONInt()})
+    {'place': json_util.JSONObject(Place),
+     'type': json_util.JSONInt(),
+     'hint': json_util.JSONString(),
+     'size': json_util.JSONInt()})
 class PlacePicker(VisualElement):
 
   CITY = 1
@@ -720,29 +732,29 @@ class PlacePicker(VisualElement):
                size=None):
     super(PlacePicker, self).__init__()
     assert type_ is not None
-    self._place = place
-    self._type = type_
-    self._hint = hint
-    self._size = size
+    self.place = place
+    self.type = type_
+    self.hint = hint
+    self.size = size
     
   def Update(self, value):
     if value is None:
-      self._place = None
+      self.place = None
       return
-    if self._place is None:
-      self._place = Place()
-    self._place.Update(value)
+    if self.place is None:
+      self.place = Place()
+    self.place.Update(value)
   def Get(self):
-    return self._place.Get() if self._place is not None else None
+    return self.place.Get() if self.place is not None else None
 
   def GetPlace(self):
-    return self._place
+    return self.place
 
   def GetType(self):
-    return self._type
+    return self.type
 
   def GetSize(self):
-    return self._size
+    return self.size
 
 
 @json_util.JSONDecorator({})
@@ -831,10 +843,10 @@ class BaseElementsContainer(VisualElement):
 
 
 @json_util.JSONDecorator(
-    {'_orientation': json_util.JSONInt(),
-     '_size': json_util.JSONInt(),
-     '_on_click': json_util.JSONFunction(),
-     '_border': json_util.JSONBool()})
+    {'orientation': json_util.JSONInt(),
+     'size': json_util.JSONInt(),
+     'on_click': json_util.JSONFunction(),
+     'border': json_util.JSONBool()})
 class Frame(BaseElementsContainer):
 
   VERTICAL = 1
@@ -849,34 +861,34 @@ class Frame(BaseElementsContainer):
                on_click=None,
                border=None):
     super(Frame, self).__init__()
-    self._orientation = orientation
-    self._size = size
-    self._on_click = on_click
-    self._border = border
+    self.orientation = orientation
+    self.size = size
+    self.on_click = on_click
+    self.border = border
 
   def GetOrientation(self):
-    return self._orientation
+    return self.orientation
 
   def GetSize(self):
-    return self._size
+    return self.size
 
   def GetOnClick(self):
-    return self._on_click
+    return self.on_click
 
   def GetBorder(self):
-    return self._border
+    return self.border
 
 
 @json_util.JSONDecorator(
-    {'_text': json_util.JSONString()})
+    {'text': json_util.JSONString()})
 class Alert(ElementContainer):
 
   def __init__(self, text=None):
     super(Alert, self).__init__()
-    self._text = text
+    self.text = text
 
   def GetText(self):
-    return self._text
+    return self.text
 
   def AddButton(self, id_,
                 text=None,
@@ -979,10 +991,10 @@ class Service(VariableContainer):
 
   def GetSessionId(self):
     return self._session_id
-  def GetUserId(self):
-    return self._user_id
   def IfSignedIn(self):
     return self._if_signed_in
+  def GetUserId(self):
+    return self._user_id
   def GetUser(self):
     return self._user
 

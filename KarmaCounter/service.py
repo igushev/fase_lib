@@ -20,10 +20,10 @@ class KarmaCounter(fase.Service):
     new_user = kc_data.NewUser(phone_number=self.GetUser().GetPhoneNumber(),
                                first_name=self.GetUser().GetFirstName(),
                                last_name=self.GetUser().GetLastName(),
-                               city=kc_data.CommonCity(google_place_id=self.GetUser().GetHomeCity().google_place_id,
-                                                       city=self.GetUser().GetHomeCity().city,
-                                                       state=self.GetUser().GetHomeCity().state,
-                                                       country=self.GetUser().GetHomeCity().country),
+                               city=kc_data.CommonCity(google_place_id=self.GetUser().GetHomeCity().GetGooglePlaceId(),
+                                                       city=self.GetUser().GetHomeCity().GetCity(),
+                                                       state=self.GetUser().GetHomeCity().GetState(),
+                                                       country=self.GetUser().GetHomeCity().GetCountry()),
                                date_of_birth=self.GetUser().GetDateOfBirth())
     session_info = kc_client.GetUserSession(new_user)
     if not self.HasStringVariable(id_='session_id_str'):
