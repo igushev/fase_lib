@@ -25,7 +25,7 @@ def JSONObjectStr(json_obj):
   elif isinstance(json_obj, json_util.JSONFunction):
     return 'function'
   elif isinstance(json_obj, json_util.JSONObject):
-    cls_name = '<i>%s</i>' % json_obj._cls.__name__
+    cls_name = '*%s*' % json_obj._cls.__name__
     if json_obj._cls.inherited:
       cls_name += ' or subclass'
     return cls_name
@@ -47,6 +47,7 @@ def GenerateDataSpecification(module_name, filepath):
   cls_dict = {cls_name: cls for cls_name, cls in inspect.getmembers(module, inspect.isclass)}
 
   with open(filepath, 'w') as spec_file:
+    spec_file.write('# Put Your Header Here\n')
     for line in inspect.getsource(module).split('\n'):
       class_def_match = re.match(CLASS_DEF_REGEXP, line)
       if not class_def_match:
@@ -57,19 +58,18 @@ def GenerateDataSpecification(module_name, filepath):
         continue
       if cls == data_util.AbstractObject:
         continue
-      spec_file.write('<b>%s</b>' % cls_name)
+      spec_file.write('* **%s**' % cls_name)
       
       bases_names = [base.__name__ for base in cls.__bases__ if base is not  data_util.AbstractObject]
       if bases_names:
-        spec_file.write(' extends <i>%s</i>' % ', '.join(bases_names))
-      spec_file.write('<br>\n')
+        spec_file.write(' extends *%s*' % ', '.join(bases_names))
+      spec_file.write('\n')
 
       for arg_name, json_obj in cls.desc_dict.items():
         arg_type = JSONObjectStr(json_obj)
-        spec_file.write('<i>%s</i>: %s' % (arg_name, arg_type))
-        spec_file.write('<br>\n')
+        spec_file.write('  * *%s*: %s\n' % (arg_name, arg_type))
 
-      spec_file.write('<br>\n')
+      spec_file.write('\n')
 
 
 def main(argv):
