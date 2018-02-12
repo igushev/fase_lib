@@ -294,7 +294,7 @@ def OnActivationCodeSent(service, screen, element):
   enter_activation_frame = screen.AddFrame(id_='enter_activation_frame_id', orientation=fase.Frame.VERTICAL)
   enter_activation_frame.AddText(id_='activation_code_text_id', hint='Activation Code')
   enter_activation_frame.AddElement(
-      id_='send_button_id', element=FaseSignInButton(text='Send', on_click=fase.MockFunction))
+      id_='send_button_id', element=FaseSignInButton(text='Send', on_click=fase.FunctionPlaceholder))
   screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
   return screen
 
@@ -341,7 +341,7 @@ def StartSignOut(service, on_cancel=None):
   screen = fase.Screen(service)
   sign_out_frame = screen.AddFrame(id_='sign_out_frame_id', orientation=fase.Frame.VERTICAL)
   sign_out_frame.AddElement(
-      id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.MockFunction))
+      id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.FunctionPlaceholder))
   if on_cancel is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
     screen.AddPrevStepButton(on_click=OnSignOutCancelOption, text='Cancel')

@@ -8,7 +8,7 @@
 # TODO(igushev): Add User custom byte field for Notes and delete Notes database.
 
 # Client Communication Clean Ups
-# TODO(igushev): Avoid using MockFunctions.
+# TODO(igushev): Avoid using FunctionPlaceholder.
 # TODO(igushev): Make internal objects for Contact, Date, etc. different classes instead of always simple string.
 # TODO(igushev): Make on_pick event handled in its way instead of through on_click.
 

@@ -107,14 +107,14 @@ class ApplicationTest(unittest.TestCase):
   def _GetEnterNameScreen(service, name=None):
     screen = fase.Screen(service)
     screen.AddText(id_='text_name_id', hint='Enter Name', text=name)
-    screen.AddButton(id_='next_button_id', text='Next', on_click=fase.MockFunction)
+    screen.AddButton(id_='next_button_id', text='Next', on_click=fase.FunctionPlaceholder)
     return screen
 
   @staticmethod
   def _GetGreetingScreen(service, name):
     screen = fase.Screen(service)
     screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
-    screen.AddButton(id_='reset_button_id',text='Reset', on_click=fase.MockFunction)
+    screen.AddButton(id_='reset_button_id',text='Reset', on_click=fase.FunctionPlaceholder)
     return screen
 
   def testHelloWorld(self):

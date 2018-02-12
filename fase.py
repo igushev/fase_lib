@@ -21,7 +21,7 @@ MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
 
 
-def MockFunction():
+def FunctionPlaceholder():
   pass
 
 
@@ -967,15 +967,15 @@ class Alert(ElementContainer):
 
 @json_util.JSONDecorator(
     {'_screen_id': json_util.JSONString(),
-     '_scrollable': json_util.JSONBool(),
-     '_title': json_util.JSONString()})
+     'scrollable': json_util.JSONBool(),
+     'title': json_util.JSONString()})
 class Screen(BaseElementsContainer):
 
   def __init__(self, service):
     super(Screen, self).__init__()
     self._screen_id = GenerateScreenId(service.GetSessionId())
-    self._scrollable = None
-    self._title = None
+    self.scrollable = None
+    self.title = None
 
   def UpdateScreenId(self, service):
     self._screen_id = GenerateScreenId(service.GetSessionId())
@@ -983,14 +983,14 @@ class Screen(BaseElementsContainer):
     return self._screen_id
 
   def SetScrollable(self, scrollable):
-    self._scrollable = scrollable
+    self.scrollable = scrollable
   def GetScrollable(self):
-    return self._scrollable
+    return self.scrollable
 
   def SetTitle(self, title):
-    self._title = title
+    self.title = title
   def GetTitle(self):
-    return self._title
+    return self.title
 
   def AddMainMenu(self):
     return self.AddElement(MAIN_MENU_ID, Menu())

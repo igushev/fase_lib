@@ -26,7 +26,7 @@ def CleanSimple(simple):
         clean_simple[nested_key] = CleanSimple(nested_simple)
       else:
         clean_simple[nested_key] = (
-            json_util.JSONFunction().ToSimple(fase.MockFunction) if nested_simple is not None else None)
+            json_util.JSONFunction().ToSimple(fase.FunctionPlaceholder) if nested_simple is not None else None)
     return clean_simple
   else:
     return simple
