@@ -68,9 +68,11 @@ class NotesTest(unittest.TestCase):
 
   def AssertNotes(self, expected_notes, screen):
     notes_frame = screen.GetElement(id_='notes_frame')
-    for expected_note, (_, actual_note_frame) in zip(expected_notes, notes_frame.GetIdElementList()):
+    for expected_note, (actual_note_frame_id, actual_note_frame) in zip(expected_notes, notes_frame.GetIdElementList()):
       if expected_note.note_id:
-        self.assertEqual(expected_note.note_id, actual_note_frame.GetStringVariable(id_='frame_note_id').GetValue())
+        self.assertEqual('note_frame_%s' % expected_note.note_id, actual_note_frame_id)
+        # Actual variable removed from output.
+        self.assertFalse(actual_note_frame.HasStringVariable(id_='frame_note_id'))
       actual_note_header_frame = actual_note_frame.GetFrame(id_='note_header_frame')
       self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetText())
       self.assertEqual('notes_images/favourite.png' if expected_note.favourite else 'notes_images/favourite_non.png',

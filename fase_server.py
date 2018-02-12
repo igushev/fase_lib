@@ -1,3 +1,5 @@
+import copy
+
 import fase_database
 import fase_model
 import fase
@@ -29,6 +31,18 @@ class BadRequestException(Exception):
     return self._bad_request
 
 
+def RemoveVariablesFromElement(obj):
+  assert isinstance(obj, fase.Element)
+  if not isinstance(obj, fase.ElementContainer):
+    return obj
+  obj = copy.copy(obj)
+  obj.id_element_list = [
+      (id_, RemoveVariablesFromElement(element))
+      for id_, element in obj.id_element_list
+      if not isinstance(element, fase.Variable)]
+  return obj
+
+
 @singleton_util.Singleton()
 class FaseServer(object):
 
@@ -57,7 +71,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddService(service)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog)
 
-    return fase_model.Response(screen=screen_prog.screen,
+    return fase_model.Response(screen=RemoveVariablesFromElement(screen_prog.screen),
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -65,7 +79,7 @@ class FaseServer(object):
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
     screen_prog.recent_device = device
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
-    return fase_model.Response(screen=screen_prog.screen,
+    return fase_model.Response(screen=RemoveVariablesFromElement(screen_prog.screen),
                                session_info=session_info,
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -88,7 +102,7 @@ class FaseServer(object):
 
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
-      return fase_model.Response(screen=screen_prog.screen,
+      return fase_model.Response(screen=RemoveVariablesFromElement(screen_prog.screen),
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -118,7 +132,7 @@ class FaseServer(object):
 
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
-      return fase_model.Response(screen=screen_prog.screen,
+      return fase_model.Response(screen=RemoveVariablesFromElement(screen_prog.screen),
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -132,6 +146,6 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
-    return fase_model.Response(screen=screen_prog.screen,
+    return fase_model.Response(screen=RemoveVariablesFromElement(screen_prog.screen),
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))

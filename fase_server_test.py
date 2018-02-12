@@ -16,6 +16,22 @@ class FaseServerTest(unittest.TestCase):
             service_list=[], screen_prog_list=[], user_list=[]), overwrite=True)
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
+  def testRemoveVariablesFromElement(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, _ = self._GetServiceAndAssert(device)
+    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    screen = fase.Screen(service)
+    frame = screen.AddFrame(id_='frame_id')
+    frame.AddText(id_='text_id')
+    frame.AddStringVariable(id_='value_str', value='general')
+    self.assertTrue(screen.GetElement(id_='frame_id').HasElement(id_='text_id'))
+    self.assertTrue(screen.GetElement(id_='frame_id').HasElement(id_='value_str'))
+    screen_removed_variables = fase_server.RemoveVariablesFromElement(screen)
+    self.assertTrue(screen.GetElement(id_='frame_id').HasElement(id_='text_id'))
+    self.assertTrue(screen.GetElement(id_='frame_id').HasElement(id_='value_str'))
+    self.assertTrue(screen_removed_variables.GetElement(id_='frame_id').HasElement(id_='text_id'))
+    self.assertFalse(screen_removed_variables.GetElement(id_='frame_id').HasElement(id_='value_str'))
+
   def testSendInternalCommand(self):
     command = fase_model.Command(fase_server.CREATE_DB_COMMAND)
     status = fase_server.FaseServer.Get().SendInternalCommand(command)
