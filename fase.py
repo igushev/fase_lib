@@ -618,20 +618,16 @@ class Menu(ElementContainer):
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
      'on_click': json_util.JSONFunction(),
-     'context_menu': json_util.JSONObject(Menu),
      'image': json_util.JSONString()})
 class Button(VisualElement):
 
   def __init__(self,
                text=None,
                on_click=None,
-               context_menu=None,
                image=None):
-    assert int(on_click is None) + int(context_menu is None) == 1
     super(Button, self).__init__()
     self.text = text
     self.on_click = on_click
-    self.context_menu = context_menu
     self.image = image
 
   def SetText(self, text):
@@ -642,16 +638,15 @@ class Button(VisualElement):
   def GetOnClick(self):
     return self.on_click
 
+  def AddContextMenu(self, text=None):
+    return self.AddElement(CONTEXT_MENU_ID, Menu(text=text))
+  def HasContextMenu(self):
+    return self.HasElement(CONTEXT_MENU_ID)
   def GetContextMenu(self):
-    return self.context_menu
+    return self.GetElement(CONTEXT_MENU_ID)
 
   def GetImage(self):
     return self.image
-
-  def GetElement(self, id_):
-    if id_ == CONTEXT_MENU_ID:
-      return self.context_menu
-    return super(Button, self).GetElement(id_)
 
 
 @json_util.JSONDecorator({})
@@ -871,9 +866,8 @@ class BaseElementsContainer(VisualElement):
   def AddButton(self, id_,
                text=None,
                on_click=None,
-               context_menu=None,
                image=None):
-    return self.AddElement(id_, Button(text=text, on_click=on_click, context_menu=context_menu, image=image))
+    return self.AddElement(id_, Button(text=text, on_click=on_click, image=image))
   def GetButton(self, id_):
     return self.GetElement(id_)
 
@@ -997,8 +991,8 @@ class Screen(BaseElementsContainer):
   def GetMainMenu(self):
     return self.GetElement(MAIN_MENU_ID)
 
-  def AddMainButton(self, text=None, on_click=None, context_menu=None, image=None):
-    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, context_menu=context_menu, image=image))
+  def AddMainButton(self, text=None, on_click=None, image=None):
+    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
   def GetMainButton(self):
     return self.GetElement(MAIN_BUTTON_ID)
 

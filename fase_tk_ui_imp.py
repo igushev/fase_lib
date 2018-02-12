@@ -391,7 +391,7 @@ class FaseTkUIImp(object):
     if main_button_element.GetOnClick():
       ui_imp_main_button.configure(command=ClickCallBack(self, id_list))
       return ParentElement(ui_imp_main_button) 
-    elif main_button_element.GetContextMenu():
+    elif main_button_element.HasContextMenu():
       ui_imp_main_button_context_menu = tkinter.Menu()
       ui_imp_main_button.bind('<1>', lambda e: ui_imp_main_button_context_menu.post(e.x_root, e.y_root))
       return ParentElement(ui_imp_main_button_context_menu)
@@ -559,7 +559,7 @@ class FaseTkUIImp(object):
 
     if button_element.GetOnClick():
       ui_imp_button.configure(command=ClickCallBack(self, id_list))
-    elif button_element.GetContextMenu():
+    elif button_element.HasContextMenu():
       ui_imp_button_context_menu = tkinter.Menu()
       ui_imp_button.bind('<1>', lambda e: ui_imp_button_context_menu.post(e.x_root, e.y_root))
 
@@ -567,7 +567,7 @@ class FaseTkUIImp(object):
       ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
 
-    if button_element.GetContextMenu():
+    if button_element.HasContextMenu():
       return ParentElement(ui_imp_button_context_menu)
     else:
       return ParentElement(ui_imp_button)

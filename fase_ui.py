@@ -55,7 +55,7 @@ class FaseUI(object):
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
     if main_button_element:
       ui_imp_main_button = self.ui_imp.DrawScreenMainButton([fase.MAIN_BUTTON_ID], main_button_element)
-      if main_button_element.GetContextMenu():
+      if main_button_element.HasContextMenu():
         for menu_item_id, menu_item_element in main_button_element.GetContextMenu().GetIdElementList():
           self.ui_imp.DrawContextMenuItem(
               [fase.MAIN_BUTTON_ID, fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_main_button)
@@ -116,7 +116,7 @@ class FaseUI(object):
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
     ui_imp_button = self.ui_imp.DrawButton(id_list, button_element, ui_imp_parent)
-    if button_element.GetContextMenu():
+    if button_element.HasContextMenu():
       for menu_item_id, menu_item_element in button_element.GetContextMenu().GetIdElementList():
         self.ui_imp.DrawContextMenuItem(
             id_list + [fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_button)

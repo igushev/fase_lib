@@ -77,12 +77,12 @@ class KarmaCounter(fase.Service):
     button_bar.AddButton(
         id_='statistics_by_cities_button', text='Statistics by Cities',
         on_click=KarmaCounter.OnDisplayStatisticsByCities)
-    main_button_context_menu = fase.Menu()
+    main_button = screen.AddMainButton(text='Add Event')
+    main_button_context_menu = main_button.AddContextMenu()
     main_button_context_menu.AddMenuItem(
         id_='add_event_to_yourself', text='Add Event to Yourself', on_click=KarmaCounter.OnAddUserEvent)
     main_button_context_menu.AddMenuItem(
         id_='add_event_to_friend', text='Add Event to Friend', on_click=KarmaCounter.OnAddOtherUserEvent)
-    screen.AddMainButton(text='Add Event', context_menu=main_button_context_menu)
 
   def DisplayDashboard(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
@@ -192,7 +192,8 @@ class KarmaCounter(fase.Service):
               id_='user_event_reject_button', text='Reject', on_click=KarmaCounter.OnReject)
           reject_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
 
-      user_event_context_menu = fase.Menu()
+      user_event_context_button = user_event_button_frame.AddButton(id_='user_event_context_menu_button')
+      user_event_context_menu = user_event_context_button.AddContextMenu()
       report_abuse_button = user_event_context_menu.AddMenuItem(
           id_='report_abuse_menu_item', text='Report Abuse', on_click=KarmaCounter.OnReportAbuse)
       report_abuse_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
@@ -207,7 +208,6 @@ class KarmaCounter(fase.Service):
         delete_button = user_event_context_menu.AddMenuItem(
             id_='delete_menu_item', text='Delete', on_click=KarmaCounter.OnDelete)
         delete_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
-      user_event_button_frame.AddButton(id_='user_event_context_menu_button', context_menu=user_event_context_menu)
 
     self._AddButtons(screen)
     return screen
