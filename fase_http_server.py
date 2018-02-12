@@ -91,13 +91,13 @@ def screenupdate():
   return jsonify(**response_simple), code
 
 
-@application.route('/elementclicked', methods=['POST', 'OPTIONS'])
-def elementclicked():
+@application.route('/elementcallback', methods=['POST', 'OPTIONS'])
+def elementcallback():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   screen_info = fase_model.ScreenInfo(screen_id=request.headers.get('screen_id', None))
-  element_clicked_simple = request.get_json(force=True) 
-  element_clicked = fase_model.ElementClicked.FromSimple(element_clicked_simple)
+  element_callback_simple = request.get_json(force=True) 
+  element_callback = fase_model.ElementCallback.FromSimple(element_callback_simple)
   response_simple, code = SafeCall(
-      fase_server.FaseServer.Get().ElementClicked, element_clicked, session_info, screen_info)
+      fase_server.FaseServer.Get().ElementCallback, element_callback, session_info, screen_info)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code

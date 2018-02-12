@@ -121,12 +121,12 @@ class FaseServer(object):
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
                                screen_info=screen_info)
 
-  def _GetElement(self, screen, element_clicked):
-    element = fase_model.GetScreenElement(screen, element_clicked.id_list)
-    element.SetLocale(element_clicked.locale)
+  def _GetElement(self, screen, element_callback):
+    element = fase_model.GetScreenElement(screen, element_callback.id_list)
+    element.SetLocale(element_callback.locale)
     return element
 
-  def ElementClicked(self, element_clicked, session_info, screen_info):
+  def ElementCallback(self, element_callback, session_info, screen_info):
     service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
 
@@ -136,13 +136,13 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
-    if element_clicked.elements_update is not None:
-      FaseServer._UpdateScreen(screen_prog.screen, element_clicked.elements_update)
-    element = self._GetElement(screen_prog.screen, element_clicked)
+    if element_callback.elements_update is not None:
+      FaseServer._UpdateScreen(screen_prog.screen, element_callback.elements_update)
+    element = self._GetElement(screen_prog.screen, element_callback)
     service, screen = element.FaseOnClick(service, screen_prog.screen)
     screen.UpdateScreenId(service)
     screen_prog = fase_model.ScreenProg(
-        session_id=service.GetSessionId(), screen=screen, recent_device=element_clicked.device)
+        session_id=service.GetSessionId(), screen=screen, recent_device=element_callback.device)
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 

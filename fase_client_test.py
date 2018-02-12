@@ -14,7 +14,7 @@ class MockFaseHTTPClient(object):
     self.get_service_calls = 0
     self.get_screen_calls = 0
     self.screen_update_calls = 0
-    self.element_clicked_calls = 0
+    self.element_callback_calls = 0
     self.device = None
     self.service = None
     self.screen = None
@@ -22,10 +22,10 @@ class MockFaseHTTPClient(object):
     self.session_info = None
     self.screen_info = None
     
-    self.element_clicked_screen = None
-    self.element_clicked_elements_update = None
-    self.element_clicked_session_info = None
-    self.element_clicked_screen_info = None
+    self.element_callback_screen = None
+    self.element_callback_elements_update = None
+    self.element_callback_session_info = None
+    self.element_callback_screen_info = None
     
     self.expected_id_list = None
     self.expected_elements_update = None
@@ -60,17 +60,17 @@ class MockFaseHTTPClient(object):
                                session_info=self.session_info,
                                screen_info=self.screen_info)
     
-  def ElementClicked(self, element_clicked, session_info, screen_info):
-    self.element_clicked_calls += 1
-    expected_element_clicked = fase_model.ElementClicked(
+  def ElementCallback(self, element_callback, session_info, screen_info):
+    self.element_callback_calls += 1
+    expected_element_callback = fase_model.ElementCallback(
         elements_update=self.expected_elements_update, id_list=self.expected_id_list, device=self.device)
-    self.test_obj.assertEqual(expected_element_clicked, element_clicked)
+    self.test_obj.assertEqual(expected_element_callback, element_callback)
     self.test_obj.assertEqual(self.session_info, session_info)
     self.test_obj.assertEqual(self.screen_info, screen_info)
-    return fase_model.Response(screen=self.element_clicked_screen,
-                               elements_update=self.element_clicked_elements_update,
-                               session_info=self.element_clicked_session_info,
-                               screen_info=self.element_clicked_screen_info)
+    return fase_model.Response(screen=self.element_callback_screen,
+                               elements_update=self.element_callback_elements_update,
+                               session_info=self.element_callback_session_info,
+                               screen_info=self.element_callback_screen_info)
 
 
 class MockFaseUI(object):
@@ -226,7 +226,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(2, ui.draw_screen_calls)
     self.assertEqual(0, ui.element_updated_received_calls)
 
-  def testElementClickedElementsUpdateReceived(self):
+  def testElementCallbackElementsUpdateReceived(self):
     http_client = MockFaseHTTPClient(self)
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
@@ -250,20 +250,20 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, http_client.screen_update_calls)
 
     screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    service, element_clicked_screen = screen.GetElement(id_='next_button_id').FaseOnClick(service, screen)
+    service, element_callback_screen = screen.GetElement(id_='next_button_id').FaseOnClick(service, screen)
     http_client.expected_id_list = ['next_button_id']
-    http_client.element_clicked_screen = element_clicked_screen
-    http_client.element_clicked_session_info = fase_model.SessionInfo(service.GetSessionId())
-    http_client.element_clicked_screen_info = fase_model.ScreenInfo(element_clicked_screen.GetScreenId())
+    http_client.element_callback_screen = element_callback_screen
+    http_client.element_callback_session_info = fase_model.SessionInfo(service.GetSessionId())
+    http_client.element_callback_screen_info = fase_model.ScreenInfo(element_callback_screen.GetScreenId())
     ui.expected_id_list = ['text_name_id']
     ui.expected_value = 'Hanry Ford'
-    ui.expected_screen = element_clicked_screen
-    client.ElementClicked(id_list=['next_button_id'])
-    self.assertEqual(1, http_client.element_clicked_calls)
+    ui.expected_screen = element_callback_screen
+    client.ElementCallback(id_list=['next_button_id'])
+    self.assertEqual(1, http_client.element_callback_calls)
     self.assertEqual(2, ui.draw_screen_calls)
     self.assertEqual(1, ui.element_updated_received_calls)
 
-  def testElementClickedScreenReceived(self):
+  def testElementCallbackScreenReceived(self):
     http_client = MockFaseHTTPClient(self)
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
@@ -288,7 +288,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, http_client.screen_update_calls)
 
     ui.expected_screen = screen
-    client.ElementClicked(id_list=['next_button_id'])
+    client.ElementCallback(id_list=['next_button_id'])
     self.assertEqual(2, ui.draw_screen_calls)
     self.assertEqual(0, ui.element_updated_received_calls)
 

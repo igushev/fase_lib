@@ -71,7 +71,7 @@ class FaseHTTPClientTest(unittest.TestCase):
   
     fase_http_client.requests = self.requests_bkp
 
-  def testScreenUpdateAndElementClicked(self):
+  def testScreenUpdateAndElementCallback(self):
     self.requests_bkp = fase_http_client.requests 
     fase_http_client.requests = MockRequests(self) 
     
@@ -81,7 +81,7 @@ class FaseHTTPClientTest(unittest.TestCase):
     screen_info = fase_model.ScreenInfo(screen_id='MockScreenId')
     response = fase_model.Response()
     for url_method, http_client_method in [('/screenupdate', http_client.ScreenUpdate),
-                                           ('/elementclicked', http_client.ElementClicked)]:
+                                           ('/elementcallback', http_client.ElementCallback)]:
       fase_http_client.requests.expected_url = MOCK_URL + url_method
       fase_http_client.requests.expected_headers = {
           'session-id': session_info.session_id, 'screen-id': screen_info.screen_id}

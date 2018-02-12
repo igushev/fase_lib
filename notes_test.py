@@ -86,8 +86,8 @@ class NotesTest(unittest.TestCase):
 
   def AddNote(self, session_info, screen_info, note):
     # Click on New button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.MAIN_BUTTON_ID]), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.MAIN_BUTTON_ID]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -102,8 +102,8 @@ class NotesTest(unittest.TestCase):
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Save button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -114,8 +114,8 @@ class NotesTest(unittest.TestCase):
 
   def SelectNote(self, session_info, screen_info, note):
     # Click on the Note.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['notes_frame', 'note_frame_%s' % note.note_id]), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['notes_frame', 'note_frame_%s' % note.note_id]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -137,8 +137,8 @@ class NotesTest(unittest.TestCase):
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Save button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -151,16 +151,16 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, _ = self.SelectNote(session_info, screen_info, note)
     
     # Click on Delete context menu.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.CONTEXT_MENU_ID, 'delete_context_menu']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.CONTEXT_MENU_ID, 'delete_context_menu']), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
     screen.GetElement(id_=fase.ALERT_ID)
     # Click on Yes.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.ALERT_ID, 'ok_id']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.ALERT_ID, 'ok_id']), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -173,14 +173,14 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, _ = self.SelectNote(session_info, screen_info, note)
 
     # Click on Favourite context menu.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.CONTEXT_MENU_ID, 'favourite_context_menu']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.CONTEXT_MENU_ID, 'favourite_context_menu']), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
 
     # Click on Save button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -201,29 +201,29 @@ class NotesTest(unittest.TestCase):
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Click on Notes button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.BUTTON_BAR_ID, 'notes_button']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'notes_button']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Click on Favourites button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.BUTTON_BAR_ID, 'favourites_button']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'favourites_button']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     self.AssertNotes([self.note_2], screen)
 
     # Click on Recent button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.BUTTON_BAR_ID, 'recent_button']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'recent_button']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     self.AssertNotes([self.note_1, self.note_3, self.note_2], screen)
 
     # Click on Notes button again.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.BUTTON_BAR_ID, 'notes_button']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'notes_button']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
@@ -399,8 +399,8 @@ class NotesTest(unittest.TestCase):
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Cancel button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=[fase.PREV_STEP_BUTTON_ID]), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID]), session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen

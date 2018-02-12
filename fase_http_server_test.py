@@ -76,11 +76,11 @@ class ApplicationTest(unittest.TestCase):
     response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
 
-  def _ElementClicked(self, element_clicked, session_info, screen_info):
+  def _ElementCallback(self, element_callback, session_info, screen_info):
     result = self.test_application.post(
-        '/elementclicked',
+        '/elementcallback',
         headers={'session_id': session_info.session_id, 'screen_id': screen_info.screen_id},
-        data=json.dumps(element_clicked.ToSimple()))
+        data=json.dumps(element_callback.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
     response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
     return response
@@ -138,8 +138,8 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(id_list=['next_button_id'], device=device)
-    response = self._ElementClicked(element_clicked, session_info, screen_info)
+    element_callback = fase_model.ElementCallback(id_list=['next_button_id'], device=device)
+    response = self._ElementCallback(element_callback, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = ApplicationTest._GetGreetingScreen(service, name='Hanry Ford')
     expected_screen._screen_id = screen_info.screen_id
@@ -147,8 +147,8 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_clicked = fase_model.ElementClicked(id_list=['reset_button_id'], device=device)
-    response = self._ElementClicked(element_clicked, session_info, screen_info)
+    element_callback = fase_model.ElementCallback(id_list=['reset_button_id'], device=device)
+    response = self._ElementCallback(element_callback, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = ApplicationTest._GetEnterNameScreen(service)
     expected_screen._screen_id = screen_info.screen_id

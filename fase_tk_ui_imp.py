@@ -30,35 +30,35 @@ DATETIME_TYPE_TO_FORMAT = {fase.DateTimePicker.DATE: '%Y-%m-%d',
                            fase.DateTimePicker.DATETIME: '%Y-%m-%d %H:%M:%S'}
 
 
-class UpdateCallBack(object):
+class ElementUpdatedCallback(object):
   
   def __init__(self, ui_tk, id_list):
     self.ui_tk = ui_tk
     self.id_list = id_list 
 
   def __call__(self, *args):
-    self.ui_tk.ElementUpdatedCallBack(self.id_list)
+    self.ui_tk.ElementUpdated(self.id_list)
 
 
-class ClickCallBack(object):
+class ElementCallbackCallback(object):
   
   def __init__(self, ui_tk, id_list):
     self.ui_tk = ui_tk
     self.id_list = id_list 
 
   def __call__(self, *args):
-    self.ui_tk.ElementClickedCallBack(self.id_list)
+    self.ui_tk.ElementCallback(self.id_list)
 
 
-class UpdateAndClickCallBack(object):
+class ElementUpdatedAndCallbackCallback(object):
   
   def __init__(self, ui_tk, id_list):
     self.ui_tk = ui_tk
     self.id_list = id_list 
 
   def __call__(self, *args):
-    self.ui_tk.ElementUpdatedCallBack(self.id_list)
-    self.ui_tk.ElementClickedCallBack(self.id_list)
+    self.ui_tk.ElementUpdated(self.id_list)
+    self.ui_tk.ElementCallback(self.id_list)
 
 
 class ElementVariable(object):
@@ -182,7 +182,7 @@ class ParentElement(object):
   def GetOrientation(self):
     return self._orientation
 
-  def GetClickCallBack(self):
+  def GetClickCallback(self):
     return self._click_callback
 
   def GetColumn(self):
@@ -330,26 +330,27 @@ class FaseTkUIImp(object):
   def DrawScreenMainMenuItem(self, id_list, menu_item_element):
     self.ui_imp_main_menu.add_command(
         label=menu_item_element.GetText(),
-        command=ClickCallBack(self, id_list) if menu_item_element.GetOnClick() is not None else None)
+        command=ElementCallbackCallback(self, id_list) if menu_item_element.GetOnClick() is not None else None)
     self._ConfigureMenuItemImage(menu_item_element, self.ui_imp_main_menu, self.ui_imp_main_menu.index(tkinter.END))
 
   def DrawScreenContextMenuItem(self, id_list, menu_item_element):
     assert menu_item_element.GetOnClick() is not None
-    self.ui_imp_context_menu.add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
+    self.ui_imp_context_menu.add_command(
+        label=menu_item_element.GetText(), command=ElementCallbackCallback(self, id_list))
     self._ConfigureMenuItemImage(menu_item_element, self.ui_imp_context_menu,
                                  self.ui_imp_context_menu.index(tkinter.END))
 
   def DrawScreenNextStepButton(self, id_list, next_step_button_element):
     assert next_step_button_element.GetOnClick() is not None
     ui_imp_next_step_button = tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText(),
-                                             command=ClickCallBack(self, id_list))
+                                             command=ElementCallbackCallback(self, id_list))
     self._ConfigureButtonImage(next_step_button_element, ui_imp_next_step_button)
     ui_imp_next_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
   def DrawScreenPrevStepButton(self, id_list, prev_step_button_element):
     assert prev_step_button_element.GetOnClick() is not None
     ui_imp_prev_step_button = tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText(),
-                                             command=ClickCallBack(self, id_list))
+                                             command=ElementCallbackCallback(self, id_list))
     self._ConfigureButtonImage(prev_step_button_element, ui_imp_prev_step_button)
     ui_imp_prev_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
@@ -389,7 +390,7 @@ class FaseTkUIImp(object):
     ui_imp_main_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
     if main_button_element.GetOnClick():
-      ui_imp_main_button.configure(command=ClickCallBack(self, id_list))
+      ui_imp_main_button.configure(command=ElementCallbackCallback(self, id_list))
       return ParentElement(ui_imp_main_button) 
     elif main_button_element.HasContextMenu():
       ui_imp_main_button_context_menu = tkinter.Menu()
@@ -400,8 +401,9 @@ class FaseTkUIImp(object):
 
   def DrawScreenNavButton(self, id_list, nav_button_element, nav_button_i):
     assert nav_button_element.GetOnClick() is not None
-    ui_imp_nav_button = tkinter.Button(self.ui_imp_nav_button_frame_list[nav_button_i],
-                                       text=nav_button_element.GetText(), command=ClickCallBack(self, id_list))
+    ui_imp_nav_button = tkinter.Button(
+        self.ui_imp_nav_button_frame_list[nav_button_i],
+        text=nav_button_element.GetText(), command=ElementCallbackCallback(self, id_list))
     self._ConfigureButtonImage(nav_button_element, ui_imp_nav_button)
     ui_imp_nav_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
 
@@ -427,9 +429,9 @@ class FaseTkUIImp(object):
 
     click_callback = None
     if frame_element.GetOnClick():
-      click_callback = ClickCallBack(self, id_list)
-    elif ui_imp_parent.GetClickCallBack():
-      click_callback = ui_imp_parent.GetClickCallBack()
+      click_callback = ElementCallbackCallback(self, id_list)
+    elif ui_imp_parent.GetClickCallback():
+      click_callback = ui_imp_parent.GetClickCallback()
 
     if click_callback is not None:
       ui_imp_frame.bind('<1>', click_callback)
@@ -464,9 +466,9 @@ class FaseTkUIImp(object):
 
     click_callback = None
     if label_element.GetOnClick():
-      click_callback = ClickCallBack(self, id_list)
-    elif ui_imp_parent.GetClickCallBack():
-      click_callback = ui_imp_parent.GetClickCallBack()
+      click_callback = ElementCallbackCallback(self, id_list)
+    elif ui_imp_parent.GetClickCallback():
+      click_callback = ui_imp_parent.GetClickCallback()
 
     if click_callback is not None:
       ui_imp_label.bind('<1>', click_callback)
@@ -484,7 +486,7 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = TextElementVariable(ui_imp_var)
     self.id_list_to_var[tuple(id_list)].Update(text_element.Get())
-    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_var.trace('w', ElementUpdatedCallback(self, id_list))
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
     if text_element.GetDisplayed():
       ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -497,7 +499,7 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = SwitchElementVariable(ui_imp_var)
     self.id_list_to_var[tuple(id_list)].Update(switch_element.Get())
-    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_var.trace('w', ElementUpdatedCallback(self, id_list))
     ui_imp_switch = tkinter.Checkbutton(ui_imp_parent.GetUIImpParent(), text=switch_element.GetText(),
                                         variable=ui_imp_var, onvalue=str(True), offvalue=str(False))
 
@@ -523,7 +525,7 @@ class FaseTkUIImp(object):
     ui_imp_var = tkinter.StringVar()
     self.id_list_to_var[tuple(id_list)] = SelectElementVariable(ui_imp_var)
     self.id_list_to_var[tuple(id_list)].Update(select_element.Get())
-    ui_imp_var.trace('w', UpdateCallBack(self, id_list))
+    ui_imp_var.trace('w', ElementUpdatedCallback(self, id_list))
     ui_imp_select = tkinter.Spinbox(ui_imp_parent.GetUIImpParent(), values=select_element.GetItems(),
                                     textvariable=ui_imp_var)
 
@@ -558,7 +560,7 @@ class FaseTkUIImp(object):
     self._ConfigureButtonImage(button_element, ui_imp_button)
 
     if button_element.GetOnClick():
-      ui_imp_button.configure(command=ClickCallBack(self, id_list))
+      ui_imp_button.configure(command=ElementCallbackCallback(self, id_list))
     elif button_element.HasContextMenu():
       ui_imp_button_context_menu = tkinter.Menu()
       ui_imp_button.bind('<1>', lambda e: ui_imp_button_context_menu.post(e.x_root, e.y_root))
@@ -582,9 +584,9 @@ class FaseTkUIImp(object):
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
 
     if contact_picker_element.GetOnPick():
-      ui_imp_text.bind('<FocusOut>', UpdateAndClickCallBack(self, id_list))
+      ui_imp_text.bind('<FocusOut>', ElementUpdatedAndCallbackCallback(self, id_list))
     else:
-      ui_imp_text.bind('<FocusOut>', UpdateCallBack(self, id_list))
+      ui_imp_text.bind('<FocusOut>', ElementUpdatedCallback(self, id_list))
 
     if contact_picker_element.GetDisplayed():
       ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -601,7 +603,7 @@ class FaseTkUIImp(object):
         DateTimePickerElementVariable(ui_imp_var, type_=datetime_picker_element.GetType()))
     self.id_list_to_var[tuple(id_list)].Update(datetime_picker_element.Get())
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
-    ui_imp_text.bind('<FocusOut>', UpdateCallBack(self, id_list))
+    ui_imp_text.bind('<FocusOut>', ElementUpdatedCallback(self, id_list))
 
     if datetime_picker_element.GetDisplayed():
       ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -617,7 +619,7 @@ class FaseTkUIImp(object):
     self.id_list_to_var[tuple(id_list)] = PlacePickerElementVariable(ui_imp_var, type_=place_picker_element.GetType())
     self.id_list_to_var[tuple(id_list)].Update(place_picker_element.Get())
     ui_imp_text = tkinter.Entry(ui_imp_parent.GetUIImpParent(), textvariable=ui_imp_var)
-    ui_imp_text.bind('<FocusOut>', UpdateCallBack(self, id_list))
+    ui_imp_text.bind('<FocusOut>', ElementUpdatedCallback(self, id_list))
     
     if place_picker_element.GetDisplayed():
       ui_imp_text.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
@@ -627,7 +629,8 @@ class FaseTkUIImp(object):
 
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None
-    ui_imp_parent.GetUIImpParent().add_command(label=menu_item_element.GetText(), command=ClickCallBack(self, id_list))
+    ui_imp_parent.GetUIImpParent().add_command(
+        label=menu_item_element.GetText(), command=ElementCallbackCallback(self, id_list))
     self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.GetUIImpParent().index(tkinter.END))
 
   # NOTE(igushev): tkinter has limitation on what dialog boxes can be displayed.
@@ -635,20 +638,20 @@ class FaseTkUIImp(object):
     return messagebox.showinfo(type=BUTTON_TEXT_LIST_TO_INFO_TYPE[button_text_tuple], message=alert.GetText())
 
   def Run(self):
-    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)
+    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)
     self.ui_imp_root.mainloop()
 
-  def ElementUpdatedCallBack(self, id_list):
+  def ElementUpdated(self, id_list):
     if self.element_updated_callback:
       value = self.id_list_to_var[tuple(id_list)].Get() 
-      self.ui.ElementUpdatedCallBack(id_list, value)
+      self.ui.ElementUpdated(id_list, value)
 
-  def ScreenUpdateCallBack(self):
-    self.ui.ScreenUpdateCallBack()
-    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdateCallBack)
+  def ScreenUpdate(self):
+    self.ui.ScreenUpdate()
+    self.ui_imp_root.after(SCREEN_UPDATE_INTERVAL, self.ScreenUpdate)
 
-  def ElementClickedCallBack(self, id_list):
-    self.ui.ElementClickedCallBack(id_list)
+  def ElementCallback(self, id_list):
+    self.ui.ElementCallback(id_list)
 
   def ElementUpdatedReceived(self, id_list, value):
     # NOTE(igushev): We turn off element_updated_callback not to register change as user's change.

@@ -63,7 +63,7 @@ class ScreenUpdate(data_util.AbstractObject):
     'id_list': json_util.JSONList(json_util.JSONString()),
     'device': json_util.JSONObject(Device),
     'locale': json_util.JSONObject(fase.Locale)})
-class ElementClicked(data_util.AbstractObject):
+class ElementCallback(data_util.AbstractObject):
 
   def  __init__(self,
                 elements_update=None,

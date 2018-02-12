@@ -16,8 +16,8 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
   sms_sender.SMSSender.Set(sms_sender.SMSSender(sms_sender.MockSMSServiceProvider()), overwrite=True)
 
   # Click on Sign In button.
-  response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(id_list=sign_in_id_list), session_info, screen_info)
+  response = fase_server.FaseServer.Get().ElementCallback(
+      fase_model.ElementCallback(id_list=sign_in_id_list), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -27,8 +27,8 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
 
   if sign_in:
     # Click on Sign In button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_frame_id', 'sign_in_button_id']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['sign_in_frame_id', 'sign_in_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
@@ -40,15 +40,15 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign In button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_frame_id', 'sign_in_button_id'],
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['sign_in_frame_id', 'sign_in_button_id'],
                                   locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
   else:
     # Click on Sign Up button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_in_frame_id', 'sign_up_button_id']), session_info, screen_info)
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['sign_in_frame_id', 'sign_up_button_id']), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check present of main elements.
@@ -66,8 +66,8 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     # Click on Sign Up button.
-    response = fase_server.FaseServer.Get().ElementClicked(
-        fase_model.ElementClicked(id_list=['sign_up_frame_id', 'sign_up_button_id'],
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['sign_up_frame_id', 'sign_up_button_id'],
                                   locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -83,8 +83,8 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
   screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
   fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
   # Click on Send button.
-  response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(id_list=['enter_activation_frame_id', 'send_button_id']), session_info, screen_info)
+  response = fase_server.FaseServer.Get().ElementCallback(
+      fase_model.ElementCallback(id_list=['enter_activation_frame_id', 'send_button_id']), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -93,8 +93,8 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
 
 def SignOutProcedure(session_info, screen_info, sign_out_id_list):
   # Click on Sign Out button.
-  response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(id_list=sign_out_id_list), session_info, screen_info)
+  response = fase_server.FaseServer.Get().ElementCallback(
+      fase_model.ElementCallback(id_list=sign_out_id_list), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   screen = response.screen
@@ -102,8 +102,8 @@ def SignOutProcedure(session_info, screen_info, sign_out_id_list):
   screen.GetElement(id_='sign_out_frame_id').GetElement(id_='sign_out_button_id')
 
   # Click on Sign Out button.
-  response = fase_server.FaseServer.Get().ElementClicked(
-      fase_model.ElementClicked(id_list=['sign_out_frame_id', 'sign_out_button_id']), session_info, screen_info)
+  response = fase_server.FaseServer.Get().ElementCallback(
+      fase_model.ElementCallback(id_list=['sign_out_frame_id', 'sign_out_button_id']), session_info, screen_info)
   session_info = response.session_info
   screen_info = response.screen_info
   return session_info, screen_info

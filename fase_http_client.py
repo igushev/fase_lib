@@ -45,11 +45,11 @@ class FaseHTTPClient(object):
     response = fase_model.Response.FromSimple(response_simple)
     return response
     
-  def ElementClicked(self, element_clicked, session_info, screen_info):
-    url = self.server_url + '/elementclicked'
+  def ElementCallback(self, element_callback, session_info, screen_info):
+    url = self.server_url + '/elementcallback'
     headers = {'session-id': session_info.session_id, 'screen-id': screen_info.screen_id}
-    element_clicked_simple = element_clicked.ToSimple()
-    http_response = requests.post(url, headers=headers, json=element_clicked_simple)
+    element_callback_simple = element_callback.ToSimple()
+    http_response = requests.post(url, headers=headers, json=element_callback_simple)
     self.AssertStatus(http_response)
     response_simple = http_response.json()
     response = fase_model.Response.FromSimple(response_simple)

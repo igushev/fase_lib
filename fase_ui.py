@@ -144,14 +144,14 @@ class FaseUI(object):
   def Run(self):
     self.ui_imp.Run()
 
-  def ElementUpdatedCallBack(self, id_list, value):
+  def ElementUpdated(self, id_list, value):
     self.client.ElementUpdated(id_list, value)
 
-  def ScreenUpdateCallBack(self):
+  def ScreenUpdate(self):
     self.client.ScreenUpdate()
 
-  def ElementClickedCallBack(self, id_list):
-    self.client.ElementClicked(id_list)
+  def ElementCallback(self, id_list):
+    self.client.ElementCallback(id_list)
 
   def ElementUpdatedReceived(self, id_list, value):
     self.ui_imp.ElementUpdatedReceived(id_list, value)
