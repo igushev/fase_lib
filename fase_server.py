@@ -139,7 +139,7 @@ class FaseServer(object):
     if element_callback.elements_update is not None:
       FaseServer._UpdateScreen(screen_prog.screen, element_callback.elements_update)
     element = self._GetElement(screen_prog.screen, element_callback)
-    service, screen = element.FaseOnClick(service, screen_prog.screen)
+    service, screen = element.CallCallback(service, screen_prog.screen, element_callback.method)
     screen.UpdateScreenId(service)
     screen_prog = fase_model.ScreenProg(
         session_id=service.GetSessionId(), screen=screen, recent_device=element_callback.device)

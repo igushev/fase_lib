@@ -139,7 +139,7 @@ class FaseUI(object):
       button_text_to_button_id[button_text] = button_id
       button_text_list.append(button_text)
     button_text_clicked = self.ui_imp.ShowAlert(alert, tuple(button_text_list))
-    return [fase.ALERT_ID, button_text_to_button_id[button_text_clicked]]
+    return [fase.ALERT_ID, button_text_to_button_id[button_text_clicked]], fase.ON_CLICK_METHOD
 
   def Run(self):
     self.ui_imp.Run()
@@ -150,8 +150,8 @@ class FaseUI(object):
   def ScreenUpdate(self):
     self.client.ScreenUpdate()
 
-  def ElementCallback(self, id_list):
-    self.client.ElementCallback(id_list)
+  def ElementCallback(self, id_list, method):
+    self.client.ElementCallback(id_list, method)
 
   def ElementUpdatedReceived(self, id_list, value):
     self.ui_imp.ElementUpdatedReceived(id_list, value)

@@ -29,7 +29,9 @@ def _ErrorAlert(service, message, on_click):
 @json_util.JSONDecorator({})
 class FaseSignInButton(fase.Button):
 
-  def FaseOnClick(self, service, screen):
+
+  def CallCallback(self, service, screen, method):
+    assert method == fase.ON_CLICK_METHOD
     activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_int').GetValue()
     activation_code_entered = int(
         screen.GetFrame(id_='enter_activation_frame_id').GetText(id_='activation_code_text_id').GetText())
@@ -72,7 +74,8 @@ class FaseSignInButton(fase.Button):
 @json_util.JSONDecorator({})
 class FaseSignOutButton(fase.Button):
 
-  def FaseOnClick(self, service, screen):
+  def CallCallback(self, service, screen, method):
+    assert method == fase.ON_CLICK_METHOD
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)

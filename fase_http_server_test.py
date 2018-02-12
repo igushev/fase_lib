@@ -138,7 +138,8 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_callback = fase_model.ElementCallback(id_list=['next_button_id'], device=device)
+    element_callback = (
+        fase_model.ElementCallback(id_list=['next_button_id'], method=fase.ON_CLICK_METHOD, device=device))
     response = self._ElementCallback(element_callback, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = ApplicationTest._GetGreetingScreen(service, name='Hanry Ford')
@@ -147,7 +148,8 @@ class ApplicationTest(unittest.TestCase):
     response = self._GetScreen(device, session_info)
     self.assertEqual(expected_screen, response.screen)
 
-    element_callback = fase_model.ElementCallback(id_list=['reset_button_id'], device=device)
+    element_callback = (
+        fase_model.ElementCallback(id_list=['reset_button_id'], method=fase.ON_CLICK_METHOD, device=device))
     response = self._ElementCallback(element_callback, session_info, screen_info)
     screen_info = response.screen_info
     expected_screen = ApplicationTest._GetEnterNameScreen(service)

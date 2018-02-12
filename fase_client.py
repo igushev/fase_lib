@@ -81,13 +81,13 @@ class FaseClient(object):
     self.screen_update_condition.notify()
     self.screen_lock.release()
 
-  def _GetElementCallback(self, elements_update, id_list):
+  def _GetElementCallback(self, elements_update, id_list, method):
     element = fase_model.GetScreenElement(self.screen, id_list)
     locale = fase.Locale(country_code=COUNTRY_CODE) if element.GetRequestLocale() else None
     return fase_model.ElementCallback(
-        elements_update=elements_update, id_list=id_list, device=self.device, locale=locale)
+        elements_update=elements_update, id_list=id_list, method=method, device=self.device, locale=locale)
 
-  def ElementCallback(self, id_list):
+  def ElementCallback(self, id_list, method):
     with self.screen_lock:
       if not self.screen_update_response_queue.empty():
         response = self.screen_update_response_queue.get(block=False)
@@ -96,15 +96,15 @@ class FaseClient(object):
       with self.id_list_to_value_lock:
         elements_update = fase_model.DictToElementsUpdate(self.id_list_to_value)
         self._ResetValues()
-      element_callback = self._GetElementCallback(elements_update=elements_update, id_list=id_list)
+      element_callback = self._GetElementCallback(elements_update=elements_update, id_list=id_list, method=method)
       response = self.http_client.ElementCallback(element_callback, self.session_info, self.screen_info)
       self.ProcessResponse(response)
 
   def ProcessResponse(self, response):
     while response.screen is not None and response.screen.HasElement(fase.ALERT_ID):
       alert = response.screen.PopElement(fase.ALERT_ID)
-      id_list = self.ui.ShowAlert(alert)
-      element_callback = fase_model.ElementCallback(id_list=id_list, device=self.device)
+      id_list, method = self.ui.ShowAlert(alert)
+      element_callback = fase_model.ElementCallback(id_list=id_list, method=method, device=self.device)
       response = self.http_client.ElementCallback(element_callback, response.session_info, response.screen_info)
     self.session_info = response.session_info
     self.screen_info = response.screen_info

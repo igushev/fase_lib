@@ -20,6 +20,9 @@ MAIN_MENU_ID = 'main_menu'
 MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
 
+ON_CLICK_METHOD = 'on_click'
+ON_PICK_METHOD = 'on_pick'
+
 
 def FunctionPlaceholder():
   pass
@@ -203,8 +206,8 @@ class Element(data_util.AbstractObject):
   def __init__(self):
     super(Element, self).__init__()
 
-  def FaseOnClick(self, service, screen):
-    screen = self.on_click(service, screen, self)
+  def CallCallback(self, service, screen, method):
+    screen = getattr(self, method)(service, screen, self)
     return service, screen
 
 
@@ -708,10 +711,6 @@ class ContactPicker(VisualElement):
 
   def GetOnPick(self):
     return self.on_pick
-
-  def FaseOnClick(self, service, screen):
-    screen = self.on_pick(service, screen, self)
-    return service, screen
 
 
 @json_util.JSONDecorator(
