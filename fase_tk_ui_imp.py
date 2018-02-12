@@ -17,6 +17,9 @@ MAIN_BUTTON_WIDTH = 75
 MAIN_BUTTON_HEIGHT = 75
 SCREEN_UPDATE_INTERVAL = 200
 
+REFRESH_BUTTON_TEXT = 'Refresh'
+ON_MORE_BUTTON_TEXT = 'More'
+
 BUTTON_TEXT_LIST_TO_INFO_TYPE = {('ok', ): messagebox.OK,
                                  ('ok', 'cancel'): messagebox.OKCANCEL,
                                  ('yes', 'no'): messagebox.YESNO,
@@ -419,6 +422,14 @@ class FaseTkUIImp(object):
       else:
         raise ValueError(self._orientation)
 
+  def DrawRefreshButton(self, id_list, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_refresh_button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=REFRESH_BUTTON_TEXT)
+    ui_imp_refresh_button.configure(command=ElementCallbackCallback(self, id_list, fase.ON_REFRESH_METHOD))
+    ui_imp_refresh_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_refresh_button)
+
   def DrawFrame(self, id_list, frame_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent, maximize=(frame_element.GetSize()==fase.Frame.MAX))
     ui_imp_frame = tkinter.Frame(ui_imp_parent.GetUIImpParent())
@@ -635,6 +646,14 @@ class FaseTkUIImp(object):
     ui_imp_parent.GetUIImpParent().add_command(
         label=menu_item_element.GetText(), command=ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD))
     self._ConfigureMenuItemImage(menu_item_element, ui_imp_parent, ui_imp_parent.GetUIImpParent().index(tkinter.END))
+
+  def DrawMoreButton(self, id_list, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_more_button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=ON_MORE_BUTTON_TEXT)
+    ui_imp_more_button.configure(command=ElementCallbackCallback(self, id_list, fase.ON_MORE_METHOD))
+    ui_imp_more_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_more_button)
 
   # NOTE(igushev): tkinter has limitation on what dialog boxes can be displayed.
   def ShowAlert(self, alert, button_text_tuple):

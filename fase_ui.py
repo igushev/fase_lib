@@ -23,7 +23,11 @@ class FaseUI(object):
     ui_imp_window = self.ui_imp.ResetScreen(scrollable=screen.GetScrollable())
     self.DrawMainContextMenusNextPrevButtons(screen)
     self.DrawMainButtonAndNavigationButtons(screen)
+    if screen.GetOnRefresh():
+      self.DrawRefreshButton([], ui_imp_window)
     self.DrawBaseElementsContainer([], screen, ui_imp_window)
+    if screen.GetOnMore():
+      self.DrawMoreButton([], ui_imp_window)
 
   def DrawMainContextMenusNextPrevButtons(self, screen):
     main_menu_element = screen.GetElement(fase.MAIN_MENU_ID) if screen.HasElement(fase.MAIN_MENU_ID) else None
@@ -62,6 +66,9 @@ class FaseUI(object):
     # NOTE(igushev): Button Bar Frame will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
       self.ui_imp.DrawScreenNavButton([fase.BUTTON_BAR_ID, nav_button_id], nav_button_element, nav_button_i)
+
+  def DrawRefreshButton(self, id_list, ui_imp_parent):
+    self.ui_imp.DrawRefreshButton(id_list, ui_imp_parent)
 
   def DrawBaseElementsContainer(self, id_list, parent_element, ui_imp_parent):
     for id_, element in parent_element.GetIdElementList():
@@ -129,6 +136,9 @@ class FaseUI(object):
 
   def DrawPlacePicker(self, id_list, place_picker_element, ui_imp_parent):
     self.ui_imp.DrawPlacePicker(id_list, place_picker_element, ui_imp_parent)
+
+  def DrawMoreButton(self, id_list, ui_imp_parent):
+    self.ui_imp.DrawMoreButton(id_list, ui_imp_parent)
 
   def ShowAlert(self, alert):
     button_text_to_button_id = {}

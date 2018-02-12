@@ -22,6 +22,8 @@ BUTTON_BAR_ID = 'button_bar'
 
 ON_CLICK_METHOD = 'on_click'
 ON_PICK_METHOD = 'on_pick'
+ON_REFRESH_METHOD = 'on_refresh'
+ON_MORE_METHOD = 'on_more'
 
 
 def FunctionPlaceholder():
@@ -961,7 +963,9 @@ class Alert(ElementContainer):
 @json_util.JSONDecorator(
     {'_screen_id': json_util.JSONString(),
      'scrollable': json_util.JSONBool(),
-     'title': json_util.JSONString()})
+     'title': json_util.JSONString(),
+     'on_refresh': json_util.JSONFunction(),
+     'on_more': json_util.JSONFunction()})
 class Screen(BaseElementsContainer):
 
   def __init__(self, service):
@@ -969,6 +973,8 @@ class Screen(BaseElementsContainer):
     self._screen_id = GenerateScreenId(service.GetSessionId())
     self.scrollable = None
     self.title = None
+    self.on_refresh = None
+    self.on_more = None
 
   def UpdateScreenId(self, service):
     self._screen_id = GenerateScreenId(service.GetSessionId())
@@ -984,6 +990,16 @@ class Screen(BaseElementsContainer):
     self.title = title
   def GetTitle(self):
     return self.title
+
+  def SetOnRefresh(self, on_refresh):
+    self.on_refresh = on_refresh
+  def GetOnRefresh(self):
+    return self.on_refresh
+
+  def SetOnMore(self, on_more):
+    self.on_more = on_more
+  def GetOnMore(self):
+    return self.on_more
 
   def AddMainMenu(self):
     return self.AddElement(MAIN_MENU_ID, Menu())
