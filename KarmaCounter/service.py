@@ -99,7 +99,7 @@ class KarmaCounter(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
-    screen.AddSelect(id_='score_select', items=['-10-', '-3', '-1', '0', '1', '3', '10'], hint='Score')
+    screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score')
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
