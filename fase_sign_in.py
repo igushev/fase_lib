@@ -227,7 +227,8 @@ def OnSignUpOption(service, screen, element):
 def OnSignUpEnteredData(service, screen, element):
   sign_up_frame = screen.GetElement(id_='sign_up_frame_id')
   phone_number = sign_up_frame.GetText(id_='phone_number_text_id').GetText()
-  country_code = element.GetLocale().country_code
+  locale = element.GetLocale()
+  country_code = locale.GetCountryCode()
 
   if country_code:
     country_code = country_code.upper()
@@ -277,6 +278,7 @@ def OnSignUpEnteredData(service, screen, element):
                    last_name=last_name,
                    date_of_birth=date_of_birth,
                    home_city=home_city,
+                   locale=locale,
                    datetime_added=datetime_now)
   fase_database.FaseDatabaseInterface.Get().AddUser(user)
   _CleanUserVariables(service)

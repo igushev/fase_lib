@@ -7,6 +7,7 @@
 # TODO(igushev): Add User custom byte field for Notes and delete Notes database.
 # TODO(igushev): Verify phone number when inviting Friends.
 # TODO(igushev): Keep selected score when sending new window after picking Friend.
+# TODO(igushev): Implement check of google place id and minimum date of birth.
 
 # Client Communication Clean Ups
 # TODO(igushev): Avoid using FunctionPlaceholder.

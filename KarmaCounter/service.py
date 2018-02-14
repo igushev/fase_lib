@@ -4,6 +4,8 @@ import fase_sign_in
 from KarmaCounter import client as kc_client
 from KarmaCounter import data as kc_data
 
+GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
+
 
 class KarmaCounter(fase.Service):
 
@@ -24,7 +26,9 @@ class KarmaCounter(fase.Service):
                                                        city=self.GetUser().GetHomeCity().GetCity(),
                                                        state=self.GetUser().GetHomeCity().GetState(),
                                                        country=self.GetUser().GetHomeCity().GetCountry()),
-                               date_of_birth=self.GetUser().GetDateOfBirth())
+                               date_of_birth=self.GetUser().GetDateOfBirth(),
+                               locale=self.GetUser().GetLocale(),
+                               code=GET_USER_SESSION_CODE)
     session_info = kc_client.GetUserSession(new_user)
     if not self.HasStringVariable(id_='session_id_str'):
       self.AddStringVariable(id_='session_id_str', value=session_info.session_id)

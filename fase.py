@@ -63,6 +63,9 @@ class Locale(data_util.AbstractObject):
   def __init__(self, country_code):
     self.country_code = country_code
 
+  def GetCountryCode(self):
+    return self.country_code
+
 
 @json_util.JSONDecorator(
     {'display_name': json_util.JSONString(),
@@ -159,6 +162,7 @@ class Place(data_util.AbstractObject):
     'last_name': json_util.JSONString(),
     'date_of_birth': json_util.JSONDateTime(),
     'home_city': json_util.JSONObject(Place),
+    'locale': json_util.JSONObject(Locale),
     'datetime_added': json_util.JSONDateTime()})
 class User(data_util.AbstractObject):
   def __init__(self,
@@ -168,13 +172,15 @@ class User(data_util.AbstractObject):
                last_name=None,
                date_of_birth=None,
                home_city=None,
+               locale=None,
                datetime_added=None):
     self.user_id = user_id
     self.phone_number = phone_number
     self.first_name = first_name
     self.last_name = last_name
     self.date_of_birth = date_of_birth
-    self.home_city=home_city 
+    self.home_city = home_city
+    self.locale = locale 
     self.datetime_added = datetime_added
 
   def GetPhoneNumber(self):
@@ -191,6 +197,9 @@ class User(data_util.AbstractObject):
 
   def GetHomeCity(self):
     return self.home_city
+
+  def GetLocale(self):
+    return self.locale
 
   def DisplayName(self):
     if self.first_name and self.last_name:

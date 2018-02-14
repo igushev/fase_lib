@@ -159,20 +159,24 @@ class CommonUser(BasicUser):
 # TODO(igushev): Clean up None.
 @json_util.JSONDecorator({
     'device': json_util.JSONObject(Device),
-    'locale': json_util.JSONObject(Locale)})
+    'locale': json_util.JSONObject(Locale),
+    'code': json_util.JSONString()})
 class NewUser(CommonUser):
 
   def __init__(self,
                device=None,
                locale=None,
+               code=None,
                **kwargs):
     super(NewUser, self).__init__(**kwargs)
     self.device = device
     self.locale = locale
+    self.code = code
 
   def ToUser(self):
     kwargs = copy.copy(self.__dict__)
     kwargs.pop('device')
+    kwargs.pop('code')
     return User(**kwargs)
 
 
