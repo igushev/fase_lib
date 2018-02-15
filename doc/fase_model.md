@@ -97,7 +97,7 @@ When User interacts with *Screen* and triggers callback (Button click, Screen Re
 *Element* which caused callback, name of the callback method and device token, receives and processes *Response*.
 Callback processing happens **synchronous** meaning blocking for User.
 
-Additional data can be requested for callback, for example, current *Locale*. If So, Client using its platform API
+Additional data can be requested for the callback, for example, current *Locale*. If So, Client using its platform API
 obtains such information and sends to within message.
 
 Example of *ElementCallback* message for Hello World Application when User clicks "Next" button:
