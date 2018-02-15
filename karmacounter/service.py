@@ -4,18 +4,18 @@ import fase_sign_in
 from karmacounter import client as kc_client
 from karmacounter import data as kc_data
 
-GET_USER_SESSION_CODE = 'karmacounterGetUserSession'
+GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
 
 
-class karmacounter(fase.Service):
+class KarmaCounter(fase.Service):
 
   @staticmethod
   def GetServiceId():
-    return 'karmacounter'
+    return 'KarmaCounter'
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
-    return fase_sign_in.StartSignIn(self, on_done=karmacounter.OnSignInDone,
+    return fase_sign_in.StartSignIn(self, on_done=KarmaCounter.OnSignInDone,
                                     request_user_data=fase.RequestUserData(date_of_birth=True, home_city=True))
 
   def OnSignInDone(self, user_id_before=None):
@@ -64,7 +64,7 @@ class karmacounter(fase.Service):
     return self.DisplayStatisticsByCities(screen, element)
 
   def OnSignOut(self, screen, element):
-    return fase_sign_in.StartSignOut(self, on_cancel=karmacounter.OnSignOutCancel)
+    return fase_sign_in.StartSignOut(self, on_cancel=KarmaCounter.OnSignOutCancel)
 
   def OnSignOutCancel(self):
     return self.DisplayCurrentScreen(None, None)
@@ -72,21 +72,21 @@ class karmacounter(fase.Service):
   def _AddButtons(self, screen):
     main_menu = screen.AddMainMenu()
     main_menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUser().DisplayName())
-    main_menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=karmacounter.OnSignOut)
+    main_menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=KarmaCounter.OnSignOut)
     button_bar = screen.AddButtonBar()
-    button_bar.AddButton(id_='dashboard_button', text='Dashboard', on_click=karmacounter.OnDisplayDashboard)
-    button_bar.AddButton(id_='your_events_button', text='Your Events', on_click=karmacounter.OnDisplayYourEvents)
+    button_bar.AddButton(id_='dashboard_button', text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
+    button_bar.AddButton(id_='your_events_button', text='Your Events', on_click=KarmaCounter.OnDisplayYourEvents)
     button_bar.AddButton(
-        id_='your_friends_events_button', text='Your Friends Events', on_click=karmacounter.OnDisplayYourFriendsEvents)
+        id_='your_friends_events_button', text='Your Friends Events', on_click=KarmaCounter.OnDisplayYourFriendsEvents)
     button_bar.AddButton(
         id_='statistics_by_cities_button', text='Statistics by Cities',
-        on_click=karmacounter.OnDisplayStatisticsByCities)
+        on_click=KarmaCounter.OnDisplayStatisticsByCities)
     main_button = screen.AddMainButton(text='Add Event')
     main_button_context_menu = main_button.AddContextMenu()
     main_button_context_menu.AddMenuItem(
-        id_='add_event_to_yourself', text='Add Event to Yourself', on_click=karmacounter.OnAddUserEvent)
+        id_='add_event_to_yourself', text='Add Event to Yourself', on_click=KarmaCounter.OnAddUserEvent)
     main_button_context_menu.AddMenuItem(
-        id_='add_event_to_friend', text='Add Event to Friend', on_click=karmacounter.OnAddOtherUserEvent)
+        id_='add_event_to_friend', text='Add Event to Friend', on_click=KarmaCounter.OnAddOtherUserEvent)
 
   def DisplayDashboard(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
@@ -104,11 +104,11 @@ class karmacounter(fase.Service):
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
     screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score')
-    screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=karmacounter.OnFriendPick)
+    screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
-    screen.AddNextStepButton(text='Add', on_click=karmacounter.OnAddUserEventEnteredData)
-    screen.AddPrevStepButton(text='Cancel', on_click=karmacounter.DisplayCurrentScreen)
+    screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
+    screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.DisplayCurrentScreen)
     self.OnFriendPick(screen, None)
     return screen
 
@@ -190,27 +190,27 @@ class karmacounter(fase.Service):
       if user_event.verification_status == kc_data.VerificationStatus.pending:
         if (users_own and not user_event.self_added) or (not users_own and user_event.self_added):
           accept_button = user_event_button_frame.AddButton(
-              id_='user_event_accept_button', text='Accept', on_click=karmacounter.OnAccept)
+              id_='user_event_accept_button', text='Accept', on_click=KarmaCounter.OnAccept)
           accept_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
           reject_button = user_event_button_frame.AddButton(
-              id_='user_event_reject_button', text='Reject', on_click=karmacounter.OnReject)
+              id_='user_event_reject_button', text='Reject', on_click=KarmaCounter.OnReject)
           reject_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
 
       user_event_context_button = user_event_button_frame.AddButton(id_='user_event_context_menu_button')
       user_event_context_menu = user_event_context_button.AddContextMenu()
       report_abuse_button = user_event_context_menu.AddMenuItem(
-          id_='report_abuse_menu_item', text='Report Abuse', on_click=karmacounter.OnReportAbuse)
+          id_='report_abuse_menu_item', text='Report Abuse', on_click=KarmaCounter.OnReportAbuse)
       report_abuse_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
       report_spam_button = user_event_context_menu.AddMenuItem(
-          id_='report_spam_menu_item', text='Report Spam', on_click=karmacounter.OnReportSpam)
+          id_='report_spam_menu_item', text='Report Spam', on_click=KarmaCounter.OnReportSpam)
       report_spam_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
       block_user_button = user_event_context_menu.AddMenuItem(
-          id_='block_user_menu_item', text='Block User', on_click=karmacounter.OnBlockUser)
+          id_='block_user_menu_item', text='Block User', on_click=KarmaCounter.OnBlockUser)
       block_user_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
 
       if users_own:
         delete_button = user_event_context_menu.AddMenuItem(
-            id_='delete_menu_item', text='Delete', on_click=karmacounter.OnDelete)
+            id_='delete_menu_item', text='Delete', on_click=KarmaCounter.OnDelete)
         delete_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
 
     self._AddButtons(screen)
@@ -268,4 +268,4 @@ class karmacounter(fase.Service):
     return screen
 
   
-fase.Service.RegisterService(karmacounter)
+fase.Service.RegisterService(KarmaCounter)
