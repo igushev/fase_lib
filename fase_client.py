@@ -6,7 +6,6 @@ import threading
 
 import fase
 import fase_model
-import fase_sign_in
 
 COUNTRY_CODE = 'US'
 DEVICE_TYPE = 'Python'
