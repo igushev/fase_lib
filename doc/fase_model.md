@@ -57,8 +57,8 @@ Table of Contents
 
 ### Client Launch
 
-When Client launches first time, it sends */getserivce* request to Server, receives and processes *Response*. When Client launches second and other times, it reads its session_info, sends */getscreen* request to Server, receives
-and processes *Response*.
+When Client launches first time, it sends */getserivce* request to Server, receives and processes *Response*. When Client launches second and following times, it reads previously saved **locally** session_info, sends */getscreen* request to
+Server, receives and processes *Response*.
 
 ### Keeping Dictionary of Updated Elements
 
