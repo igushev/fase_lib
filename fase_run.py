@@ -13,10 +13,10 @@ import fase_http_server
 import sms_sender
 import fase_model
 import fase_server
-import fase_client
-import fase_tk_ui_imp
-import fase_ui
-import fase_http_client
+from fase_client import fase_client
+from fase_client import fase_tk_ui_imp
+from fase_client import fase_ui
+from fase_client import fase_http_client
 
 
 DYNAMODB_CMD = (
