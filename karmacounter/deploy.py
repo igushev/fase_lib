@@ -2,7 +2,7 @@ import os
 import deploy_util
 
 FASE_VERSION_FILENAME = 'fase_version.txt'
-KC_VERSION_FILENAME = 'KarmaCounter/version.txt'
+KC_VERSION_FILENAME = 'karmacounter/version.txt'
 DEPLOY_DIR_VAR_NAME = 'FASE_KC_SERVER_DEPLOY_DIR'
 FILENAME_TEMPLATE = 'FaseKCServer_Fase_%s_KC_%s'
 
