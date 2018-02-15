@@ -57,7 +57,7 @@ Table of Contents
 
 ### Client Launch
 
-When Client launches first time, it sends *getserivce* request to Server, receives and processes *Response*. When Client launches second and other times, it reads its session_info, sends *getscreen* request to Server, receives
+When Client launches first time, it sends */getserivce* request to Server, receives and processes *Response*. When Client launches second and other times, it reads its session_info, sends */getscreen* request to Server, receives
 and processes *Response*.
 
 ### Keeping Dictionary of Updated Elements
@@ -72,26 +72,26 @@ It make sense to keep dictionary *list(id)* to *Element* as well when Client dra
 
 ### Updating Server
 
-Client sends each 200ms (configurable) *screenupdate* request with *ScreenUpdate* message, where it has content of the
+Client sends each 200ms (configurable) */screenupdate* request with *ScreenUpdate* message, where it has content of the
 dictionary and device token, receives and processes *Response*. This update happens **asynchronous** meaning
 non-blocking for User.
 
 If update hasn't finished for previous iteration, next one can be skip. This might be controlled by *condition*
 synchronization primitive.
 
-The dictionary isn't refreshed each time *screenupdate* request is sent, instead it keeps state since Client draws the
+The dictionary isn't refreshed each time */screenupdate* request is sent, instead it keeps state since Client draws the
 *Screen*. 
 
 ### Element Callback
 
 When User interacts with *Screen* and triggers callback (Button click, Screen Refresh, Picking Contact), Client sends
-*elementcallback* request with *ElementCallback* message, where it has content of the dictionary, *list(id)* of the
+*/elementcallback* request with *ElementCallback* message, where it has content of the dictionary, *list(id)* of the
 element which caused callback, name of the callback method and device token, receives and processes *Response*. Callback
 processing happens **synchronous** meaning blocking for User.
 
 ### Processing Response
 
-* If received *Screen* has Alert, it is shown to user in blocking fashion and Client instantly sends *elementcallback*
+* If received *Screen* has Alert, it is shown to user in blocking fashion and Client instantly sends */elementcallback*
 requests with information about user's choice in same format.
 * Client saves current session_id and screen_id
 * If new *Screen* is received, Client draws new *Screen*.
