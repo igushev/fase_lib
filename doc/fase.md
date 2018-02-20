@@ -777,8 +777,8 @@ After adding two Notes, Home Screen has two Notes and same navigation buttons.
 ## KarmaCounter Application
 
 Native-version of KarmaCounter can be downloaded from
-(AppStore)[https://itunes.apple.com/us/app/karmacounter/id1242742105?mt=8] and
-(Google Play)[https://play.google.com/store/apps/details?id=com.karmacounter&hl=en].
+[AppStore](https://itunes.apple.com/us/app/karmacounter/id1242742105?mt=8) and
+[Google Play](https://play.google.com/store/apps/details?id=com.karmacounter&hl=en).
 Below is slighly modified version of KarmaCounter which has bottom button bar with navigation buttons.
 
 ### Sign In/Sign Up
