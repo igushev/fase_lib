@@ -816,6 +816,12 @@ class PlacePicker(VisualElement):
     return self.size
 
 
+class Separator(VisualElement):
+
+  def __init__(self):
+    super(Separator, self).__init__()
+
+
 @json_util.JSONDecorator({})
 class BaseElementsContainer(VisualElement):
   def __init__(self):
@@ -906,6 +912,11 @@ class BaseElementsContainer(VisualElement):
                      size=None):
     return self.AddElement(id_, PlacePicker(place=place, type_=type_, hint=hint, size=size))
   def GetPlacePicker(self, id_):
+    return self.GetElement(id_)
+
+  def AddSeparator(self, id_):
+    return self.AddElement(id_, Separator())
+  def GetSeparator(self, id_):
     return self.GetElement(id_)
 
 

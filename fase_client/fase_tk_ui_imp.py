@@ -1,7 +1,7 @@
 import math
 import datetime
 import tkinter
-from tkinter import font, messagebox
+from tkinter import font, messagebox, ttk
 from PIL import ImageTk, Image
 import re
 
@@ -640,6 +640,20 @@ class FaseTkUIImp(object):
                        sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_text)
+
+  def DrawSeparator(self, id_list, separator_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    if ui_imp_parent.GetOrientation() == fase.Frame.VERTICAL:
+      orient = 'horizontal'
+    elif ui_imp_parent.GetOrientation() == fase.Frame.HORIZONTAL:
+      orient = 'vertical'
+    ui_imp_separator = ttk.Separator(ui_imp_parent.GetUIImpParent(), orient=orient)
+
+    if separator_element.GetDisplayed():
+      ui_imp_separator.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                            sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_separator)
 
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None

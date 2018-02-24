@@ -97,6 +97,8 @@ class FaseUI(object):
       self.DrawDateTimePicker(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.PlacePicker):
       self.DrawPlacePicker(id_list, element, ui_imp_parent)
+    elif isinstance(element, fase.Separator):
+      self.DrawSeparator(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Variable):
       pass
     else:
@@ -136,6 +138,9 @@ class FaseUI(object):
 
   def DrawPlacePicker(self, id_list, place_picker_element, ui_imp_parent):
     self.ui_imp.DrawPlacePicker(id_list, place_picker_element, ui_imp_parent)
+
+  def DrawSeparator(self, id_list, separator_element, ui_imp_parent):
+    self.ui_imp.DrawSeparator(id_list, separator_element, ui_imp_parent)
 
   def DrawMoreButton(self, id_list, ui_imp_parent):
     self.ui_imp.DrawMoreButton(id_list, ui_imp_parent)
