@@ -2,6 +2,18 @@
 # TODO(igushev): Getting resources from Server to Client.
 # TODO(igushev): Organize flat structure into directories.
 
+# New Elements:
+# TODO(igushev): Slider;
+# TODO(igushev): Map;
+# TODO(igushev): Separator;
+
+# Ability for Elements:
+# TODO(igushev): Request geo position;
+# TODO(igushev): Set Icon for Application;
+# TODO(igushev): Ability to have image in title;
+# TODO(igushev): Modes for text entry (multi line, digits, keyboard, etc.);
+# TODO(igushev): Horizontal scroll in Layout;
+
 # Server Side
 # TODO(igushev): Make Push Notifications.
 # TODO(igushev): Add User custom byte field for Notes and delete Notes database.
