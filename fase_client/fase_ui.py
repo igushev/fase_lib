@@ -101,6 +101,8 @@ class FaseUI(object):
       self.DrawPlacePicker(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Separator):
       self.DrawSeparator(id_list, element, ui_imp_parent)
+    elif isinstance(element, fase.Web):
+      self.DrawWeb(id_list, element, ui_imp_parent)
     elif isinstance(element, fase.Variable):
       pass
     else:
@@ -146,6 +148,9 @@ class FaseUI(object):
 
   def DrawSeparator(self, id_list, separator_element, ui_imp_parent):
     self.ui_imp.DrawSeparator(id_list, separator_element, ui_imp_parent)
+
+  def DrawWeb(self, id_list, web_element, ui_imp_parent):
+    self.ui_imp.DrawWeb(id_list, web_element, ui_imp_parent)
 
   def DrawMoreButton(self, id_list, ui_imp_parent):
     self.ui_imp.DrawMoreButton(id_list, ui_imp_parent)

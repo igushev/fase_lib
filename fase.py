@@ -859,6 +859,34 @@ class Separator(VisualElement):
     super(Separator, self).__init__()
 
 
+@json_util.JSONDecorator(
+    {'url': json_util.JSONString(),
+     'size': json_util.JSONInt(),
+     'scrollable': json_util.JSONBool()})
+class Web(VisualElement):
+
+  MIN = 1
+  MAX = 2
+
+  def __init__(self,
+               url=None,
+               size=None,
+               scrollable=None):
+    super(Web, self).__init__()
+    self.url = url
+    self.size = size
+    self.scrollable = scrollable
+
+  def GetUrl(self):
+    return self.url
+
+  def GetSize(self):
+    return self.size
+
+  def GetScrollable(self):
+    return self.scrollable
+
+
 @json_util.JSONDecorator({})
 class BaseElementsContainer(VisualElement):
   def __init__(self):
@@ -963,6 +991,14 @@ class BaseElementsContainer(VisualElement):
   def AddSeparator(self, id_):
     return self.AddElement(id_, Separator())
   def GetSeparator(self, id_):
+    return self.GetElement(id_)
+
+  def AddWeb(self, id_,
+             url=None,
+             size=None,
+             scrollable=None):
+    return self.AddElement(id_, Web(url=url, size=size, scrollable=scrollable))
+  def GetWeb(self, id_):
     return self.GetElement(id_)
 
 

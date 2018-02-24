@@ -39,6 +39,7 @@ Table of Contents
 |DateTimePicker|UIDatePicker|DatePicker|-|
 |PlacePicker|Implemented using Google Place Picker|Implemented using Google Place Picker|-|
 |Separator|-|-|Separator|
+|Web|WKWebView|WebView|-|
 
 ## Data Classes
 * **Locale**

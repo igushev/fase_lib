@@ -687,6 +687,16 @@ class FaseTkUIImp(object):
     ui_imp_parent.Next()
     return ParentElement(ui_imp_separator)
 
+  def DrawWeb(self, id_list, web_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent, maximize=(web_element.GetSize()==fase.Web.MAX))
+    ui_imp_web = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=web_element.GetUrl())
+
+    if web_element.GetDisplayed():
+      ui_imp_web.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                      sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_web)
+
   def DrawContextMenuItem(self, id_list, menu_item_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None
     ui_imp_parent.GetUIImpParent().add_command(
