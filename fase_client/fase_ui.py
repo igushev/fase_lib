@@ -39,7 +39,7 @@ class FaseUI(object):
     self.ui_imp.PrepareScreenMainContextMenusNextPrevButtons(
         main_menu=main_menu_element is not None, context_menu=context_menu_element is not None,
         next_button=next_button_element is not None, prev_button=prev_button_element is not None,
-        title=screen.GetTitle())
+        title=screen.GetTitle(), title_image=screen.GetTitleImage())
     if main_menu_element:
       for menu_item_id, menu_item_element in main_menu_element.GetIdElementList():
         self.ui_imp.DrawScreenMainMenuItem([fase.MAIN_MENU_ID, menu_item_id], menu_item_element)

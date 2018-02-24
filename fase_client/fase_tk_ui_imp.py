@@ -291,8 +291,8 @@ class FaseTkUIImp(object):
       ui_imp_menu.entryconfigure(index=index, image=ui_imp_photo, compound=tkinter.TOP)
 
   def PrepareScreenMainContextMenusNextPrevButtons(
-      self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None):
-    if not (main_menu or context_menu or next_button or prev_button or title):
+      self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None, title_image=None):
+    if not (main_menu or context_menu or next_button or prev_button or title or title_image):
       return
     ui_imp_header_frame = tkinter.Frame(self.ui_imp_frame)
     ui_imp_header_frame.grid(row=0, sticky=(tkinter.W, tkinter.E))
@@ -304,11 +304,17 @@ class FaseTkUIImp(object):
       if column_i == side_button_num:
         # Header label take entire space.
         ui_imp_header_frame.columnconfigure(column_i, weight=1)
-        if title is not None:
-          ui_imp_header_label = tkinter.Label(ui_imp_header_frame, text=title)
-          label_font = font.Font(font=ui_imp_header_label['font'])
-          label_font.configure(size=int(label_font.actual()['size']*TITLE_FONT))
-          ui_imp_header_label.configure(font=label_font)
+        if title is not None or title_image is not None:
+          assert int(title is not None) + int(title_image is not None)
+          if title is not None:
+            ui_imp_header_label = tkinter.Label(ui_imp_header_frame, text=title)
+            label_font = font.Font(font=ui_imp_header_label['font'])
+            label_font.configure(size=int(label_font.actual()['size']*TITLE_FONT))
+            ui_imp_header_label.configure(font=label_font)
+          else:
+            ui_imp_header_photo = ImageTk.PhotoImage(Image.open(title_image))
+            ui_imp_header_label = tkinter.Label(ui_imp_header_frame, image=ui_imp_header_photo)
+            ui_imp_header_label.image = ui_imp_header_photo
           ui_imp_header_label.grid(column=column_i, row=0)
       else:
         ui_imp_button_frame = tkinter.Frame(ui_imp_header_frame, width=NAV_BUTTON_WIDTH, height=NAV_BUTTON_HEIGHT)

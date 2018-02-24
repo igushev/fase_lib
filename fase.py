@@ -1078,6 +1078,7 @@ class Alert(ElementContainer):
     {'_screen_id': json_util.JSONString(),
      'scrollable': json_util.JSONBool(),
      'title': json_util.JSONString(),
+     'title_image': json_util.JSONString(),
      'on_refresh': json_util.JSONFunction(),
      'on_more': json_util.JSONFunction()})
 class Screen(BaseElementsContainer):
@@ -1087,6 +1088,7 @@ class Screen(BaseElementsContainer):
     self._screen_id = GenerateScreenId(service.GetSessionId())
     self.scrollable = None
     self.title = None
+    self.title_image = None
     self.on_refresh = None
     self.on_more = None
 
@@ -1101,9 +1103,16 @@ class Screen(BaseElementsContainer):
     return self.scrollable
 
   def SetTitle(self, title):
+    assert self.title_image is None
     self.title = title
   def GetTitle(self):
     return self.title
+
+  def SetTitleImage(self, title_image):
+    assert self.title is None
+    self.title_image = title_image
+  def GetTitleImage(self):
+    return self.title_image
 
   def SetOnRefresh(self, on_refresh):
     self.on_refresh = on_refresh
