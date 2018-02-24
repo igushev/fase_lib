@@ -459,20 +459,28 @@ class Label(VisualElement):
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
      'hint': json_util.JSONString(),
-     'size': json_util.JSONInt()})
+     'size': json_util.JSONInt(),
+     'type': json_util.JSONInt()})
 class Text(VisualElement):
 
   MIN = 1
   MAX = 2
-  
+
+  TEXT = 1
+  DIGITS = 2
+  PHONE = 3
+  EMAIL = 4
+
   def __init__(self,
                text=None,
                hint=None,
-               size=None):
+               size=None,
+               type_=None):
     super(Text, self).__init__()
     self.text = text
     self.hint = hint
     self.size = size
+    self.type = type_
 
   def Update(self, value):
     self.text = value
@@ -489,6 +497,9 @@ class Text(VisualElement):
 
   def GetSize(self):
     return self.size
+
+  def GetType(self):
+    return self.type
 
 
 @json_util.JSONDecorator(
@@ -916,8 +927,9 @@ class BaseElementsContainer(VisualElement):
   def AddText(self, id_,
                text=None,
                hint=None,
-               size=None):
-    return self.AddElement(id_, Text(text=text, hint=hint, size=size))
+               size=None,
+               type_=None):
+    return self.AddElement(id_, Text(text=text, hint=hint, size=size, type_=type_))
   def GetText(self, id_):
     return self.GetElement(id_)
 
