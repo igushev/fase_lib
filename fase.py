@@ -570,6 +570,42 @@ class Select(VisualElement):
 
 
 @json_util.JSONDecorator(
+    {'value': json_util.JSONFloat(),
+     'min_value': json_util.JSONFloat(),
+     'max_value': json_util.JSONFloat(),
+     'step': json_util.JSONFloat()})
+class Slider(VisualElement):
+
+  def __init__(self,
+               value=None,
+               min_value=None,
+               max_value=None,
+               step=None):
+    super(Slider, self).__init__()
+    self.value = value
+    self.min_value = min_value
+    self.max_value = max_value
+    self.step = step
+
+  def Update(self, value):
+    self.value = float(value)
+  def Get(self):
+    return str(self.value)
+
+  def GetValue(self):
+    return self.value
+
+  def GetMinValue(self):
+    return self.min_value
+
+  def GetMaxValue(self):
+    return self.max_value
+
+  def GetStep(self):
+    return self.step
+
+
+@json_util.JSONDecorator(
     {'image': json_util.JSONString()})
 class Image(VisualElement):
 
@@ -816,6 +852,7 @@ class PlacePicker(VisualElement):
     return self.size
 
 
+@json_util.JSONDecorator({})
 class Separator(VisualElement):
 
   def __init__(self):
@@ -877,6 +914,15 @@ class BaseElementsContainer(VisualElement):
                image=None):
     return self.AddElement(id_, Image(image=image))
   def GetImage(self, id_):
+    return self.GetElement(id_)
+
+  def AddSlider(self, id_,
+                value=None,
+                min_value=None,
+                max_value=None,
+                step=None):
+    return self.AddElement(id_, Slider(value=value, min_value=min_value, max_value=max_value, step=step))
+  def GetSlider(self, id_):
     return self.GetElement(id_)
 
   def AddButton(self, id_,

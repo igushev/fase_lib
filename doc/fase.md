@@ -28,7 +28,8 @@ Table of Contents
 |Label|UILabel|TextView|Label|
 |Text|UITextField|EditText|Entry|
 |Switch|UISwitch|Switch|CheckButton|
-|Selector|UIPickerView|Spinners|ComboBox|
+|Select|UIPickerView|Spinners|ComboBox|
+|Slider|UISlider|SeekBar|Scale|
 |Image|UIImage|ImageView|Label|
 |MenuItem|||Menu.add_command|
 |Menu|||Menu|
@@ -37,6 +38,7 @@ Table of Contents
 |ContactPicker|||-|
 |DateTimePicker|UIDatePicker|DatePicker|-|
 |PlacePicker|Implemented using Google Place Picker|Implemented using Google Place Picker|-|
+|Separator|-|-|Separator|
 
 ## Data Classes
 * **Locale**

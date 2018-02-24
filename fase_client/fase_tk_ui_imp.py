@@ -109,6 +109,19 @@ class SelectElementVariable(object):
     self._ui_imp_var.set(value) 
 
 
+
+class SliderElementVariable(object):
+  
+  def __init__(self, ui_imp_var):
+    self._ui_imp_var = ui_imp_var
+
+  def Get(self):
+    return str(self._ui_imp_var.get())
+
+  def Update(self, value):
+    self._ui_imp_var.set(float(value)) 
+
+
 class ContactPickerElementVariable(object):
 
   def __init__(self, ui_imp_var):
@@ -557,6 +570,25 @@ class FaseTkUIImp(object):
                          sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     ui_imp_parent.Next()
     return ParentElement(ui_imp_select)
+
+  def DrawSlider(self, id_list, slider_element, ui_imp_parent):
+    self._ConfigureParent(ui_imp_parent)
+    ui_imp_var = tkinter.DoubleVar()
+    self.id_list_to_var[tuple(id_list)] = SliderElementVariable(ui_imp_var)
+    self.id_list_to_var[tuple(id_list)].Update(slider_element.Get())
+    ui_imp_var.trace('w', ElementUpdatedCallback(self, id_list))
+    if ui_imp_parent.GetOrientation() == fase.Frame.VERTICAL:
+      orient = 'horizontal'
+    elif ui_imp_parent.GetOrientation() == fase.Frame.HORIZONTAL:
+      orient = 'vertical'
+    ui_imp_slider = tkinter.Scale(ui_imp_parent.GetUIImpParent(), from_=slider_element.GetMinValue(),
+                                  to=slider_element.GetMaxValue(), orient=orient, variable=ui_imp_var)
+
+    if slider_element.GetDisplayed():
+      ui_imp_slider.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),
+                         sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    ui_imp_parent.Next()
+    return ParentElement(ui_imp_slider)
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
