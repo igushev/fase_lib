@@ -4,7 +4,9 @@ import fase_database
 import fase_model
 import fase_server
 import fase
-import hello_world
+
+from hello_world import service as hello_world_service
+
 
 
 class FaseServerTest(unittest.TestCase):
@@ -54,14 +56,14 @@ class FaseServerTest(unittest.TestCase):
   def _GetEnterNameScreen(service, name=None):
     screen = fase.Screen(service)
     screen.AddText(id_='text_name_id', hint='Enter Name', text=name)
-    screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world.HelloWorldService.OnNextButton)
+    screen.AddButton(id_='next_button_id', text='Next', on_click=hello_world_service.HelloWorldService.OnNextButton)
     return screen
 
   @staticmethod
   def _GetGreetingScreen(service, name):
     screen = fase.Screen(service)
     screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
-    screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world.HelloWorldService.OnResetButton)
+    screen.AddButton(id_='reset_button_id',text='Reset', on_click=hello_world_service.HelloWorldService.OnResetButton)
     return screen
 
   def _GetScreenProgAndAssert(self, session_info,

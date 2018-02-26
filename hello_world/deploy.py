@@ -2,7 +2,7 @@ import os
 import deploy_util
 
 FASE_VERSION_FILENAME = 'fase_version.txt'
-HELLO_WORLD_VERSION_FILENAME = 'hello_world_version.txt'
+HELLO_WORLD_VERSION_FILENAME = 'hello_world/version.txt'
 DEPLOY_DIR_VAR_NAME = 'FASE_HELLO_WORLD_SERVER_DEPLOY_DIR'
 FILENAME_TEMPLATE = 'FaseHelloWorldServer_Fase_%s_HelloWorld_%s'
 

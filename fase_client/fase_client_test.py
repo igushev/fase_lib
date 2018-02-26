@@ -2,7 +2,7 @@ import unittest
 import tempfile
 import time
 
-import hello_world
+from hello_world import service as hello_world_service
 import fase_client
 import fase
 import fase_model
@@ -109,7 +109,7 @@ class FaseServerTest(unittest.TestCase):
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
 
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -122,7 +122,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, ui.draw_screen_calls)
 
   def testGetScreen(self):
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
 
     http_client = MockFaseHTTPClient(self)
     ui = MockFaseUI(self)
@@ -146,7 +146,7 @@ class FaseServerTest(unittest.TestCase):
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
 
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -175,7 +175,7 @@ class FaseServerTest(unittest.TestCase):
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
 
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -204,7 +204,7 @@ class FaseServerTest(unittest.TestCase):
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
 
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -233,7 +233,7 @@ class FaseServerTest(unittest.TestCase):
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
 
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -271,7 +271,7 @@ class FaseServerTest(unittest.TestCase):
     ui = MockFaseUI(self)
     client = fase_client.FaseClient(http_client=http_client, ui=ui)
 
-    service = hello_world.HelloWorldService()
+    service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service

@@ -4,10 +4,11 @@ import signal
 import subprocess
 import unittest
 
-import hello_world
 import fase_database
 import fase_model
 import fase
+
+from hello_world import service as hello_world_service
 
 
 DYNAMODB_CMD = (
@@ -36,12 +37,12 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
   def testFase(self):
     fase_database.FaseDatabaseInterface.Get().CreateDatabase()
 
-    service_1 = hello_world.HelloWorldService()
+    service_1 = hello_world_service.HelloWorldService()
     screen_1 = service_1.OnStart()
     session_id_1 = service_1.GetSessionId()
     screen_prog_1 = fase_model.ScreenProg(session_id=session_id_1, screen=screen_1)
 
-    service_2 = hello_world.HelloWorldService()
+    service_2 = hello_world_service.HelloWorldService()
     screen_2 = service_2.OnStart()
     text_name = screen_2.GetElement(id_='text_name_id') 
     text_name.Update('Edward Igushev')
