@@ -4,7 +4,6 @@ import re
 
 import data_util
 import json_util
-import util
 
 DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
 CONTACT_FORMAT = '{display_name}|{phone_number}'
@@ -24,6 +23,11 @@ ON_CLICK_METHOD = 'on_click'
 ON_PICK_METHOD = 'on_pick'
 ON_REFRESH_METHOD = 'on_refresh'
 ON_MORE_METHOD = 'on_more'
+
+
+def AssertIsInstanceOrNone(obj, expected_type):
+  if obj is not None and not isinstance(obj, expected_type):
+    raise AssertionError('Type must be %s or None, but type is %s, value is %s' % (expected_type, type(obj), obj))
 
 
 def FunctionPlaceholder():
@@ -273,7 +277,7 @@ class IntVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    util.AssertIsInstanceOrNone(value, int)
+    AssertIsInstanceOrNone(value, int)
     self.value = value
   def GetValue(self):
     return self.value
@@ -287,7 +291,7 @@ class FloatVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    util.AssertIsInstanceOrNone(value, float)
+    AssertIsInstanceOrNone(value, float)
     self.value = value
   def GetValue(self):
     return self.value
@@ -301,7 +305,7 @@ class StringVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    util.AssertIsInstanceOrNone(value, str)
+    AssertIsInstanceOrNone(value, str)
     self.value = value
   def GetValue(self):
     return self.value
@@ -315,7 +319,7 @@ class BoolVariable(Variable):
     self.SetValue(value)
 
   def SetValue(self, value):
-    util.AssertIsInstanceOrNone(value, bool)
+    AssertIsInstanceOrNone(value, bool)
     self.value = value
   def GetValue(self):
     return self.value
