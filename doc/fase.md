@@ -4,7 +4,11 @@ Table of Contents
       * [Comparing Fase Elements to similar Elements in iOS/Android/Tkinter](#comparing-fase-elements-to-similar-elements-in-iosandroidtkinter)
       * [Data Classes](#data-classes)
       * [Elements Classes](#elements-classes)
-   * [Mobile Device Specifics](#mobile-device-specifics)
+   * [Drawing Elements](#drawing-elements)
+      * [Screen](#screen)
+      * [Layout Vertical](#layout-vertical)
+      * [Layout Horizontal](#layout-horizontal)
+      * [Mobile Device Specifics](#mobile-device-specifics)
    * [Fase Application Examples](#fase-application-examples)
       * [Hello World Application](#hello-world-application)
          * [Initial Screen](#initial-screen)
@@ -248,7 +252,21 @@ Table of Contents
 'main_button'|Button|Main Button responsible for main action ("New"), usually bigger than other navigation buttons. On iOS usually in the middle of bottom navigation bar, on Android usually separate Button on right lower corner|
 |'button_bar'|Button Bar|Collection of navigation buttons. On iOS usually are bottom buttons, on Android usually located in Main Menu|
 
-# Mobile Device Specifics
+# Drawing Elements
+
+## Screen
+
+![Screen](elements_images/fase_screen.png "Screen")
+
+## Layout Vertical
+
+![Layout Vertical](elements_images/fase_layout_vertical.png "Layout Vertical")
+
+## Layout Horizontal
+
+![Layout Horizontal](elements_images/fase_layout_horizontal.png "Layout Horizontal")
+
+## Mobile Device Specifics
 |Element|iOS|Android|Windows Phone|
 |-------|---|-------|-------------|
 |Button bar|Bottom|In main menu|Top and Bottom|
