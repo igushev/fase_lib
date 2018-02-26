@@ -4,6 +4,7 @@ Table of Contents
       * [Comparing Fase Elements to similar Elements in iOS/Android/Tkinter](#comparing-fase-elements-to-similar-elements-in-iosandroidtkinter)
       * [Data Classes](#data-classes)
       * [Elements Classes](#elements-classes)
+   * [Mobile Device Specifics](#mobile-device-specifics)
    * [Fase Application Examples](#fase-application-examples)
       * [Hello World Application](#hello-world-application)
          * [Initial Screen](#initial-screen)
@@ -251,7 +252,7 @@ Table of Contents
 |Element|iOS|Android|Windows Phone|
 |-------|---|-------|-------------|
 |Button bar|Bottom|In main menu|Top and Bottom|
-|Main button|Big button in the middle of the button bar|big button in the right bottom corner|Button in the middle of the button bar|
+|Main button|Big button in the middle of the button bar|Big button in the right bottom corner|Button in the middle of the button bar|
 |Main menu|Main menu from left top button|Main menu from left top button, item below button bar items|Main menu from left top button|
 |Context menu|Right top corner|Right top corner|Right bottom corner|
 
