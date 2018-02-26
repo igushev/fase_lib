@@ -247,9 +247,9 @@ Table of Contents
 'main_button'|Button|Main Button responsible for main action ("New"), usually bigger than other navigation buttons. On iOS usually in the middle of bottom navigation bar, on Android usually separate Button on right lower corner|
 |'button_bar'|Button Bar|Collection of navigation buttons. On iOS usually are bottom buttons, on Android usually located in Main Menu|
 
-# Fase Mobile Device Specifics
-||iOS|Android|Windows Phone|
-||---|-------|-------------|
+# Mobile Device Specifics
+|Element|iOS|Android|Windows Phone|
+|-------|---|-------|-------------|
 |Button bar|Bottom|In main menu|Top and Bottom|
 |Main button|Big button in the middle of the button bar|big button in the right bottom corner|Button in the middle of the button bar|
 |Main menu|Main menu from left top button|Main menu from left top button, item below button bar items|Main menu from left top button|
