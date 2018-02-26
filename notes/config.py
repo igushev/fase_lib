@@ -1,5 +1,5 @@
 import config_util
-import notes_database
+from notes import database as notes_database
 
 
 def GetNotesDatabase(config):

@@ -2,16 +2,17 @@ import copy
 import datetime
 import unittest
 
+import datetime_util
+
 import fase
 import fase_database
 import fase_server
 import fase_model
 import fase_sign_in_test_util
 
-import datetime_util
-import notes_database
-import notes_model
-import notes
+from notes import database as notes_database
+from notes import model as notes_model
+from notes import service as notes_service
 
 
 class NotesTest(unittest.TestCase):
@@ -75,7 +76,7 @@ class NotesTest(unittest.TestCase):
         self.assertFalse(actual_note_frame.HasStringVariable(id_='frame_note_id'))
       actual_note_header_frame = actual_note_frame.GetFrame(id_='note_header_frame')
       self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetText())
-      self.assertEqual('notes_images/favourite.png' if expected_note.favourite else 'notes_images/favourite_non.png',
+      self.assertEqual('notes/images/favourite.png' if expected_note.favourite else 'notes/images/favourite_non.png',
                        actual_note_header_frame.GetImage(id_='note_header_image').GetImage())
       self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetText())
       if expected_note.datetime:

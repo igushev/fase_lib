@@ -2,10 +2,12 @@ import datetime
 import hashlib
 
 import datetime_util
-import notes_database
-import notes_model
+
 import fase
 import fase_sign_in
+
+from notes import database as notes_database
+from notes import model as notes_model
 
 CREATE_DB_COMMAND = 'createdb'
 DELETE_DB_COMMAND = 'deletedb'
@@ -82,8 +84,8 @@ class NotesService(fase.Service):
       note_header_frame.AddLabel(
           id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, alight=fase.Label.LEFT)
       note_header_frame.AddImage(
-          id_='note_header_image', image=('notes_images/favourite.png' if note.favourite else
-                                          'notes_images/favourite_non.png'))
+          id_='note_header_image', image=('notes/images/favourite.png' if note.favourite else
+                                          'notes/images/favourite_non.png'))
 
       note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
 
@@ -99,20 +101,20 @@ class NotesService(fase.Service):
     if self.IfSignedIn():
       menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUser().DisplayName())
       menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut,
-                       image='notes_images/sign_out.png')
+                       image='notes/images/sign_out.png')
     else:
       menu.AddMenuItem(id_='sign_in_menu_item', text='Sign In', on_click=NotesService.OnSignIn,
-                       image='notes_images/sign_in.png')
+                       image='notes/images/sign_in.png')
 
   def _AddButtons(self, screen):
-    screen.AddMainButton(text='New', on_click=NotesService.OnNew, image='notes_images/new.png')
+    screen.AddMainButton(text='New', on_click=NotesService.OnNew, image='notes/images/new.png')
     button_bar = screen.AddButtonBar()
     button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes,
-                         image='notes_images/notes.png')
+                         image='notes/images/notes.png')
     button_bar.AddButton(id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites,
-                         image='notes_images/favourite_non.png')
+                         image='notes/images/favourite_non.png')
     button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent,
-                         image='notes_images/recent.png')
+                         image='notes/images/recent.png')
 
   def OnSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(self, on_done=NotesService.OnSignInDone, on_cancel=NotesService.OnSignInOutCancel)
@@ -161,11 +163,11 @@ class NotesService(fase.Service):
     context_menu.AddMenuItem(id_='favourite_context_menu',
                              text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
                              on_click=NotesService.OnReverseFavouriteNote,
-                             image=('notes_images/favourite.png' if favourite_bool.GetValue() else
-                                   'notes_images/favourite_non.png'))
+                             image=('notes/images/favourite.png' if favourite_bool.GetValue() else
+                                   'notes/images/favourite_non.png'))
     if note_id is not None:
       context_menu.AddMenuItem(
-          id_='delete_context_menu', text='Delete', image='notes_images/delete.png', on_click=NotesService.OnDeleteNote)
+          id_='delete_context_menu', text='Delete', image='notes/images/delete.png', on_click=NotesService.OnDeleteNote)
     return screen
 
   def OnSaveNote(self, screen, element):
