@@ -620,23 +620,28 @@ class Slider(VisualElement):
     return self.step
 
 
-@json_util.JSONDecorator(
-    {'image': json_util.JSONString()})
+@json_util.JSONDecorator({
+    'filename': json_util.JSONString(),
+    'url': json_util.JSONString()})
 class Image(VisualElement):
-
   def __init__(self,
-               image=None):
+               filename=None,
+               url=None):
     super(Image, self).__init__()
-    self.image = image
+    self.filename = filename
+    self.url = url
 
-  def GetImage(self):
-    return self.image
+  def GetFilename(self):
+    return self.filename
+  
+  def GetUrl(self):
+    return self.url
 
 
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
      'on_click': json_util.JSONFunction(),
-     'image': json_util.JSONString()})
+     'image': json_util.JSONObject(Image)})
 class MenuItem(VisualElement):
 
   def __init__(self,
@@ -683,7 +688,7 @@ class Menu(ElementContainer):
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
      'on_click': json_util.JSONFunction(),
-     'image': json_util.JSONString()})
+     'image': json_util.JSONObject(Image)})
 class Button(VisualElement):
 
   def __init__(self,
@@ -955,8 +960,9 @@ class BaseElementsContainer(VisualElement):
     return self.GetElement(id_)
 
   def AddImage(self, id_,
-               image=None):
-    return self.AddElement(id_, Image(image=image))
+               filename=None,
+               url=None):
+    return self.AddElement(id_, Image(filename=filename, url=url))
   def GetImage(self, id_):
     return self.GetElement(id_)
 
@@ -1082,7 +1088,7 @@ class Alert(ElementContainer):
     {'_screen_id': json_util.JSONString(),
      'scrollable': json_util.JSONBool(),
      'title': json_util.JSONString(),
-     'title_image': json_util.JSONString(),
+     'title_image': json_util.JSONObject(Image),
      'on_refresh': json_util.JSONFunction(),
      'on_more': json_util.JSONFunction()})
 class Screen(BaseElementsContainer):

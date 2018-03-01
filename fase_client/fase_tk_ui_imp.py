@@ -280,13 +280,13 @@ class FaseTkUIImp(object):
 
   def _ConfigureButtonImage(self, button_element, ui_imp_button):
     if button_element.GetImage() is not None:
-      ui_imp_photo = ImageTk.PhotoImage(Image.open(button_element.GetImage()))
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(button_element.GetImage().GetFilename()))
       ui_imp_button.ui_imp_photo = ui_imp_photo
       ui_imp_button.configure(image=ui_imp_photo, compound=tkinter.TOP)
 
   def _ConfigureMenuItemImage(self, menu_item_element, ui_imp_menu, index):
     if menu_item_element.GetImage() is not None:
-      ui_imp_photo = ImageTk.PhotoImage(Image.open(menu_item_element.GetImage()))
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(menu_item_element.GetImage().GetFilename()))
       setattr(ui_imp_menu, 'ui_imp_photo_%d' % index, ui_imp_photo)
       ui_imp_menu.entryconfigure(index=index, image=ui_imp_photo, compound=tkinter.TOP)
 
@@ -312,7 +312,7 @@ class FaseTkUIImp(object):
             label_font.configure(size=int(label_font.actual()['size']*TITLE_FONT))
             ui_imp_header_label.configure(font=label_font)
           else:
-            ui_imp_header_photo = ImageTk.PhotoImage(Image.open(title_image))
+            ui_imp_header_photo = ImageTk.PhotoImage(Image.open(title_image.GetFilename()))
             ui_imp_header_label = tkinter.Label(ui_imp_header_frame, image=ui_imp_header_photo)
             ui_imp_header_label.image = ui_imp_header_photo
           ui_imp_header_label.grid(column=column_i, row=0)
@@ -598,7 +598,7 @@ class FaseTkUIImp(object):
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
-    ui_imp_photo = ImageTk.PhotoImage(Image.open(image_element.GetImage()))
+    ui_imp_photo = ImageTk.PhotoImage(Image.open(image_element.GetImage().GetFilename()))
     ui_imp_image = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
     ui_imp_image.image = ui_imp_photo
     if image_element.GetDisplayed(): 
