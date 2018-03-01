@@ -39,17 +39,23 @@ class FaseUI(object):
     self.ui_imp.PrepareScreenMainContextMenusNextPrevButtons(
         main_menu=main_menu_element is not None, context_menu=context_menu_element is not None,
         next_button=next_button_element is not None, prev_button=prev_button_element is not None,
-        title=screen.GetTitle(), title_image=screen.GetTitleImage())
+        title=screen.GetTitle(), title_image=(screen.GetTitleImage() if screen.HasTitleImage() else None))
     if main_menu_element:
       for menu_item_id, menu_item_element in main_menu_element.GetIdElementList():
-        self.ui_imp.DrawScreenMainMenuItem([fase.MAIN_MENU_ID, menu_item_id], menu_item_element)
+        self.ui_imp.DrawScreenMainMenuItem([fase.MAIN_MENU_ID, menu_item_id], menu_item_element,
+                                           (menu_item_element.GetImage() if menu_item_element.HasImage() else None))
     if context_menu_element:
       for menu_item_id, menu_item_element in context_menu_element.GetIdElementList():
-        self.ui_imp.DrawScreenContextMenuItem([fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element)
+        self.ui_imp.DrawScreenContextMenuItem([fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element,
+                                              (menu_item_element.GetImage() if menu_item_element.HasImage() else None))
     if next_button_element:
-      self.ui_imp.DrawScreenNextStepButton([fase.NEXT_STEP_BUTTON_ID], next_button_element)
+      self.ui_imp.DrawScreenNextStepButton(
+          [fase.NEXT_STEP_BUTTON_ID], next_button_element,
+          (next_button_element.GetImage() if next_button_element.HasImage() else None))
     if prev_button_element:
-      self.ui_imp.DrawScreenPrevStepButton([fase.PREV_STEP_BUTTON_ID], prev_button_element)
+      self.ui_imp.DrawScreenPrevStepButton(
+          [fase.PREV_STEP_BUTTON_ID], prev_button_element,
+          (prev_button_element.GetImage() if prev_button_element.HasImage() else None))
 
   def DrawMainButtonAndNavigationButtons(self, screen):
     main_button_element = screen.GetElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
@@ -58,14 +64,20 @@ class FaseUI(object):
     self.ui_imp.PrepareScreenMainButtonAndNavigationButtons(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
     if main_button_element:
-      ui_imp_main_button = self.ui_imp.DrawScreenMainButton([fase.MAIN_BUTTON_ID], main_button_element)
+      ui_imp_main_button = (
+          self.ui_imp.DrawScreenMainButton(
+              [fase.MAIN_BUTTON_ID], main_button_element,
+              (main_button_element.GetImage() if main_button_element.HasImage() else None)))
       if main_button_element.HasContextMenu():
         for menu_item_id, menu_item_element in main_button_element.GetContextMenu().GetIdElementList():
           self.ui_imp.DrawContextMenuItem(
-              [fase.MAIN_BUTTON_ID, fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_main_button)
+              [fase.MAIN_BUTTON_ID, fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element,
+              (ui_imp_main_button.GetImage() if ui_imp_main_button.HasImage() else None), ui_imp_main_button)
     # NOTE(igushev): Button Bar Frame will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
-      self.ui_imp.DrawScreenNavButton([fase.BUTTON_BAR_ID, nav_button_id], nav_button_element, nav_button_i)
+      self.ui_imp.DrawScreenNavButton(
+          [fase.BUTTON_BAR_ID, nav_button_id], nav_button_element,
+          (nav_button_element.GetImage() if nav_button_element.HasImage() else None), nav_button_i)
 
   def DrawRefreshButton(self, id_list, ui_imp_parent):
     self.ui_imp.DrawRefreshButton(id_list, ui_imp_parent)
@@ -131,11 +143,13 @@ class FaseUI(object):
     self.ui_imp.DrawImage(id_list, image_element, ui_imp_parent)
 
   def DrawButton(self, id_list, button_element, ui_imp_parent):
-    ui_imp_button = self.ui_imp.DrawButton(id_list, button_element, ui_imp_parent)
+    ui_imp_button = self.ui_imp.DrawButton(
+        id_list, button_element, (button_element.GetImage() if button_element.HasImage() else None), ui_imp_parent)
     if button_element.HasContextMenu():
       for menu_item_id, menu_item_element in button_element.GetContextMenu().GetIdElementList():
         self.ui_imp.DrawContextMenuItem(
-            id_list + [fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element, ui_imp_button)
+            id_list + [fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element,
+            (menu_item_element.GetImage() if menu_item_element.HasImage() else None), ui_imp_button)
 
   def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
     self.ui_imp.DrawContactPicker(id_list, contact_picker_element, ui_imp_parent)

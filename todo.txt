@@ -26,6 +26,7 @@
 # API Clean Ups
 # TODO(igushev): Put all callback arguments at the end of list of arguments.
 # TODO(igushev): Make all arguments are keyword argument only.
+# TODO(igushev): Remove patter Get() if Has() else None
 
 # Server Clean Ups
 # TODO(igushev): Variables in fase_sign_in variables should be in separated better from services.

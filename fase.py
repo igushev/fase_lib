@@ -18,6 +18,8 @@ ALERT_ID = 'alert'
 MAIN_MENU_ID = 'main_menu'
 MAIN_BUTTON_ID = 'main_button'
 BUTTON_BAR_ID = 'button_bar'
+IMAGE_ID = 'image'
+TITLE_IMAGE_ID = 'title_image'
 
 ON_CLICK_METHOD = 'on_click'
 ON_PICK_METHOD = 'on_pick'
@@ -651,7 +653,8 @@ class MenuItem(VisualElement):
     super(MenuItem, self).__init__()
     self.text = text
     self.on_click = on_click
-    self.image = image
+    if image:
+      self.AddImage(image)
 
   def GetText(self):
     return self.text
@@ -659,8 +662,12 @@ class MenuItem(VisualElement):
   def GetOnClick(self):
     return self.on_click
 
+  def AddImage(self, image):
+    return self.AddElement(IMAGE_ID, image)
+  def HasImage(self):
+    return self.HasElement(IMAGE_ID)
   def GetImage(self):
-    return self.image
+    return self.GetElement(IMAGE_ID)
 
 
 @json_util.JSONDecorator({
@@ -698,7 +705,8 @@ class Button(VisualElement):
     super(Button, self).__init__()
     self.text = text
     self.on_click = on_click
-    self.image = image
+    if image:
+      self.AddImage(image)
 
   def SetText(self, text):
     self.text = text
@@ -715,8 +723,12 @@ class Button(VisualElement):
   def GetContextMenu(self):
     return self.GetElement(CONTEXT_MENU_ID)
 
+  def AddImage(self, image):
+    return self.AddElement(IMAGE_ID, image)
+  def HasImage(self):
+    return self.HasElement(IMAGE_ID)
   def GetImage(self):
-    return self.image
+    return self.GetElement(IMAGE_ID)
 
 
 @json_util.JSONDecorator({})
@@ -1088,7 +1100,6 @@ class Alert(ElementContainer):
     {'_screen_id': json_util.JSONString(),
      'scrollable': json_util.JSONBool(),
      'title': json_util.JSONString(),
-     'title_image': json_util.JSONObject(Image),
      'on_refresh': json_util.JSONFunction(),
      'on_more': json_util.JSONFunction()})
 class Screen(BaseElementsContainer):
@@ -1098,7 +1109,6 @@ class Screen(BaseElementsContainer):
     self._screen_id = GenerateScreenId(service.GetSessionId())
     self.scrollable = None
     self.title = None
-    self.title_image = None
     self.on_refresh = None
     self.on_more = None
 
@@ -1113,16 +1123,18 @@ class Screen(BaseElementsContainer):
     return self.scrollable
 
   def SetTitle(self, title):
-    assert self.title_image is None
+    assert not self.HasTitleImage()
     self.title = title
   def GetTitle(self):
     return self.title
 
-  def SetTitleImage(self, title_image):
+  def AddTitleImage(self, title_image):
     assert self.title is None
-    self.title_image = title_image
+    return self.AddElement(TITLE_IMAGE_ID, title_image)
+  def HasTitleImage(self):
+    return self.HasElement(TITLE_IMAGE_ID)
   def GetTitleImage(self):
-    return self.title_image
+    return self.GetElement(TITLE_IMAGE_ID)
 
   def SetOnRefresh(self, on_refresh):
     self.on_refresh = on_refresh
