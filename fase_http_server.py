@@ -1,7 +1,8 @@
 import logging
 import traceback
+import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 
 import fase
 import fase_model
@@ -107,3 +108,9 @@ def elementcallback():
       fase_server.FaseServer.Get().ElementCallback, element_callback, session_info, screen_info)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
+
+
+@application.route('/getresource/filename/<path:filename>', methods=['GET', 'POST', 'OPTIONS'])
+def getresource(filename):
+  filename = os.path.join(*filename.split('/'))
+  return send_file(filename)

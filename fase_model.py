@@ -5,18 +5,6 @@ import fase
 
 
 @json_util.JSONDecorator({
-    'device_type': json_util.JSONString(),
-    'device_token': json_util.JSONString()})
-class Device(data_util.AbstractObject):
-
-  def __init__(self,
-               device_type=None,
-               device_token=None):
-    self.device_type = device_type
-    self.device_token = device_token
-
-
-@json_util.JSONDecorator({
     'session_id': json_util.JSONString()})
 class SessionInfo(data_util.AbstractObject):
 
@@ -32,6 +20,36 @@ class ScreenInfo(data_util.AbstractObject):
   def __init__(self,
                screen_id=None):
     self.screen_id = screen_id
+
+
+@json_util.JSONDecorator({
+    'device_type': json_util.JSONString(),
+    'device_token': json_util.JSONString()})
+class Device(data_util.AbstractObject):
+
+  def __init__(self,
+               device_type=None,
+               device_token=None):
+    self.device_type = device_type
+    self.device_token = device_token
+
+
+@json_util.JSONDecorator({
+    'filename': json_util.JSONString()})
+class Resource(data_util.AbstractObject):
+  
+  def __init__(self,
+               filename=None):
+    self.filename = filename
+
+
+@json_util.JSONDecorator({
+    'resource_list': json_util.JSONList(json_util.JSONObject(Resource))})
+class Resources(data_util.AbstractObject):
+  
+  def __init__(self,
+               resource_list=None):
+    self.resource_list = resource_list or []
 
 
 @json_util.JSONDecorator({
@@ -99,6 +117,7 @@ class ScreenProg(data_util.AbstractObject):
 
 @json_util.JSONDecorator({
     'screen': json_util.JSONObject(fase.Screen),
+    'resources': json_util.JSONObject(Resources),
     'elements_update': json_util.JSONObject(ElementsUpdate),
     'session_info': json_util.JSONObject(SessionInfo),
     'screen_info': json_util.JSONObject(ScreenInfo)})
@@ -106,10 +125,12 @@ class Response(data_util.AbstractObject):
   
   def __init__(self,
                screen=None,
+               resources=None,
                elements_update=None,
                session_info=None,
                screen_info=None):
     self.screen = screen
+    self.resources = resources
     self.elements_update = elements_update
     self.session_info = session_info
     self.screen_info = screen_info
