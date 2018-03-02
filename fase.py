@@ -642,8 +642,7 @@ class Image(VisualElement):
 
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
-     'on_click': json_util.JSONFunction(),
-     'image': json_util.JSONObject(Image)})
+     'on_click': json_util.JSONFunction()})
 class MenuItem(VisualElement):
 
   def __init__(self,
@@ -694,8 +693,7 @@ class Menu(ElementContainer):
 
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
-     'on_click': json_util.JSONFunction(),
-     'image': json_util.JSONObject(Image)})
+     'on_click': json_util.JSONFunction()})
 class Button(VisualElement):
 
   def __init__(self,
