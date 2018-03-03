@@ -2,7 +2,7 @@ import datetime
 import hashlib
 import re
 
-import data_util
+from base_util import data_util
 import json_util
 
 DATETIME_FORMAT = '%Y%m%d%H%M%S%f'

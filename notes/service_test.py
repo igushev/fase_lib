@@ -2,7 +2,7 @@ import copy
 import datetime
 import unittest
 
-import datetime_util
+from base_util import datetime_util
 
 import fase
 import fase_database

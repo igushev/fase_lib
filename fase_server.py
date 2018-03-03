@@ -3,7 +3,7 @@ import copy
 import fase_database
 import fase_model
 import fase
-import singleton_util
+from base_util import singleton_util
 
 
 STATUS_OK_TEXT = 'OK'

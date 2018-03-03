@@ -2,7 +2,7 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
 import dynamodb_util
-import singleton_util
+from base_util import singleton_util
 
 from notes import model as notes_model
 

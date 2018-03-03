@@ -1,7 +1,7 @@
 import boto3
 from collections import namedtuple
 
-import singleton_util
+from base_util import singleton_util
 
 
 ACTIVATION_CODE_MSG = 'Your activation code is %d.'

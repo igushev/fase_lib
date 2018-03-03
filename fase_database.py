@@ -4,7 +4,7 @@ from boto3.dynamodb.conditions import Key, Attr
 import dynamodb_util
 import fase
 import fase_model
-import singleton_util
+from base_util import singleton_util
 
 
 @singleton_util.Singleton()

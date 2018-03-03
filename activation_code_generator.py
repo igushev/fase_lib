@@ -1,6 +1,6 @@
 import random
 
-import singleton_util
+from base_util import singleton_util
 
 MIN_ACTIVATION_CODE = 100000
 MAX_ACTIVATION_CODE = 1000000
