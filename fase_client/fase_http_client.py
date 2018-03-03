@@ -4,7 +4,7 @@ import requests
 
 import fase
 import fase_model
-import json_util
+from json_util import json_util
 
 
 class FaseHTTPClient(object):

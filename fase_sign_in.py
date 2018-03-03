@@ -6,7 +6,7 @@ import sms_sender
 import fase_database
 import fase_model
 import fase
-import json_util
+from json_util import json_util
 import phone_number_verifier
 
 

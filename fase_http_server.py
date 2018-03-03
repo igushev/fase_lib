@@ -8,7 +8,7 @@ import fase
 import fase_model
 import fase_sign_in
 import fase_server
-import json_util
+from json_util import json_util
 
 application = Flask(__name__)
 application.secret_key = 'fase_flask_secret_key'

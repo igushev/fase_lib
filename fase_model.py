@@ -1,5 +1,5 @@
 from base_util import data_util
-import json_util
+from json_util import json_util
 
 import fase
 
