@@ -1,6 +1,11 @@
 import hashlib
 
 
+def Repr(obj):
+  return '\n'.join(['%s: %s' % (key, value)
+                    for key, value in sorted(obj.__dict__.items())])
+
+
 def HashKey(obj):
   if hasattr(obj, 'HashKey'):
     return obj.HashKey()
@@ -31,11 +36,10 @@ def HashKey(obj):
 class AbstractObject(object):
 
   def __str__(self):
-    return '\n'.join(['%s: %s' % (key, value)
-                      for key, value in sorted(self.__dict__.items())])
+    return Repr(self)
 
   def __repr__(self):
-    return str(self)
+    return Repr(self)
 
   def __eq__(self, other):
     return self.__dict__ == other.__dict__
