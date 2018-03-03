@@ -1,3 +1,4 @@
+import os
 import logging
 import requests
 
@@ -54,3 +55,12 @@ class FaseHTTPClient(object):
     response_simple = http_response.json()
     response = fase_model.Response.FromSimple(response_simple)
     return response
+
+  def GetResourceFilename(self, resource_dir, filename):
+    url = self.server_url + '/getresource/filename/' + filename
+    http_response = requests.get(url)
+    self.AssertStatus(http_response)
+    filepath = os.path.join(resource_dir, filename)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, 'wb') as resource_file:
+      resource_file.write(http_response.content)

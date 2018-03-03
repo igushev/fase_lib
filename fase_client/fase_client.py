@@ -27,10 +27,11 @@ def SaveSessionInfoIfNeeded(session_info_filepath, session_info):
 
 class FaseClient(object):
   
-  def __init__(self, http_client, ui, session_info_filepath=None):
+  def __init__(self, http_client, ui, resource_manager, session_info_filepath=None):
     self.http_client = http_client
     self.ui = ui
     self.ui.SetClient(self)
+    self.resource_manager = resource_manager
     self.session_info_filepath = session_info_filepath
     self.device = fase_model.Device(DEVICE_TYPE, str(uuid.uuid4()))
     self.screen = None
@@ -100,11 +101,15 @@ class FaseClient(object):
       self.ProcessResponse(response)
 
   def ProcessResponse(self, response):
+    if response.resources:
+      self.resource_manager.PreloadResources(response.resources)
     while response.screen is not None and response.screen.HasElement(fase.ALERT_ID):
       alert = response.screen.PopElement(fase.ALERT_ID)
       id_list, method = self.ui.ShowAlert(alert)
       element_callback = fase_model.ElementCallback(id_list=id_list, method=method, device=self.device)
       response = self.http_client.ElementCallback(element_callback, response.session_info, response.screen_info)
+      if response.resources:
+        self.resource_manager.PreloadResources(response.resources)
     self.session_info = response.session_info
     self.screen_info = response.screen_info
     SaveSessionInfoIfNeeded(self.session_info_filepath, response.session_info)
@@ -123,3 +128,6 @@ class FaseClient(object):
 
   def _ResetValues(self):
     self.id_list_to_value = dict()
+
+  def GetResourceFilename(self, filename):
+    return self.resource_manager.GetResourceFilename(filename)

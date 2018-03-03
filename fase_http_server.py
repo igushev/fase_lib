@@ -110,7 +110,7 @@ def elementcallback():
   return jsonify(**response_simple), code
 
 
-@application.route('/getresource/filename/<path:filename>', methods=['GET', 'POST', 'OPTIONS'])
+@application.route('/getresource/filename/<path:filename>', methods=['GET', 'OPTIONS'])
 def getresource(filename):
   filename = os.path.join(*filename.split('/'))
   return send_file(filename)

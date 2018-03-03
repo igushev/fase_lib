@@ -1,6 +1,7 @@
 import functools
 import logging
 import subprocess
+import tempfile
 import threading
 import time
 import os
@@ -14,6 +15,7 @@ import sms_sender
 import fase_model
 import fase_server
 from fase_client import fase_client
+from fase_client import fase_resource_manager
 from fase_client import fase_tk_ui_imp
 from fase_client import fase_ui
 from fase_client import fase_http_client
@@ -72,5 +74,7 @@ def RunClient(fase_server_url, session_info_filepath=None):
   http_client = fase_http_client.FaseHTTPClient(fase_server_url)
   ui_imp = fase_tk_ui_imp.FaseTkUIImp()
   ui = fase_ui.FaseUI(ui_imp)
-  client = fase_client.FaseClient(http_client, ui, session_info_filepath=session_info_filepath)
+  resource_dir = tempfile.mkdtemp()
+  resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+  client = fase_client.FaseClient(http_client, ui, resource_manager, session_info_filepath=session_info_filepath)
   client.Run()

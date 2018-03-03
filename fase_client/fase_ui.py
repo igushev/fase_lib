@@ -194,3 +194,6 @@ class FaseUI(object):
 
   def ElementUpdatedReceived(self, id_list, value):
     self.ui_imp.ElementUpdatedReceived(id_list, value)
+
+  def GetResourceFilename(self, filename):
+    return self.client.GetResourceFilename(filename)

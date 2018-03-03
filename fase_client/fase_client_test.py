@@ -1,3 +1,4 @@
+import os
 import unittest
 import tempfile
 import time
@@ -6,24 +7,29 @@ from hello_world import service as hello_world_service
 import fase_client
 import fase
 import fase_model
+import fase_resource_manager
 
 
 class MockFaseHTTPClient(object):
   
-  def __init__(self, test_obj):
+  def __init__(self, test_obj, resource_dir):
     self.test_obj = test_obj 
+    self.resource_dir = resource_dir
     self.get_service_calls = 0
     self.get_screen_calls = 0
     self.screen_update_calls = 0
     self.element_callback_calls = 0
+    self.get_resource_filename_calls = 0
     self.device = None
     self.service = None
     self.screen = None
+    self.resources = None
     self.elements_update = None
     self.session_info = None
     self.screen_info = None
     
     self.element_callback_screen = None
+    self.element_callback_resources = None
     self.element_callback_elements_update = None
     self.element_callback_session_info = None
     self.element_callback_screen_info = None
@@ -36,6 +42,7 @@ class MockFaseHTTPClient(object):
     self.test_obj.assertEqual('Python', device.device_type)
     self.device = device
     return fase_model.Response(screen=self.screen,
+                               resources=self.resources,
                                elements_update=self.elements_update,
                                session_info=self.session_info,
                                screen_info=self.screen_info)
@@ -46,6 +53,7 @@ class MockFaseHTTPClient(object):
     self.device = device
     self.test_obj.assertEqual(fase_model.SessionInfo(self.service.GetSessionId()), session_info)
     return fase_model.Response(screen=self.screen,
+                               resources=self.resources,
                                elements_update=self.elements_update,
                                session_info=self.session_info,
                                screen_info=self.screen_info)
@@ -57,6 +65,7 @@ class MockFaseHTTPClient(object):
     self.test_obj.assertEqual(self.session_info, session_info)
     self.test_obj.assertEqual(self.screen_info, screen_info)
     return fase_model.Response(screen=self.screen,
+                               resources=self.resources,
                                elements_update=self.elements_update,
                                session_info=self.session_info,
                                screen_info=self.screen_info)
@@ -70,9 +79,14 @@ class MockFaseHTTPClient(object):
     self.test_obj.assertEqual(self.session_info, session_info)
     self.test_obj.assertEqual(self.screen_info, screen_info)
     return fase_model.Response(screen=self.element_callback_screen,
+                               resources=self.element_callback_resources,
                                elements_update=self.element_callback_elements_update,
                                session_info=self.element_callback_session_info,
                                screen_info=self.element_callback_screen_info)
+
+  def GetResourceFilename(self, resource_dir, filename):
+    open(os.path.join(self.resource_dir, filename), 'w').close()
+    self.get_resource_filename_calls += 1
 
 
 class MockFaseUI(object):
@@ -105,46 +119,57 @@ class MockFaseUI(object):
 class FaseServerTest(unittest.TestCase):
   
   def testGetService(self):
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
-    client = fase_client.FaseClient(http_client=http_client, ui=ui)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
     service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
 
     http_client.service = service
     http_client.screen = screen
+    http_client.resources = fase_model.Resources(resource_list=[fase_model.Resource(filename='a')])
     http_client.session_info = fase_model.SessionInfo(service.GetSessionId())
     http_client.screen_info = fase_model.ScreenInfo(screen.GetScreenId())
     ui.expected_screen = screen
     client.Run()
     self.assertEqual(1, http_client.get_service_calls)
+    self.assertEqual(1, http_client.get_resource_filename_calls)
     self.assertEqual(1, ui.draw_screen_calls)
 
   def testGetScreen(self):
     service = hello_world_service.HelloWorldService()
 
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     session_info_tmp = tempfile.NamedTemporaryFile()
     fase_client.SaveSessionInfoIfNeeded(session_info_tmp.name, fase_model.SessionInfo(service.GetSessionId()))
-    client = fase_client.FaseClient(http_client=http_client, ui=ui, session_info_filepath=session_info_tmp.name)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager,
+                                    session_info_filepath=session_info_tmp.name)
 
     screen = service.OnStart()
     
     http_client.service = service
     http_client.screen = screen
+    http_client.resources = fase_model.Resources(resource_list=[fase_model.Resource(filename='a')])
     http_client.session_info = fase_model.SessionInfo(service.GetSessionId())
     http_client.screen_info = fase_model.ScreenInfo(screen.GetScreenId())
     ui.expected_screen = screen
     client.Run()
     self.assertEqual(1, http_client.get_screen_calls)
+    self.assertEqual(1, http_client.get_resource_filename_calls)
     self.assertEqual(1, ui.draw_screen_calls)
 
   def testScreenUpdateSendElementsUpdate(self):
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
-    client = fase_client.FaseClient(http_client=http_client, ui=ui)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
     service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
@@ -171,9 +196,11 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(0, ui.element_updated_received_calls)
 
   def testScreenUpdateElementsUpdateReceived(self):
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
-    client = fase_client.FaseClient(http_client=http_client, ui=ui)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
     service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
@@ -200,9 +227,11 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, ui.element_updated_received_calls)
 
   def testScreenUpdateScreenReceived(self):
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
-    client = fase_client.FaseClient(http_client=http_client, ui=ui)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
     service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
@@ -229,9 +258,11 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(0, ui.element_updated_received_calls)
 
   def testElementCallbackElementsUpdateReceived(self):
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
-    client = fase_client.FaseClient(http_client=http_client, ui=ui)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
     service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
@@ -267,9 +298,11 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, ui.element_updated_received_calls)
 
   def testElementCallbackScreenReceived(self):
-    http_client = MockFaseHTTPClient(self)
+    resource_dir = tempfile.mkdtemp()
+    http_client = MockFaseHTTPClient(self, resource_dir)
     ui = MockFaseUI(self)
-    client = fase_client.FaseClient(http_client=http_client, ui=ui)
+    resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
+    client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
     service = hello_world_service.HelloWorldService()
     screen = service.OnStart()
