@@ -9,7 +9,7 @@ import os
 import requests
 
 import activation_code_generator
-import fase_database
+from fase_server import fase_database
 from fase_server import fase_http_server
 import sms_sender
 import fase_model

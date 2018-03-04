@@ -1,8 +1,13 @@
 import activation_code_generator
 import config_util
-import fase_database
-import fase_server
 import sms_sender
+try:
+  from . import fase_database
+  from . import fase_server
+except SystemError:
+  import fase_database
+  import fase_server
+
 
 
 def GetFaseDatabase(config):

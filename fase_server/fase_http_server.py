@@ -1,6 +1,7 @@
 import logging
 import traceback
 import os
+import sys
 
 from flask import Flask, request, jsonify, send_file
 
@@ -118,5 +119,6 @@ def elementcallback():
 
 @application.route('/getresource/filename/<path:filename>', methods=['GET', 'OPTIONS'])
 def getresource(filename):
+  resource_dir = os.path.dirname(sys.modules[fase.Service.service_cls.__module__].__file__)
   filename = os.path.join(*filename.split('/'))
-  return send_file(filename)
+  return send_file(os.path.join(resource_dir, filename))
