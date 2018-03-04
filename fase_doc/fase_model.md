@@ -76,7 +76,7 @@ Table of Contents
 |/getscreen|'POST', 'OPTIONS'|Yes||Device|Response|Get current Screen|
 |/screenupdate|'POST', 'OPTIONS'|Yes|Yes|ScreenUpdate|Response|Send information about current field state|
 |/elementcallback|'POST', 'OPTIONS'|Yes|Yes|ElementCallback|Response|Send information about registered callback|
-|/getresource/filename/<path:filename>|'GET', 'OPTIONS'||||<File>|Request resource by filename|
+|/getresource/filename/ <path:filename>|'GET', 'OPTIONS'||||<File>|Request resource by filename|
 
 ## Client
 
