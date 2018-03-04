@@ -69,6 +69,7 @@ Table of Contents
 
 ## Server API
 |HTTP Request|HTTP Method|Need session_id|Need screen_id|Input Type|Output Type|Description|
+|------------|-----------|---------------|--------------|----------|-----------|-----------|
 |/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the Framework|
 |/sendservicecommand|'POST', 'OPTIONS'|||Command|Status|Internal command to Service|
 |/getservice|'POST', 'OPTIONS'|Device|Response|Create instance of the Service|
@@ -138,6 +139,9 @@ requests with information about user's choice in same format;
 * Client saves **locally** current session_id and screen_id;
 * If new *Screen* is received, Client draws new *Screen*;
 * If *ElementUpdate* is received, Client updates the Elements.
+* Every *Response* might have *Resources* field which has list of *Resource* objects. Currently *Resource* might contain
+only filename of given resource. If *Resources* is present, Client must request all missing locally resources in
+**parallel** and save them **locally**. Filename serves as unique id of given resource.
 
 Example of *Response* message for Hello World Application when User clicks "Next" button:
 ```
