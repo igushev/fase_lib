@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, send_file
 
 import fase
 import fase_model
-import fase_sign_in
+import fase_sign_in_impl
 import fase_server
 from json_util import json_util
 
@@ -27,10 +27,10 @@ def CleanSimple(simple):
       if nested_key in [fase.ON_CLICK_METHOD, fase.ON_PICK_METHOD, fase.ON_REFRESH_METHOD, fase.ON_MORE_METHOD]:
         clean_simple[nested_key] = (
             json_util.JSONFunction().ToSimple(fase.FunctionPlaceholder) if nested_simple is not None else None)
-      elif nested_key == json_util.MODULE_FIELD and nested_simple == fase_sign_in.__name__:
+      elif nested_key == json_util.MODULE_FIELD and nested_simple == fase_sign_in_impl.__name__:
         clean_simple[nested_key] = fase.__name__
-      elif (nested_key == json_util.CLASS_FIELD and (nested_simple == fase_sign_in.FaseSignInButton.__name__ or
-                                                     nested_simple == fase_sign_in.FaseSignOutButton.__name__)):
+      elif (nested_key == json_util.CLASS_FIELD and (nested_simple == fase_sign_in_impl.FaseSignInButton.__name__ or
+                                                     nested_simple == fase_sign_in_impl.FaseSignOutButton.__name__)):
         clean_simple[nested_key] = fase.Button.__name__
       else:
         clean_simple[nested_key] = CleanSimple(nested_simple)

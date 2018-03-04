@@ -8,6 +8,7 @@ import fase_server
 import fase_sign_in
 import fase
 import sms_sender
+import fase_sign_in_impl
 
 COUNTRY_CODE = 'US'
 
@@ -252,7 +253,7 @@ class FaseSignInTest(unittest.TestCase):
                      last_name='Igushev',
                      datetime_added=datetime.datetime.now())
     service = SignInTestService()
-    service._session_id = fase_sign_in.GenerateSignedInSessionId(user.user_id)
+    service._session_id = fase_sign_in_impl.GenerateSignedInSessionId(user.user_id)
     screen = service.OnStart()
     screen = service.OnAbount(screen, screen.GetElement(id_='about_button_id'))
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
