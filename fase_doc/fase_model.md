@@ -70,10 +70,13 @@ Table of Contents
 ## Server API
 |HTTP Request|HTTP Method|Need session_id|Need screen_id|Input Type|Output Type|Description|
 |------------|-----------|---------------|--------------|----------|-----------|-----------|
-|/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the Framework|
+|/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the framework|
 |/sendservicecommand|'POST', 'OPTIONS'|||Command|Status|Internal command to Service|
 |/getservice|'POST', 'OPTIONS'|Device|Response|Create instance of the Service|
 |/getscreen|'POST', 'OPTIONS'|Yes||Device|Response|Get current Screen|
+|/screenupdate|'POST', 'OPTIONS'|Yes|Yes|ScreenUpdate|Response|Send information about current field state|
+|/elementcallback|'POST', 'OPTIONS'|Yes|Yes|ElementCallback|Response|Send information about registered callback|
+|/getresource/filename/<path:filename>|'GET', 'OPTIONS'||||<File>|Request resource by filename|
 
 ## Client
 
