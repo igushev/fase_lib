@@ -1,9 +1,13 @@
 import copy
 
-import fase_database
 import fase_model
 import fase
 from base_util import singleton_util
+
+try:
+  from . import fase_database
+except SystemError:
+  import fase_database
 
 
 STATUS_OK_TEXT = 'OK'

@@ -6,9 +6,15 @@ from flask import Flask, request, jsonify, send_file
 
 import fase
 import fase_model
-import fase_sign_in_impl
-import fase_server
 from json_util import json_util
+
+try:
+  from . import fase_sign_in_impl
+  from . import fase_server
+except SystemError:  
+  import fase_sign_in_impl
+  import fase_server
+
 
 application = Flask(__name__)
 application.secret_key = 'fase_flask_secret_key'

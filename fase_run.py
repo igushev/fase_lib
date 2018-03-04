@@ -10,10 +10,10 @@ import requests
 
 import activation_code_generator
 import fase_database
-import fase_http_server
+from fase_server import fase_http_server
 import sms_sender
 import fase_model
-import fase_server
+from fase_server import fase_server
 from fase_client import fase_client
 from fase_client import fase_resource_manager
 from fase_client import fase_tk_ui_imp

@@ -4,12 +4,17 @@ import sys
 
 import activation_code_generator
 import sms_sender
-import fase_database
 import fase_model
 import fase
 import fase_sign_in
 from json_util import json_util
 import phone_number_verifier
+
+try:
+  from . import fase_database
+except SystemError:
+  import fase_database
+
 
 # Register itself as API implementation.
 fase_sign_in.fase_sign_in_impl = sys.modules[__name__]

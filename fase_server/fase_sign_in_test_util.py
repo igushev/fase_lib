@@ -1,9 +1,14 @@
 import activation_code_generator
 import fase
 import fase_model
-import fase_server
 import sms_sender
-import fase_sign_in_impl
+
+try:
+  from . import fase_sign_in_impl
+  from . import fase_server
+except SystemError:  
+  import fase_sign_in_impl
+  import fase_server
 
 COUNTRY_CODE = 'US'
 

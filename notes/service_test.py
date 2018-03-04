@@ -5,10 +5,10 @@ import unittest
 from base_util import datetime_util
 
 import fase
-import fase_database
-import fase_server
+from fase_server import fase_database
+from fase_server import fase_server
 import fase_model
-import fase_sign_in_test_util
+from fase_server import fase_sign_in_test_util
 
 from notes import database as notes_database
 from notes import model as notes_model

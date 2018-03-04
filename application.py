@@ -1,7 +1,7 @@
 import os
 
-import fase_config
-import fase_http_server
+from fase_server import fase_config
+from fase_server import fase_http_server
 
 application = fase_http_server.application
 
