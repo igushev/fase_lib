@@ -2,6 +2,7 @@ Table of Contents
 =================
    * [Communication with Server](#communication-with-server)
       * [Data Classes](#data-classes)
+      * [Server API](#server-api)
       * [Client](#client)
          * [Client Launch](#client-launch)
          * [Keeping Dictionary of Updated Elements](#keeping-dictionary-of-updated-elements)
@@ -12,36 +13,49 @@ Table of Contents
 
 # Communication with Server
 ## Data Classes
-* **Device**
-  * *device_type*: string
-  * *device_token*: string
-
 * **SessionInfo**
   * *session_id*: string
 
 * **ScreenInfo**
   * *screen_id*: string
 
+* **Device**
+  * *device_type*: string
+  * *device_token*: string
+
+* **Resource**
+  * *filename*: string
+
+* **Resources**
+  * *resource_list*: list(*Resource*)
+
 * **ElementsUpdate**
-  * *id_list_list*: list(list(string))
   * *value_list*: list(string)
+  * *id_list_list*: list(list(string))
 
 * **ScreenUpdate**
   * *elements_update*: *ElementsUpdate*
   * *device*: *Device*
 
 * **ElementCallback**
-  * *elements_update*: *ElementsUpdate*
   * *id_list*: list(string)
+  * *elements_update*: *ElementsUpdate*
+  * *device*: *Device*
   * *method*: string
   * *locale*: *Locale*
-  * *device*: *Device*
+
+* **ScreenProg**
+  * *screen*: *Screen* or subclass
+  * *recent_device*: *Device*
+  * *elements_update*: *ElementsUpdate*
+  * *session_id*: string
 
 * **Response**
-  * *elements_update*: *ElementsUpdate*
-  * *screen_info*: *ScreenInfo*
-  * *session_info*: *SessionInfo*
   * *screen*: *Screen* or subclass
+  * *resources*: *Resources*
+  * *screen_info*: *ScreenInfo*
+  * *elements_update*: *ElementsUpdate*
+  * *session_info*: *SessionInfo*
 
 * **Command**
   * *command*: string
@@ -52,6 +66,13 @@ Table of Contents
 * **BadRequest**
   * *code*: int
   * *message*: string
+
+## Server API
+|HTTP Request|HTTP Method|Need session_id|Need screen_id|Input Type|Output Type|Description|
+|/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the Framework|
+|/sendservicecommand|'POST', 'OPTIONS'|||Command|Status|Internal command to Service|
+|/getservice|'POST', 'OPTIONS'|Device|Response|Create instance of the Service|
+|/getscreen|'POST', 'OPTIONS'|Yes||Device|Response|Get current Screen|
 
 ## Client
 
