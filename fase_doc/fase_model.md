@@ -72,7 +72,7 @@ Table of Contents
 |------------|-----------|---------------|--------------|----------|-----------|-----------|
 |/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the framework|
 |/sendservicecommand|'POST', 'OPTIONS'|||Command|Status|Internal command to Service|
-|/getservice|'POST', 'OPTIONS'|Device|Response|Create instance of the Service|
+|/getservice|'POST', 'OPTIONS'|||Device|Response|Create instance of the Service|
 |/getscreen|'POST', 'OPTIONS'|Yes||Device|Response|Get current Screen|
 |/screenupdate|'POST', 'OPTIONS'|Yes|Yes|ScreenUpdate|Response|Send information about current field state|
 |/elementcallback|'POST', 'OPTIONS'|Yes|Yes|ElementCallback|Response|Send information about registered callback|
