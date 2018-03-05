@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, send_file
 
 import fase
 import fase_model
-from json_util import json_util
+from base_util import json_util
 
 try:
   from . import fase_sign_in_impl

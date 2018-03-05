@@ -1,5 +1,5 @@
 from base_util import data_util
-from json_util import json_util
+from base_util import json_util
 
 
 @json_util.JSONDecorator(

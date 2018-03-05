@@ -4,7 +4,7 @@ import sys
 import re
 
 from base_util import data_util
-from json_util import json_util
+from base_util import json_util
 
 CLASS_DEF_REGEXP = 'class (?P<class_name>[a-zA-z0-9]+)\([a-zA-z0-9\.]+\)\:'
 
