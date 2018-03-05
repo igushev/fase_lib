@@ -1,6 +1,6 @@
 import os
 
-import gen_iam_policy_util
+from server_util import gen_iam_policy_util
 
 
 def main(argv):

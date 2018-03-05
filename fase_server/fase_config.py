@@ -1,6 +1,6 @@
-import activation_code_generator
-import config_util
-import sms_sender
+from server_util import activation_code_generator
+from server_util import config_util
+from server_util import sms_sender
 
 try:
   from . import fase_database

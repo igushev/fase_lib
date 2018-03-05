@@ -2,8 +2,8 @@ import datetime
 import hashlib
 import sys
 
-import activation_code_generator
-import sms_sender
+from server_util import activation_code_generator
+from server_util import sms_sender
 import fase_model
 import fase
 import fase_sign_in

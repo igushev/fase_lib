@@ -1,5 +1,5 @@
 import os
-import deploy_util
+from server_util import deploy_util
 
 FASE_VERSION_FILENAME = 'fase_version.txt'
 NOTES_VERSION_FILENAME = 'notes/version.txt'
