@@ -2,12 +2,14 @@ import json
 import unittest
 
 from fase import fase
-import fase_database
 from fase_model import fase_model
-import fase_server
+
+import fase_database
 import fase_http_server
+import fase_server
 
 from hello_world import service as hello_world_service
+
 
 STATUS_OK = '200 OK'
 STATUS_BAD_REQUEST = '400 BAD REQUEST'

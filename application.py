@@ -3,6 +3,7 @@ import os
 from fase_server import fase_config
 from fase_server import fase_http_server
 
+
 application = fase_http_server.application
 
 exec('import %s' % os.environ['FASE_SERVICE_MODULE'])

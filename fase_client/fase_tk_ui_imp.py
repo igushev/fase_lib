@@ -7,6 +7,7 @@ import re
 
 from fase import fase
 
+
 ROOT_SIZE = '540x960+50+50'
 MAIN_MENU_TEXT = '|||'
 CONTEXT_MENU_TEXT = '...'

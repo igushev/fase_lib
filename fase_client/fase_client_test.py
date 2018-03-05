@@ -3,11 +3,13 @@ import unittest
 import tempfile
 import time
 
-from hello_world import service as hello_world_service
-import fase_client
 from fase import fase
 from fase_model import fase_model
+
+import fase_client
 import fase_resource_manager
+
+from hello_world import service as hello_world_service
 
 
 class MockFaseHTTPClient(object):

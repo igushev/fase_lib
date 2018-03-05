@@ -4,6 +4,7 @@ from fase import fase_sign_in
 from karmacounter import client as kc_client
 from karmacounter import data as kc_data
 
+
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
 
 

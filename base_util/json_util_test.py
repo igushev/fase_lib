@@ -1,7 +1,7 @@
 import unittest
 import datetime
 
-from base_util import data_util
+import data_util
 import json_util
 
 

@@ -5,9 +5,10 @@ import sys
 
 from flask import Flask, request, jsonify, send_file
 
+from base_util import json_util
+
 from fase import fase
 from fase_model import fase_model
-from base_util import json_util
 
 try:
   from . import fase_sign_in_impl

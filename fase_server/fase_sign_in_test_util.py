@@ -1,7 +1,8 @@
 from server_util import activation_code_generator
+from server_util import sms_sender
+
 from fase import fase
 from fase_model import fase_model
-from server_util import sms_sender
 
 try:
   from . import fase_sign_in_impl

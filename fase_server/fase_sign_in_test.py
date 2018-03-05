@@ -2,13 +2,16 @@ import datetime
 import unittest
 
 from server_util import activation_code_generator
-import fase_database
-from fase_model import fase_model
-import fase_server
-from fase import fase_sign_in
-from fase import fase
 from server_util import sms_sender
+
+from fase import fase
+from fase import fase_sign_in
+from fase_model import fase_model
+
+import fase_database
+import fase_server
 import fase_sign_in_impl
+
 
 COUNTRY_CODE = 'US'
 

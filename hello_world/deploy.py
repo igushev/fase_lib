@@ -1,5 +1,7 @@
 import os
+
 from server_util import deploy_util
+
 
 FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 HELLO_WORLD_VERSION_FILENAME = 'hello_world/version.txt'

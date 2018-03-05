@@ -5,6 +5,7 @@ import re
 from base_util import data_util
 from base_util import json_util
 
+
 DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
 CONTACT_FORMAT = '{display_name}|{phone_number}'
 CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'

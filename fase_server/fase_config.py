@@ -10,7 +10,6 @@ except SystemError:
   import fase_server
 
 
-
 def GetFaseDatabase(config):
   return fase_database.DynamoDBFaseDatabase(
       region_name=config.get('dynamodb', 'region_name'))

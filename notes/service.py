@@ -9,6 +9,7 @@ from fase import fase_sign_in
 from notes import database as notes_database
 from notes import model as notes_model
 
+
 CREATE_DB_COMMAND = 'createdb'
 DELETE_DB_COMMAND = 'deletedb'
 

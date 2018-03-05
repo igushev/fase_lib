@@ -1,8 +1,9 @@
 import copy
 
-from fase_model import fase_model
-from fase import fase
 from base_util import singleton_util
+
+from fase import fase
+from fase_model import fase_model
 
 try:
   from . import fase_database
