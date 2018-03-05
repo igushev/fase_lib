@@ -8,7 +8,7 @@ from fase_model import fase_model
 from fase import fase
 from fase import fase_sign_in
 from base_util import json_util
-import phone_number_verifier
+from server_util import phone_number_verifier
 
 try:
   from . import fase_database
