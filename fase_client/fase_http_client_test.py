@@ -1,7 +1,7 @@
 import unittest
 import requests
 
-import fase_model
+from fase_model import fase_model
 import fase_http_client
 
 

@@ -1,7 +1,7 @@
 import copy
 
-import fase_model
-import fase
+from fase_model import fase_model
+from fase import fase
 from base_util import singleton_util
 
 try:

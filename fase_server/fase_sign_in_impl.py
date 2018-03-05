@@ -4,9 +4,9 @@ import sys
 
 from server_util import activation_code_generator
 from server_util import sms_sender
-import fase_model
-import fase
-import fase_sign_in
+from fase_model import fase_model
+from fase import fase
+from fase import fase_sign_in
 from base_util import json_util
 import phone_number_verifier
 

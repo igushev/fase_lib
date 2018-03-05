@@ -4,8 +4,8 @@ import uuid
 import queue
 import threading
 
-import fase
-import fase_model
+from fase import fase
+from fase_model import fase_model
 
 COUNTRY_CODE = 'US'
 DEVICE_TYPE = 'Python'

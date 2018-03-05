@@ -5,7 +5,7 @@ from tkinter import font, messagebox, ttk
 from PIL import ImageTk, Image
 import re
 
-import fase
+from fase import fase
 
 ROOT_SIZE = '540x960+50+50'
 MAIN_MENU_TEXT = '|||'

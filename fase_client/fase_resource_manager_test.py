@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-import fase_model
+from fase_model import fase_model
 import fase_resource_manager
 
 

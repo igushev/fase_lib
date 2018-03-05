@@ -2,8 +2,8 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
 from server_util import dynamodb_util
-import fase
-import fase_model
+from fase import fase
+from fase_model import fase_model
 from base_util import singleton_util
 
 

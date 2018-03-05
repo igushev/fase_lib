@@ -5,8 +5,8 @@ import subprocess
 import unittest
 
 import fase_database
-import fase_model
-import fase
+from fase_model import fase_model
+from fase import fase
 
 from hello_world import service as hello_world_service
 

@@ -1,9 +1,9 @@
 import unittest
 
 import fase_database
-import fase_model
+from fase_model import fase_model
 import fase_server
-import fase
+from fase import fase
 
 
 class ServerTestService(fase.Service):

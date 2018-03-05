@@ -1,9 +1,9 @@
 import json
 import unittest
 
-import fase
+from fase import fase
 import fase_database
-import fase_model
+from fase_model import fase_model
 import fase_server
 import fase_http_server
 

@@ -3,10 +3,10 @@ import unittest
 
 from server_util import activation_code_generator
 import fase_database
-import fase_model
+from fase_model import fase_model
 import fase_server
-import fase_sign_in
-import fase
+from fase import fase_sign_in
+from fase import fase
 from server_util import sms_sender
 import fase_sign_in_impl
 

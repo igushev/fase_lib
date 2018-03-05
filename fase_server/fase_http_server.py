@@ -5,8 +5,8 @@ import sys
 
 from flask import Flask, request, jsonify, send_file
 
-import fase
-import fase_model
+from fase import fase
+from fase_model import fase_model
 from base_util import json_util
 
 try:

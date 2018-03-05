@@ -1,4 +1,4 @@
-import fase
+from fase import fase
 
 
 BUILT_IN_IDS = set([fase.NEXT_STEP_BUTTON_ID,

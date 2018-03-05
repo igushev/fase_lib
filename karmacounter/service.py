@@ -1,5 +1,5 @@
-import fase
-import fase_sign_in
+from fase import fase
+from fase import fase_sign_in
 
 from karmacounter import client as kc_client
 from karmacounter import data as kc_data

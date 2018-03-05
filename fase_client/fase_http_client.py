@@ -2,8 +2,8 @@ import os
 import logging
 import requests
 
-import fase
-import fase_model
+from fase import fase
+from fase_model import fase_model
 from base_util import json_util
 
 
