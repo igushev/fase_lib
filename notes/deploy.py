@@ -1,7 +1,7 @@
 import os
 from server_util import deploy_util
 
-FASE_VERSION_FILENAME = 'fase_version.txt'
+FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 NOTES_VERSION_FILENAME = 'notes/version.txt'
 DEPLOY_DIR_VAR_NAME = 'FASE_NOTES_SERVER_DEPLOY_DIR'
 FILENAME_TEMPLATE = 'FaseNotesServer_Fase_%s_Notes_%s'

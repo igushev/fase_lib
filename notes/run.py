@@ -2,7 +2,7 @@ import os
 import signal
 import time
 
-import fase_run
+from fase_server import fase_run
 
 
 FASE_SERVER_URL = 'http://fasenotes-env.us-west-2.elasticbeanstalk.com'

@@ -1,7 +1,7 @@
 import os
 from server_util import deploy_util
 
-FASE_VERSION_FILENAME = 'fase_version.txt'
+FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 
 
 def main(argv):

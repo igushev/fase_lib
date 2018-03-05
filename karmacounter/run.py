@@ -1,7 +1,7 @@
 import os
 import signal
 
-import fase_run
+from fase_server import fase_run
 
 
 FASE_SERVER_URL = 'http://fasekarmacounter-env.us-west-2.elasticbeanstalk.com'
