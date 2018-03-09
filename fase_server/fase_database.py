@@ -92,6 +92,10 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
   def _GetUserTableName(self):
     return 'fase_user%s' % self.tables_suffix
 
+  @staticmethod
+  def GetTableNameList():
+    return ['fase_service', 'fase_screen_prog', 'fase_user']
+
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
     table_names = table_names_response['TableNames']
