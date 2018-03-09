@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from karmacounter import data as kc_data 
+from karmacounter_fase import data as kc_data 
 
 
 URL = 'http://karmacounter-env-test1.us-west-2.elasticbeanstalk.com/'

@@ -6,7 +6,7 @@ from server_util import deploy_util
 HOME_DIR_VAR_NAME = 'FASE_HOME'
 DEPLOY_DIR_VAR_NAME = 'FASE_KC_SERVER_DEPLOY_DIR'
 FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
-KC_VERSION_FILENAME = 'karmacounter/version.txt'
+KC_VERSION_FILENAME = 'karmacounter_fase/version.txt'
 FILENAME_TEMPLATE = 'FaseKCServer_Fase_%s_KC_%s'
 
 DEP_LIST = [
@@ -16,7 +16,7 @@ DEP_LIST = [
     'fase_doc',
     'fase_model',
     'fase_server',
-    'karmacounter',
+    'karmacounter_fase',
     'phonenumbers',
     'server_util',
 ]
