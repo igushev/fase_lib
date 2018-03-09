@@ -6,7 +6,7 @@ from fase_server import fase_run
 
 
 FASE_SERVER_URL = 'http://fasenotes-env.us-west-2.elasticbeanstalk.com'
-FASE_SESSION_INFO_FILENAME = 'notes/session_info'
+FASE_SESSION_INFO_FILENAME = 'notes_fase/session_info'
 
 IGNORE_SESSION_INFO = 'ignore'
 RESET_FLAG = 'reset'
@@ -20,14 +20,14 @@ SERVER_URL = 'http://localhost:%d'
 
 
 def CreateDatabase(server_url):
-  from notes import service as notes_service
+  from notes_fase import service as notes_service
   url = server_url + '/sendservicecommand'
   command_message = notes_service.CREATE_DB_COMMAND
   fase_run.SendCommand(url, command_message)
 
 
 def SetupServer(dynamodb_url):
-    from notes import database as notes_database
+    from notes_fase import database as notes_database
     notes_database.NotesDatabaseInterface.Set(
         notes_database.DynamoDBNotesDatabase(endpoint_url=dynamodb_url, region_name=fase_run.DYNAMODB_REGION,
                                              aws_access_key_id='KeyId', aws_secret_access_key='AccessKey'))
@@ -44,7 +44,7 @@ def main(argv):
       os.remove(session_info_filepath)
     fase_run.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
-    from notes import service as notes_service
+    from notes_fase import service as notes_service
     dynamodb_process = fase_run.RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL % DYNAMODB_PORT)
     fase_run.RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
     fase_run.CreateDatabase(server_url=SERVER_URL % SERVER_PORT)

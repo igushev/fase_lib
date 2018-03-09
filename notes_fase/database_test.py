@@ -4,8 +4,8 @@ import signal
 import subprocess
 import unittest
 
-from notes import database as notes_database
-from notes import model as notes_model
+from notes_fase import database as notes_database
+from notes_fase import model as notes_model
 
 
 DYNAMODB_CMD = (

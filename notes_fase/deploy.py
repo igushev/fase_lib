@@ -6,7 +6,7 @@ from server_util import deploy_util
 HOME_DIR_VAR_NAME = 'FASE_HOME'
 DEPLOY_DIR_VAR_NAME = 'FASE_NOTES_SERVER_DEPLOY_DIR'
 FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
-NOTES_VERSION_FILENAME = 'notes/version.txt'
+NOTES_VERSION_FILENAME = 'notes_fase/version.txt'
 FILENAME_TEMPLATE = 'FaseNotesServer_Fase_%s_Notes_%s'
 
 DEP_LIST = [
@@ -16,7 +16,7 @@ DEP_LIST = [
     'fase_doc',
     'fase_model',
     'fase_server',
-    'notes',
+    'notes_fase',
     'phonenumbers',
     'server_util',
 ]

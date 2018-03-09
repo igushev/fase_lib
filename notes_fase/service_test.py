@@ -10,9 +10,9 @@ from fase_server import fase_database
 from fase_server import fase_server
 from fase_server import fase_sign_in_test_util
 
-from notes import database as notes_database
-from notes import model as notes_model
-from notes import service as notes_service
+from notes_fase import database as notes_database
+from notes_fase import model as notes_model
+from notes_fase import service as notes_service
 
 
 class NotesTest(unittest.TestCase):
