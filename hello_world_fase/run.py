@@ -5,7 +5,7 @@ from fase_server import fase_run
 
 
 FASE_SERVER_URL = 'http://fasehelloworld-env.us-west-2.elasticbeanstalk.com'
-FASE_SESSION_INFO_FILENAME = 'hello_world/session_info'
+FASE_SESSION_INFO_FILENAME = 'hello_world_fase/session_info'
 
 IGNORE_SESSION_INFO = 'ignore'
 RESET_FLAG = 'reset'
@@ -28,7 +28,7 @@ def main(argv):
       os.remove(session_info_filepath)
     fase_run.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
-    from hello_world import service as hello_world_service
+    from hello_world_fase import service as hello_world_service
     dynamodb_process = fase_run.RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL % DYNAMODB_PORT)
     fase_run.RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
     fase_run.CreateDatabase(server_url=SERVER_URL % SERVER_PORT)

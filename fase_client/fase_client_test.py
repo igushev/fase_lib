@@ -9,7 +9,7 @@ from fase_model import fase_model
 import fase_client
 import fase_resource_manager
 
-from hello_world import service as hello_world_service
+from hello_world_fase import service as hello_world_service
 
 
 class MockFaseHTTPClient(object):

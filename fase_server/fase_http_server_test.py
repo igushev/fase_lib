@@ -8,7 +8,7 @@ import fase_database
 import fase_http_server
 import fase_server
 
-from hello_world import service as hello_world_service
+from hello_world_fase import service as hello_world_service
 
 
 STATUS_OK = '200 OK'

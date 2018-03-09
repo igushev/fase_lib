@@ -6,7 +6,7 @@ from server_util import deploy_util
 HOME_DIR_VAR_NAME = 'FASE_HOME'
 DEPLOY_DIR_VAR_NAME = 'FASE_HELLO_WORLD_SERVER_DEPLOY_DIR'
 FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
-HELLO_WORLD_VERSION_FILENAME = 'hello_world/version.txt'
+HELLO_WORLD_VERSION_FILENAME = 'hello_world_fase/version.txt'
 FILENAME_TEMPLATE = 'FaseHelloWorldServer_Fase_%s_HelloWorld_%s'
 
 DEP_LIST = [
@@ -16,7 +16,7 @@ DEP_LIST = [
     'fase_doc',
     'fase_model',
     'fase_server',
-    'hello_world',
+    'hello_world_fase',
     'phonenumbers',
     'server_util',
 ]
