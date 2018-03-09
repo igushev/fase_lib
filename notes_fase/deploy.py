@@ -4,7 +4,7 @@ from server_util import deploy_util
 
 
 HOME_DIR_VAR_NAME = 'FASE_HOME'
-DEPLOY_DIR_VAR_NAME = 'FASE_NOTES_SERVER_DEPLOY_DIR'
+DEPLOY_DIR_VAR_NAME = 'NOTES_FASE_SERVER_DEPLOY_DIR'
 FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 NOTES_VERSION_FILENAME = 'notes_fase/version.txt'
 FILENAME_TEMPLATE = 'FaseNotesServer_Fase_%s_Notes_%s'
