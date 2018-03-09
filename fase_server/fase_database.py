@@ -79,17 +79,18 @@ class MockFaseDatabase(FaseDatabaseInterface):
 
 class DynamoDBFaseDatabase(FaseDatabaseInterface):
 
-  def __init__(self, **kwargs):
+  def __init__(self, tables_suffix=None, **kwargs):
+    self.tables_suffix = tables_suffix or ''
     self.dynamodb = boto3.client('dynamodb', **kwargs)
 
   def _GetServiceTableName(self):
-    return 'fase_service'
+    return 'fase_service%s' % self.tables_suffix
 
   def _GetScreenProgTableName(self):
-    return 'fase_screen_prog'
+    return 'fase_screen_prog%s' % self.tables_suffix
 
   def _GetUserTableName(self):
-    return 'fase_user'
+    return 'fase_user%s' % self.tables_suffix
 
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
