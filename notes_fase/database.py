@@ -41,11 +41,12 @@ class MockNotesDatabase(NotesDatabaseInterface):
 
 class DynamoDBNotesDatabase(NotesDatabaseInterface):
 
-  def __init__(self, **kwargs):
+  def __init__(self, tables_suffix=None, **kwargs):
+    self.tables_suffix = tables_suffix or ''
     self.dynamodb = boto3.client('dynamodb', **kwargs)
 
   def _GetNotesTableName(self):
-    return 'fase_notes'
+    return 'fase_notes' % self.tables_suffix
 
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()

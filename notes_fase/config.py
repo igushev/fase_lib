@@ -5,6 +5,7 @@ from notes_fase import database as notes_database
 
 def GetNotesDatabase(config):
   return notes_database.DynamoDBNotesDatabase(
+      tables_suffix=config.get('database', 'tables_suffix'),
       region_name=config.get('dynamodb', 'region_name'))
 
 
