@@ -47,10 +47,10 @@ class DynamoDBNotesDatabase(NotesDatabaseInterface):
 
   @staticmethod
   def GetTableNameList():
-    return ['fase_notes']
+    return ['notes_fase']
 
   def _GetNotesTableName(self):
-    return 'fase_notes%s' % self.tables_suffix
+    return 'notes_fase%s' % self.tables_suffix
 
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
