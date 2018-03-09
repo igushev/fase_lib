@@ -7,8 +7,6 @@ from base_util import json_util
 
 
 DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
-PLACE_FORMAT = '{google_place_id}|{city}|{state}|{country}'
-PLACE_REGEXP = '(?P<google_place_id>.*)\|(?P<city>.*)\|(?P<state>.*)\|(?P<country>.*)'
 
 NEXT_STEP_BUTTON_ID = 'next_step_button'
 PREV_STEP_BUTTON_ID = 'prev_step_button'
@@ -88,6 +86,7 @@ class Contact(data_util.AbstractObject):
     self.__dict__ = contact.__dict__
   def Get(self):
     return self.ToJSON()
+
   def SetDisplayName(self, display_name):
     self.display_name = display_name
   def GetDisplayName(self):
@@ -132,17 +131,10 @@ class Place(data_util.AbstractObject):
     self.country = country
 
   def Update(self, value):
-    place_match = re.match(PLACE_REGEXP, value)
-    self.google_place_id = place_match.group('google_place_id') or None
-    self.city = place_match.group('city') or None
-    self.state = place_match.group('state') or None
-    self.country = place_match.group('country') or None
-
+    place = Place.FromJSON(value)
+    self.__dict__ = place.__dict__
   def Get(self):
-    return PLACE_FORMAT.format(google_place_id=self.google_place_id or '',
-                               city=self.city or '',
-                               state=self.state or '',
-                               country=self.country or '')
+    return self.ToJSON()
 
   def GetGooglePlaceId(self):
     return self.google_place_id

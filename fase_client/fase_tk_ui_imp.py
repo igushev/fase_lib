@@ -28,13 +28,15 @@ BUTTON_TEXT_LIST_TO_INFO_TYPE = {('ok', ): messagebox.OK,
                                  ('retry', 'cancel'): messagebox.RETRYCANCEL,
                                  ('abort', 'retry', 'ignore'): messagebox.ABORTRETRYIGNORE}
 
+CONTACT_FORMAT = '{display_name}|{phone_number}'
+CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'
 
 DATETIME_TYPE_TO_FORMAT = {fase.DateTimePicker.DATE: '%Y-%m-%d',
                            fase.DateTimePicker.TIME: '%H:%M:%S',
                            fase.DateTimePicker.DATETIME: '%Y-%m-%d %H:%M:%S'}
 
-CONTACT_FORMAT = '{display_name}|{phone_number}'
-CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'
+PLACE_FORMAT = '{google_place_id}|{city}|{state}|{country}'
+PLACE_REGEXP = '(?P<google_place_id>.*)\|(?P<city>.*)\|(?P<state>.*)\|(?P<country>.*)'
 
 
 class ElementUpdatedCallback(object):
@@ -181,19 +183,28 @@ class PlacePickerElementVariable(object):
     assert type_ == fase.PlacePicker.CITY
 
   def Get(self):
-    value = self._ui_imp_var.get()
-    if not value:  # Replace empty string with None.
+    displayed_value = self._ui_imp_var.get()
+    if not displayed_value:  # Replace empty string with None.
       return None
-    assert re.match(fase.PLACE_REGEXP, value)
+    place_match = re.match(PLACE_REGEXP, displayed_value)
+    place = fase.Place(
+        google_place_id=place_match.group('google_place_id') or None,
+        city=place_match.group('city') or None,
+        state=place_match.group('state') or None,
+        country=place_match.group('country') or None)
+    value = place.ToJSON()
     return value
 
   def Update(self, value):
     if value is not None:
-      assert re.match(fase.PLACE_REGEXP, value)
-      self._ui_imp_var.set(value)
-    else: 
-      self._ui_imp_var.set('')
-
+      place = fase.Place.FromJSON(value)
+      displayed_value = PLACE_FORMAT.format(google_place_id=place.google_place_id or '',
+                                            city=place.city or '',
+                                            state=place.state or '',
+                                            country=place.country or '')
+    else:
+      displayed_value = ''
+    self._ui_imp_var.set(displayed_value)
 
 class ParentElement(object):
   
