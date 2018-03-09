@@ -30,7 +30,7 @@ class KarmaCounter(fase.Service):
                                date_of_birth=self.GetUser().GetDateOfBirth(),
                                locale=self.GetUser().GetLocale(),
                                code=GET_USER_SESSION_CODE)
-    session_info = kc_client.GetUserSession(new_user)
+    session_info = kc_client.KarmaCounterClient.Get().GetUserSession(new_user)
     if not self.HasStringVariable(id_='session_id_str'):
       self.AddStringVariable(id_='session_id_str', value=session_info.session_id)
     return self.DisplayCurrentScreen(None, None)
@@ -91,7 +91,7 @@ class KarmaCounter(fase.Service):
 
   def DisplayDashboard(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-    starting_page = kc_client.GetStartingPage(session_info)
+    starting_page = kc_client.KarmaCounterClient.Get().GetStartingPage(session_info)
     screen = fase.Screen(self)
     screen.SetTitle('Dashboard')
     dashboard_frame = screen.AddFrame(id_='dashboard_frame', orientation=fase.Frame.VERTICAL)
@@ -120,7 +120,7 @@ class KarmaCounter(fase.Service):
       request_registered_users = (
           kc_data.RequestRegisteredUsers(phone_number_list=[friend_contact_picker.GetContact().GetPhoneNumber()]))
       session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-      registered_users = kc_client.GetRegisteredUsers(request_registered_users, session_info)
+      registered_users = kc_client.KarmaCounterClient.Get().GetRegisteredUsers(request_registered_users, session_info)
       if registered_users.users:
         friend_contact_picker.GetContact().SetDisplayName(registered_users.users[0].display_name)
         invite_switch.SetDisplayed(False)
@@ -149,7 +149,7 @@ class KarmaCounter(fase.Service):
                                 if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
                                 None),
           invite_witness=screen.GetSwitch(id_='invite_switch').GetValue())
-      kc_client.AddUserEvent(new_user_event, session_info)
+      kc_client.KarmaCounterClient.Get().AddUserEvent(new_user_event, session_info)
     else:
       new_other_user_event = kc_data.NewOtherUserEvent(
           score=int(screen.GetSelect(id_='score_select').GetValue()),
@@ -157,12 +157,13 @@ class KarmaCounter(fase.Service):
           phone_number=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber(),
           other_user_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName(),
           invite_other_user=screen.GetSwitch(id_='invite_switch').GetValue())
-      kc_client.AddOtherUserEvent(new_other_user_event, session_info)
+      kc_client.KarmaCounterClient.Get().AddOtherUserEvent(new_other_user_event, session_info)
     return self.DisplayCurrentScreen(screen, element)
 
   def _DisplayEvents(self, screen, element, users_own=True):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-    user_events = kc_client.GetUserEvents(session_info) if users_own else kc_client.GetOtherUserEvents(session_info)
+    user_events = (kc_client.KarmaCounterClient.Get().GetUserEvents(session_info) if users_own else
+                   kc_client.KarmaCounterClient.Get().GetOtherUserEvents(session_info))
     screen = fase.Screen(self)
     screen.SetTitle('Your Events' if users_own else 'Your Friend\'s Events')
     screen.SetScrollable(True)
@@ -230,22 +231,22 @@ class KarmaCounter(fase.Service):
     return self.DisplayCurrentScreen(screen, element)
 
   def OnAccept(self, screen, element):
-    return self._SendUserEventInfo(kc_client.AcceptUserEvent, screen, element)
+    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().AcceptUserEvent, screen, element)
 
   def OnReject(self, screen, element):
-    return self._SendUserEventInfo(kc_client.RejectUserEvent, screen, element)
+    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().RejectUserEvent, screen, element)
 
   def OnDelete(self, screen, element):
-    return self._SendUserEventInfo(kc_client.DeleteUserEvent, screen, element)
+    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().DeleteUserEvent, screen, element)
 
   def OnReportAbuse(self, screen, element):
-    return self._SendUserEventInfo(kc_client.ReportAbuse, screen, element)
+    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().ReportAbuse, screen, element)
 
   def OnReportSpam(self, screen, element):
-    return self._SendUserEventInfo(kc_client.ReportSpam, screen, element)
+    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().ReportSpam, screen, element)
 
   def OnBlockUser(self, screen, element):
-    return self._SendUserEventInfo(kc_client.BlockUser, screen, element)
+    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().BlockUser, screen, element)
 
   def _DisplayCitiesStatistics(self, frame, cities_statistics):
     for i, city_statistics in enumerate(cities_statistics):
@@ -255,7 +256,7 @@ class KarmaCounter(fase.Service):
 
   def DisplayStatisticsByCities(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-    cities_statistics_top_bottom = kc_client.CitiesStatisticsTopBottom(session_info)
+    cities_statistics_top_bottom = kc_client.KarmaCounterClient.Get().CitiesStatisticsTopBottom(session_info)
     screen = fase.Screen(self)
     screen.SetTitle('Statistics by Cities')
     screen.AddLabel(id_='top_label', text='Cities With Highest Score')

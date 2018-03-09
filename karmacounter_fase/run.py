@@ -4,6 +4,7 @@ import signal
 from fase_server import fase_run
 
 
+KARMACOUNTER_URL = 'http://karmacounter-env-test1.us-west-2.elasticbeanstalk.com/'
 FASE_SERVER_URL = 'http://fasekarmacounter-env.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'karmacounter_fase/session_info'
 
@@ -16,6 +17,11 @@ DYNAMODB_URL = 'http://localhost:%d'
 SERVER_HOST = '0.0.0.0'
 SERVER_PORT = 5000
 SERVER_URL = 'http://localhost:%d'
+
+
+def SetupClient(server_url):
+  from karmacounter_fase import client as kc_client
+  kc_client.KarmaCounterClient.Set(kc_client.KarmaCounterClient(server_url=server_url))
 
 
 def main(argv):
@@ -31,6 +37,7 @@ def main(argv):
     from karmacounter_fase import service as kc_service 
     dynamodb_process = fase_run.RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL % DYNAMODB_PORT)
     fase_run.RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
+    SetupClient(KARMACOUNTER_URL)
     fase_run.CreateDatabase(server_url=SERVER_URL % SERVER_PORT)
     fase_run.RunClient(fase_server_url=SERVER_URL % SERVER_PORT)
     os.killpg(dynamodb_process.pid, signal.SIGKILL)
