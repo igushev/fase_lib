@@ -33,6 +33,9 @@ DATETIME_TYPE_TO_FORMAT = {fase.DateTimePicker.DATE: '%Y-%m-%d',
                            fase.DateTimePicker.TIME: '%H:%M:%S',
                            fase.DateTimePicker.DATETIME: '%Y-%m-%d %H:%M:%S'}
 
+CONTACT_FORMAT = '{display_name}|{phone_number}'
+CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'
+
 
 class ElementUpdatedCallback(object):
   
@@ -129,18 +132,24 @@ class ContactPickerElementVariable(object):
     self._ui_imp_var = ui_imp_var
 
   def Get(self):
-    value = self._ui_imp_var.get()
-    if not value:  # Replace empty string with None.
+    displayed_value = self._ui_imp_var.get()
+    if not displayed_value:  # Replace empty string with None.
       return None
-    assert re.match(fase.CONTACT_REGEXP, value)
+    contact_match = re.match(CONTACT_REGEXP, displayed_value)
+    contact = fase.Contact(
+        display_name=contact_match.group('display_name') or None,
+        phone_number=contact_match.group('phone_number') or None)
+    value = contact.ToJSON()
     return value
 
   def Update(self, value):
     if value is not None:
-      assert re.match(fase.CONTACT_REGEXP, value)
-      self._ui_imp_var.set(value)
+      contact = fase.Contact.FromJSON(value)
+      displayed_value = CONTACT_FORMAT.format(display_name=contact.display_name or '',
+                                              phone_number=contact.phone_number or '')
     else:
-      self._ui_imp_var.set('') 
+      displayed_value = ''
+    self._ui_imp_var.set(displayed_value)
 
 
 class DateTimePickerElementVariable(object):

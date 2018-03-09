@@ -7,8 +7,6 @@ from base_util import json_util
 
 
 DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
-CONTACT_FORMAT = '{display_name}|{phone_number}'
-CONTACT_REGEXP = '(?P<display_name>.*)\|(?P<phone_number>.*)'
 PLACE_FORMAT = '{google_place_id}|{city}|{state}|{country}'
 PLACE_REGEXP = '(?P<google_place_id>.*)\|(?P<city>.*)\|(?P<state>.*)\|(?P<country>.*)'
 
@@ -86,13 +84,10 @@ class Contact(data_util.AbstractObject):
     self.phone_number = phone_number
 
   def Update(self, value):
-    contact_match = re.match(CONTACT_REGEXP, value)
-    self.display_name = contact_match.group('display_name') or None
-    self.phone_number = contact_match.group('phone_number') or None
+    contact = Contact.FromJSON(value)
+    self.__dict__ = contact.__dict__
   def Get(self):
-    return CONTACT_FORMAT.format(display_name=self.display_name or '',
-                                 phone_number=self.phone_number or '')    
-
+    return self.ToJSON()
   def SetDisplayName(self, display_name):
     self.display_name = display_name
   def GetDisplayName(self):

@@ -72,7 +72,7 @@ class FaseUI(object):
         for menu_item_id, menu_item_element in main_button_element.GetContextMenu().GetIdElementList():
           self.ui_imp.DrawContextMenuItem(
               [fase.MAIN_BUTTON_ID, fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element,
-              (ui_imp_main_button.GetImage() if ui_imp_main_button.HasImage() else None), ui_imp_main_button)
+              (menu_item_element.GetImage() if menu_item_element.HasImage() else None), ui_imp_main_button)
     # NOTE(igushev): Button Bar Frame will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
       self.ui_imp.DrawScreenNavButton(
