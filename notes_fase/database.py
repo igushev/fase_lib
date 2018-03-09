@@ -46,7 +46,7 @@ class DynamoDBNotesDatabase(NotesDatabaseInterface):
     self.dynamodb = boto3.client('dynamodb', **kwargs)
 
   def _GetNotesTableName(self):
-    return 'fase_notes' % self.tables_suffix
+    return 'fase_notes%s' % self.tables_suffix
 
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
