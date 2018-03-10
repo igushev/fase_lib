@@ -18,8 +18,6 @@ class KarmaCounterClient(object):
       logging.error(http_response.text)
       http_response.raise_for_status()
   
-  
-  # TODO(igushev): Add key to GetUserSession. 
   def GetUserSession(self, new_user):
     url = self.server_url + '/getusersession'
     new_user_simple = new_user.ToSimple()
@@ -27,7 +25,6 @@ class KarmaCounterClient(object):
     KarmaCounterClient.AssertStatus(http_response)
     session_info_simple = http_response.json()
     return kc_data.SessionInfo.FromSimple(session_info_simple)
-  
   
   def GetStartingPage(self, session_info):
     url = self.server_url + '/getstartingpage'
@@ -37,8 +34,7 @@ class KarmaCounterClient(object):
     starting_page_simple = http_response.json()
     return kc_data.StartingPage.FromSimple(starting_page_simple) 
   
-  
-  def _SendObjectGetStatus(self, http_request_name, obj, session_info):
+  def _SendObjectSessionGetStatus(self, http_request_name, obj, session_info):
     url = self.server_url + http_request_name
     headers = {'session-id': session_info.session_id}
     obj_simple = obj.ToSimple()
@@ -47,14 +43,11 @@ class KarmaCounterClient(object):
     status_simple = http_response.json()
     return kc_data.Status.FromSimple(status_simple)
   
-  
   def AddUserEvent(self, new_user_event, session_info):
-    return self._SendObjectGetStatus('/adduserevent', new_user_event, session_info)
-  
+    return self._SendObjectSessionGetStatus('/adduserevent', new_user_event, session_info)
   
   def AddOtherUserEvent(self, new_other_user_event, session_info):
-    return self._SendObjectGetStatus('/addotheruserevent', new_other_user_event, session_info)
-  
+    return self._SendObjectSessionGetStatus('/addotheruserevent', new_other_user_event, session_info)
   
   def _GetUserEvents(self, http_request_name, session_info):
     url = self.server_url + http_request_name
@@ -64,14 +57,11 @@ class KarmaCounterClient(object):
     user_events_simple = http_response.json()
     return kc_data.ExternalUserEvents.FromSimple(user_events_simple) 
   
-  
   def GetUserEvents(self, session_info):
     return self._GetUserEvents('/getuserevents', session_info)
   
-  
   def GetOtherUserEvents(self, session_info):
     return self._GetUserEvents('/getotheruserevents', session_info)
-  
   
   def GetRegisteredUsers(self, request_registered_users, session_info):
     url = self.server_url + '/getregisteredusers'
@@ -82,7 +72,6 @@ class KarmaCounterClient(object):
     registered_users_simple = http_response.json()
     return kc_data.RegisteredUsers.FromSimple(registered_users_simple)
   
-  
   def CitiesStatisticsTopBottom(self, session_info):
     url = self.server_url + '/citiesstatisticsstopbottom'
     headers = {'session-id': session_info.session_id}
@@ -91,26 +80,20 @@ class KarmaCounterClient(object):
     cities_statistics_top_bottom_simple = http_response.json()
     return kc_data.ExternalCitiesStatisticsTopBottom.FromSimple(cities_statistics_top_bottom_simple) 
   
-  
   def AcceptUserEvent(self, user_event_info, session_info):
-    return self._SendObjectGetStatus('/acceptuserevent', user_event_info, session_info)
-  
+    return self._SendObjectSessionGetStatus('/acceptuserevent', user_event_info, session_info)
   
   def RejectUserEvent(self, user_event_info, session_info):
-    return self._SendObjectGetStatus('/rejectuserevent', user_event_info, session_info)
-  
+    return self._SendObjectSessionGetStatus('/rejectuserevent', user_event_info, session_info)
   
   def DeleteUserEvent(self, user_event_info, session_info):
-    return self._SendObjectGetStatus('/deleteuserevent', user_event_info, session_info)
-  
+    return self._SendObjectSessionGetStatus('/deleteuserevent', user_event_info, session_info)
   
   def ReportAbuse(self, user_event_info, session_info):
-    return self._SendObjectGetStatus('/reportabuse', user_event_info, session_info)
-  
+    return self._SendObjectSessionGetStatus('/reportabuse', user_event_info, session_info)
   
   def ReportSpam(self, user_event_info, session_info):
-    return self._SendObjectGetStatus('/reportspam', user_event_info, session_info)
-  
+    return self._SendObjectSessionGetStatus('/reportspam', user_event_info, session_info)
   
   def BlockUser(self, user_event_info, session_info):
-    return self._SendObjectGetStatus('/blockuser', user_event_info, session_info)
+    return self._SendObjectSessionGetStatus('/blockuser', user_event_info, session_info)
