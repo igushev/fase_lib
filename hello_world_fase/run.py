@@ -4,7 +4,7 @@ import signal
 from fase_server import fase_run
 
 
-FASE_SERVER_URL = 'http://fasehelloworld-env.us-west-2.elasticbeanstalk.com'
+FASE_SERVER_URL = 'http://hello-world-fase-env-test1.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'hello_world_fase/session_info'
 
 IGNORE_SESSION_INFO = 'ignore'

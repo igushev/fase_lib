@@ -5,7 +5,7 @@ from fase_server import fase_run
 
 
 KARMACOUNTER_URL = 'http://karmacounter-env-test1.us-west-2.elasticbeanstalk.com/'
-FASE_SERVER_URL = 'http://fasekarmacounter-env.us-west-2.elasticbeanstalk.com'
+FASE_SERVER_URL = 'http://karmacounter-fase-env-test1.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'karmacounter_fase/session_info'
 
 IGNORE_SESSION_INFO = 'ignore'

@@ -5,7 +5,7 @@ import time
 from fase_server import fase_run
 
 
-FASE_SERVER_URL = 'http://fasenotes-env.us-west-2.elasticbeanstalk.com'
+FASE_SERVER_URL = 'http://notes-fase-env-test1.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'notes_fase/session_info'
 
 IGNORE_SESSION_INFO = 'ignore'
