@@ -146,9 +146,8 @@ def OnSignInEnteredData(service, screen, element):
 
   if not phone_number:
     return _ErrorAlert(service, message='Phone number is not specified!', on_click=OnSignInOption)
-  phone_number_verifier_ = phone_number_verifier.PhoneNumberVerifier()
   try:
-    phone_number = phone_number_verifier_.Format(phone_number, country_code)
+    phone_number = phone_number_verifier.Format(phone_number, country_code)
   except phone_number_verifier.NoCountryCodeException:
     return _ErrorAlert(service,
                        message='Phone number country code could not be inferred! Please try to add explicitly!',
@@ -246,9 +245,8 @@ def OnSignUpEnteredData(service, screen, element):
 
   if not phone_number:
     return _ErrorAlert(service, message='Phone number is not specified!', on_click=OnSignUpOption)
-  phone_number_verifier_ = phone_number_verifier.PhoneNumberVerifier()
   try:
-    phone_number = phone_number_verifier_.Format(phone_number, country_code)
+    phone_number = phone_number_verifier.Format(phone_number, country_code)
   except phone_number_verifier.NoCountryCodeException:
     return _ErrorAlert(service,
                        message='Phone number country code could not be inferred! Please try to add explicitly!',
