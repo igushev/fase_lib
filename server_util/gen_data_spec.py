@@ -76,7 +76,7 @@ def GenerateDataSpecification(module_name, filepath):
 
       base_names = [base.__name__ for base in cls.__bases__ if base is not data_util.AbstractObject]
       for base_name in base_names:
-        field_names.extend(cls_field_names_dict[base_name])
+        field_names = cls_field_names_dict[base_name] + field_names
       if base_names:
         spec_file.write(' extends *%s*' % ', '.join(base_names))
       if cls.__doc__:

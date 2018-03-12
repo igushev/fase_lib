@@ -77,21 +77,21 @@ Table of Contents
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **VisualElement** extends *ElementContainer*. Basic Interface for Visual Elements.
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *displayed*: bool
   * *request_locale*: bool
   * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Label** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *text*: string
   * *font*: float
   * *size*: int
   * *alight*: int
   * *on_click*: function
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * MIN = 1
     * MAX = 2
     * LEFT = 1
@@ -99,14 +99,14 @@ Table of Contents
     * CENTER = 3
 
 * **Text** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *text*: string
   * *hint*: string
   * *size*: int
   * *type*: int
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * MIN = 1
     * MAX = 2
     * TEXT = 1
@@ -115,92 +115,92 @@ Table of Contents
     * EMAIL = 4
 
 * **Switch** extends *VisualElement*
-  * *value*: bool
-  * *text*: string
-  * *alight*: int
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *displayed*: bool
   * *request_locale*: bool
   * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *value*: bool
+  * *text*: string
+  * *alight*: int
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
 
 * **Select** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *value*: string
   * *items*: list(string)
   * *hint*: string
   * *alight*: int
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
 
 * **Slider** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *value*: float
   * *min_value*: float
   * *max_value*: float
   * *step*: float
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Image** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *filename*: string
   * *url*: string
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **MenuItem** extends *VisualElement*
-  * *text*: string
-  * *on_click*: function
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *displayed*: bool
   * *request_locale*: bool
   * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *text*: string
+  * *on_click*: function
 
 * **Menu** extends *ElementContainer*
-  * *text*: string
   * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *text*: string
 
 * **Button** extends *VisualElement*
-  * *text*: string
-  * *on_click*: function
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *displayed*: bool
   * *request_locale*: bool
   * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *text*: string
+  * *on_click*: function
 
 * **ButtonBar** extends *ElementContainer*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **ContactPicker** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *contact*: *Contact*
   * *hint*: string
   * *size*: int
   * *on_pick*: function
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * MIN = 1
     * MAX = 2
 
 * **DateTimePicker** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *datetime*: date
   * *type*: int
   * *hint*: string
   * *size*: int
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * DATE = 1
     * TIME = 2
     * DATETIME = 3
@@ -208,69 +208,69 @@ Table of Contents
     * MAX = 2
 
 * **PlacePicker** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *place*: *Place*
   * *type*: int
   * *hint*: string
   * *size*: int
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * CITY = 1
     * MIN = 1
     * MAX = 2
 
 * **Separator** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *displayed*: bool
   * *request_locale*: bool
   * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Web** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *url*: string
   * *size*: int
   * *scrollable*: bool
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * MIN = 1
     * MAX = 2
 
 * **BaseElementsContainer** extends *VisualElement*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *displayed*: bool
   * *request_locale*: bool
   * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Frame** extends *BaseElementsContainer*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *orientation*: int
   * *size*: int
   * *on_click*: function
   * *border*: bool
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * VERTICAL = 1
     * HORIZONTAL = 2
     * MIN = 1
     * MAX = 2
 
 * **Alert** extends *ElementContainer*
-  * *text*: string
   * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *text*: string
 
 * **Screen** extends *BaseElementsContainer*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *_screen_id*: string
   * *scrollable*: bool
   * *title*: string
   * *on_refresh*: function
   * *on_more*: function
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 *Screen* can have one or following Elements:
 
