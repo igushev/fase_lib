@@ -7,7 +7,9 @@ from base_util import data_util
 from base_util import json_util
 
 
+FIELD_DESC_REGEXP = '.*\'(?P<field_name>[a-zA-Z0-9_]+)\'\:\ ?json_util\.JSON.*'
 CLASS_DEF_REGEXP = 'class (?P<class_name>[a-zA-z0-9]+)\([a-zA-z0-9\.]+\)\:'
+CONSTANT_DEF_REGEXP = '\ +(?P<name>[A-Z]+)\ ?=\ ?(?P<value>.+)'
 
 
 def JSONObjectStr(json_obj):
@@ -46,10 +48,19 @@ def GenerateDataSpecification(module_name, filepath):
   exec('import %s' % module_name)
   module = sys.modules[module_name]
   cls_dict = {cls_name: cls for cls_name, cls in inspect.getmembers(module, inspect.isclass)}
-
+  cls_field_names_dict = {}
+  field_names = []
+  first_class = True
   with open(filepath, 'w') as spec_file:
     spec_file.write('# Put Your Header Here\n')
     for line in inspect.getsource(module).split('\n'):
+      constant_def_match = re.match(CONSTANT_DEF_REGEXP, line)
+      if constant_def_match:
+        spec_file.write('    * %s = %s\n' % (constant_def_match.group('name'), constant_def_match.group('value')))
+      field_desc_match = re.match(FIELD_DESC_REGEXP, line)
+      if field_desc_match:
+        field_names.append(field_desc_match.group('field_name'))
+
       class_def_match = re.match(CLASS_DEF_REGEXP, line)
       if not class_def_match:
         continue
@@ -59,18 +70,29 @@ def GenerateDataSpecification(module_name, filepath):
         continue
       if cls == data_util.AbstractObject:
         continue
+      if not first_class:
+        spec_file.write('\n')
       spec_file.write('* **%s**' % cls_name)
-      
-      bases_names = [base.__name__ for base in cls.__bases__ if base is not  data_util.AbstractObject]
-      if bases_names:
-        spec_file.write(' extends *%s*' % ', '.join(bases_names))
+
+      base_names = [base.__name__ for base in cls.__bases__ if base is not data_util.AbstractObject]
+      for base_name in base_names:
+        field_names.extend(cls_field_names_dict[base_name])
+      if base_names:
+        spec_file.write(' extends *%s*' % ', '.join(base_names))
+      if cls.__doc__:
+        spec_file.write('. %s' % cls.__doc__)
       spec_file.write('\n')
 
-      for arg_name, json_obj in cls.desc_dict.items():
+      assert set(field_names) == set(cls.desc_dict.keys())
+      assert len(field_names) == len(set(field_names))
+      for arg_name in field_names:
+        json_obj = cls.desc_dict[arg_name]
         arg_type = JSONObjectStr(json_obj)
         spec_file.write('  * *%s*: %s\n' % (arg_name, arg_type))
 
-      spec_file.write('\n')
+      cls_field_names_dict[cls_name] = field_names[:]
+      field_names.clear()
+      first_class = False
 
 
 def main(argv):

@@ -208,6 +208,7 @@ class User(data_util.AbstractObject):
 
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
+  """Basic Interface."""
   def __init__(self):
     super(Element, self).__init__()
 
@@ -217,10 +218,10 @@ class Element(data_util.AbstractObject):
 
 
 @json_util.JSONDecorator(
-    {'id_element_list':
-     json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
-                                             json_util.JSONObject(Element)]))})
+    {'id_element_list': json_util.JSONList(json_util.JSONTuple([json_util.JSONString(),
+                                                                json_util.JSONObject(Element)]))})
 class ElementContainer(Element):
+  """Basic Interface which contains list if id and Element pairs."""
   def __init__(self):
     super(ElementContainer, self).__init__()
     self.id_element_list = []
@@ -385,6 +386,7 @@ class VariableContainer(ElementContainer):
      'request_locale': json_util.JSONBool(),
      'locale': json_util.JSONObject(Locale)})
 class VisualElement(VariableContainer):
+  """Basic Interface for Visual Elements."""
   def __init__(self):
     super(VisualElement, self).__init__()
     self.displayed = True

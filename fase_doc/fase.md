@@ -56,18 +56,19 @@ Table of Contents
 
 * **Place**
   * *google_place_id*: string
-  * *country*: string
-  * *state*: string
   * *city*: string
+  * *state*: string
+  * *country*: string
 
 * **User**
-  * *date_of_birth*: date
-  * *last_name*: string
-  * *home_city*: *Place*
+  * *user_id*: string
   * *phone_number*: string
   * *first_name*: string
+  * *last_name*: string
+  * *date_of_birth*: date
+  * *home_city*: *Place*
+  * *locale*: *Locale*
   * *datetime_added*: date
-  * *user_id*: string
 
 ## Elements Classes
 * **Element**. Basic Interface.
@@ -76,169 +77,200 @@ Table of Contents
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **VisualElement** extends *ElementContainer*. Basic Interface for Visual Elements.
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *displayed*: bool. If the Element should be displayed on the Screen.
-  * *locale*: *Locale*. Ignore.
-  * *request_locale*: bool. If the Element requests current Local during a Callback. 
 
 * **Label** extends *VisualElement*
-  * *on_click*: function
+  * *text*: string
+  * *font*: float
+  * *size*: int
   * *alight*: int
+  * *on_click*: function
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+    * MIN = 1
+    * MAX = 2
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
-  * *font*: float
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *size*: int
-    * MIN = 1
-    * MAX = 2
-  * *text*: string
-  * *displayed*: bool
-  * *request_locale*: bool
 
 * **Text** extends *VisualElement*
+  * *text*: string
+  * *hint*: string
+  * *size*: int
+  * *type*: int
+  * *displayed*: bool
+  * *request_locale*: bool
   * *locale*: *Locale*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *size*: int
     * MIN = 1
     * MAX = 2
-  * *text*: string
-  * *displayed*: bool
-  * *request_locale*: bool
-  * *hint*: string
+    * TEXT = 1
+    * DIGITS = 2
+    * PHONE = 3
+    * EMAIL = 4
 
 * **Switch** extends *VisualElement*
-  * *displayed*: bool
+  * *value*: bool
+  * *text*: string
   * *alight*: int
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
-  * *request_locale*: bool
-  * *text*: string
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *value*: bool
-  * *locale*: *Locale*
 
 * **Select** extends *VisualElement*
+  * *value*: string
   * *items*: list(string)
+  * *hint*: string
   * *alight*: int
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
-  * *value*: string
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
+
+* **Slider** extends *VisualElement*
+  * *value*: float
+  * *min_value*: float
+  * *max_value*: float
+  * *step*: float
   * *displayed*: bool
   * *request_locale*: bool
-  * *hint*: string
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Image** extends *VisualElement*
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *image*: string
+  * *filename*: string
+  * *url*: string
   * *displayed*: bool
   * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **MenuItem** extends *VisualElement*
-  * *on_click*: function
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *image*: string
-  * *request_locale*: bool
   * *text*: string
+  * *on_click*: function
   * *displayed*: bool
+  * *request_locale*: bool
   * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Menu** extends *ElementContainer*
   * *text*: string
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Button** extends *VisualElement*
-  * *on_click*: function
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *image*: string
-  * *request_locale*: bool
   * *text*: string
+  * *on_click*: function
   * *displayed*: bool
+  * *request_locale*: bool
   * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **ButtonBar** extends *ElementContainer*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **ContactPicker** extends *VisualElement*
-  * *request_locale*: bool
   * *contact*: *Contact*
+  * *hint*: string
+  * *size*: int
   * *on_pick*: function
+  * *displayed*: bool
+  * *request_locale*: bool
   * *locale*: *Locale*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *size*: int
     * MIN = 1
     * MAX = 2
-  * *displayed*: bool
-  * *hint*: string
 
 * **DateTimePicker** extends *VisualElement*
-  * *request_locale*: bool
   * *datetime*: date
+  * *type*: int
+  * *hint*: string
+  * *size*: int
+  * *displayed*: bool
+  * *request_locale*: bool
   * *locale*: *Locale*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *size*: int
-    * MIN = 1
-    * MAX = 2
-  * *type*: int
     * DATE = 1
     * TIME = 2
     * DATETIME = 3
-  * *displayed*: bool
-  * *hint*: string
-
-* **PlacePicker** extends *VisualElement*
-  * *request_locale*: bool
-  * *place*: *Place*
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *size*: int
     * MIN = 1
     * MAX = 2
+
+* **PlacePicker** extends *VisualElement*
+  * *place*: *Place*
   * *type*: int
-    * CITY = 1
-  * *displayed*: bool
   * *hint*: string
+  * *size*: int
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+    * CITY = 1
+    * MIN = 1
+    * MAX = 2
+
+* **Separator** extends *VisualElement*
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+
+* **Web** extends *VisualElement*
+  * *url*: string
+  * *size*: int
+  * *scrollable*: bool
+  * *displayed*: bool
+  * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+    * MIN = 1
+    * MAX = 2
 
 * **BaseElementsContainer** extends *VisualElement*
   * *displayed*: bool
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *locale*: *Locale*
   * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Frame** extends *BaseElementsContainer*
-  * *on_click*: function
   * *orientation*: int
-    * VERTICAL = 1
-    * HORIZONTAL = 2
-  * *border*: bool
-  * *locale*: *Locale*
-  * *id_element_list*: list(tuple(string, *Element* or subclass))
   * *size*: int
-    * MIN = 1
-    * MAX = 2
+  * *on_click*: function
+  * *border*: bool
   * *displayed*: bool
   * *request_locale*: bool
+  * *locale*: *Locale*
+  * *id_element_list*: list(tuple(string, *Element* or subclass))
+    * VERTICAL = 1
+    * HORIZONTAL = 2
+    * MIN = 1
+    * MAX = 2
 
 * **Alert** extends *ElementContainer*
   * *text*: string
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **Screen** extends *BaseElementsContainer*
-  * *on_refresh*: function
-  * *request_locale*: bool
-  * *title*: string
   * *_screen_id*: string
+  * *scrollable*: bool
+  * *title*: string
+  * *on_refresh*: function
+  * *on_more*: function
+  * *displayed*: bool
+  * *request_locale*: bool
   * *locale*: *Locale*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
-  * *scrollable*: bool
-  * *displayed*: bool
-  * *on_more*: function
 
 *Screen* can have one or following Elements:
 

@@ -30,32 +30,32 @@ Table of Contents
   * *resource_list*: list(*Resource*)
 
 * **ElementsUpdate**
-  * *value_list*: list(string)
   * *id_list_list*: list(list(string))
+  * *value_list*: list(string)
 
 * **ScreenUpdate**
   * *elements_update*: *ElementsUpdate*
   * *device*: *Device*
 
 * **ElementCallback**
-  * *id_list*: list(string)
   * *elements_update*: *ElementsUpdate*
-  * *device*: *Device*
+  * *id_list*: list(string)
   * *method*: string
+  * *device*: *Device*
   * *locale*: *Locale*
 
 * **ScreenProg**
-  * *screen*: *Screen* or subclass
-  * *recent_device*: *Device*
-  * *elements_update*: *ElementsUpdate*
   * *session_id*: string
+  * *screen*: *Screen* or subclass
+  * *elements_update*: *ElementsUpdate*
+  * *recent_device*: *Device*
 
 * **Response**
   * *screen*: *Screen* or subclass
   * *resources*: *Resources*
-  * *screen_info*: *ScreenInfo*
   * *elements_update*: *ElementsUpdate*
   * *session_info*: *SessionInfo*
+  * *screen_info*: *ScreenInfo*
 
 * **Command**
   * *command*: string
