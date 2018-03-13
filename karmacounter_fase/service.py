@@ -1,3 +1,5 @@
+from server_util import phone_number_verifier
+
 from fase import fase
 from fase import fase_sign_in
 
@@ -6,6 +8,13 @@ from karmacounter_fase import data as kc_data
 
 
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
+
+
+def _ErrorAlert(service, message, on_click):
+  screen = fase.Screen(service)
+  alert = screen.AddAlert(message)
+  alert.AddButton(id_="ok_id", text="OK", on_click=on_click)
+  return screen
 
 
 class KarmaCounter(fase.Service):
@@ -102,14 +111,14 @@ class KarmaCounter(fase.Service):
 
   def _AddUserEvent(self, screen, element, users_own=True):
     screen = fase.Screen(self)
+    users_own = self.GetBoolVariable(id_='adding_users_own_bool').GetValue()
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
-    screen.AddBoolVariable(id_='adding_users_own_bool', value=users_own)
     screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score')
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
-    screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.DisplayCurrentScreen)
+    screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.OnAddUserEventCancel)
     self.OnFriendPick(screen, None)
     return screen
 
@@ -117,8 +126,18 @@ class KarmaCounter(fase.Service):
     friend_contact_picker = screen.GetContactPicker(id_='friend_contact_picker')
     invite_switch = screen.GetSwitch(id_='invite_switch')
     if friend_contact_picker.GetContact() and friend_contact_picker.GetContact().GetPhoneNumber():
-      request_registered_users = (
-          kc_data.RequestRegisteredUsers(phone_number_list=[friend_contact_picker.GetContact().GetPhoneNumber()]))
+
+      phone_number = friend_contact_picker.GetContact().GetPhoneNumber()
+      try:
+        phone_number = phone_number_verifier.Format(phone_number, self.GetUser().GetLocale().GetCountryCode())
+      except phone_number_verifier.NoCountryCodeException:
+        return _ErrorAlert(self,
+                           message='Phone number country code could not be inferred! Please try to add explicitly!',
+                           on_click=KarmaCounter._AddUserEvent)
+      except phone_number_verifier.InvalidPhoneNumberException:
+        return _ErrorAlert(self, message='Phone number format is invalid!', on_click=KarmaCounter._AddUserEvent)
+
+      request_registered_users = kc_data.RequestRegisteredUsers(phone_number_list=[phone_number])
       session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
       registered_users = kc_client.KarmaCounterClient.Get().GetRegisteredUsers(request_registered_users, session_info)
       if registered_users.users:
@@ -131,14 +150,16 @@ class KarmaCounter(fase.Service):
     return screen
 
   def OnAddUserEvent(self, screen, element):
-    return self._AddUserEvent(screen, element, users_own=True)
+    self.AddBoolVariable(id_='adding_users_own_bool', value=True)
+    return self._AddUserEvent(screen, element)
 
   def OnAddOtherUserEvent(self, screen, element):
-    return self._AddUserEvent(screen, element, users_own=False)
+    self.AddBoolVariable(id_='adding_users_own_bool', value=False)
+    return self._AddUserEvent(screen, element)
 
   def OnAddUserEventEnteredData(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-    if screen.GetBoolVariable(id_='adding_users_own_bool').GetValue():
+    if self.GetBoolVariable(id_='adding_users_own_bool').GetValue():
       new_user_event = kc_data.NewUserEvent(
           score=int(screen.GetSelect(id_='score_select').GetValue()),
           description=screen.GetText(id_='description_text').GetText(),
@@ -158,6 +179,11 @@ class KarmaCounter(fase.Service):
           other_user_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName(),
           invite_other_user=screen.GetSwitch(id_='invite_switch').GetValue())
       kc_client.KarmaCounterClient.Get().AddOtherUserEvent(new_other_user_event, session_info)
+    self.PopBoolVariable(id_='adding_users_own_bool')
+    return self.DisplayCurrentScreen(screen, element)
+
+  def OnAddUserEventCancel(self, screen, element):
+    self.PopBoolVariable(id_='adding_users_own_bool')
     return self.DisplayCurrentScreen(screen, element)
 
   def _DisplayEvents(self, screen, element, users_own=True):
