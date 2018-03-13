@@ -8,6 +8,8 @@ from karmacounter_fase import data as kc_data
 
 
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
+PHONE_IS_INVALID = 'Phone number format is invalid!'
+PHONE_NO_COUNTRY_CODE = 'Phone number country code could not be inferred! Please try to add explicitly!'
 
 
 def _ErrorAlert(service, message, on_click):
@@ -131,11 +133,9 @@ class KarmaCounter(fase.Service):
       try:
         phone_number = phone_number_verifier.Format(phone_number, self.GetUser().GetLocale().GetCountryCode())
       except phone_number_verifier.NoCountryCodeException:
-        return _ErrorAlert(self,
-                           message='Phone number country code could not be inferred! Please try to add explicitly!',
-                           on_click=KarmaCounter._AddUserEvent)
+        return _ErrorAlert(self, message=PHONE_NO_COUNTRY_CODE, on_click=KarmaCounter._AddUserEvent)
       except phone_number_verifier.InvalidPhoneNumberException:
-        return _ErrorAlert(self, message='Phone number format is invalid!', on_click=KarmaCounter._AddUserEvent)
+        return _ErrorAlert(self, message=PHONE_IS_INVALID, on_click=KarmaCounter._AddUserEvent)
 
       request_registered_users = kc_data.RequestRegisteredUsers(phone_number_list=[phone_number])
       session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())

@@ -30,6 +30,18 @@ def GenerateSignedInSessionId(user_id):
   return session_id_signed_in
 
 
+USER_NOT_FOUND = 'User with such phone number has not been found!'
+USER_ALREADY_REGISTERED = 'User with such phone number is already registered!'
+PHONE_NOT_SPECIFIED = 'Phone number is not specified!'
+PHONE_IS_INVALID = 'Phone number format is invalid!'
+PHONE_NO_COUNTRY_CODE = 'Phone number country code could not be inferred! Please try to add explicitly!'
+NO_DATE_OF_BIRTH = 'Please enter Date of Birth!'
+NO_PLACE = 'Please enter Home City!'
+GOOGLE_PLACE_ID_IS_NOT_SPECIFIED = (
+  'Google Place Id is not specified! Try to update Google Services, restart the application or reboot the phone!')
+WRONG_ACTIVATION_CODE = 'Wrong activation code!'
+
+
 def _ErrorAlert(service, message, on_click):
   screen = fase.Screen(service)
   alert = screen.AddAlert(message)
@@ -48,7 +60,7 @@ class FaseSignInButton(fase.Button):
         screen.GetFrame(id_='enter_activation_frame_id').GetText(id_='activation_code_text_id').GetText())
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
-      return service, _ErrorAlert(service, message='Wrong activation code!', on_click=OnActivationCodeSent)
+      return service, _ErrorAlert(service, message=WRONG_ACTIVATION_CODE, on_click=OnActivationCodeSent)
 
     on_done = service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method').GetValue()
     if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
@@ -145,19 +157,17 @@ def OnSignInEnteredData(service, screen, element):
     country_code = country_code.upper()
 
   if not phone_number:
-    return _ErrorAlert(service, message='Phone number is not specified!', on_click=OnSignInOption)
+    return _ErrorAlert(service, message=PHONE_NOT_SPECIFIED, on_click=OnSignInOption)
   try:
     phone_number = phone_number_verifier.Format(phone_number, country_code)
   except phone_number_verifier.NoCountryCodeException:
-    return _ErrorAlert(service,
-                       message='Phone number country code could not be inferred! Please try to add explicitly!',
-                       on_click=OnSignInOption)
+    return _ErrorAlert(service, message=PHONE_NO_COUNTRY_CODE, on_click=OnSignInOption)
   except phone_number_verifier.InvalidPhoneNumberException:
-    return _ErrorAlert(service, message='Phone number format is invalid!', on_click=OnSignInOption)
+    return _ErrorAlert(service, message=PHONE_IS_INVALID, on_click=OnSignInOption)
 
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if not user_list:
-    return _ErrorAlert(service, message='User with such phone number has not been found!', on_click=OnSignInOption)
+    return _ErrorAlert(service, message=USER_NOT_FOUND, on_click=OnSignInOption)
   assert len(user_list) == 1
   user = user_list[0]
   _CleanUserVariables(service)
@@ -202,12 +212,14 @@ def OnRequestUserDataEnteredData(service, screen, element):
   if request_user_data.date_of_birth and user.date_of_birth is None:
     date_of_birth = enter_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
-      return _ErrorAlert(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message=NO_DATE_OF_BIRTH, on_click=OnSignUpOption)
     user.date_of_birth = date_of_birth
   if request_user_data.home_city and user.home_city is None:
     home_city = enter_frame.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
-      return _ErrorAlert(service, message='Please enter Home City!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message=NO_PLACE, on_click=OnSignUpOption)
+    if not home_city.google_place_id:
+      return _ErrorAlert(service, message=GOOGLE_PLACE_ID_IS_NOT_SPECIFIED, on_click=OnSignUpOption)
     user.home_city = home_city
 
   fase_database.FaseDatabaseInterface.Get().AddUser(user, overwrite=True)
@@ -244,19 +256,17 @@ def OnSignUpEnteredData(service, screen, element):
     country_code = country_code.upper()
 
   if not phone_number:
-    return _ErrorAlert(service, message='Phone number is not specified!', on_click=OnSignUpOption)
+    return _ErrorAlert(service, message=PHONE_NOT_SPECIFIED, on_click=OnSignUpOption)
   try:
     phone_number = phone_number_verifier.Format(phone_number, country_code)
   except phone_number_verifier.NoCountryCodeException:
-    return _ErrorAlert(service,
-                       message='Phone number country code could not be inferred! Please try to add explicitly!',
-                       on_click=OnSignUpOption)
+    return _ErrorAlert(service, message=PHONE_NO_COUNTRY_CODE, on_click=OnSignUpOption)
   except phone_number_verifier.InvalidPhoneNumberException:
-    return _ErrorAlert(service, message='Phone number format is invalid!', on_click=OnSignUpOption)
+    return _ErrorAlert(service, message=PHONE_IS_INVALID, on_click=OnSignUpOption)
   
   user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
   if user_list:
-    return _ErrorAlert(service, message='User with such phone number is already registered!', on_click=OnSignUpOption)
+    return _ErrorAlert(service, message=USER_ALREADY_REGISTERED, on_click=OnSignUpOption)
 
   datetime_now = datetime.datetime.now()
   user_id_hash = hashlib.md5()
@@ -271,13 +281,15 @@ def OnSignUpEnteredData(service, screen, element):
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
     date_of_birth = sign_up_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
-      return _ErrorAlert(service, message='Please enter Date of Birth!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message=NO_DATE_OF_BIRTH, on_click=OnSignUpOption)
   else:
     date_of_birth = None
   if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
     home_city = sign_up_frame.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
-      return _ErrorAlert(service, message='Please enter Home City!', on_click=OnSignUpOption)
+      return _ErrorAlert(service, message=NO_PLACE, on_click=OnSignUpOption)
+    if not home_city.google_place_id:
+      return _ErrorAlert(service, message=GOOGLE_PLACE_ID_IS_NOT_SPECIFIED, on_click=OnSignUpOption)
   else:
     home_city = None
 
