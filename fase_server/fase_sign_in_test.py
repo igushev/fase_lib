@@ -87,6 +87,7 @@ class FaseSignInTest(unittest.TestCase):
                       expected_user_id=None,
                       request_user_data=None,
                       return_phone_enter=False,
+                      return_request_user_data_enter=False,
                       return_activation_code_enter=False):
     assert sign_in is not None
     # Create Service.
@@ -153,6 +154,9 @@ class FaseSignInTest(unittest.TestCase):
               request_user_data.home_city,
               screen.GetElement(id_='enter_frame_id').HasElement(id_='fase_sign_in_request_user_data_home_city'))
     
+        if return_request_user_data_enter:
+          return response
+        
         # Enter Requested User Data.
         id_list_list = []
         value_list = []
@@ -542,6 +546,96 @@ class FaseSignInTest(unittest.TestCase):
                          sign_in=True,
                          phone_number='+13216549870')
     
+    SignInTestService.service_id = service_id_bck
+    SignInTestService.request_user_data = request_user_data_bck 
+
+  def testRequestUserData_MinDateOfBirth(self):
+    fase_database.FaseDatabaseInterface.Set(
+        fase_database.MockFaseDatabase(
+            service_list=[],
+            screen_prog_list=[],
+            user_list=[]),
+        overwrite=True)
+
+    # Sign Up and create service.
+    self.SignInProcedure(service_num_before=1, screen_num_before=1,
+                         service_num_during=1, screen_num_during=1,
+                         service_num_after=1, screen_num_after=1,
+                         sign_in=False,
+                         phone_number='+13216549870', first_name='Edward', last_name='Igushev')
+
+    service_id_bck = SignInTestService.service_id
+    request_user_data_bck = SignInTestService.request_user_data
+
+    # Request with Date of Birth and Minimum Date of Birth.
+    SignInTestService.service_id = 'SignInTest_MinDateOfBirth'
+    min_date_of_birth = datetime.datetime.now()-datetime.timedelta(days=2*365)
+    SignInTestService.request_user_data = fase.RequestUserData(date_of_birth=True,
+                                                               min_date_of_birth=min_date_of_birth)
+
+    # Sign In Procedure must request Date of Birth. 
+    response = self.SignInProcedure(service_num_before=2, screen_num_before=2,
+                                    service_num_during=2, screen_num_during=2,
+                                    service_num_after=2, screen_num_after=2,
+                                    sign_in=True,
+                                    phone_number='+13216549870',
+                                    request_user_data=fase.RequestUserData(date_of_birth=True),
+                                    return_request_user_data_enter=True)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+
+    # Enter Date of Birth after Minimum Date of Birth.
+    date_of_birth = datetime.datetime.now()-datetime.timedelta(days=1*365)
+    elements_update=fase_model.ElementsUpdate([['enter_frame_id', 'date_of_birth_date_picker']],
+                                              [date_of_birth.strftime(fase.DATETIME_FORMAT)])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+
+    # Click on Enter button.
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['enter_frame_id', 'enter_button_id'], method=fase.ON_CLICK_METHOD,
+                                  locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+    # Check Alert window.
+    self.assertEqual(fase_sign_in_impl.UNDER_AGE_USER % 2, screen.GetAlert().GetText())
+
+    # Sign In Procedure must request Date of Birth. 
+    response = self.SignInProcedure(service_num_before=3, screen_num_before=3,
+                                    service_num_during=3, screen_num_during=3,
+                                    service_num_after=3, screen_num_after=3,
+                                    sign_in=True,
+                                    phone_number='+13216549870',
+                                    request_user_data=fase.RequestUserData(date_of_birth=True),
+                                    return_request_user_data_enter=True)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+
+    # Enter Date of Birth before Minimum Date of Birth.
+    date_of_birth = datetime.datetime.now()-datetime.timedelta(days=3*365)
+    elements_update=fase_model.ElementsUpdate([['enter_frame_id', 'date_of_birth_date_picker']],
+                                              [date_of_birth.strftime(fase.DATETIME_FORMAT)])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+
+    # Click on Enter button.
+    response = fase_server.FaseServer.Get().ElementCallback(
+        fase_model.ElementCallback(id_list=['enter_frame_id', 'enter_button_id'], method=fase.ON_CLICK_METHOD,
+                                  locale=fase.Locale(country_code=COUNTRY_CODE)), session_info, screen_info)
+    session_info = response.session_info
+    screen_info = response.screen_info
+    screen = response.screen
+
+    # Check.
+    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
+    # Check present of main elements.
+    screen.GetElement(id_='enter_activation_frame_id').GetElement(id_='activation_code_text_id')
+    screen.GetElement(id_='enter_activation_frame_id').GetElement(id_='send_button_id')
+
     SignInTestService.service_id = service_id_bck
     SignInTestService.request_user_data = request_user_data_bck 
 

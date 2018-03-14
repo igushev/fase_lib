@@ -40,6 +40,7 @@ NO_PLACE = 'Please enter Home City!'
 GOOGLE_PLACE_ID_IS_NOT_SPECIFIED = (
   'Google Place Id is not specified! Try to update Google Services, restart the application or reboot the phone!')
 WRONG_ACTIVATION_CODE = 'Wrong activation code!'
+UNDER_AGE_USER = 'To Sign Up You must be at least %s years old!'
 
 
 def _ErrorAlert(service, message, on_click):
@@ -67,8 +68,9 @@ class FaseSignInButton(fase.Button):
       service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
-    service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue()
-    service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue()
+    service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
+    service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
+    service.PopDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth')
     user_id = service.PopStringVariable('fase_sign_in_user_id_str').GetValue()
     # NOTE(igushev): We should either lookup by user_id and service_id and have deterministic hash.
     session_id_signed_in = GenerateSignedInSessionId(user_id)
@@ -122,6 +124,8 @@ def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_use
                           value=(request_user_data is not None and request_user_data.date_of_birth))
   service.AddBoolVariable(id_='fase_sign_in_request_user_data_home_city',
                           value=(request_user_data is not None and request_user_data.home_city))
+  service.AddDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth',
+                              value=(request_user_data.min_date_of_birth if request_user_data is not None else None))
 
   return OnSignInStart(service, None, None)
 
@@ -176,7 +180,8 @@ def OnSignInEnteredData(service, screen, element):
   # Requested user data.
   request_user_data = fase.RequestUserData(
       date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
-      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue())
+      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
+      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
   if ((request_user_data.date_of_birth and user.date_of_birth is None) or
       (request_user_data.home_city and user.home_city is None)):
     return _OnRequestUserData(service, screen, element, request_user_data, user)
@@ -204,15 +209,21 @@ def _OnRequestUserData(service, screen, element, request_user_data, user):
 def OnRequestUserDataEnteredData(service, screen, element):
   user_id = service.GetStringVariable('fase_sign_in_user_id_str').GetValue()
   user = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id)
+
+  # Requested user data.
   request_user_data = fase.RequestUserData(
       date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
-      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue())
+      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
+      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
   enter_frame = screen.GetElement(id_='enter_frame_id')
 
   if request_user_data.date_of_birth and user.date_of_birth is None:
     date_of_birth = enter_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
       return _ErrorAlert(service, message=NO_DATE_OF_BIRTH, on_click=OnSignUpOption)
+    if request_user_data.min_date_of_birth is not None and request_user_data.min_date_of_birth < date_of_birth:
+      min_age = datetime.datetime.now() - request_user_data.min_date_of_birth
+      return _ErrorAlert(service, message=UNDER_AGE_USER % (min_age.days // 365), on_click=OnSignUpOption)
     user.date_of_birth = date_of_birth
   if request_user_data.home_city and user.home_city is None:
     home_city = enter_frame.GetPlacePicker(id_='home_city_place_picker').GetPlace()
@@ -234,10 +245,15 @@ def OnSignUpOption(service, screen, element):
   sign_up_frame.AddText(id_='last_name_text_id', hint='Last Name')
 
   # Requested user data.
-  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
+  request_user_data = fase.RequestUserData(
+      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
+      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
+      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
+
+  if request_user_data.date_of_birth:
     sign_up_frame.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
                                      hint='Date of Birth')
-  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
+  if request_user_data.home_city:
     sign_up_frame.AddPlacePicker(id_='home_city_place_picker', type_=fase.PlacePicker.CITY, hint='Home City')
 
   sign_up_button = sign_up_frame.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
@@ -278,13 +294,21 @@ def OnSignUpEnteredData(service, screen, element):
   last_name = sign_up_frame.GetText(id_='last_name_text_id').GetText()
 
   # Requested user data.
-  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue():
+  request_user_data = fase.RequestUserData(
+      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
+      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
+      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
+
+  if request_user_data.date_of_birth:
     date_of_birth = sign_up_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
     if date_of_birth is None:
       return _ErrorAlert(service, message=NO_DATE_OF_BIRTH, on_click=OnSignUpOption)
+    if request_user_data.min_date_of_birth is not None and request_user_data.min_date_of_birth < date_of_birth:
+      min_age = datetime.datetime.now() - request_user_data.min_date_of_birth
+      return _ErrorAlert(service, message=UNDER_AGE_USER % (min_age.days // 365), on_click=OnSignUpOption)
   else:
     date_of_birth = None
-  if service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue():
+  if request_user_data.home_city:
     home_city = sign_up_frame.GetPlacePicker(id_='home_city_place_picker').GetPlace()
     if home_city is None:
       return _ErrorAlert(service, message=NO_PLACE, on_click=OnSignUpOption)
@@ -332,6 +356,7 @@ def OnSignInSkipOption(service, screen, element):
     service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
   service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
   service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
+  service.PopDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth')
   _CleanUserVariables(service)
   _CleanActivationVariables(service)
   screen = on_skip(service)
@@ -345,6 +370,7 @@ def OnSignInCancelOption(service, screen, element):
   on_cancel = service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method').GetValue()
   service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
   service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
+  service.PopDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth')
   _CleanUserVariables(service)
   _CleanActivationVariables(service)
   screen = on_cancel(service)

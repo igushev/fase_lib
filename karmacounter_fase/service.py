@@ -1,3 +1,5 @@
+import datetime
+
 from server_util import phone_number_verifier
 
 from fase import fase
@@ -10,6 +12,7 @@ from karmacounter_fase import data as kc_data
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
 PHONE_IS_INVALID = 'Phone number format is invalid!'
 PHONE_NO_COUNTRY_CODE = 'Phone number country code could not be inferred! Please try to add explicitly!'
+MIN_AGE_YEARS = 13
 
 
 def _ErrorAlert(service, message, on_click):
@@ -27,8 +30,10 @@ class KarmaCounter(fase.Service):
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
-    return fase_sign_in.StartSignIn(self, on_done=KarmaCounter.OnSignInDone,
-                                    request_user_data=fase.RequestUserData(date_of_birth=True, home_city=True))
+    min_date_of_birth = datetime.datetime.now() - datetime.timedelta(days=MIN_AGE_YEARS*365)
+    return fase_sign_in.StartSignIn(
+        self, on_done=KarmaCounter.OnSignInDone,
+        request_user_data=fase.RequestUserData(date_of_birth=True, home_city=True, min_date_of_birth=min_date_of_birth))
 
   def OnSignInDone(self, user_id_before=None):
     new_user = kc_data.NewUser(phone_number=self.GetUser().GetPhoneNumber(),

@@ -102,9 +102,11 @@ class RequestUserData(object):
 
   def __init__(self,
                date_of_birth=False,
-               home_city=False):
+               home_city=False,
+               min_date_of_birth=None):
     self.date_of_birth = date_of_birth
     self.home_city = home_city
+    self.min_date_of_birth = min_date_of_birth
 
   def GetDateOfBirth(self):
     return self.date_of_birth
@@ -317,6 +319,20 @@ class BoolVariable(Variable):
 
 
 @json_util.JSONDecorator(
+    {'value': json_util.JSONDateTime()})
+class DateTimeVariable(Variable):
+  def __init__(self, value):
+    super(DateTimeVariable, self).__init__()
+    self.SetValue(value)
+
+  def SetValue(self, value):
+    AssertIsInstanceOrNone(value, datetime.datetime)
+    self.value = value
+  def GetValue(self):
+    return self.value
+
+
+@json_util.JSONDecorator(
     {'value': json_util.JSONFunction()})
 class FunctionVariable(Variable):
   def __init__(self, value):
@@ -369,6 +385,15 @@ class VariableContainer(ElementContainer):
   def GetBoolVariable(self, id_):
     return self.GetElement(id_)
   def PopBoolVariable(self, id_):
+    return self.PopElement(id_)
+
+  def AddDateTimeVariable(self, id_, value):
+    return self.AddElement(id_, DateTimeVariable(value))
+  def HasDateTimeVariable(self, id_):
+    return self.HasElement(id_)
+  def GetDateTimeVariable(self, id_):
+    return self.GetElement(id_)
+  def PopDateTimeVariable(self, id_):
     return self.PopElement(id_)
 
   def AddFunctionVariable(self, id_, value):
