@@ -177,7 +177,7 @@ Table of Contents
   * *text*: string
   * *on_click*: function
 
-* **ButtonBar** extends *ElementContainer*
+* **Navigation** extends *ElementContainer*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
 
 * **ContactPicker** extends *VisualElement*
