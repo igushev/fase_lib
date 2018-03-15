@@ -294,7 +294,7 @@ Server sends *Response*:
   'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
   'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
 ```
-User added 'ward' and finished typing 'Edward':
+User added 'ward' and finished typing 'Edward' (entire context of the text field):
 ```
 { 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
               'device_type': 'Python'},
@@ -327,6 +327,7 @@ Server sends *Response*:
 ### User Clicks Next
 **If User clicks Next before Server sends ScreenUpdate with typed name, elements_update field would not be empty
 (look Quick User case)!**
+
 Client sends `/elementcallback` with *ElementCallback*:
 ```
 { 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
@@ -605,4 +606,4 @@ Server sends *Response* with *elements_update* field
   'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
   'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
 ```
-**Client fills text field with 'John'!**
+**Client fills corresponding text field with 'John'!**
