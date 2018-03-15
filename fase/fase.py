@@ -1178,11 +1178,6 @@ class Screen(BaseElementsContainer):
   def GetPrevStepButton(self):
     return self.GetElement(PREV_STEP_BUTTON_ID)
 
-  def AddContextMenu(self, text=None):
-    return self.AddElement(CONTEXT_MENU_ID, Menu(text=text))
-  def GetContextMenu(self):
-    return self.GetElement(CONTEXT_MENU_ID)
-
   def AddAlert(self, text=None):
     return self.AddElement(ALERT_ID, Alert(text=text))
   def GetAlert(self):
