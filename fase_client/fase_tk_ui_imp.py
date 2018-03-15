@@ -299,6 +299,15 @@ class FaseTkUIImp(object):
       self.ui_imp_frame.destroy()
     return self.InitScreen(scrollable=scrollable)
 
+  def _ConfigureButton(self, id_list, button_element, ui_imp_button):
+    if button_element.GetOnClick():
+      ui_imp_button.configure(command=ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD))
+      return ui_imp_button
+    elif button_element.HasContextMenu():
+      ui_imp_button_context_menu = tkinter.Menu()
+      ui_imp_button.bind('<1>', lambda e: ui_imp_button_context_menu.post(e.x_root, e.y_root))
+      return ui_imp_button_context_menu
+
   def _ConfigureButtonImage(self, button_image_element, ui_imp_button):
     if button_image_element is not None:
       ui_imp_photo = ImageTk.PhotoImage(Image.open(self.ui.GetResourceFilename(button_image_element.GetFilename())))
@@ -388,18 +397,18 @@ class FaseTkUIImp(object):
         menu_item_image_element, self.ui_imp_context_menu, self.ui_imp_context_menu.index(tkinter.END))
 
   def DrawScreenNextStepButton(self, id_list, next_step_button_element, next_step_button_image_element):
-    assert next_step_button_element.GetOnClick() is not None
-    ui_imp_next_step_button = tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText(),
-                                             command=ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD))
+    ui_imp_next_step_button = tkinter.Button(self.ui_imp_next_button_frame, text=next_step_button_element.GetText())
     self._ConfigureButtonImage(next_step_button_image_element, ui_imp_next_step_button)
+    ui_imp_clickable = self._ConfigureButton(id_list, next_step_button_element, ui_imp_next_step_button)
     ui_imp_next_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    return ParentElement(ui_imp_clickable)
 
   def DrawScreenPrevStepButton(self, id_list, prev_step_button_element, prev_step_button_image_element):
-    assert prev_step_button_element.GetOnClick() is not None
-    ui_imp_prev_step_button = tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText(),
-                                             command=ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD))
+    ui_imp_prev_step_button = tkinter.Button(self.ui_imp_prev_button_frame, text=prev_step_button_element.GetText())
     self._ConfigureButtonImage(prev_step_button_image_element, ui_imp_prev_step_button)
+    ui_imp_clickable = self._ConfigureButton(id_list, prev_step_button_element, ui_imp_prev_step_button)
     ui_imp_prev_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
+    return ParentElement(ui_imp_clickable)
 
   def PrepareScreenMainButtonAndNavigationButtons(self, main_button=False, nav_button_num=0):
     if not (main_button or nav_button_num):
@@ -632,21 +641,11 @@ class FaseTkUIImp(object):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=button_element.GetText())
     self._ConfigureButtonImage(button_image_element, ui_imp_button)
-
-    if button_element.GetOnClick():
-      ui_imp_button.configure(command=ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD))
-    elif button_element.HasContextMenu():
-      ui_imp_button_context_menu = tkinter.Menu()
-      ui_imp_button.bind('<1>', lambda e: ui_imp_button_context_menu.post(e.x_root, e.y_root))
-
+    ui_imp_clickable = self._ConfigureButton(id_list, button_element, ui_imp_button)
     if button_element.GetDisplayed():
       ui_imp_button.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()
-
-    if button_element.HasContextMenu():
-      return ParentElement(ui_imp_button_context_menu)
-    else:
-      return ParentElement(ui_imp_button)
+    return ParentElement(ui_imp_clickable)
 
   def DrawContactPicker(self, id_list, contact_picker_element, ui_imp_parent):
     if contact_picker_element.GetHint():
@@ -727,10 +726,10 @@ class FaseTkUIImp(object):
 
   def DrawContextMenuItem(self, id_list, menu_item_element, menu_item_image_element, ui_imp_parent):
     assert menu_item_element.GetOnClick() is not None
-    ui_imp_parent.GetUIImpParent().add_command(
+    ui_imp_menu = ui_imp_parent.GetUIImpParent() 
+    ui_imp_menu.add_command(
         label=menu_item_element.GetText(), command=ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD))
-    self._ConfigureMenuItemImage(
-        menu_item_image_element, ui_imp_parent, ui_imp_parent.GetUIImpParent().index(tkinter.END))
+    self._ConfigureMenuItemImage(menu_item_image_element, ui_imp_menu, ui_imp_menu.index(tkinter.END))
 
   def DrawMoreButton(self, id_list, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)

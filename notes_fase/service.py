@@ -154,14 +154,15 @@ class NotesService(fase.Service):
 
     screen.AddStringVariable(id_='current_note_id', value=note_id)
     screen.AddNextStepButton(on_click=NotesService.OnSaveNote, text='Save')
-    screen.AddPrevStepButton(on_click=NotesService.OnCancelNote, text='Cancel')
 
-    context_menu = screen.AddContextMenu(text='Options')
-    context_menu.AddMenuItem(id_='favourite_context_menu',
+    prev_step_button = screen.AddPrevStepButton()
+    context_menu = prev_step_button.AddContextMenu()
+    context_menu.AddMenuItem(id_='favourite_menu_item',
                              text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
                              on_click=NotesService.OnReverseFavouriteNote,
                              image=fase.Image(filename=('images/favourite.png' if favourite_bool.GetValue() else
                                                         'images/favourite_non.png')))
+    context_menu.AddMenuItem(id_='cancel_menu_item', text='Cancel', on_click=NotesService.OnCancelNote)
     if note_id is not None:
       context_menu.AddMenuItem(
           id_='delete_context_menu', text='Delete', image=fase.Image(filename='images/delete.png'),
