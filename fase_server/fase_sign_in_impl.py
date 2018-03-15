@@ -391,6 +391,7 @@ def StartSignOut(service, on_cancel=None):
   assert service.IfSignedIn()
 
   screen = fase.Screen(service)
+  screen.AddLabel(id_='user_name_label_id', text=service.GetUser().DisplayName())
   sign_out_frame = screen.AddFrame(id_='sign_out_frame_id', orientation=fase.Frame.VERTICAL)
   sign_out_frame.AddElement(
       id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.FunctionPlaceholder))

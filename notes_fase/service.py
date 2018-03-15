@@ -68,7 +68,6 @@ class NotesService(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle(title)
     screen.SetScrollable(True)
-    self._AddMainMenu(screen)
     self._AddButtons(screen)
     notes_frame = screen.AddFrame(id_='notes_frame', orientation=fase.Frame.VERTICAL)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
@@ -97,16 +96,6 @@ class NotesService(fase.Service):
           size=fase.Label.MAX, alight=fase.Label.RIGHT)
     return screen
 
-  def _AddMainMenu(self, screen):
-    menu = screen.AddMainMenu()
-    if self.IfSignedIn():
-      menu.AddMenuItem(id_='user_name_menu_item', text=self.GetUser().DisplayName())
-      menu.AddMenuItem(id_='sign_out_menu_item', text='Sign Out', on_click=NotesService.OnSignOut,
-                       image=fase.Image(filename='images/sign_out.png'))
-    else:
-      menu.AddMenuItem(id_='sign_in_menu_item', text='Sign In', on_click=NotesService.OnSignIn,
-                       image=fase.Image(filename='images/sign_in.png'))
-
   def _AddButtons(self, screen):
     screen.AddMainButton(text='New', on_click=NotesService.OnNew, image=fase.Image(filename='images/new.png'))
     button_bar = screen.AddButtonBar()
@@ -116,6 +105,13 @@ class NotesService(fase.Service):
                          image=fase.Image(filename='images/favourite_non.png'))
     button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent,
                          image=fase.Image(filename='images/recent.png'))
+    if self.IfSignedIn():
+      button_bar.AddButton(id_='sign_out_button', text='Sign Out', on_click=NotesService.OnSignOut,
+                       image=fase.Image(filename='images/sign_out.png'))
+    else:
+      button_bar.AddButton(id_='sign_in_button', text='Sign In', on_click=NotesService.OnSignIn,
+                       image=fase.Image(filename='images/sign_in.png'))
+
 
   def OnSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(self, on_done=NotesService.OnSignInDone, on_cancel=NotesService.OnSignInOutCancel)
