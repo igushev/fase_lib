@@ -156,9 +156,10 @@ class NotesTest(unittest.TestCase):
   def DeleteNote(self, session_info, screen_info, note):
     session_info, screen_info, _ = self.SelectNote(session_info, screen_info, note)
     
-    # Click on Delete context menu.
+    # Click on Delete prev button context item.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.CONTEXT_MENU_ID, 'delete_context_menu'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'delete_menu_item'],
+                                   method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -180,10 +181,11 @@ class NotesTest(unittest.TestCase):
   def ReverseFavouriteNote(self, session_info, screen_info, note):
     session_info, screen_info, _ = self.SelectNote(session_info, screen_info, note)
 
-    # Click on Favourite context menu.
+    # Click on Favourite prev button context item.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(
-            id_list=[fase.CONTEXT_MENU_ID, 'favourite_context_menu'], method=fase.ON_CLICK_METHOD),
+            id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'favourite_menu_item'],
+            method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -208,7 +210,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Click on Notes button.
@@ -263,7 +265,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3, note_4], screen)
 
   def testNotes_Start_AddNote_SignUn(self):
@@ -286,7 +288,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=False,
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=False,
             phone_number='+19876543210', first_name='Edward Junior', last_name='Igushev'))
     self.AssertNotes([note_4], screen)
 
@@ -298,12 +300,12 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Sign Out.
     fase_sign_in_test_util.SignOutProcedure(session_info, screen_info,
-                                            sign_out_id_list=[fase.MAIN_MENU_ID, 'sign_out_menu_item'])
+                                            sign_out_id_list=[fase.NAVIGATION_ID, 'sign_out_button'])
     self.AssertNotes([], screen)
 
   def testNotes_Start_SignIn_AddNote(self):
@@ -314,7 +316,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Create a Note.
@@ -337,7 +339,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Copy and edit Note.
@@ -359,7 +361,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Delete Note.
@@ -375,7 +377,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Copy and edit Note.
@@ -396,7 +398,7 @@ class NotesTest(unittest.TestCase):
     session_info, screen_info, screen = (
         fase_sign_in_test_util.SignInProcedure(
             session_info, screen_info,
-            sign_in_id_list=[fase.MAIN_MENU_ID, 'sign_in_menu_item'], sign_in=True, phone_number='+13216549870'))
+            sign_in_id_list=[fase.NAVIGATION_ID, 'sign_in_button'], sign_in=True, phone_number='+13216549870'))
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
     # Copy and edit Note.
@@ -415,7 +417,8 @@ class NotesTest(unittest.TestCase):
 
     # Click on Cancel button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'cancel_menu_item'],
+                                   method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info

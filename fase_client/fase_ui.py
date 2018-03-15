@@ -29,7 +29,7 @@ class FaseUI(object):
   def DrawScreen(self, screen):
     ui_imp_window = self.ui_imp.ResetScreen(scrollable=screen.GetScrollable())
     self.DrawMainContextMenusNextPrevButtons(screen)
-    self.DrawMainButtonAndNavigationButtons(screen)
+    self.DrawMainButtonAndNavigation(screen)
     if screen.GetOnRefresh():
       self.DrawRefreshButton([], ui_imp_window)
     self.DrawBaseElementsContainer([], screen, ui_imp_window)
@@ -66,11 +66,11 @@ class FaseUI(object):
           (prev_button_element.GetImage() if prev_button_element.HasImage() else None))
       self._DrawButtonContextMenu([fase.PREV_STEP_BUTTON_ID], prev_button_element, ui_imp_prev_button)
 
-  def DrawMainButtonAndNavigationButtons(self, screen):
+  def DrawMainButtonAndNavigation(self, screen):
     main_button_element = screen.GetElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
     navigation_element = screen.GetElement(fase.NAVIGATION_ID) if screen.HasElement(fase.NAVIGATION_ID) else None 
     nav_button_id_element_list = navigation_element.GetIdElementList() if navigation_element else []
-    self.ui_imp.PrepareScreenMainButtonAndNavigationButtons(
+    self.ui_imp.PrepareScreenMainButtonAndNavigation(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
     if main_button_element:
       ui_imp_main_button = (

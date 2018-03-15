@@ -165,7 +165,7 @@ class NotesService(fase.Service):
     context_menu.AddMenuItem(id_='cancel_menu_item', text='Cancel', on_click=NotesService.OnCancelNote)
     if note_id is not None:
       context_menu.AddMenuItem(
-          id_='delete_context_menu', text='Delete', image=fase.Image(filename='images/delete.png'),
+          id_='delete_menu_item', text='Delete', image=fase.Image(filename='images/delete.png'),
           on_click=NotesService.OnDeleteNote)
     return screen
 

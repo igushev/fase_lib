@@ -410,7 +410,7 @@ class FaseTkUIImp(object):
     ui_imp_prev_step_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
     return ParentElement(ui_imp_clickable)
 
-  def PrepareScreenMainButtonAndNavigationButtons(self, main_button=False, nav_button_num=0):
+  def PrepareScreenMainButtonAndNavigation(self, main_button=False, nav_button_num=0):
     if not (main_button or nav_button_num):
       return
     if main_button:
