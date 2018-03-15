@@ -7,7 +7,7 @@ BUILT_IN_IDS = set([fase.NEXT_STEP_BUTTON_ID,
                     fase.ALERT_ID,
                     fase.MAIN_MENU_ID,
                     fase.MAIN_BUTTON_ID,
-                    fase.BUTTON_BAR_ID])
+                    fase.NAVIGATION_ID])
 
 
 class FaseUI(object):
@@ -68,8 +68,8 @@ class FaseUI(object):
 
   def DrawMainButtonAndNavigationButtons(self, screen):
     main_button_element = screen.GetElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
-    button_bar_element = screen.GetElement(fase.BUTTON_BAR_ID) if screen.HasElement(fase.BUTTON_BAR_ID) else None 
-    nav_button_id_element_list = button_bar_element.GetIdElementList() if button_bar_element else []
+    navigation_element = screen.GetElement(fase.NAVIGATION_ID) if screen.HasElement(fase.NAVIGATION_ID) else None 
+    nav_button_id_element_list = navigation_element.GetIdElementList() if navigation_element else []
     self.ui_imp.PrepareScreenMainButtonAndNavigationButtons(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))
     if main_button_element:
@@ -85,7 +85,7 @@ class FaseUI(object):
     # NOTE(igushev): Button Bar Frame will have id_list of Button Bar.
     for nav_button_i, (nav_button_id, nav_button_element) in enumerate(nav_button_id_element_list):
       self.ui_imp.DrawScreenNavButton(
-          [fase.BUTTON_BAR_ID, nav_button_id], nav_button_element,
+          [fase.NAVIGATION_ID, nav_button_id], nav_button_element,
           (nav_button_element.GetImage() if nav_button_element.HasImage() else None), nav_button_i)
 
   def DrawRefreshButton(self, id_list, ui_imp_parent):

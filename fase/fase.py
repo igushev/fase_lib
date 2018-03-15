@@ -14,7 +14,7 @@ CONTEXT_MENU_ID = 'context_menu'
 ALERT_ID = 'alert'
 MAIN_MENU_ID = 'main_menu'
 MAIN_BUTTON_ID = 'main_button'
-BUTTON_BAR_ID = 'button_bar'
+NAVIGATION_ID = 'navigation'
 IMAGE_ID = 'image'
 TITLE_IMAGE_ID = 'title_image'
 
@@ -745,9 +745,9 @@ class Button(VisualElement):
 
 
 @json_util.JSONDecorator({})
-class ButtonBar(ElementContainer):
+class Navigation(ElementContainer):
   def __init__(self):
-    super(ButtonBar, self).__init__()
+    super(Navigation, self).__init__()
 
   def AddButton(self, id_,
                 text=None,
@@ -1169,10 +1169,10 @@ class Screen(BaseElementsContainer):
   def GetMainButton(self):
     return self.GetElement(MAIN_BUTTON_ID)
 
-  def AddButtonBar(self):
-    return self.AddElement(BUTTON_BAR_ID, ButtonBar())
-  def GetButtonBar(self):
-    return self.GetElement(BUTTON_BAR_ID)
+  def AddNavigation(self):
+    return self.AddElement(NAVIGATION_ID, Navigation())
+  def GetNavigation(self):
+    return self.GetElement(NAVIGATION_ID)
 
   def AddNextStepButton(self, text=None, on_click=None, image=None):
     return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, on_click=on_click, image=image))

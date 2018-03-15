@@ -200,7 +200,7 @@ class NotesTest(unittest.TestCase):
 
     return session_info, screen_info, screen
 
-  def testNotes_Start_SignIn_ButtonBar(self):
+  def testNotes_Start_SignIn_Navigation(self):
     session_info, screen_info, screen = self.Start()
     self.AssertNotes([], screen)
 
@@ -213,7 +213,7 @@ class NotesTest(unittest.TestCase):
 
     # Click on Notes button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'notes_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'notes_button'], method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -221,7 +221,7 @@ class NotesTest(unittest.TestCase):
 
     # Click on Favourites button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'favourites_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'favourites_button'], method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -229,7 +229,7 @@ class NotesTest(unittest.TestCase):
 
     # Click on Recent button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'recent_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'recent_button'], method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -237,7 +237,7 @@ class NotesTest(unittest.TestCase):
 
     # Click on Notes button again.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.BUTTON_BAR_ID, 'notes_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'notes_button'], method=fase.ON_CLICK_METHOD),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen

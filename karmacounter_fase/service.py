@@ -87,15 +87,15 @@ class KarmaCounter(fase.Service):
     return self.DisplayCurrentScreen(None, None)
 
   def _AddButtons(self, screen):
-    button_bar = screen.AddButtonBar()
-    button_bar.AddButton(id_='dashboard_button', text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
-    button_bar.AddButton(id_='your_events_button', text='Your Events', on_click=KarmaCounter.OnDisplayYourEvents)
-    button_bar.AddButton(
+    navigation = screen.AddNavigation()
+    navigation.AddButton(id_='dashboard_button', text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
+    navigation.AddButton(id_='your_events_button', text='Your Events', on_click=KarmaCounter.OnDisplayYourEvents)
+    navigation.AddButton(
         id_='your_friends_events_button', text='Your Friends Events', on_click=KarmaCounter.OnDisplayYourFriendsEvents)
-    button_bar.AddButton(
+    navigation.AddButton(
         id_='statistics_by_cities_button', text='Statistics by Cities',
         on_click=KarmaCounter.OnDisplayStatisticsByCities)
-    button_bar.AddButton(id_='sign_out_button', text='Sign Out', on_click=KarmaCounter.OnSignOut)
+    navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=KarmaCounter.OnSignOut)
     main_button = screen.AddMainButton(text='Add Event')
     main_button_context_menu = main_button.AddContextMenu()
     main_button_context_menu.AddMenuItem(

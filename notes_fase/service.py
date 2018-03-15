@@ -98,18 +98,18 @@ class NotesService(fase.Service):
 
   def _AddButtons(self, screen):
     screen.AddMainButton(text='New', on_click=NotesService.OnNew, image=fase.Image(filename='images/new.png'))
-    button_bar = screen.AddButtonBar()
-    button_bar.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes,
+    navigation = screen.AddNavigation()
+    navigation.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes,
                          image=fase.Image(filename='images/notes.png'))
-    button_bar.AddButton(id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites,
+    navigation.AddButton(id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites,
                          image=fase.Image(filename='images/favourite_non.png'))
-    button_bar.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent,
+    navigation.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent,
                          image=fase.Image(filename='images/recent.png'))
     if self.IfSignedIn():
-      button_bar.AddButton(id_='sign_out_button', text='Sign Out', on_click=NotesService.OnSignOut,
+      navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=NotesService.OnSignOut,
                        image=fase.Image(filename='images/sign_out.png'))
     else:
-      button_bar.AddButton(id_='sign_in_button', text='Sign In', on_click=NotesService.OnSignIn,
+      navigation.AddButton(id_='sign_in_button', text='Sign In', on_click=NotesService.OnSignIn,
                        image=fase.Image(filename='images/sign_in.png'))
 
 
