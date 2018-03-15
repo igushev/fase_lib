@@ -1,5 +1,6 @@
 Table of Contents
 =================
+
    * [Communication with Server](#communication-with-server)
       * [Data Classes](#data-classes)
       * [Server API](#server-api)
@@ -10,6 +11,19 @@ Table of Contents
          * [Updating Server](#updating-server)
          * [Element Callback](#element-callback)
          * [Processing Response](#processing-response)
+   * [Fase Application Examples](#fase-application-examples)
+      * [Hello World Application. Slow User](#hello-world-application-slow-user)
+         * [Client Starts](#client-starts)
+         * [User Types Name](#user-types-name)
+         * [User Clicks Next](#user-clicks-next)
+         * [Hello Screen](#hello-screen)
+         * [User Clicks Reset](#user-clicks-reset)
+      * [Hello World Application. Quick User](#hello-world-application-quick-user)
+         * [Client Starts](#client-starts-1)
+         * [User Types Name and Clicks Next](#user-types-name-and-clicks-next)
+      * [Hello World Application. External Data](#hello-world-application-external-data)
+         * [Client Starts](#client-starts-2)
+         * [Name Received](#name-received)
 
 # Communication with Server
 ## Data Classes
@@ -185,3 +199,410 @@ Example of *Response* message for Hello World Application when User clicks "Next
   'screen_info': {'screen_id': 'be22837e30feaed208e70d01911a5630'},
   'session_info': {'session_id': '0ca8467a8bf9f9ec4e862721af6f592b'}}
 ```
+
+# Fase Application Examples
+
+## Hello World Application. Slow User
+
+### Client Starts
+Client starts and sends `/getservice` with *Device*:
+```
+{ 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+  'device_type': 'Python'}
+```
+Server sends *Response* with initial *Screen*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': { '__class__': 'Screen',
+              '__module__': 'fase.fase',
+              '_screen_id': '7c2cfa33c307697c560ec0683565f248',
+              'displayed': True,
+              'id_element_list': [ [ 'text_name_id',
+                                     { '__class__': 'Text',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'hint': 'Enter Name',
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'request_locale': False,
+                                       'size': None,
+                                       'text': None,
+                                       'type': None}],
+                                   [ 'next_button_id',
+                                     { '__class__': 'Button',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': { '__func__': 'FunctionPlaceholder',
+                                                     '__module__': 'fase.fase'},
+                                       'request_locale': False,
+                                       'text': 'Next'}]],
+              'locale': None,
+              'on_more': None,
+              'on_refresh': None,
+              'request_locale': False,
+              'scrollable': None,
+              'title': None},
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+### User Types Name
+Client keeps sending `/screenupdate` with *ScreenUpdate*
+
+When user hasn't typed anything:
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None}
+```
+Server sends *Response*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+User typed 'Ed':
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': {'id_list_list': [['text_name_id']], 'value_list': ['Ed']}}
+```
+Server sends *Response*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+User stoped typing, text field still has 'Ed':
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None}
+```
+Server sends *Response*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+User added 'ward' and finished typing 'Edward':
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': { 'id_list_list': [['text_name_id']],
+                       'value_list': ['Edward']}}
+```
+Server sends *Response*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+User hasn't been typing but text field still has 'Edward':
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None}
+```
+Server sends *Response*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+### User Clicks Next
+**If User clicks Next before Server sends ScreenUpdate with typed name, elements_update field would not be empty
+(look Quick User case)!**
+Client sends `/elementcallback` with *ElementCallback*:
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None,
+  'id_list': ['next_button_id'],
+  'locale': None,
+  'method': 'on_click'}
+```
+Server sends *Response* with new *Screen*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': { '__class__': 'Screen',
+              '__module__': 'fase.fase',
+              '_screen_id': '20d0a7775a1ab89639aa2d91e3bbf862',
+              'displayed': True,
+              'id_element_list': [ [ 'hello_label_id',
+                                     { '__class__': 'Label',
+                                       '__module__': 'fase.fase',
+                                       'alight': None,
+                                       'displayed': True,
+                                       'font': None,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': None,
+                                       'request_locale': False,
+                                       'size': None,
+                                       'text': 'Hello, Edward!'}],
+                                   [ 'reset_button_id',
+                                     { '__class__': 'Button',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': { '__func__': 'FunctionPlaceholder',
+                                                     '__module__': 'fase.fase'},
+                                       'request_locale': False,
+                                       'text': 'Reset'}]],
+              'locale': None,
+              'on_more': None,
+              'on_refresh': None,
+              'request_locale': False,
+              'scrollable': None,
+              'title': None},
+  'screen_info': {'screen_id': '20d0a7775a1ab89639aa2d91e3bbf862'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+### Hello Screen
+Client keeps sending `/screenupdate` with *ScreenUpdate*, but they're empty since no text fields are present:
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None}
+```
+Server sends *Response*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '20d0a7775a1ab89639aa2d91e3bbf862'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+### User Clicks Reset
+User clicks on 'Reset' button, client sends `/elementcallback` with *ElementCallback*:
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None,
+  'id_list': ['reset_button_id'],
+  'locale': None,
+  'method': 'on_click'}
+```
+Server sends *Response* with initial *Screen*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': { '__class__': 'Screen',
+              '__module__': 'fase.fase',
+              '_screen_id': '5e0f5a04869b789295d911ed51373619',
+              'displayed': True,
+              'id_element_list': [ [ 'text_name_id',
+                                     { '__class__': 'Text',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'hint': 'Enter Name',
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'request_locale': False,
+                                       'size': None,
+                                       'text': None,
+                                       'type': None}],
+                                   [ 'next_button_id',
+                                     { '__class__': 'Button',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': { '__func__': 'FunctionPlaceholder',
+                                                     '__module__': 'fase.fase'},
+                                       'request_locale': False,
+                                       'text': 'Next'}]],
+              'locale': None,
+              'on_more': None,
+              'on_refresh': None,
+              'request_locale': False,
+              'scrollable': None,
+              'title': None},
+  'screen_info': {'screen_id': '5e0f5a04869b789295d911ed51373619'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+## Hello World Application. Quick User
+
+### Client Starts
+Client starts and sends `/getservice` with *Device*:
+```
+{ 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+  'device_type': 'Python'}
+```
+Server sends *Response* with initial *Screen*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': { '__class__': 'Screen',
+              '__module__': 'fase.fase',
+              '_screen_id': '7c2cfa33c307697c560ec0683565f248',
+              'displayed': True,
+              'id_element_list': [ [ 'text_name_id',
+                                     { '__class__': 'Text',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'hint': 'Enter Name',
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'request_locale': False,
+                                       'size': None,
+                                       'text': None,
+                                       'type': None}],
+                                   [ 'next_button_id',
+                                     { '__class__': 'Button',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': { '__func__': 'FunctionPlaceholder',
+                                                     '__module__': 'fase.fase'},
+                                       'request_locale': False,
+                                       'text': 'Next'}]],
+              'locale': None,
+              'on_more': None,
+              'on_refresh': None,
+              'request_locale': False,
+              'scrollable': None,
+              'title': None},
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+### User Types Name and Clicks Next
+User is very quick, types the name and clicks Next. Client sends `/elementcallback` with *ElementCallback* with
+*elements_update* field with just entered information:
+```
+{ 'device': { 'device_token': '885cb625-875b-41ec-8010-61d2a0e70d81',
+              'device_type': 'Python'},
+  'elements_update': { 'id_list_list': [['text_name_id']],
+                       'value_list': ['Edward']},
+  'id_list': ['next_button_id'],
+  'locale': None,
+  'method': 'on_click'}
+```
+Server sends *Response* with new *Screen*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': { '__class__': 'Screen',
+              '__module__': 'fase.fase',
+              '_screen_id': 'ef8bf7814e513e541fad33ee1cc2e9f8',
+              'displayed': True,
+              'id_element_list': [ [ 'hello_label_id',
+                                     { '__class__': 'Label',
+                                       '__module__': 'fase.fase',
+                                       'alight': None,
+                                       'displayed': True,
+                                       'font': None,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': None,
+                                       'request_locale': False,
+                                       'size': None,
+                                       'text': 'Hello, Edward!'}],
+                                   [ 'reset_button_id',
+                                     { '__class__': 'Button',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': { '__func__': 'FunctionPlaceholder',
+                                                     '__module__': 'fase.fase'},
+                                       'request_locale': False,
+                                       'text': 'Reset'}]],
+              'locale': None,
+              'on_more': None,
+              'on_refresh': None,
+              'request_locale': False,
+              'scrollable': None,
+              'title': None},
+  'screen_info': {'screen_id': 'ef8bf7814e513e541fad33ee1cc2e9f8'},
+  'session_info': {'session_id': 'ed014cd4fa322ebd98072811b7806229'}}
+```
+
+## Hello World Application. External Data
+
+### Client Starts
+Client starts and sends `/getservice` with *Device*:
+```
+{ 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+  'device_type': 'Python'}
+```
+Server sends *Response* with initial *Screen*:
+```
+{ 'elements_update': None,
+  'resources': None,
+  'screen': { '__class__': 'Screen',
+              '__module__': 'fase.fase',
+              '_screen_id': '7c2cfa33c307697c560ec0683565f248',
+              'displayed': True,
+              'id_element_list': [ [ 'text_name_id',
+                                     { '__class__': 'Text',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'hint': 'Enter Name',
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'request_locale': False,
+                                       'size': None,
+                                       'text': None,
+                                       'type': None}],
+                                   [ 'next_button_id',
+                                     { '__class__': 'Button',
+                                       '__module__': 'fase.fase',
+                                       'displayed': True,
+                                       'id_element_list': [],
+                                       'locale': None,
+                                       'on_click': { '__func__': 'FunctionPlaceholder',
+                                                     '__module__': 'fase.fase'},
+                                       'request_locale': False,
+                                       'text': 'Next'}]],
+              'locale': None,
+              'on_more': None,
+              'on_refresh': None,
+              'request_locale': False,
+              'scrollable': None,
+              'title': None},
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+
+### Name Received
+Client keeps sending `/screenupdate` with *ScreenUpdate*
+
+When user hasn't typed anything:
+```
+{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
+              'device_type': 'Python'},
+  'elements_update': None}
+```
+Server sends *Response* with *elements_update* field 
+```
+{ 'elements_update': { 'id_list_list': [['text_name_id']],
+                       'value_list': ['John']},
+  'resources': None,
+  'screen': None,
+  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
+  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+```
+**Client fills text field with 'John'!**
