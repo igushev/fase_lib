@@ -9,7 +9,6 @@ from fase import fase
 
 
 ROOT_SIZE = '540x960+50+50'
-MAIN_MENU_TEXT = '|||'
 CONTEXT_MENU_TEXT = '...'
 TITLE_FONT = 2
 NAV_BUTTON_WIDTH = 75
@@ -321,13 +320,13 @@ class FaseTkUIImp(object):
       ui_imp_menu.entryconfigure(index=index, image=ui_imp_photo, compound=tkinter.TOP)
 
   def PrepareScreenMainContextMenusNextPrevButtons(
-      self, main_menu=False, context_menu=False, next_button=False, prev_button=False, title=None, title_image=None):
-    if not (main_menu or context_menu or next_button or prev_button or title or title_image):
+      self, context_menu=False, next_button=False, prev_button=False, title=None, title_image=None):
+    if not (context_menu or next_button or prev_button or title or title_image):
       return
     ui_imp_header_frame = tkinter.Frame(self.ui_imp_frame)
     ui_imp_header_frame.grid(row=0, sticky=(tkinter.W, tkinter.E))
 
-    side_button_num = max(int(main_menu) + int(prev_button), int(context_menu) + int(next_button))
+    side_button_num = max(int(prev_button), int(context_menu) + int(next_button))
     total_column_num = side_button_num * 2 + 1
     ui_imp_button_frame_list = []
     for column_i in range(total_column_num):
@@ -354,14 +353,6 @@ class FaseTkUIImp(object):
         ui_imp_button_frame.rowconfigure(0, weight=1)
         ui_imp_button_frame_list.append(ui_imp_button_frame)
 
-    if main_menu:
-      self.ui_imp_main_menu = tkinter.Menu()
-      ui_imp_main_menu_button = tkinter.Button(ui_imp_button_frame_list[0], text=MAIN_MENU_TEXT)
-      ui_imp_main_menu_button.grid(sticky=(tkinter.S, tkinter.N, tkinter.E, tkinter.W))
-      ui_imp_main_menu_button.bind('<1>', lambda e: self.ui_imp_main_menu.post(e.x_root, e.y_root))
-    else:
-      self.ui_imp_main_menu = None
-
     if context_menu:
       self.ui_imp_context_menu = tkinter.Menu()
       # Either -1 or -2.
@@ -372,7 +363,7 @@ class FaseTkUIImp(object):
       self.ui_imp_context_menu = None
 
     if prev_button:
-      self.ui_imp_prev_button_frame = ui_imp_button_frame_list[int(main_menu)]  # Either 0 or 1.
+      self.ui_imp_prev_button_frame = ui_imp_button_frame_list[0]  # Either 0 or 1.
     else:
       self.ui_imp_prev_button_frame = None
 
@@ -380,14 +371,6 @@ class FaseTkUIImp(object):
       self.ui_imp_next_button_frame = ui_imp_button_frame_list[-1]
     else:
       self.ui_imp_next_button_frame = None
-
-  def DrawScreenMainMenuItem(self, id_list, menu_item_element, menu_item_image_element):
-    self.ui_imp_main_menu.add_command(
-        label=menu_item_element.GetText(),
-        command=(ElementCallbackCallback(self, id_list, fase.ON_CLICK_METHOD)
-                 if menu_item_element.GetOnClick() is not None else None))
-    self._ConfigureMenuItemImage(
-        menu_item_image_element, self.ui_imp_main_menu, self.ui_imp_main_menu.index(tkinter.END))
 
   def DrawScreenContextMenuItem(self, id_list, menu_item_element, menu_item_image_element):
     assert menu_item_element.GetOnClick() is not None

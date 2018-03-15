@@ -5,7 +5,6 @@ BUILT_IN_IDS = set([fase.NEXT_STEP_BUTTON_ID,
                     fase.PREV_STEP_BUTTON_ID,
                     fase.CONTEXT_MENU_ID,
                     fase.ALERT_ID,
-                    fase.MAIN_MENU_ID,
                     fase.MAIN_BUTTON_ID,
                     fase.NAVIGATION_ID])
 
@@ -37,20 +36,15 @@ class FaseUI(object):
       self.DrawMoreButton([], ui_imp_window)
 
   def DrawMainContextMenusNextPrevButtons(self, screen):
-    main_menu_element = screen.GetElement(fase.MAIN_MENU_ID) if screen.HasElement(fase.MAIN_MENU_ID) else None
     context_menu_element = screen.GetElement(fase.CONTEXT_MENU_ID) if screen.HasElement(fase.CONTEXT_MENU_ID) else None
     next_button_element = (screen.GetElement(fase.NEXT_STEP_BUTTON_ID)
                            if screen.HasElement(fase.NEXT_STEP_BUTTON_ID) else None)
     prev_button_element = (screen.GetElement(fase.PREV_STEP_BUTTON_ID)
                            if screen.HasElement(fase.PREV_STEP_BUTTON_ID) else None)
     self.ui_imp.PrepareScreenMainContextMenusNextPrevButtons(
-        main_menu=main_menu_element is not None, context_menu=context_menu_element is not None,
+        context_menu=context_menu_element is not None,
         next_button=next_button_element is not None, prev_button=prev_button_element is not None,
         title=screen.GetTitle(), title_image=(screen.GetTitleImage() if screen.HasTitleImage() else None))
-    if main_menu_element:
-      for menu_item_id, menu_item_element in main_menu_element.GetIdElementList():
-        self.ui_imp.DrawScreenMainMenuItem([fase.MAIN_MENU_ID, menu_item_id], menu_item_element,
-                                           (menu_item_element.GetImage() if menu_item_element.HasImage() else None))
     if context_menu_element:
       for menu_item_id, menu_item_element in context_menu_element.GetIdElementList():
         self.ui_imp.DrawScreenContextMenuItem([fase.CONTEXT_MENU_ID, menu_item_id], menu_item_element,

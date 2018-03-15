@@ -12,7 +12,6 @@ NEXT_STEP_BUTTON_ID = 'next_step_button'
 PREV_STEP_BUTTON_ID = 'prev_step_button'
 CONTEXT_MENU_ID = 'context_menu'
 ALERT_ID = 'alert'
-MAIN_MENU_ID = 'main_menu'
 MAIN_BUTTON_ID = 'main_button'
 NAVIGATION_ID = 'navigation'
 IMAGE_ID = 'image'
@@ -1158,11 +1157,6 @@ class Screen(BaseElementsContainer):
     self.on_more = on_more
   def GetOnMore(self):
     return self.on_more
-
-  def AddMainMenu(self):
-    return self.AddElement(MAIN_MENU_ID, Menu())
-  def GetMainMenu(self):
-    return self.GetElement(MAIN_MENU_ID)
 
   def AddMainButton(self, text=None, on_click=None, image=None):
     return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
