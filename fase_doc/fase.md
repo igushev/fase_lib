@@ -301,10 +301,10 @@ Table of Contents
 ## Mobile Device Specifics
 |Element|iOS|Android|Windows Phone|
 |-------|---|-------|-------------|
-|Button bar|Bottom|In main menu|Top and Bottom|
-|Main button|Big button in the middle of the button bar|Big button in the right bottom corner|Button in the middle of the button bar|
-|Main menu|Main menu from left top button|Main menu from left top button, item below button bar items|Main menu from left top button|
-|Context menu|Right top corner|Right top corner|Right bottom corner|
+|Main button|Button in the right upper corner|Big button in the right bottom corner|Button in the middle of the button bar|
+|Navigation|Buttons on bottom bar|Items in main menu from left top button|Buttons on top and bottom bar|
+|Next button|Button in the right upper corner|Button in the right upper corner||
+|Prev button|Button in the left upper corner|Built in system back button||
 
 # Fase Application Examples
 
