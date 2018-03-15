@@ -8,14 +8,14 @@ from base_util import json_util
 
 DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
 
-NEXT_STEP_BUTTON_ID = 'next_step_button'
-PREV_STEP_BUTTON_ID = 'prev_step_button'
-CONTEXT_MENU_ID = 'context_menu'
-ALERT_ID = 'alert'
 MAIN_BUTTON_ID = 'main_button'
 NAVIGATION_ID = 'navigation'
-IMAGE_ID = 'image'
+NEXT_STEP_BUTTON_ID = 'next_step_button'
+PREV_STEP_BUTTON_ID = 'prev_step_button'
+ALERT_ID = 'alert'
 TITLE_IMAGE_ID = 'title_image'
+CONTEXT_MENU_ID = 'context_menu'
+IMAGE_ID = 'image'
 
 ON_CLICK_METHOD = 'on_click'
 ON_PICK_METHOD = 'on_pick'

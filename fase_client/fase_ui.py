@@ -1,12 +1,11 @@
 from fase import fase
 
 
-BUILT_IN_IDS = set([fase.NEXT_STEP_BUTTON_ID,
+BUILT_IN_IDS = set([fase.MAIN_BUTTON_ID,
+                    fase.NAVIGATION_ID,
+                    fase.NEXT_STEP_BUTTON_ID,
                     fase.PREV_STEP_BUTTON_ID,
-                    fase.CONTEXT_MENU_ID,
-                    fase.ALERT_ID,
-                    fase.MAIN_BUTTON_ID,
-                    fase.NAVIGATION_ID])
+                    fase.ALERT_ID])
 
 
 class FaseUI(object):
@@ -27,7 +26,7 @@ class FaseUI(object):
 
   def DrawScreen(self, screen):
     ui_imp_window = self.ui_imp.ResetScreen(scrollable=screen.GetScrollable())
-    self.DrawMainContextMenusNextPrevButtons(screen)
+    self.DrawNextPrevButtonsTitle(screen)
     self.DrawMainButtonAndNavigation(screen)
     if screen.GetOnRefresh():
       self.DrawRefreshButton([], ui_imp_window)
@@ -35,12 +34,12 @@ class FaseUI(object):
     if screen.GetOnMore():
       self.DrawMoreButton([], ui_imp_window)
 
-  def DrawMainContextMenusNextPrevButtons(self, screen):
+  def DrawNextPrevButtonsTitle(self, screen):
     next_button_element = (screen.GetElement(fase.NEXT_STEP_BUTTON_ID)
                            if screen.HasElement(fase.NEXT_STEP_BUTTON_ID) else None)
     prev_button_element = (screen.GetElement(fase.PREV_STEP_BUTTON_ID)
                            if screen.HasElement(fase.PREV_STEP_BUTTON_ID) else None)
-    self.ui_imp.PrepareScreenMainContextMenusNextPrevButtons(
+    self.ui_imp.PrepareScreenNextPrevButtonsTitle(
         next_button=next_button_element is not None, prev_button=prev_button_element is not None,
         title=screen.GetTitle(), title_image=(screen.GetTitleImage() if screen.HasTitleImage() else None))
     if next_button_element:

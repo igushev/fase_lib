@@ -162,11 +162,10 @@ class NotesService(fase.Service):
                              on_click=NotesService.OnReverseFavouriteNote,
                              image=fase.Image(filename=('images/favourite.png' if favourite_bool.GetValue() else
                                                         'images/favourite_non.png')))
-    context_menu.AddMenuItem(id_='cancel_menu_item', text='Cancel', on_click=NotesService.OnCancelNote)
     if note_id is not None:
-      context_menu.AddMenuItem(
-          id_='delete_menu_item', text='Delete', image=fase.Image(filename='images/delete.png'),
-          on_click=NotesService.OnDeleteNote)
+      context_menu.AddMenuItem(id_='delete_menu_item', text='Delete', image=fase.Image(filename='images/delete.png'),
+                               on_click=NotesService.OnDeleteNote)
+    context_menu.AddMenuItem(id_='cancel_menu_item', text='Cancel', on_click=NotesService.OnCancelNote)
     return screen
 
   def OnSaveNote(self, screen, element):

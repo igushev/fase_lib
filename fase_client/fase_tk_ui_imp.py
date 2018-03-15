@@ -319,7 +319,7 @@ class FaseTkUIImp(object):
       setattr(ui_imp_menu, 'ui_imp_photo_%d' % index, ui_imp_photo)
       ui_imp_menu.entryconfigure(index=index, image=ui_imp_photo, compound=tkinter.TOP)
 
-  def PrepareScreenMainContextMenusNextPrevButtons(
+  def PrepareScreenNextPrevButtonsTitle(
       self, next_button=False, prev_button=False, title=None, title_image=None):
     if not (next_button or prev_button or title or title_image):
       return
