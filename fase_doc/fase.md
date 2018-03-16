@@ -110,6 +110,7 @@ Table of Contents
   * *hint*: string
   * *size*: int
   * *type*: int
+  * *multiline*: bool
     * MIN = 1
     * MAX = 2
     * TEXT = 1
