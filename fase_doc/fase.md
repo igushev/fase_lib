@@ -1,14 +1,17 @@
 Table of Contents
 =================
+
    * [Fase Elements](#fase-elements)
       * [Comparing Fase Elements to similar Elements in iOS/Android/Tkinter](#comparing-fase-elements-to-similar-elements-in-iosandroidtkinter)
       * [Data Classes](#data-classes)
       * [Elements Classes](#elements-classes)
    * [Drawing Elements](#drawing-elements)
+      * [Mobile Device Differences](#mobile-device-differences)
+      * [Abstract Elements on iOS](#abstract-elements-on-ios)
+      * [Abstract Elements on Android](#abstract-elements-on-android)
       * [Screen](#screen)
       * [Layout Vertical](#layout-vertical)
       * [Layout Horizontal](#layout-horizontal)
-      * [Mobile Device Specifics](#mobile-device-specifics)
    * [Fase Application Examples](#fase-application-examples)
       * [Hello World Application](#hello-world-application)
          * [Initial Screen](#initial-screen)
