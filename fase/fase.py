@@ -480,7 +480,8 @@ class Label(VisualElement):
     {'text': json_util.JSONString(),
      'hint': json_util.JSONString(),
      'size': json_util.JSONInt(),
-     'type': json_util.JSONInt()})
+     'type': json_util.JSONInt(),
+     'multiline': json_util.JSONBool()})
 class Text(VisualElement):
 
   MIN = 1
@@ -495,12 +496,14 @@ class Text(VisualElement):
                text=None,
                hint=None,
                size=None,
-               type_=None):
+               type_=None,
+               multiline=None):
     super(Text, self).__init__()
     self.text = text
     self.hint = hint
     self.size = size
     self.type = type_
+    self.multiline = multiline
 
   def Update(self, value):
     self.text = value
@@ -961,8 +964,9 @@ class BaseElementsContainer(VisualElement):
                text=None,
                hint=None,
                size=None,
-               type_=None):
-    return self.AddElement(id_, Text(text=text, hint=hint, size=size, type_=type_))
+               type_=None,
+               multiline=None):
+    return self.AddElement(id_, Text(text=text, hint=hint, size=size, type_=type_, multiline=multiline))
   def GetText(self, id_):
     return self.GetElement(id_)
 

@@ -142,7 +142,7 @@ class NotesService(fase.Service):
     screen = fase.Screen(self)
     note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL)
     header_text = note_frame.AddText(id_='header_text', hint='Header')
-    text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX)
+    text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX, multiline=True)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
 
     note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None
