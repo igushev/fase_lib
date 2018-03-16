@@ -39,6 +39,7 @@ NO_DATE_OF_BIRTH = 'Please enter Date of Birth!'
 NO_PLACE = 'Please enter Home City!'
 GOOGLE_PLACE_ID_IS_NOT_SPECIFIED = (
   'Google Place Id is not specified! Try to update Google Services, restart the application or reboot the phone!')
+NO_ACTIVATION_CODE = 'No activation code!'
 WRONG_ACTIVATION_CODE = 'Wrong activation code!'
 UNDER_AGE_USER = 'To Sign Up You must be at least %s years old!'
 
@@ -57,8 +58,12 @@ class FaseSignInButton(fase.Button):
   def CallCallback(self, service, screen, method):
     assert method == fase.ON_CLICK_METHOD
     activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_int').GetValue()
-    activation_code_entered = int(
+    activation_code_text = (
         screen.GetFrame(id_='enter_activation_frame_id').GetText(id_='activation_code_text_id').GetText())
+    if not activation_code_text:
+      service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
+      return service, _ErrorAlert(service, message=NO_ACTIVATION_CODE, on_click=OnActivationCodeSent)
+    activation_code_entered = int(activation_code_text)
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
       return service, _ErrorAlert(service, message=WRONG_ACTIVATION_CODE, on_click=OnActivationCodeSent)
