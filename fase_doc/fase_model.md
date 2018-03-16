@@ -82,7 +82,8 @@ Table of Contents
   * *message*: string
 
 ## Server API
-|HTTP Request|HTTP Method|Need session_id|Need screen_id|Input Type|Output Type|Description|
+**Please note that session-id and screen-id have "-"! It's relevant only in HTTP headers, in other places they have "_"!**
+|HTTP Request|HTTP Method|Need session-id|Need screen-id|Input Type|Output Type|Description|
 |------------|-----------|---------------|--------------|----------|-----------|-----------|
 |/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the framework|
 |/sendservicecommand|'POST', 'OPTIONS'|||Command|Status|Internal command to Service|
@@ -649,98 +650,164 @@ Server sends *Response* with initial *Screen*:
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
 ```
-{ 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
-  'device_type': 'Python'}
+method: post
+request: /getservice
+```
+```
+{
+  "device_type": "Python",
+  "device_token": "d3f99e4f-9b4a-43d8-8655-d1133893106c"
+}
 ```
 Server sends *Response* with initial *Screen*:
 ```
-{ 'elements_update': None,
-  'resources': None,
-  'screen': { '__class__': 'Screen',
-              '__module__': 'fase.fase',
-              '_screen_id': '7c2cfa33c307697c560ec0683565f248',
-              'displayed': True,
-              'id_element_list': [ [ 'text_name_id',
-                                     { '__class__': 'Text',
-                                       '__module__': 'fase.fase',
-                                       'displayed': True,
-                                       'hint': 'Enter Name',
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'request_locale': False,
-                                       'size': None,
-                                       'text': None,
-                                       'type': None}],
-                                   [ 'next_button_id',
-                                     { '__class__': 'Button',
-                                       '__module__': 'fase.fase',
-                                       'displayed': True,
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'on_click': { '__func__': 'FunctionPlaceholder',
-                                                     '__module__': 'fase.fase'},
-                                       'request_locale': False,
-                                       'text': 'Next'}]],
-              'locale': None,
-              'on_more': None,
-              'on_refresh': None,
-              'request_locale': False,
-              'scrollable': None,
-              'title': None},
-  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
-  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+{
+  "elements_update": null,
+  "resources": null,
+  "screen": {
+    "_screen_id": "2e75f528e4bc98ea4a4084e4e5f33f94",
+    "title": null,
+    "on_refresh": null,
+    "on_more": null,
+    "locale": null,
+    "request_locale": false,
+    "__class__": "Screen",
+    "displayed": true,
+    "__module__": "fase.fase",
+    "scrollable": null,
+    "id_element_list": [
+      [
+        "text_name_id",
+        {
+          "multiline": null,
+          "id_element_list": [],
+          "locale": null,
+          "request_locale": false,
+          "__class__": "Text",
+          "displayed": true,
+          "__module__": "fase.fase",
+          "size": null,
+          "type": null,
+          "text": null,
+          "hint": "Enter Name"
+        }
+      ],
+      [
+        "next_button_id",
+        {
+          "id_element_list": [],
+          "locale": null,
+          "request_locale": false,
+          "__module__": "fase.fase",
+          "displayed": true,
+          "on_click": {
+            "__func__": "FunctionPlaceholder",
+            "__module__": "fase.fase"
+          },
+          "__class__": "Button",
+          "text": "Next"
+        }
+      ]
+    ]
+  },
+  "session_info": {
+    "session_id": "91ea4e179ad1e89d2a9c997c92ffaa70"
+  },
+  "screen_info": {
+    "screen_id": "2e75f528e4bc98ea4a4084e4e5f33f94"
+  }
+}
 ```
 
 ### User Types Name and Clicks Next
 User is very quick, types the name and clicks Next. Client sends `/elementcallback` with *ElementCallback* with
 *elements_update* field with just entered information:
 ```
-{ 'device': { 'device_token': '885cb625-875b-41ec-8010-61d2a0e70d81',
-              'device_type': 'Python'},
-  'elements_update': { 'id_list_list': [['text_name_id']],
-                       'value_list': ['Edward']},
-  'id_list': ['next_button_id'],
-  'locale': None,
-  'method': 'on_click'}
+method: post
+request: /elementcallback
+headers: {'session-id': '91ea4e179ad1e89d2a9c997c92ffaa70', 'screen-id': '2e75f528e4bc98ea4a4084e4e5f33f94'}
+```
+```
+{
+  "id_list": [
+    "next_button_id"
+  ],
+  "elements_update": {
+    "value_list": [
+      "Edward"
+    ],
+    "id_list_list": [
+      [
+        "text_name_id"
+      ]
+    ]
+  },
+  "method": "on_click",
+  "locale": null,
+  "device": {
+    "device_type": "Python",
+    "device_token": "d3f99e4f-9b4a-43d8-8655-d1133893106c"
+  }
+}
 ```
 Server sends *Response* with new *Screen*:
 ```
-{ 'elements_update': None,
-  'resources': None,
-  'screen': { '__class__': 'Screen',
-              '__module__': 'fase.fase',
-              '_screen_id': 'ef8bf7814e513e541fad33ee1cc2e9f8',
-              'displayed': True,
-              'id_element_list': [ [ 'hello_label_id',
-                                     { '__class__': 'Label',
-                                       '__module__': 'fase.fase',
-                                       'alight': None,
-                                       'displayed': True,
-                                       'font': None,
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'on_click': None,
-                                       'request_locale': False,
-                                       'size': None,
-                                       'text': 'Hello, Edward!'}],
-                                   [ 'reset_button_id',
-                                     { '__class__': 'Button',
-                                       '__module__': 'fase.fase',
-                                       'displayed': True,
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'on_click': { '__func__': 'FunctionPlaceholder',
-                                                     '__module__': 'fase.fase'},
-                                       'request_locale': False,
-                                       'text': 'Reset'}]],
-              'locale': None,
-              'on_more': None,
-              'on_refresh': None,
-              'request_locale': False,
-              'scrollable': None,
-              'title': None},
-  'screen_info': {'screen_id': 'ef8bf7814e513e541fad33ee1cc2e9f8'},
-  'session_info': {'session_id': 'ed014cd4fa322ebd98072811b7806229'}}
+{
+  "elements_update": null,
+  "resources": null,
+  "screen": {
+    "_screen_id": "262dc85332834eec76fcfe421c959b1d",
+    "title": null,
+    "on_refresh": null,
+    "on_more": null,
+    "locale": null,
+    "request_locale": false,
+    "__class__": "Screen",
+    "displayed": true,
+    "__module__": "fase.fase",
+    "scrollable": null,
+    "id_element_list": [
+      [
+        "hello_label_id",
+        {
+          "request_locale": false,
+          "__class__": "Label",
+          "locale": null,
+          "alight": null,
+          "__module__": "fase.fase",
+          "displayed": true,
+          "on_click": null,
+          "size": null,
+          "id_element_list": [],
+          "text": "Hello, Edward!",
+          "font": null
+        }
+      ],
+      [
+        "reset_button_id",
+        {
+          "id_element_list": [],
+          "locale": null,
+          "request_locale": false,
+          "__module__": "fase.fase",
+          "displayed": true,
+          "on_click": {
+            "__func__": "FunctionPlaceholder",
+            "__module__": "fase.fase"
+          },
+          "__class__": "Button",
+          "text": "Reset"
+        }
+      ]
+    ]
+  },
+  "session_info": {
+    "session_id": "91ea4e179ad1e89d2a9c997c92ffaa70"
+  },
+  "screen_info": {
+    "screen_id": "262dc85332834eec76fcfe421c959b1d"
+  }
+}
 ```
 
 ## Hello World Application. External Data
@@ -748,46 +815,73 @@ Server sends *Response* with new *Screen*:
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
 ```
-{ 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
-  'device_type': 'Python'}
+method: post
+request: /getservice
+```
+```
+{
+  "device_type": "Python",
+  "device_token": "49d77225-fb31-40b5-b5ba-214927b1b782"
+}
 ```
 Server sends *Response* with initial *Screen*:
 ```
-{ 'elements_update': None,
-  'resources': None,
-  'screen': { '__class__': 'Screen',
-              '__module__': 'fase.fase',
-              '_screen_id': '7c2cfa33c307697c560ec0683565f248',
-              'displayed': True,
-              'id_element_list': [ [ 'text_name_id',
-                                     { '__class__': 'Text',
-                                       '__module__': 'fase.fase',
-                                       'displayed': True,
-                                       'hint': 'Enter Name',
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'request_locale': False,
-                                       'size': None,
-                                       'text': None,
-                                       'type': None}],
-                                   [ 'next_button_id',
-                                     { '__class__': 'Button',
-                                       '__module__': 'fase.fase',
-                                       'displayed': True,
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'on_click': { '__func__': 'FunctionPlaceholder',
-                                                     '__module__': 'fase.fase'},
-                                       'request_locale': False,
-                                       'text': 'Next'}]],
-              'locale': None,
-              'on_more': None,
-              'on_refresh': None,
-              'request_locale': False,
-              'scrollable': None,
-              'title': None},
-  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
-  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+{
+  "screen_info": {
+    "screen_id": "40da894a663fb2656d95f77965dab93b"
+  },
+  "screen": {
+    "on_more": null,
+    "_screen_id": "40da894a663fb2656d95f77965dab93b",
+    "on_refresh": null,
+    "locale": null,
+    "__module__": "fase.fase",
+    "id_element_list": [
+      [
+        "text_name_id",
+        {
+          "hint": "Enter Name",
+          "type": null,
+          "displayed": true,
+          "text": null,
+          "locale": null,
+          "__module__": "fase.fase",
+          "id_element_list": [],
+          "request_locale": false,
+          "__class__": "Text",
+          "size": null,
+          "multiline": null
+        }
+      ],
+      [
+        "next_button_id",
+        {
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "text": "Next",
+          "id_element_list": [],
+          "__module__": "fase.fase",
+          "locale": null,
+          "request_locale": false,
+          "__class__": "Button",
+          "displayed": true
+        }
+      ]
+    ],
+    "request_locale": false,
+    "__class__": "Screen",
+    "scrollable": null,
+    "displayed": true,
+    "title": null
+  },
+  "resources": null,
+  "session_info": {
+    "session_id": "ec2778ba20558eccf1d1f723a8bdba8f"
+  },
+  "elements_update": null
+}
 ```
 
 ### Name Received
@@ -795,17 +889,41 @@ Client keeps sending `/screenupdate` with *ScreenUpdate*
 
 When user hasn't typed anything:
 ```
-{ 'device': { 'device_token': '42209288-51e7-4573-84b6-3cde39477e1d',
-              'device_type': 'Python'},
-  'elements_update': None}
+method: post
+request: /screenupdate
+headers: {'screen-id': '40da894a663fb2656d95f77965dab93b', 'session-id': 'ec2778ba20558eccf1d1f723a8bdba8f'}
+```
+```
+{
+  "device": {
+    "device_type": "Python",
+    "device_token": "49d77225-fb31-40b5-b5ba-214927b1b782"
+  },
+  "elements_update": null
+}
 ```
 Server sends *Response* with *elements_update* field 
 ```
-{ 'elements_update': { 'id_list_list': [['text_name_id']],
-                       'value_list': ['John']},
-  'resources': None,
-  'screen': None,
-  'screen_info': {'screen_id': '7c2cfa33c307697c560ec0683565f248'},
-  'session_info': {'session_id': '5a87a926282681fe2a6ad94b5a701cf4'}}
+{
+  "screen_info": {
+    "screen_id": "40da894a663fb2656d95f77965dab93b"
+  },
+  "screen": null,
+  "resources": null,
+  "session_info": {
+    "session_id": "ec2778ba20558eccf1d1f723a8bdba8f"
+  },
+  "elements_update": {
+    "value_list": [
+      "John"
+    ],
+    "id_list_list": [
+      [
+        "text_name_id"
+      ]
+    ]
+  },
+}
+
 ```
 **Client fills corresponding text field with 'John'!**
