@@ -286,25 +286,28 @@ Table of Contents
 
 # Drawing Elements
 
-## Screen
-
-![Screen](elements_images/fase_screen.png "Screen")
-
-## Layout Vertical
-
-![Layout Vertical](elements_images/fase_layout_vertical.png "Layout Vertical")
-
-## Layout Horizontal
-
-![Layout Horizontal](elements_images/fase_layout_horizontal.png "Layout Horizontal")
-
-## Mobile Device Specifics
+## Mobile Device Differences
 |Element|iOS|Android|Windows Phone|
 |-------|---|-------|-------------|
 |Main button|Button in the right upper corner|Big button in the right bottom corner|Button in the middle of the button bar|
 |Navigation|Buttons on bottom bar|Items in main menu from left top button|Buttons on top and bottom bar|
 |Next button|Button in the right upper corner|Button in the right upper corner||
 |Prev button|Button in the left upper corner|Built in system back button||
+
+## Abstract Elements on iOS
+![Abstract Elements on iOS](abstract_elements/ios.png "Abstract Elements on iOS")
+
+## Abstract Elements on Android
+![Abstract Elements on Android](abstract_elements/android.png "Abstract Elements on Android")
+
+## Screen
+![Screen](elements_images/fase_screen.png "Screen")
+
+## Layout Vertical
+![Layout Vertical](elements_images/fase_layout_vertical.png "Layout Vertical")
+
+## Layout Horizontal
+![Layout Horizontal](elements_images/fase_layout_horizontal.png "Layout Horizontal")
 
 # Fase Application Examples
 
