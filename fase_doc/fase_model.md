@@ -471,7 +471,7 @@ headers: {'session-id': 'b3885022345831153df4da87b30899d4', 'screen-id': '01e5fb
 }
 
 ```
-Server sends *Response* with new *Screen*:
+Server sends *Response* with greeting *Screen*:
 ```
 {
   "screen": {
@@ -750,7 +750,7 @@ headers: {'session-id': '91ea4e179ad1e89d2a9c997c92ffaa70', 'screen-id': '2e75f5
   }
 }
 ```
-Server sends *Response* with new *Screen*:
+Server sends *Response* with greeting *Screen*:
 ```
 {
   "elements_update": null,
@@ -927,3 +927,908 @@ Server sends *Response* with *elements_update* field
 
 ```
 **Client fills corresponding text field with 'John'!**
+
+## Notes Application
+
+### Client Starts
+Client starts and sends `/getservice` with *Device*:
+```
+method: post
+request: /getservice
+```
+```
+{
+  "device_token": "cfc6ba49-3ab3-4fee-a6d1-14cb6f46ab76",
+  "device_type": "Python"
+}
+```
+Server sends *Response* with dashboard *Screen*:
+{
+  "elements_update": null,
+  "resources": {
+    "resource_list": [
+      {
+        "filename": "images/notes.png"
+      },
+      {
+        "filename": "images/recent.png"
+      },
+      {
+        "filename": "images/favourite_non.png"
+      },
+      {
+        "filename": "images/sign_in.png"
+      },
+      {
+        "filename": "images/new.png"
+      }
+    ]
+  },
+  "screen": {
+    "_screen_id": "5ef31afa8844071f41f235b93cc29b93",
+    "id_element_list": [
+      [
+        "main_button",
+        {
+          "id_element_list": [
+            [
+              "image",
+              {
+                "id_element_list": [],
+                "filename": "images/new.png",
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "url": null,
+                "__class__": "Image"
+              }
+            ]
+          ],
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "request_locale": false,
+          "__class__": "Button",
+          "text": "New"
+        }
+      ],
+      [
+        "navigation",
+        {
+          "id_element_list": [
+            [
+              "notes_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/notes.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Notes"
+              }
+            ],
+            [
+              "favourites_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/favourite_non.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Favourites"
+              }
+            ],
+            [
+              "recent_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/recent.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Recent"
+              }
+            ],
+            [
+              "sign_in_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/sign_in.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Sign In"
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "__class__": "Navigation"
+        }
+      ],
+      [
+        "notes_frame",
+        {
+          "size": null,
+          "border": null,
+          "orientation": 1,
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": null,
+          "request_locale": false,
+          "id_element_list": [],
+          "__class__": "Frame"
+        }
+      ]
+    ],
+    "__class__": "Screen",
+    "scrollable": true,
+    "displayed": true,
+    "locale": null,
+    "__module__": "fase.fase",
+    "title": "Notes",
+    "request_locale": false,
+    "on_refresh": null,
+    "on_more": null
+  },
+  "session_info": {
+    "session_id": "7967bc8fbacc9fe514d7690cc7b0efe5"
+  },
+  "screen_info": {
+    "screen_id": "5ef31afa8844071f41f235b93cc29b93"
+  }
+}
+```
+Client requests resources from server in parallel:
+```
+method: get
+request: /getresource/filename/images/notes.png
+```
+```
+method: get
+request: /getresource/filename/images/recent.png
+```
+```
+method: get
+request: /getresource/filename/images/favourite_non.png
+```
+```
+method: get
+request: /getresource/filename/images/sign_in.png
+```
+```
+method: get
+request: /getresource/filename/images/new.png
+```
+
+### User Click Sign In
+
+User clicks "Sign In". Client sends `/elementcallback` with *ElementCallback*:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': '5ef31afa8844071f41f235b93cc29b93', 'session-id': '7967bc8fbacc9fe514d7690cc7b0efe5'}
+```
+```
+{
+  "method": "on_click",
+  "elements_update": null,
+  "id_list": [
+    "navigation",
+    "sign_in_button"
+  ],
+  "device": {
+    "device_token": "cfc6ba49-3ab3-4fee-a6d1-14cb6f46ab76",
+    "device_type": "Python"
+  },
+  "locale": null
+}
+```
+Server sends *Response* with Sign In/Sign Up *Screen*:
+```
+{
+  "elements_update": null,
+  "resources": null,
+  "screen": {
+    "_screen_id": "41dfff70d023a8058f42b2a651f8d447",
+    "id_element_list": [
+      [
+        "sign_in_frame_id",
+        {
+          "size": null,
+          "border": null,
+          "orientation": 1,
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": null,
+          "request_locale": false,
+          "id_element_list": [
+            [
+              "sign_in_button_id",
+              {
+                "id_element_list": [],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Sign In"
+              }
+            ],
+            [
+              "sign_up_button_id",
+              {
+                "id_element_list": [],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Sign Up"
+              }
+            ]
+          ],
+          "__class__": "Frame"
+        }
+      ],
+      [
+        "prev_step_button",
+        {
+          "id_element_list": [],
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "request_locale": false,
+          "__class__": "Button",
+          "text": "Cancel"
+        }
+      ]
+    ],
+    "__class__": "Screen",
+    "scrollable": null,
+    "displayed": true,
+    "locale": null,
+    "__module__": "fase.fase",
+    "title": null,
+    "request_locale": false,
+    "on_refresh": null,
+    "on_more": null
+  },
+  "session_info": {
+    "session_id": "7967bc8fbacc9fe514d7690cc7b0efe5"
+  },
+  "screen_info": {
+    "screen_id": "41dfff70d023a8058f42b2a651f8d447"
+  }
+}
+```
+
+### User Clicks Sign Up
+User clicks "Sign Un". Client sends `/elementcallback` with *ElementCallback*:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': '41dfff70d023a8058f42b2a651f8d447', 'session-id': '7967bc8fbacc9fe514d7690cc7b0efe5'}
+```
+```
+{
+  "method": "on_click",
+  "elements_update": null,
+  "id_list": [
+    "sign_in_frame_id",
+    "sign_up_button_id"
+  ],
+  "device": {
+    "device_token": "cfc6ba49-3ab3-4fee-a6d1-14cb6f46ab76",
+    "device_type": "Python"
+  },
+  "locale": null
+}
+```
+Server sends *Response* with Sign Up form *Screen*:
+```
+{
+  "elements_update": null,
+  "resources": null,
+  "screen": {
+    "_screen_id": "953cd6eaa9fd33aec7bab20f652347e2",
+    "id_element_list": [
+      [
+        "sign_up_frame_id",
+        {
+          "size": null,
+          "border": null,
+          "orientation": 1,
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": null,
+          "request_locale": false,
+          "id_element_list": [
+            [
+              "phone_number_text_id",
+              {
+                "multiline": null,
+                "size": null,
+                "displayed": true,
+                "hint": "Phone Number",
+                "type": null,
+                "__module__": "fase.fase",
+                "locale": null,
+                "request_locale": false,
+                "id_element_list": [],
+                "__class__": "Text",
+                "text": null
+              }
+            ],
+            [
+              "first_name_text_id",
+              {
+                "multiline": null,
+                "size": null,
+                "displayed": true,
+                "hint": "First Name",
+                "type": null,
+                "__module__": "fase.fase",
+                "locale": null,
+                "request_locale": false,
+                "id_element_list": [],
+                "__class__": "Text",
+                "text": null
+              }
+            ],
+            [
+              "last_name_text_id",
+              {
+                "multiline": null,
+                "size": null,
+                "displayed": true,
+                "hint": "Last Name",
+                "type": null,
+                "__module__": "fase.fase",
+                "locale": null,
+                "request_locale": false,
+                "id_element_list": [],
+                "__class__": "Text",
+                "text": null
+              }
+            ],
+            [
+              "sign_up_button_id",
+              {
+                "id_element_list": [],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": true,
+                "__class__": "Button",
+                "text": "Sign Up"
+              }
+            ]
+          ],
+          "__class__": "Frame"
+        }
+      ],
+      [
+        "prev_step_button",
+        {
+          "id_element_list": [],
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "request_locale": false,
+          "__class__": "Button",
+          "text": "Back"
+        }
+      ]
+    ],
+    "__class__": "Screen",
+    "scrollable": null,
+    "displayed": true,
+    "locale": null,
+    "__module__": "fase.fase",
+    "title": null,
+    "request_locale": false,
+    "on_refresh": null,
+    "on_more": null
+  },
+  "session_info": {
+    "session_id": "7967bc8fbacc9fe514d7690cc7b0efe5"
+  },
+  "screen_info": {
+    "screen_id": "953cd6eaa9fd33aec7bab20f652347e2"
+  }
+}
+```
+
+### User Enters Information and Clicks Sign Up
+User enters all information and clicks Sign Up. Client sends `/elementcallback` with *ElementCallback* with
+*elements_update* field with just entered information:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': '953cd6eaa9fd33aec7bab20f652347e2', 'session-id': '7967bc8fbacc9fe514d7690cc7b0efe5'}
+```
+```
+{
+  "method": "on_click",
+  "elements_update": {
+    "value_list": [
+      "4086806761",
+      "Igushev",
+      "Edward"
+    ],
+    "id_list_list": [
+      [
+        "sign_up_frame_id",
+        "phone_number_text_id"
+      ],
+      [
+        "sign_up_frame_id",
+        "last_name_text_id"
+      ],
+      [
+        "sign_up_frame_id",
+        "first_name_text_id"
+      ]
+    ]
+  },
+  "id_list": [
+    "sign_up_frame_id",
+    "sign_up_button_id"
+  ],
+  "device": {
+    "device_token": "cfc6ba49-3ab3-4fee-a6d1-14cb6f46ab76",
+    "device_type": "Python"
+  },
+  "locale": {
+    "country_code": "US"
+  }
+}
+```
+Server sends *Response* with Activation Code *Screen*:
+```
+{
+  "elements_update": null,
+  "resources": null,
+  "screen": {
+    "_screen_id": "7cde2466ed78b36c3320ff86bac3b6ed",
+    "id_element_list": [
+      [
+        "enter_activation_frame_id",
+        {
+          "size": null,
+          "border": null,
+          "orientation": 1,
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": null,
+          "request_locale": false,
+          "id_element_list": [
+            [
+              "activation_code_text_id",
+              {
+                "multiline": null,
+                "size": null,
+                "displayed": true,
+                "hint": "Activation Code",
+                "type": null,
+                "__module__": "fase.fase",
+                "locale": null,
+                "request_locale": false,
+                "id_element_list": [],
+                "__class__": "Text",
+                "text": null
+              }
+            ],
+            [
+              "send_button_id",
+              {
+                "id_element_list": [],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Send"
+              }
+            ]
+          ],
+          "__class__": "Frame"
+        }
+      ],
+      [
+        "prev_step_button",
+        {
+          "id_element_list": [],
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "request_locale": false,
+          "__class__": "Button",
+          "text": "Back"
+        }
+      ]
+    ],
+    "__class__": "Screen",
+    "scrollable": null,
+    "displayed": true,
+    "locale": null,
+    "__module__": "fase.fase",
+    "title": null,
+    "request_locale": false,
+    "on_refresh": null,
+    "on_more": null
+  },
+  "session_info": {
+    "session_id": "7967bc8fbacc9fe514d7690cc7b0efe5"
+  },
+  "screen_info": {
+    "screen_id": "7cde2466ed78b36c3320ff86bac3b6ed"
+  }
+}
+```
+
+### User Enters Activation Code and Clicks Send
+User enters activation code and clicks Send. Client sends `/elementcallback` with *ElementCallback* with
+*elements_update* field with just entered information:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': '7cde2466ed78b36c3320ff86bac3b6ed', 'session-id': '7967bc8fbacc9fe514d7690cc7b0efe5'}
+```
+```
+{
+  "method": "on_click",
+  "elements_update": {
+    "value_list": [
+      "237418"
+    ],
+    "id_list_list": [
+      [
+        "enter_activation_frame_id",
+        "activation_code_text_id"
+      ]
+    ]
+  },
+  "id_list": [
+    "enter_activation_frame_id",
+    "send_button_id"
+  ],
+  "device": {
+    "device_token": "cfc6ba49-3ab3-4fee-a6d1-14cb6f46ab76",
+    "device_type": "Python"
+  },
+  "locale": null
+}
+```
+Server sends *Response* with dashboard *Screen*:
+```
+{
+  "elements_update": null,
+  "resources": {
+    "resource_list": [
+      {
+        "filename": "images/notes.png"
+      },
+      {
+        "filename": "images/recent.png"
+      },
+      {
+        "filename": "images/sign_out.png"
+      },
+      {
+        "filename": "images/favourite_non.png"
+      },
+      {
+        "filename": "images/new.png"
+      }
+    ]
+  },
+  "screen": {
+    "_screen_id": "3c595140a8eaea06b96af688222ef04d",
+    "id_element_list": [
+      [
+        "main_button",
+        {
+          "id_element_list": [
+            [
+              "image",
+              {
+                "id_element_list": [],
+                "filename": "images/new.png",
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "url": null,
+                "__class__": "Image"
+              }
+            ]
+          ],
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "request_locale": false,
+          "__class__": "Button",
+          "text": "New"
+        }
+      ],
+      [
+        "navigation",
+        {
+          "id_element_list": [
+            [
+              "notes_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/notes.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Notes"
+              }
+            ],
+            [
+              "favourites_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/favourite_non.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Favourites"
+              }
+            ],
+            [
+              "recent_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/recent.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Recent"
+              }
+            ],
+            [
+              "sign_out_button",
+              {
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "id_element_list": [],
+                      "filename": "images/sign_out.png",
+                      "displayed": true,
+                      "locale": null,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "url": null,
+                      "__class__": "Image"
+                    }
+                  ]
+                ],
+                "displayed": true,
+                "locale": null,
+                "__module__": "fase.fase",
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "request_locale": false,
+                "__class__": "Button",
+                "text": "Sign Out"
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "__class__": "Navigation"
+        }
+      ],
+      [
+        "notes_frame",
+        {
+          "size": null,
+          "border": null,
+          "orientation": 1,
+          "displayed": true,
+          "locale": null,
+          "__module__": "fase.fase",
+          "on_click": null,
+          "request_locale": false,
+          "id_element_list": [],
+          "__class__": "Frame"
+        }
+      ]
+    ],
+    "__class__": "Screen",
+    "scrollable": true,
+    "displayed": true,
+    "locale": null,
+    "__module__": "fase.fase",
+    "title": "Notes",
+    "request_locale": false,
+    "on_refresh": null,
+    "on_more": null
+  },
+  "session_info": {
+    "session_id": "35335c2b1c30888950754fbefe51427d"
+  },
+  "screen_info": {
+    "screen_id": "3c595140a8eaea06b96af688222ef04d"
+  }
+}
+```
