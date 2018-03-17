@@ -943,6 +943,7 @@ request: /getservice
 }
 ```
 Server sends *Response* with dashboard *Screen*:
+```
 {
   "elements_update": null,
   "resources": {
@@ -1832,3 +1833,4 @@ Server sends *Response* with dashboard *Screen*:
   }
 }
 ```
+**Client does NOT request resources since they have been cached!**
