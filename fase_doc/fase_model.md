@@ -12,18 +12,24 @@ Table of Contents
          * [Element Callback](#element-callback)
          * [Processing Response](#processing-response)
    * [Fase Application Examples](#fase-application-examples)
-      * [Hello World Application. Slow User](#hello-world-application-slow-user)
+      * [Hello World Application. Screen Update Examples](#hello-world-application-screen-update-examples)
          * [Client Starts](#client-starts)
          * [User Types Name](#user-types-name)
          * [User Clicks Next](#user-clicks-next)
          * [Hello Screen](#hello-screen)
          * [User Clicks Reset](#user-clicks-reset)
-      * [Hello World Application. Quick User](#hello-world-application-quick-user)
+      * [Hello World Application. Element Callback Examples](#hello-world-application-element-callback-examples)
          * [Client Starts](#client-starts-1)
          * [User Types Name and Clicks Next](#user-types-name-and-clicks-next)
-      * [Hello World Application. External Data](#hello-world-application-external-data)
+      * [Hello World Application. External Data Examples](#hello-world-application-external-data-examples)
          * [Client Starts](#client-starts-2)
          * [Name Received](#name-received)
+      * [Notes Application. Resources Management Examples](#notes-application-resources-management-examples)
+         * [Client Starts](#client-starts-3)
+         * [User Click Sign In on Dashboard Screen](#user-click-sign-in-on-dashboard-screen)
+         * [User Clicks Sign Up on Sign In/Sign Up Screen](#user-clicks-sign-up-on-sign-insign-up-screen)
+         * [User Enters Information and Clicks Sign Up](#user-enters-information-and-clicks-sign-up)
+         * [User Enters Activation Code and Clicks Send](#user-enters-activation-code-and-clicks-send)
 
 # Communication with Server
 ## Data Classes
@@ -203,7 +209,7 @@ Example of *Response* message for Hello World Application when User clicks "Next
 
 # Fase Application Examples
 
-## Hello World Application. Slow User
+## Hello World Application. Screen Update Examples
 
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
@@ -217,7 +223,7 @@ request: /getservice
   "device_type": "Python"
 }
 ```
-Server sends *Response* with initial *Screen*:
+Server sends *Response* with Initial *Screen*:
 ```
 {
   "screen": {
@@ -471,7 +477,7 @@ headers: {'session-id': 'b3885022345831153df4da87b30899d4', 'screen-id': '01e5fb
 }
 
 ```
-Server sends *Response* with greeting *Screen*:
+Server sends *Response* with Greeting *Screen*:
 ```
 {
   "screen": {
@@ -585,7 +591,7 @@ headers: {'session-id': 'b3885022345831153df4da87b30899d4', 'screen-id': 'f2997e
   "locale": null
 }
 ```
-Server sends *Response* with initial *Screen*:
+Server sends *Response* with Initial *Screen*:
 ```
 {
   "screen": {
@@ -645,7 +651,7 @@ Server sends *Response* with initial *Screen*:
 }
 ```
 
-## Hello World Application. Quick User
+## Hello World Application. Element Callback Examples
 
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
@@ -659,7 +665,7 @@ request: /getservice
   "device_token": "d3f99e4f-9b4a-43d8-8655-d1133893106c"
 }
 ```
-Server sends *Response* with initial *Screen*:
+Server sends *Response* with Initial *Screen*:
 ```
 {
   "elements_update": null,
@@ -750,7 +756,7 @@ headers: {'session-id': '91ea4e179ad1e89d2a9c997c92ffaa70', 'screen-id': '2e75f5
   }
 }
 ```
-Server sends *Response* with greeting *Screen*:
+Server sends *Response* with Greeting *Screen*:
 ```
 {
   "elements_update": null,
@@ -810,7 +816,7 @@ Server sends *Response* with greeting *Screen*:
 }
 ```
 
-## Hello World Application. External Data
+## Hello World Application. External Data Examples
 
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
@@ -824,7 +830,7 @@ request: /getservice
   "device_token": "49d77225-fb31-40b5-b5ba-214927b1b782"
 }
 ```
-Server sends *Response* with initial *Screen*:
+Server sends *Response* with Initial *Screen*:
 ```
 {
   "screen_info": {
@@ -928,7 +934,7 @@ Server sends *Response* with *elements_update* field
 ```
 **Client fills corresponding text field with 'John'!**
 
-## Notes Application
+## Notes Application. Resources Management Examples
 
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
@@ -942,7 +948,7 @@ request: /getservice
   "device_type": "Python"
 }
 ```
-Server sends *Response* with dashboard *Screen*:
+Server sends *Response* with Dashboard *Screen*:
 ```
 {
   "elements_update": null,
@@ -1183,9 +1189,9 @@ method: get
 request: /getresource/filename/images/new.png
 ```
 
-### User Click Sign In
+### User Click Sign In on Dashboard Screen
 
-User clicks "Sign In". Client sends `/elementcallback` with *ElementCallback*:
+User clicks "Sign In" on Dashboard Screen. Client sends `/elementcallback` with *ElementCallback*:
 ```
 method: post
 request: /elementcallback
@@ -1298,8 +1304,8 @@ Server sends *Response* with Sign In/Sign Up *Screen*:
 }
 ```
 
-### User Clicks Sign Up
-User clicks "Sign Un". Client sends `/elementcallback` with *ElementCallback*:
+### User Clicks Sign Up on Sign In/Sign Up Screen
+User clicks "Sign Un" on Sign In/Sign Up Screen. Client sends `/elementcallback` with *ElementCallback*:
 ```
 method: post
 request: /elementcallback
@@ -1614,7 +1620,7 @@ headers: {'screen-id': '7cde2466ed78b36c3320ff86bac3b6ed', 'session-id': '7967bc
   "locale": null
 }
 ```
-Server sends *Response* with dashboard *Screen*:
+Server sends *Response* with Dashboard *Screen*:
 ```
 {
   "elements_update": null,
