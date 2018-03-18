@@ -171,46 +171,6 @@ requests with information about user's choice in same format;
 only filename of given resource. If *Resources* is present, Client must request all missing locally resources in
 **parallel** and save them **locally**. Filename serves as unique id of given resource.
 
-Example of *Response* message for Hello World Application when User clicks "Next" button:
-```
-{ 'elements_update': None,
-  'screen': { '__class__': 'Screen',
-              '__module__': 'fase',
-              '_screen_id': 'be22837e30feaed208e70d01911a5630',
-              'displayed': True,
-              'id_element_list': [ [ 'hello_label_id',
-                                     { '__class__': 'Label',
-                                       '__module__': 'fase',
-                                       'alight': None,
-                                       'displayed': True,
-                                       'font': None,
-                                       'id_element_list': [],
-                                       'locale': None,
-                                       'on_click': None,
-                                       'request_locale': False,
-                                       'size': None,
-                                       'text': 'Hello, Edward!'}],
-                                   [ 'reset_button_id',
-                                     { '__class__': 'Button',
-                                       '__module__': 'fase',
-                                       'displayed': True,
-                                       'id_element_list': [],
-                                       'image': None,
-                                       'locale': None,
-                                       'on_click': { '__func__': 'FunctionPlaceholder',
-                                                     '__module__': 'fase'},
-                                       'request_locale': False,
-                                       'text': 'Reset'}]],
-              'locale': None,
-              'on_more': None,
-              'on_refresh': None,
-              'request_locale': False,
-              'scrollable': None,
-              'title': None},
-  'screen_info': {'screen_id': 'be22837e30feaed208e70d01911a5630'},
-  'session_info': {'session_id': '0ca8467a8bf9f9ec4e862721af6f592b'}}
-```
-
 # Fase Application Examples
 
 ## Hello World Application. Screen Update Examples
