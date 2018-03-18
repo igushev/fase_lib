@@ -93,6 +93,7 @@ Table of Contents
 
 ## Server API
 **Please note that session-id and screen-id have "-"! It's relevant only in HTTP headers, in other places they have "_"!**
+
 |HTTP Request|HTTP Method|Need session-id|Need screen-id|Input Type|Output Type|Description|
 |------------|-----------|---------------|--------------|----------|-----------|-----------|
 |/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the framework|
