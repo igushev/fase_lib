@@ -24,12 +24,16 @@ Table of Contents
       * [Hello World Application. External Data Examples](#hello-world-application-external-data-examples)
          * [Client Starts](#client-starts-2)
          * [Name Received](#name-received)
-      * [Notes Application. Resources Management Examples](#notes-application-resources-management-examples)
+      * [Notes Application. Resources Management Examples. Signing Up](#notes-application-resources-management-examples-signing-up)
          * [Client Starts](#client-starts-3)
          * [User Click Sign In on Dashboard Screen](#user-click-sign-in-on-dashboard-screen)
          * [User Clicks Sign Up on Sign In/Sign Up Screen](#user-clicks-sign-up-on-sign-insign-up-screen)
          * [User Enters Information and Clicks Sign Up](#user-enters-information-and-clicks-sign-up)
          * [User Enters Activation Code and Clicks Send](#user-enters-activation-code-and-clicks-send)
+      * [Notes Application. Resources Management Examples. Adding New Note](#notes-application-resources-management-examples-adding-new-note)
+         * [Client Starts](#client-starts-4)
+         * [User Click Main Button](#user-click-main-button)
+         * [User Enters Data and Clicks Next Button](#user-enters-data-and-clicks-next-button)
 
 # Communication with Server
 ## Data Classes
@@ -934,7 +938,7 @@ Server sends *Response* with *elements_update* field
 ```
 **Client fills corresponding text field with 'John'!**
 
-## Notes Application. Resources Management Examples
+## Notes Application. Resources Management Examples. Signing Up
 
 ### Client Starts
 Client starts and sends `/getservice` with *Device*:
@@ -1836,6 +1840,822 @@ Server sends *Response* with Dashboard *Screen*:
   },
   "screen_info": {
     "screen_id": "3c595140a8eaea06b96af688222ef04d"
+  }
+}
+```
+**Client does NOT request resources since they have been cached!**
+
+## Notes Application. Resources Management Examples. Adding New Note
+
+### Client Starts
+Client starts and sends `/getservice` with *Device*:
+```
+method: post
+request: /getservice
+```
+```
+{
+  "device_type": "Python",
+  "device_token": "e47e16a0-0e85-4014-8a14-06289f76c41a"
+}
+```
+Server sends *Response* with Dashboard *Screen*:
+```
+{
+  "elements_update": null,
+  "resources": {
+    "resource_list": [
+      {
+        "filename": "images/notes.png"
+      },
+      {
+        "filename": "images/recent.png"
+      },
+      {
+        "filename": "images/favourite_non.png"
+      },
+      {
+        "filename": "images/sign_in.png"
+      },
+      {
+        "filename": "images/new.png"
+      }
+    ]
+  },
+  "screen_info": {
+    "screen_id": "ea70243fb03aa62c00d732cd0adf6acc"
+  },
+  "session_info": {
+    "session_id": "2e91841ec279faf08412e0bdda8dc556"
+  },
+  "screen": {
+    "on_refresh": null,
+    "_screen_id": "ea70243fb03aa62c00d732cd0adf6acc",
+    "__class__": "Screen",
+    "locale": null,
+    "id_element_list": [
+      [
+        "main_button",
+        {
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "text": "New",
+          "__class__": "Button",
+          "locale": null,
+          "id_element_list": [
+            [
+              "image",
+              {
+                "url": null,
+                "__class__": "Image",
+                "locale": null,
+                "id_element_list": [],
+                "__module__": "fase.fase",
+                "filename": "images/new.png",
+                "request_locale": false,
+                "displayed": true
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "displayed": true
+        }
+      ],
+      [
+        "navigation",
+        {
+          "__module__": "fase.fase",
+          "__class__": "Navigation",
+          "id_element_list": [
+            [
+              "notes_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Notes",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/notes.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ],
+            [
+              "favourites_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Favourites",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/favourite_non.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ],
+            [
+              "recent_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Recent",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/recent.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ],
+            [
+              "sign_in_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Sign In",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/sign_in.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ]
+          ]
+        }
+      ],
+      [
+        "notes_frame",
+        {
+          "on_click": null,
+          "size": null,
+          "__class__": "Frame",
+          "locale": null,
+          "id_element_list": [],
+          "__module__": "fase.fase",
+          "orientation": 1,
+          "border": null,
+          "request_locale": false,
+          "displayed": true
+        }
+      ]
+    ],
+    "__module__": "fase.fase",
+    "on_more": null,
+    "title": "Notes",
+    "request_locale": false,
+    "displayed": true,
+    "scrollable": true
+  }
+}
+```
+Client requests resources from server in parallel:
+```
+method: get
+request: /getresource/filename/images/notes.png
+```
+```
+method: get
+request: /getresource/filename/images/recent.png
+```
+```
+method: get
+request: /getresource/filename/images/favourite_non.png
+```
+```
+method: get
+request: /getresource/filename/images/sign_in.png
+```
+```
+method: get
+request: /getresource/filename/images/new.png
+```
+
+### User Click Main Button
+
+User Click Main Button to add a new note on Dashboard Screen. Client sends `/elementcallback` with *ElementCallback*:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': 'ea70243fb03aa62c00d732cd0adf6acc', 'session-id': '2e91841ec279faf08412e0bdda8dc556'}
+```
+```
+{
+  "elements_update": null,
+  "device": {
+    "device_type": "Python",
+    "device_token": "e47e16a0-0e85-4014-8a14-06289f76c41a"
+  },
+  "id_list": [
+    "main_button"
+  ],
+  "method": "on_click",
+  "locale": null
+}
+```
+Server sends *Response* with New Note *Screen*:
+```
+{
+  "elements_update": null,
+  "resources": {
+    "resource_list": [
+      {
+        "filename": "images/favourite_non.png"
+      }
+    ]
+  },
+  "screen_info": {
+    "screen_id": "4191c70ab0ef988acd80d3b7f01119a5"
+  },
+  "session_info": {
+    "session_id": "2e91841ec279faf08412e0bdda8dc556"
+  },
+  "screen": {
+    "on_refresh": null,
+    "_screen_id": "4191c70ab0ef988acd80d3b7f01119a5",
+    "__class__": "Screen",
+    "locale": null,
+    "id_element_list": [
+      [
+        "note_frame",
+        {
+          "on_click": null,
+          "size": null,
+          "__class__": "Frame",
+          "locale": null,
+          "id_element_list": [
+            [
+              "header_text",
+              {
+                "size": null,
+                "multiline": null,
+                "displayed": true,
+                "__class__": "Text",
+                "locale": null,
+                "id_element_list": [],
+                "text": null,
+                "request_locale": false,
+                "type": null,
+                "__module__": "fase.fase",
+                "hint": "Header"
+              }
+            ],
+            [
+              "text_text",
+              {
+                "size": 2,
+                "multiline": true,
+                "displayed": true,
+                "__class__": "Text",
+                "locale": null,
+                "id_element_list": [],
+                "text": null,
+                "request_locale": false,
+                "type": null,
+                "__module__": "fase.fase",
+                "hint": "Text"
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "orientation": 1,
+          "border": null,
+          "request_locale": false,
+          "displayed": true
+        }
+      ],
+      [
+        "next_step_button",
+        {
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "text": "Save",
+          "__class__": "Button",
+          "locale": null,
+          "id_element_list": [],
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "displayed": true
+        }
+      ],
+      [
+        "prev_step_button",
+        {
+          "on_click": null,
+          "text": null,
+          "__class__": "Button",
+          "locale": null,
+          "id_element_list": [
+            [
+              "context_menu",
+              {
+                "text": null,
+                "__class__": "Menu",
+                "id_element_list": [
+                  [
+                    "favourite_menu_item",
+                    {
+                      "on_click": {
+                        "__module__": "fase.fase",
+                        "__func__": "FunctionPlaceholder"
+                      },
+                      "text": "Add to Favourites",
+                      "__class__": "MenuItem",
+                      "locale": null,
+                      "id_element_list": [
+                        [
+                          "image",
+                          {
+                            "url": null,
+                            "__class__": "Image",
+                            "locale": null,
+                            "id_element_list": [],
+                            "__module__": "fase.fase",
+                            "filename": "images/favourite_non.png",
+                            "request_locale": false,
+                            "displayed": true
+                          }
+                        ]
+                      ],
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ],
+                  [
+                    "cancel_menu_item",
+                    {
+                      "on_click": {
+                        "__module__": "fase.fase",
+                        "__func__": "FunctionPlaceholder"
+                      },
+                      "text": "Cancel",
+                      "__class__": "MenuItem",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase"
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "displayed": true
+        }
+      ]
+    ],
+    "__module__": "fase.fase",
+    "on_more": null,
+    "title": null,
+    "request_locale": false,
+    "displayed": true,
+    "scrollable": null
+  }
+}
+```
+
+### User Enters Data and Clicks Next Button
+User enters data and clicks next button with text "Save". Client sends `/elementcallback` with *ElementCallback* with
+*elements_update* field with just entered information:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': '4191c70ab0ef988acd80d3b7f01119a5', 'session-id': '2e91841ec279faf08412e0bdda8dc556'}
+```
+```
+{
+  "elements_update": {
+    "value_list": [
+      "Header 1",
+      "Text 1"
+    ],
+    "id_list_list": [
+      [
+        "note_frame",
+        "header_text"
+      ],
+      [
+        "note_frame",
+        "text_text"
+      ]
+    ]
+  },
+  "device": {
+    "device_type": "Python",
+    "device_token": "e47e16a0-0e85-4014-8a14-06289f76c41a"
+  },
+  "id_list": [
+    "next_step_button"
+  ],
+  "method": "on_click",
+  "locale": null
+}
+```
+Server sends *Response* with Dashboard *Screen* which has one just added note:
+```
+{
+  "elements_update": null,
+  "resources": {
+    "resource_list": [
+      {
+        "filename": "images/notes.png"
+      },
+      {
+        "filename": "images/recent.png"
+      },
+      {
+        "filename": "images/favourite_non.png"
+      },
+      {
+        "filename": "images/sign_in.png"
+      },
+      {
+        "filename": "images/new.png"
+      }
+    ]
+  },
+  "screen_info": {
+    "screen_id": "eaf6548e8712458c5a439bbe43336d70"
+  },
+  "session_info": {
+    "session_id": "2e91841ec279faf08412e0bdda8dc556"
+  },
+  "screen": {
+    "on_refresh": null,
+    "_screen_id": "eaf6548e8712458c5a439bbe43336d70",
+    "__class__": "Screen",
+    "locale": null,
+    "id_element_list": [
+      [
+        "main_button",
+        {
+          "on_click": {
+            "__module__": "fase.fase",
+            "__func__": "FunctionPlaceholder"
+          },
+          "text": "New",
+          "__class__": "Button",
+          "locale": null,
+          "id_element_list": [
+            [
+              "image",
+              {
+                "url": null,
+                "__class__": "Image",
+                "locale": null,
+                "id_element_list": [],
+                "__module__": "fase.fase",
+                "filename": "images/new.png",
+                "request_locale": false,
+                "displayed": true
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "displayed": true
+        }
+      ],
+      [
+        "navigation",
+        {
+          "__module__": "fase.fase",
+          "__class__": "Navigation",
+          "id_element_list": [
+            [
+              "notes_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Notes",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/notes.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ],
+            [
+              "favourites_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Favourites",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/favourite_non.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ],
+            [
+              "recent_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Recent",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/recent.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ],
+            [
+              "sign_in_button",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "text": "Sign In",
+                "__class__": "Button",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "image",
+                    {
+                      "url": null,
+                      "__class__": "Image",
+                      "locale": null,
+                      "id_element_list": [],
+                      "__module__": "fase.fase",
+                      "filename": "images/sign_in.png",
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "displayed": true
+              }
+            ]
+          ]
+        }
+      ],
+      [
+        "notes_frame",
+        {
+          "on_click": null,
+          "size": null,
+          "__class__": "Frame",
+          "locale": null,
+          "id_element_list": [
+            [
+              "note_frame_5e825ad6c8941c378ba7c43e4de77ae5",
+              {
+                "on_click": {
+                  "__module__": "fase.fase",
+                  "__func__": "FunctionPlaceholder"
+                },
+                "size": null,
+                "__class__": "Frame",
+                "locale": null,
+                "id_element_list": [
+                  [
+                    "note_header_frame",
+                    {
+                      "on_click": null,
+                      "size": 2,
+                      "__class__": "Frame",
+                      "locale": null,
+                      "id_element_list": [
+                        [
+                          "note_header_label",
+                          {
+                            "on_click": null,
+                            "text": "Header 1",
+                            "font": 1.5,
+                            "locale": null,
+                            "id_element_list": [],
+                            "alight": 1,
+                            "__class__": "Label",
+                            "size": 2,
+                            "request_locale": false,
+                            "displayed": true,
+                            "__module__": "fase.fase"
+                          }
+                        ],
+                        [
+                          "note_header_image",
+                          {
+                            "url": null,
+                            "__class__": "Image",
+                            "locale": null,
+                            "id_element_list": [],
+                            "__module__": "fase.fase",
+                            "filename": "images/favourite_non.png",
+                            "request_locale": false,
+                            "displayed": true
+                          }
+                        ]
+                      ],
+                      "__module__": "fase.fase",
+                      "orientation": 2,
+                      "border": null,
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ],
+                  [
+                    "note_frame_label",
+                    {
+                      "on_click": null,
+                      "text": "Text 1",
+                      "font": null,
+                      "locale": null,
+                      "id_element_list": [],
+                      "alight": 1,
+                      "__class__": "Label",
+                      "size": null,
+                      "request_locale": false,
+                      "displayed": true,
+                      "__module__": "fase.fase"
+                    }
+                  ],
+                  [
+                    "note_deails_frame",
+                    {
+                      "on_click": null,
+                      "size": null,
+                      "__class__": "Frame",
+                      "locale": null,
+                      "id_element_list": [
+                        [
+                          "note_deails_frame_datetime_text",
+                          {
+                            "on_click": null,
+                            "text": "Just now",
+                            "font": 0.7,
+                            "locale": null,
+                            "id_element_list": [],
+                            "alight": 2,
+                            "__class__": "Label",
+                            "size": 2,
+                            "request_locale": false,
+                            "displayed": true,
+                            "__module__": "fase.fase"
+                          }
+                        ]
+                      ],
+                      "__module__": "fase.fase",
+                      "orientation": 2,
+                      "border": null,
+                      "request_locale": false,
+                      "displayed": true
+                    }
+                  ]
+                ],
+                "__module__": "fase.fase",
+                "orientation": 1,
+                "border": true,
+                "request_locale": false,
+                "displayed": true
+              }
+            ]
+          ],
+          "__module__": "fase.fase",
+          "orientation": 1,
+          "border": null,
+          "request_locale": false,
+          "displayed": true
+        }
+      ]
+    ],
+    "__module__": "fase.fase",
+    "on_more": null,
+    "title": "Notes",
+    "request_locale": false,
+    "displayed": true,
+    "scrollable": true
   }
 }
 ```
