@@ -1,5 +1,6 @@
 from server_util import activation_code_generator
 from server_util import config_util
+from server_util import device_pusher
 from server_util import sms_sender
 
 try:
@@ -30,8 +31,27 @@ def GetSMSSender(config):
           else None))
 
 
+def GetDevicePusher(config):
+  device_pusher_ = device_pusher.DevicePusher()
+  if config.has_section('ios'):
+    ios_device_push_service_provider = device_pusher.iOSDevicePushServiceProvider(
+        server_url=config.get('ios', 'server_url'),
+        key_id=config.get('ios', 'key_id'),
+        team_id=config.get('ios', 'team_id'),
+        key_file=config.get('ios', 'key_file'),
+        app_id=config.get('ios', 'app_id'))
+    device_pusher_.AddDevicePushServiceProvider(device_pusher.IOS, ios_device_push_service_provider)
+  if config.has_section('android'):
+    android_device_push_service_provider = device_pusher.AndroidDevicePushServiceProvider(
+        server_url=config.get('android', 'server_url'),
+        app_id=config.get('android', 'app_id'))
+    device_pusher_.AddDevicePushServiceProvider(device_pusher.ANDROID, android_device_push_service_provider)
+  return device_pusher_
+
+
 fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
 fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
 activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
+device_pusher.DevicePusher.Set(GetDevicePusher(config))
 fase_server.FaseServer.Set(fase_server.FaseServer())
