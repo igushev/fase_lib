@@ -16,6 +16,8 @@ try:
 except SystemError:
   import fase_database
 
+ACTIVATION_CODE_MSG = 'Your activation code is %d.'
+
 
 # Register itself as API implementation.
 fase_sign_in.fase_sign_in_impl = sys.modules[__name__]
@@ -338,7 +340,7 @@ def OnSignUpEnteredData(service, screen, element):
 
 def _OnEnteredData(service, screen, element, phone_number):
   activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
-  sms_sender.SMSSender.Get().SendActivationCode(phone_number, activation_code)
+  sms_sender.SMSSender.Get().Send(phone_number, ACTIVATION_CODE_MSG % activation_code)
   _CleanActivationVariables(service)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
   return OnActivationCodeSent(service, screen, element)

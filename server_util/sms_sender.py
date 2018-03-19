@@ -4,7 +4,6 @@ from collections import namedtuple
 from base_util import singleton_util
 
 
-ACTIVATION_CODE_MSG = 'Your activation code is %d.'
 THROW_ERROR = 'Include text to throw error'
 SMS = namedtuple('SMS', ['phone_number', 'message'])
 
@@ -61,5 +60,5 @@ class SMSSender(object):
     self.sms_service_provider = sms_service_provider
     self.intercept_to = intercept_to
 
-  def SendActivationCode(self, phone_number, activation_code):
-    self.sms_service_provider.Send(self.intercept_to or phone_number, ACTIVATION_CODE_MSG % activation_code)
+  def Send(self, phone_number, message):
+    self.sms_service_provider.Send(self.intercept_to or phone_number, message)
