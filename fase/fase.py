@@ -207,13 +207,25 @@ class User(data_util.AbstractObject):
       return self.phone_number
 
 
+@json_util.JSONDecorator({
+    'device_type': json_util.JSONString(),
+    'device_token': json_util.JSONString()})
+class Device(data_util.AbstractObject):
+
+  def __init__(self,
+               device_type=None,
+               device_token=None):
+    self.device_type = device_type
+    self.device_token = device_token
+
+
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
   """Basic Interface."""
   def __init__(self):
     super(Element, self).__init__()
 
-  def CallCallback(self, service, screen, method):
+  def CallCallback(self, service, screen, device, method):
     screen = getattr(self, method)(service, screen, self)
     return service, screen
 
@@ -1193,6 +1205,7 @@ class Screen(BaseElementsContainer):
      '_if_signed_in': json_util.JSONBool(),
      '_user_id': json_util.JSONString(),
      '_user': json_util.JSONObject(User),
+     '_device_list': json_util.JSONList(json_util.JSONObject(Device)),
      '_datetime_added': json_util.JSONDateTime()})
 class Service(VariableContainer):
   
@@ -1210,6 +1223,7 @@ class Service(VariableContainer):
     self._if_signed_in = False
     self._user_id = GenerateUserId(self._session_id)
     self._user = None
+    self._device_list = []
     self._datetime_added = datetime.datetime.now()
 
   def GetSessionId(self):
@@ -1220,4 +1234,3 @@ class Service(VariableContainer):
     return self._user_id
   def GetUser(self):
     return self._user
-

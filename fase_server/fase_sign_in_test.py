@@ -91,7 +91,7 @@ class FaseSignInTest(unittest.TestCase):
                       return_activation_code_enter=False):
     assert sign_in is not None
     # Create Service.
-    response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
+    response = fase_server.FaseServer.Get().GetService(fase.Device(device_type='iOS', device_token='Token'))
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -650,7 +650,7 @@ class FaseSignInTest(unittest.TestCase):
           overwrite=True)
   
       # Create Service.
-      response = fase_server.FaseServer.Get().GetService(fase_model.Device(device_type='iOS', device_token='Token'))
+      response = fase_server.FaseServer.Get().GetService(fase.Device(device_type='iOS', device_token='Token'))
       session_info = response.session_info
       screen_info = response.screen_info
       screen = response.screen

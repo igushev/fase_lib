@@ -57,7 +57,7 @@ def _ErrorAlert(service, message, on_click):
 class FaseSignInButton(fase.Button):
 
 
-  def CallCallback(self, service, screen, method):
+  def CallCallback(self, service, screen, device, method):
     assert method == fase.ON_CLICK_METHOD
     activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_int').GetValue()
     activation_code_text = (
@@ -106,7 +106,7 @@ class FaseSignInButton(fase.Button):
 @json_util.JSONDecorator({})
 class FaseSignOutButton(fase.Button):
 
-  def CallCallback(self, service, screen, method):
+  def CallCallback(self, service, screen, device, method):
     assert method == fase.ON_CLICK_METHOD
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
