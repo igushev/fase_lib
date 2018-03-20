@@ -90,6 +90,7 @@ class FaseSignInButton(fase.Button):
     service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
     if service_signed_in:
       # Retrieve sign in service and call.
+      service_signed_in._device_list.append(device)
       screen_signed_in = on_done(service_signed_in, user_id_before=user_id_before)
       return service_signed_in, screen_signed_in
     else:
@@ -110,10 +111,15 @@ class FaseSignOutButton(fase.Button):
     assert method == fase.ON_CLICK_METHOD
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
+    for i, device_signed_in in enumerate(service._device_list):
+      if device_signed_in == device:
+        del service._device_list[i]
+        break
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
 
     service_cls = fase.Service.service_cls
     service = service_cls()
+    service._device_list.append(device)
     screen = service.OnStart()
     return service, screen
 

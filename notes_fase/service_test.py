@@ -58,7 +58,7 @@ class NotesTest(unittest.TestCase):
         overwrite=True)
 
     # Create Service
-    response = fase_server.FaseServer.Get().GetService(fase.Device(device_type='iOS', device_token='Token'))
+    response = fase_server.FaseServer.Get().GetService(fase.Device(device_type='Python', device_token='Token'))
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen

@@ -80,6 +80,7 @@ class FaseServer(object):
     service_cls = fase.Service.service_cls
 
     service = service_cls()
+    service._device_list.append(device)
     screen_prog = fase_model.ScreenProg(
         session_id=service.GetSessionId(), screen=service.OnStart(), recent_device=device)
     fase_database.FaseDatabaseInterface.Get().AddService(service)
