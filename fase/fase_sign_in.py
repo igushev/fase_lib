@@ -8,3 +8,7 @@ def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_use
 
 def StartSignOut(service, on_cancel=None):
   return fase_sign_in_impl.StartSignOut(service, on_cancel=on_cancel)
+
+
+def GetUserIdByPhoneNumber(phone_number):
+  return fase_sign_in_impl.GetUserIdByPhoneNumber(phone_number)

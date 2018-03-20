@@ -17,7 +17,7 @@ ANDROID = 'Android'
 ANDROID_SOUND = 'default'
 
 THROW_ERROR = 'Include text to throw error'
-Notification = namedtuple('Notification', ['device_token', 'message'])
+Notification = namedtuple('Notification', ['device_token', 'title', 'message'])
 
 
 class UnknownDeviceTypeException(Exception):
@@ -127,10 +127,10 @@ class MockDevicePushServiceProvider(DevicePushServiceProviderInterface):
   def __init__(self):
     self.notifications = []
 
-  def Push(self, device, message):
+  def Push(self, device_token, title, message):
     if THROW_ERROR in message:
       raise MockDevicePushServiceProviderException()
-    self.notifications.append(Notification(device.device_token, message))
+    self.notifications.append(Notification(device_token, title, message))
 
 
 @singleton_util.Singleton()
@@ -141,6 +141,9 @@ class DevicePusher(object):
 
   def AddDevicePushServiceProvider(self, device_type, device_push_service_provider):
     self.device_push_service_provider_dict[device_type] = device_push_service_provider
+
+  def HasDevicePushServiceProvider(self, device_type):
+    return device_type in self.device_push_service_provider_dict
 
   def Push(self, device_type, device_token, title, message):
     device_push_service_provider = self.device_push_service_provider_dict[device_type]

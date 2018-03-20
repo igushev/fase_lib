@@ -418,3 +418,12 @@ def OnSignOutCancelOption(service, screen, element):
   on_cancel = service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method').GetValue()
   screen = on_cancel(service)
   return screen
+
+
+def GetUserIdByPhoneNumber(phone_number):
+  user_list = fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(phone_number)
+  if not user_list:
+    return None
+  assert len(user_list) == 1
+  user = next(iter(user_list))
+  return user.user_id
