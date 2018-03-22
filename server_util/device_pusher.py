@@ -16,7 +16,9 @@ IOS_HTTP_METHOD = 'POST'
 ANDROID = 'Android'
 ANDROID_SOUND = 'default'
 
-THROW_ERROR = 'Include text to throw error'
+UPDATE_THROW_ERROR = 'Include text to throw update error'
+DELETE_THROW_ERROR = 'Include text to throw delete error'
+PUSH_THROW_ERROR = 'Include text to throw push error'
 Notification = namedtuple('Notification', ['device_token', 'title', 'message'])
 
 
@@ -118,18 +120,19 @@ class NullDevicePushServiceProvider(DevicePushServiceProviderInterface):
     pass
 
 
-class MockDevicePushServiceProviderException(Exception):
-  pass
-
-
 class MockDevicePushServiceProvider(DevicePushServiceProviderInterface):
 
   def __init__(self):
     self.notifications = []
 
   def Push(self, device_token, title, message):
-    if THROW_ERROR in message:
-      raise MockDevicePushServiceProviderException()
+    if UPDATE_THROW_ERROR in message:
+      self.notifications.append(Notification(device_token, title, message))
+      raise UpdateDeviceTokenException(message[len(UPDATE_THROW_ERROR):])
+    elif DELETE_THROW_ERROR in message:
+      raise DeleteSessionException()
+    elif PUSH_THROW_ERROR in message:
+      raise PushNotificationException()
     self.notifications.append(Notification(device_token, title, message))
 
 

@@ -34,8 +34,8 @@ class FasePusherTest(unittest.TestCase):
     self.assertEqual('TestTitle', notification.title)
     self.assertEqual('TestMessage', notification.message)
 
-  def testGeneral(self):
-    device_pusher.DevicePusher.Set(device_pusher.DevicePusher())
+  def AddDevicePushServiceProviderAndService(self):
+    device_pusher.DevicePusher.Set(device_pusher.DevicePusher(), overwrite=True)
     device_type_1_provider = device_pusher.MockDevicePushServiceProvider()
     device_pusher.DevicePusher.Get().AddDevicePushServiceProvider('device_type_1', device_type_1_provider)
     device_type_2_provider = device_pusher.MockDevicePushServiceProvider()
@@ -48,9 +48,9 @@ class FasePusherTest(unittest.TestCase):
                      datetime_added=datetime.datetime.now())
     service = PusherTestService()
     service._session_id = fase_sign_in_impl.GenerateSignedInSessionId(user.user_id)
-    service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_type_1_1'))
-    service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_type_1_2'))
-    service._device_list.append(fase.Device(device_type='device_type_2', device_token='device_type_2_1'))
+    service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_token_1_1'))
+    service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_token_1_2'))
+    service._device_list.append(fase.Device(device_type='device_type_2', device_token='device_token_2_1'))
     screen = service.OnStart()
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
 
@@ -60,15 +60,44 @@ class FasePusherTest(unittest.TestCase):
             screen_prog_list=[screen_prog],
             user_list=[user]),
         overwrite=True)
+    return device_type_1_provider, device_type_2_provider, service, user
+
+  def testGeneral(self):
+    device_type_1_provider, device_type_2_provider, _, user = (
+        self.AddDevicePushServiceProviderAndService())
 
     fase_pusher.Push(user.user_id, 'TestTitle', 'TestMessage')
     
     self.assertEqual(2, len(device_type_1_provider.notifications))
-    self.AssertNotification('device_type_1_1', device_type_1_provider.notifications[0])
-    self.AssertNotification('device_type_1_2', device_type_1_provider.notifications[1])
+    self.AssertNotification('device_token_1_1', device_type_1_provider.notifications[0])
+    self.AssertNotification('device_token_1_2', device_type_1_provider.notifications[1])
     self.assertEqual(1, len(device_type_2_provider.notifications))
-    self.AssertNotification('device_type_2_1', device_type_2_provider.notifications[0])
+    self.AssertNotification('device_token_2_1', device_type_2_provider.notifications[0])
 
+  def testUpdate(self):
+    device_type_1_provider, device_type_2_provider, service, user = (
+        self.AddDevicePushServiceProviderAndService())
+
+    fase_pusher.Push(user.user_id, 'TestTitle', device_pusher.UPDATE_THROW_ERROR + 'device_token_1b')
+    
+    self.assertEqual(2, len(device_type_1_provider.notifications))
+    self.assertEqual(1, len(device_type_2_provider.notifications))
+
+    self.assertEqual(3, len(service._device_list))
+    self.assertEqual(fase.Device(device_type='device_type_1', device_token='device_token_1b'), service._device_list[0])
+    self.assertEqual(fase.Device(device_type='device_type_1', device_token='device_token_1b'), service._device_list[1])
+    self.assertEqual(fase.Device(device_type='device_type_2', device_token='device_token_1b'), service._device_list[2])
+
+  def testDelete(self):
+    device_type_1_provider, device_type_2_provider, service, user = (
+        self.AddDevicePushServiceProviderAndService())
+
+    fase_pusher.Push(user.user_id, 'TestTitle', device_pusher.DELETE_THROW_ERROR)
+    
+    self.assertEqual(0, len(device_type_1_provider.notifications))
+    self.assertEqual(0, len(device_type_2_provider.notifications))
+    self.assertEqual(0, len(service._device_list))
+    
 
 if __name__ == '__main__':
     unittest.main()
