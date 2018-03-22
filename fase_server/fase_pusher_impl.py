@@ -33,6 +33,6 @@ def Push(user_id, title, message):
         logging.error('Error pushing notification')
         logging.error(type(e))
         logging.error(str(e))
-      device_list.append(device)
+    device_list.append(device)
   service._device_list = device_list 
   service = fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
