@@ -19,6 +19,12 @@ MIN_AGE_YEARS = 13
 
 ADDED_EVENT_TO_USER_MSG = '%s has added you a new event'
 ADDED_EVENT_TO_WITNESS_MSG = '%s has asked you to witness an event' 
+ACCEPTED_EVENT_TO_USER_MSG = '%s accepted an event you asked them to witness'
+ACCEPTED_EVENT_TO_WITNESS_MSG = '%s accepted an event you added to them'
+REJECTED_EVENT_TO_USER_MSG = '%s rejected an event you asked them to witness'
+REJECTED_EVENT_TO_WITNESS_MSG = '%s rejected an event you added to them'
+DELETED_EVENT_ADDED_BY_USER_MSG = '%s deleted an event they asked you to witness'
+DELETED_EVENT_ADDED_BY_WITNESS_MSG = '%s deleted an event you added to them'
 
 
 def _ErrorAlert(service, message, on_click):
@@ -224,11 +230,14 @@ class KarmaCounter(fase.Service):
       user_event_header_frame.AddLabel(
           id_='user_event_score_label', text=str(user_event.score), font=1.5)
       if users_own:
-        friend_name = user_event.witness.display_name if user_event.witness is not None else None
-        user_event_header_frame.AddLabel(id_='user_event_friend_name_label', text=friend_name, size=fase.Label.MAX)
-      else:
+        friend_display_name = user_event.witness.display_name if user_event.witness is not None else None
+        friend_phone_number = user_event.witness.phone_number if user_event.witness is not None else None
         user_event_header_frame.AddLabel(
-            id_='user_event_friend_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
+            id_='user_event_friend_display_name_label', text=friend_display_name, size=fase.Label.MAX)
+      else:
+        friend_phone_number = user_event.user.phone_number
+        user_event_header_frame.AddLabel(
+            id_='user_event_friend_display_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
       user_event_header_frame.AddLabel(id_='user_event_date_label', text=user_event.display_datetime)
       user_event_frame.AddLabel(
           id_='user_event_description_label', text=user_event.description, alight=fase.Label.LEFT)
@@ -243,9 +252,11 @@ class KarmaCounter(fase.Service):
           accept_button = user_event_button_frame.AddButton(
               id_='user_event_accept_button', text='Accept', on_click=KarmaCounter.OnAccept)
           accept_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
+          accept_button.AddStringVariable(id_='friend_phone_number_str', value=friend_phone_number)
           reject_button = user_event_button_frame.AddButton(
               id_='user_event_reject_button', text='Reject', on_click=KarmaCounter.OnReject)
           reject_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
+          reject_button.AddStringVariable(id_='friend_phone_number_str', value=friend_phone_number)
 
       user_event_context_button = user_event_button_frame.AddButton(id_='user_event_context_menu_button')
       user_event_context_menu = user_event_context_button.AddContextMenu()
@@ -263,6 +274,7 @@ class KarmaCounter(fase.Service):
         delete_button = user_event_context_menu.AddMenuItem(
             id_='delete_menu_item', text='Delete', on_click=KarmaCounter.OnDelete)
         delete_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
+        delete_button.AddStringVariable(id_='friend_phone_number_str', value=friend_phone_number)
 
     self._AddButtons(screen)
     return screen
@@ -279,14 +291,45 @@ class KarmaCounter(fase.Service):
     func(user_event_info, session_info)
     return self.DisplayCurrentScreen(screen, element)
 
+  def _PushNotificationUserEventAction(self, element, users_own_message_template, not_users_own_message_template):
+    friend_phone_number = element.GetStringVariable(id_='friend_phone_number_str').GetValue()
+    if not friend_phone_number:
+      return
+    screen_label = self.GetStringVariable(id_='screen_label_str').GetValue()
+    if screen_label == 'your_events':
+      users_own = True
+    elif screen_label == 'your_friends_events':
+      users_own = False
+    else:
+      return
+    if users_own:
+      self._PushNotification(friend_phone_number, users_own_message_template % self.GetUser().DisplayName())
+    else:
+      self._PushNotification(friend_phone_number, not_users_own_message_template % self.GetUser().DisplayName())
+
   def OnAccept(self, screen, element):
-    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().AcceptUserEvent, screen, element)
+    screen = self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().AcceptUserEvent, screen, element)
+    self._PushNotificationUserEventAction(
+        element,
+        users_own_message_template=ACCEPTED_EVENT_TO_WITNESS_MSG,
+        not_users_own_message_template=ACCEPTED_EVENT_TO_USER_MSG)
+    return screen
 
   def OnReject(self, screen, element):
-    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().RejectUserEvent, screen, element)
+    screen = self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().RejectUserEvent, screen, element)
+    self._PushNotificationUserEventAction(
+        element,
+        users_own_message_template=REJECTED_EVENT_TO_WITNESS_MSG,
+        not_users_own_message_template=REJECTED_EVENT_TO_USER_MSG)
+    return screen
 
   def OnDelete(self, screen, element):
-    return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().DeleteUserEvent, screen, element)
+    screen = self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().DeleteUserEvent, screen, element)
+    self._PushNotificationUserEventAction(
+        element,
+        users_own_message_template=DELETED_EVENT_ADDED_BY_WITNESS_MSG,
+        not_users_own_message_template=DELETED_EVENT_ADDED_BY_USER_MSG)
+    return screen
 
   def OnReportAbuse(self, screen, element):
     return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().ReportAbuse, screen, element)
