@@ -3,16 +3,22 @@ import datetime
 from server_util import phone_number_verifier
 
 from fase import fase
+from fase import fase_pusher
 from fase import fase_sign_in
 
 from karmacounter_fase import client as kc_client
 from karmacounter_fase import data as kc_data
 
 
+APP_NAME = 'KarmaCounter'
+
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
 PHONE_IS_INVALID = 'Phone number format is invalid!'
 PHONE_NO_COUNTRY_CODE = 'Phone number country code could not be inferred! Please try to add explicitly!'
 MIN_AGE_YEARS = 13
+
+ADDED_EVENT_TO_USER_MSG = '%s has added you a new event'
+ADDED_EVENT_TO_WITNESS_MSG = '%s has asked you to witness an event' 
 
 
 def _ErrorAlert(service, message, on_click):
@@ -26,7 +32,11 @@ class KarmaCounter(fase.Service):
 
   @staticmethod
   def GetServiceId():
-    return 'KarmaCounter'
+    return APP_NAME
+
+  def _PushNotification(self, phone_number, message):
+    user_id = fase_sign_in.GetUserIdByPhoneNumber(phone_number)
+    fase_pusher.Push(user_id, APP_NAME, message)
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
@@ -163,25 +173,35 @@ class KarmaCounter(fase.Service):
   def OnAddUserEventEnteredData(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
     if self.GetBoolVariable(id_='adding_users_own_bool').GetValue():
+      witness_phone_number = (screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber()
+                              if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
+                              None)
+      if witness_phone_number is not None:
+        witness_phone_number = (
+            phone_number_verifier.Format(witness_phone_number, self.GetUser().GetLocale().GetCountryCode()))
+      witness_display_name = (screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName()
+                              if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
+                              None)
       new_user_event = kc_data.NewUserEvent(
           score=int(screen.GetSelect(id_='score_select').GetValue()),
           description=screen.GetText(id_='description_text').GetText(),
-          witness_phone_number=(screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber()
-                                if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
-                                None),
-          witness_display_name=(screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName()
-                                if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
-                                None),
+          witness_phone_number=witness_phone_number,
+          witness_display_name=witness_display_name,
           invite_witness=screen.GetSwitch(id_='invite_switch').GetValue())
       kc_client.KarmaCounterClient.Get().AddUserEvent(new_user_event, session_info)
+      self._PushNotification(witness_phone_number, ADDED_EVENT_TO_WITNESS_MSG % self.GetUser().DisplayName())
     else:
+      phone_number = screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber()
+      phone_number = phone_number_verifier.Format(phone_number, self.GetUser().GetLocale().GetCountryCode())
+      other_user_display_name = screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName()
       new_other_user_event = kc_data.NewOtherUserEvent(
           score=int(screen.GetSelect(id_='score_select').GetValue()),
           description=screen.GetText(id_='description_text').GetText(),
-          phone_number=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber(),
-          other_user_display_name=screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName(),
+          phone_number=phone_number,
+          other_user_display_name=other_user_display_name,
           invite_other_user=screen.GetSwitch(id_='invite_switch').GetValue())
       kc_client.KarmaCounterClient.Get().AddOtherUserEvent(new_other_user_event, session_info)
+      self._PushNotification(phone_number, ADDED_EVENT_TO_USER_MSG % self.GetUser().DisplayName())
     self.PopBoolVariable(id_='adding_users_own_bool')
     return self.DisplayCurrentScreen(screen, element)
 
