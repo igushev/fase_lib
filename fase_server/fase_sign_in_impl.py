@@ -13,8 +13,10 @@ from fase_model import fase_model
 
 try:
   from . import fase_database
+  from . import fase_demo_data
 except SystemError:
   import fase_database
+  import fase_demo_data
 
 ACTIVATION_CODE_MSG = 'Your activation code is %d.'
 
@@ -345,8 +347,11 @@ def OnSignUpEnteredData(service, screen, element):
 
 
 def _OnEnteredData(service, screen, element, phone_number):
-  activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
-  sms_sender.SMSSender.Get().Send(phone_number, ACTIVATION_CODE_MSG % activation_code)
+  if fase_demo_data.PhoneNumberIsDemo(phone_number):
+    activation_code = fase_demo_data.DEMO_ACTIVATION_CODE
+  else:
+    activation_code = activation_code_generator.ActivationCodeGenerator.Get().Generate()
+    sms_sender.SMSSender.Get().Send(phone_number, ACTIVATION_CODE_MSG % activation_code)
   _CleanActivationVariables(service)
   service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code)
   return OnActivationCodeSent(service, screen, element)
