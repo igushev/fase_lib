@@ -1,6 +1,8 @@
 import json
 import unittest
 
+from base_util import json_util
+
 from fase import fase
 from fase_model import fase_model
 
@@ -13,6 +15,22 @@ from hello_world_fase import service as hello_world_service
 
 STATUS_OK = '200 OK'
 STATUS_BAD_REQUEST = '400 BAD REQUEST'
+
+
+def CleanSimple(simple):
+  if isinstance(simple, list):
+    return [CleanSimple(nested_simple) for nested_simple in simple]
+  elif isinstance(simple, dict):
+    clean_simple = {}
+    for nested_key, nested_simple in simple.items():
+      if nested_key in [fase.ON_CLICK_METHOD, fase.ON_PICK_METHOD, fase.ON_REFRESH_METHOD, fase.ON_MORE_METHOD]:
+        clean_simple[nested_key] = (
+            json_util.JSONFunction().ToSimple(fase.FunctionPlaceholder) if nested_simple is not None else None)
+      else:
+        clean_simple[nested_key] = CleanSimple(nested_simple)
+    return clean_simple
+  else:
+    return simple
 
 
 class ApplicationTest(unittest.TestCase):
@@ -58,7 +76,9 @@ class ApplicationTest(unittest.TestCase):
         '/getservice',
         data=json.dumps(device.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
+    response_simple = json.loads(result.data.decode('utf-8'))
+    response_simple = CleanSimple(response_simple)
+    response = fase_model.Response.FromSimple(response_simple)
     return response
 
   def _GetScreen(self, device, session_info):
@@ -67,7 +87,9 @@ class ApplicationTest(unittest.TestCase):
         headers={'session_id': session_info.session_id},
         data=json.dumps(device.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
+    response_simple = json.loads(result.data.decode('utf-8'))
+    response_simple = CleanSimple(response_simple)
+    response = fase_model.Response.FromSimple(response_simple)
     return response
 
   def _ScreenUpdate(self, screen_update, session_info, screen_info):
@@ -76,7 +98,9 @@ class ApplicationTest(unittest.TestCase):
         headers={'session_id': session_info.session_id, 'screen_id': screen_info.screen_id},
         data=json.dumps(screen_update.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
+    response_simple = json.loads(result.data.decode('utf-8'))
+    response_simple = CleanSimple(response_simple)
+    response = fase_model.Response.FromSimple(response_simple)
     return response
 
   def _ElementCallback(self, element_callback, session_info, screen_info):
@@ -85,7 +109,9 @@ class ApplicationTest(unittest.TestCase):
         headers={'session_id': session_info.session_id, 'screen_id': screen_info.screen_id},
         data=json.dumps(element_callback.ToSimple()))
     self.AssertResultStatus(STATUS_OK, result)
-    response = fase_model.Response.FromSimple(json.loads(result.data.decode('utf-8')))
+    response_simple = json.loads(result.data.decode('utf-8'))
+    response_simple = CleanSimple(response_simple)
+    response = fase_model.Response.FromSimple(response_simple)
     return response
 
   def testSendInternalCommand(self):

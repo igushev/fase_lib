@@ -34,7 +34,7 @@ def CleanSimple(simple):
     for nested_key, nested_simple in simple.items():
       if nested_key in [fase.ON_CLICK_METHOD, fase.ON_PICK_METHOD, fase.ON_REFRESH_METHOD, fase.ON_MORE_METHOD]:
         clean_simple[nested_key] = (
-            json_util.JSONFunction().ToSimple(fase.FunctionPlaceholder) if nested_simple is not None else None)
+            fase_model.Method(method=nested_key).ToSimple() if nested_simple is not None else None)
       elif nested_key == json_util.MODULE_FIELD and nested_simple == fase_sign_in_impl.__name__:
         clean_simple[nested_key] = fase.__name__
       elif (nested_key == json_util.CLASS_FIELD and (nested_simple == fase_sign_in_impl.FaseSignInButton.__name__ or

@@ -125,6 +125,14 @@ class Response(data_util.AbstractObject):
 
 
 @json_util.JSONDecorator({
+    'method': json_util.JSONString()})
+class Method(data_util.AbstractObject):
+
+  def __init__(self, method):
+    self.method = method
+
+
+@json_util.JSONDecorator({
     'command': json_util.JSONString()})
 class Command(data_util.AbstractObject):
 

@@ -8,6 +8,22 @@ from fase import fase
 from fase_model import fase_model
 
 
+def CleanSimple(simple):
+  if isinstance(simple, list):
+    return [CleanSimple(nested_simple) for nested_simple in simple]
+  elif isinstance(simple, dict):
+    clean_simple = {}
+    for nested_key, nested_simple in simple.items():
+      if nested_key in [fase.ON_CLICK_METHOD, fase.ON_PICK_METHOD, fase.ON_REFRESH_METHOD, fase.ON_MORE_METHOD]:
+        clean_simple[nested_key] = (
+            json_util.JSONFunction().ToSimple(fase.FunctionPlaceholder) if nested_simple is not None else None)
+      else:
+        clean_simple[nested_key] = CleanSimple(nested_simple)
+    return clean_simple
+  else:
+    return simple
+
+
 class FaseHTTPClient(object):
 
   def __init__(self, server_url):
@@ -24,6 +40,7 @@ class FaseHTTPClient(object):
     http_response = requests.post(url, json=device_simple)
     self.AssertStatus(http_response)
     response_simple = http_response.json()
+    response_simple = CleanSimple(response_simple)
     response = fase_model.Response.FromSimple(response_simple)
     return response
 
@@ -34,6 +51,7 @@ class FaseHTTPClient(object):
     http_response = requests.post(url, headers=headers, json=device_simple)
     self.AssertStatus(http_response)
     response_simple = http_response.json()
+    response_simple = CleanSimple(response_simple)
     response = fase_model.Response.FromSimple(response_simple)
     return response
 
@@ -44,6 +62,7 @@ class FaseHTTPClient(object):
     http_response = requests.post(url, headers=headers, json=screen_update_simple)
     self.AssertStatus(http_response)
     response_simple = http_response.json()
+    response_simple = CleanSimple(response_simple)
     response = fase_model.Response.FromSimple(response_simple)
     return response
     
@@ -54,6 +73,7 @@ class FaseHTTPClient(object):
     http_response = requests.post(url, headers=headers, json=element_callback_simple)
     self.AssertStatus(http_response)
     response_simple = http_response.json()
+    response_simple = CleanSimple(response_simple)
     response = fase_model.Response.FromSimple(response_simple)
     return response
 
