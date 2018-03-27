@@ -97,6 +97,10 @@ class Contact(data_util.AbstractObject):
     return self.phone_number
 
 
+@json_util.JSONDecorator(
+    {'date_of_birth': json_util.JSONBool(),
+     'home_city': json_util.JSONBool(),
+     'min_date_of_birth': json_util.JSONDateTime()})
 class RequestUserData(object):
 
   def __init__(self,

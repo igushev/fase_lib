@@ -77,9 +77,7 @@ class FaseSignInButton(fase.Button):
       service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
-    service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
-    service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
-    service.PopDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth')
+    service.PopStringVariable(id_='fase_sign_in_request_user_data')
     user_id = service.PopStringVariable('fase_sign_in_user_id_str').GetValue()
     # NOTE(igushev): We should either lookup by user_id and service_id and have deterministic hash.
     session_id_signed_in = GenerateSignedInSessionId(user_id)
@@ -135,13 +133,8 @@ def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_use
     service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
   
   # Requested user data.
-  service.AddBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth',
-                          value=(request_user_data is not None and request_user_data.date_of_birth))
-  service.AddBoolVariable(id_='fase_sign_in_request_user_data_home_city',
-                          value=(request_user_data is not None and request_user_data.home_city))
-  service.AddDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth',
-                              value=(request_user_data.min_date_of_birth if request_user_data is not None else None))
-
+  request_user_data = request_user_data or fase.RequestUserData()
+  service.AddStringVariable(id_='fase_sign_in_request_user_data', value=request_user_data.ToJSON())
   return OnSignInStart(service, None, None)
 
 
@@ -193,10 +186,8 @@ def OnSignInEnteredData(service, screen, element):
   service.AddStringVariable(id_='fase_sign_in_user_id_str', value=user.user_id)
 
   # Requested user data.
-  request_user_data = fase.RequestUserData(
-      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
-      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
-      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
+  request_user_data = fase.RequestUserData.FromJSON(
+      service.GetStringVariable(id_='fase_sign_in_request_user_data').GetValue())
   if ((request_user_data.date_of_birth and user.date_of_birth is None) or
       (request_user_data.home_city and user.home_city is None)):
     return _OnRequestUserData(service, screen, element, request_user_data, user)
@@ -226,10 +217,8 @@ def OnRequestUserDataEnteredData(service, screen, element):
   user = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id)
 
   # Requested user data.
-  request_user_data = fase.RequestUserData(
-      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
-      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
-      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
+  request_user_data = fase.RequestUserData.FromJSON(
+      service.GetStringVariable(id_='fase_sign_in_request_user_data').GetValue())
   enter_frame = screen.GetElement(id_='enter_frame_id')
 
   if request_user_data.date_of_birth and user.date_of_birth is None:
@@ -260,10 +249,8 @@ def OnSignUpOption(service, screen, element):
   sign_up_frame.AddText(id_='last_name_text_id', hint='Last Name')
 
   # Requested user data.
-  request_user_data = fase.RequestUserData(
-      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
-      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
-      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
+  request_user_data = fase.RequestUserData.FromJSON(
+      service.GetStringVariable(id_='fase_sign_in_request_user_data').GetValue())
 
   if request_user_data.date_of_birth:
     sign_up_frame.AddDateTimePicker(id_='date_of_birth_date_picker', type_=fase.DateTimePicker.DATE,
@@ -309,10 +296,8 @@ def OnSignUpEnteredData(service, screen, element):
   last_name = sign_up_frame.GetText(id_='last_name_text_id').GetText()
 
   # Requested user data.
-  request_user_data = fase.RequestUserData(
-      date_of_birth=service.GetBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth').GetValue(),
-      home_city=service.GetBoolVariable(id_='fase_sign_in_request_user_data_home_city').GetValue(),
-      min_date_of_birth=service.GetDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth').GetValue())
+  request_user_data = fase.RequestUserData.FromJSON(
+      service.GetStringVariable(id_='fase_sign_in_request_user_data').GetValue())
 
   if request_user_data.date_of_birth:
     date_of_birth = sign_up_frame.GetDateTimePicker(id_='date_of_birth_date_picker').GetDateTime()
@@ -372,9 +357,7 @@ def OnSignInSkipOption(service, screen, element):
   on_skip = service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method').GetValue()
   if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
     service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
-  service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
-  service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
-  service.PopDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth')
+  service.PopStringVariable(id_='fase_sign_in_request_user_data')
   _CleanUserVariables(service)
   _CleanActivationVariables(service)
   screen = on_skip(service)
@@ -386,9 +369,7 @@ def OnSignInCancelOption(service, screen, element):
   if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
     service.PopFunctionVariable(id_='fase_sign_in_on_skip_class_method')
   on_cancel = service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method').GetValue()
-  service.PopBoolVariable(id_='fase_sign_in_request_user_data_date_of_birth')
-  service.PopBoolVariable(id_='fase_sign_in_request_user_data_home_city')
-  service.PopDateTimeVariable(id_='fase_sign_in_request_user_data_min_date_of_birth')
+  service.PopStringVariable(id_='fase_sign_in_request_user_data')
   _CleanUserVariables(service)
   _CleanActivationVariables(service)
   screen = on_cancel(service)
