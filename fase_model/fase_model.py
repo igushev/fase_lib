@@ -176,5 +176,5 @@ def DictToElementsUpdate(id_list_to_value):
 def GetScreenElement(screen, id_list):
   element = screen
   for id_ in id_list:
-    element = element.GetElement(id_)
+    element = element.GetElement(id_=id_)
   return element

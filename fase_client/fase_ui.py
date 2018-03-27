@@ -35,10 +35,10 @@ class FaseUI(object):
       self.DrawMoreButton([], ui_imp_window)
 
   def DrawNextPrevButtonsTitle(self, screen):
-    next_button_element = (screen.GetElement(fase.NEXT_STEP_BUTTON_ID)
-                           if screen.HasElement(fase.NEXT_STEP_BUTTON_ID) else None)
-    prev_button_element = (screen.GetElement(fase.PREV_STEP_BUTTON_ID)
-                           if screen.HasElement(fase.PREV_STEP_BUTTON_ID) else None)
+    next_button_element = (screen.GetElement(id_=fase.NEXT_STEP_BUTTON_ID)
+                           if screen.HasElement(id_=fase.NEXT_STEP_BUTTON_ID) else None)
+    prev_button_element = (screen.GetElement(id_=fase.PREV_STEP_BUTTON_ID)
+                           if screen.HasElement(id_=fase.PREV_STEP_BUTTON_ID) else None)
     self.ui_imp.PrepareScreenNextPrevButtonsTitle(
         next_button=next_button_element is not None, prev_button=prev_button_element is not None,
         title=screen.GetTitle(), title_image=(screen.GetTitleImage() if screen.HasTitleImage() else None))
@@ -54,8 +54,10 @@ class FaseUI(object):
       self._DrawButtonContextMenu([fase.PREV_STEP_BUTTON_ID], prev_button_element, ui_imp_prev_button)
 
   def DrawMainButtonAndNavigation(self, screen):
-    main_button_element = screen.GetElement(fase.MAIN_BUTTON_ID) if screen.HasElement(fase.MAIN_BUTTON_ID) else None
-    navigation_element = screen.GetElement(fase.NAVIGATION_ID) if screen.HasElement(fase.NAVIGATION_ID) else None 
+    main_button_element = (screen.GetElement(id_=fase.MAIN_BUTTON_ID)
+                           if screen.HasElement(id_=fase.MAIN_BUTTON_ID) else None)
+    navigation_element = (screen.GetElement(id_=fase.NAVIGATION_ID)
+                          if screen.HasElement(id_=fase.NAVIGATION_ID) else None) 
     nav_button_id_element_list = navigation_element.GetIdElementList() if navigation_element else []
     self.ui_imp.PrepareScreenMainButtonAndNavigation(
         main_button=main_button_element is not None, nav_button_num=len(nav_button_id_element_list))

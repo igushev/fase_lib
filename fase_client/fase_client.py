@@ -104,7 +104,7 @@ class FaseClient(object):
   def ProcessResponse(self, response):
     if response.resources:
       self.resource_manager.PreloadResources(response.resources)
-    while response.screen is not None and response.screen.HasElement(fase.ALERT_ID):
+    while response.screen is not None and response.screen.HasElement(id_=fase.ALERT_ID):
       alert = response.screen.PopElement(fase.ALERT_ID)
       id_list, method = self.ui.ShowAlert(alert)
       element_callback = fase_model.ElementCallback(id_list=id_list, method=method, device=self.device)

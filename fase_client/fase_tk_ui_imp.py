@@ -559,15 +559,7 @@ class FaseTkUIImp(object):
     ui_imp_var.trace('w', ElementUpdatedCallback(self, id_list))
     ui_imp_select = tkinter.Spinbox(ui_imp_parent.GetUIImpParent(), values=select_element.GetItems(),
                                     textvariable=ui_imp_var)
-
-    if select_element.GetAlight() is not None:
-      if select_element.GetAlight() == fase.Switch.LEFT:
-        anchor = 'w'
-      elif select_element.GetAlight() == fase.Switch.RIGHT:
-        anchor = 'e'
-      elif select_element.GetAlight() == fase.Switch.CENTER:
-        anchor = 'center'
-      ui_imp_select.configure(anchor=anchor)
+    # Ignore select_element.GetAlight() since not supported.
 
     if select_element.GetDisplayed():
       ui_imp_select.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),

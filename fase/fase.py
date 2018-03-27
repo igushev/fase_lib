@@ -243,24 +243,24 @@ class ElementContainer(Element):
     super(ElementContainer, self).__init__()
     self.id_element_list = []
 
-  def AddElement(self, id_, element):
-    assert not self.HasElement(id_)
+  def AddElement(self, *, id_, element):
+    assert not self.HasElement(id_=id_)
     self.id_element_list.append((id_, element))
     return element
 
-  def HasElement(self, id_):
+  def HasElement(self, *, id_):
     for id_in_list, _ in self.id_element_list:
       if id_in_list == id_:
         return True
     return False
 
-  def GetElement(self, id_):
+  def GetElement(self, *, id_):
     for id_in_list, value in self.id_element_list:
       if id_in_list == id_:
         return value
     raise KeyError(id_)
 
-  def PopElement(self, id_):
+  def PopElement(self, *, id_):
     for i, (id_in_list, value) in enumerate(self.id_element_list):
       if id_in_list == id_:
         del self.id_element_list[i]
@@ -366,59 +366,59 @@ class VariableContainer(ElementContainer):
   def __init__(self):
     super(VariableContainer, self).__init__()
 
-  def AddIntVariable(self, id_, value):
-    return self.AddElement(id_, IntVariable(value))
-  def HasIntVariable(self, id_):
-    return self.HasElement(id_)
-  def GetIntVariable(self, id_):
-    return self.GetElement(id_)
-  def PopIntVariable(self, id_):
-    return self.PopElement(id_)
+  def AddIntVariable(self, *, id_, value):
+    return self.AddElement(id_=id_, element=IntVariable(value))
+  def HasIntVariable(self, *, id_):
+    return self.HasElement(id_=id_)
+  def GetIntVariable(self, *, id_):
+    return self.GetElement(id_=id_)
+  def PopIntVariable(self, *, id_):
+    return self.PopElement(id_=id_)
 
-  def AddFloatVariable(self, id_, value):
-    return self.AddElement(id_, FloatVariable(value))
-  def HasFloatVariable(self, id_):
-    return self.HasElement(id_)
-  def GetFloatVariable(self, id_):
-    return self.GetElement(id_)
-  def PopFloatVariable(self, id_):
-    return self.PopElement(id_)
+  def AddFloatVariable(self, *, id_, value):
+    return self.AddElement(id_=id_, element=FloatVariable(value))
+  def HasFloatVariable(self, *, id_):
+    return self.HasElement(id_=id_)
+  def GetFloatVariable(self, *, id_):
+    return self.GetElement(id_=id_)
+  def PopFloatVariable(self, *, id_):
+    return self.PopElement(id_=id_)
 
-  def AddStringVariable(self, id_, value):
-    return self.AddElement(id_, StringVariable(value))
-  def HasStringVariable(self, id_):
-    return self.HasElement(id_)
-  def GetStringVariable(self, id_):
-    return self.GetElement(id_)
-  def PopStringVariable(self, id_):
-    return self.PopElement(id_)
+  def AddStringVariable(self, *, id_, value):
+    return self.AddElement(id_=id_, element=StringVariable(value))
+  def HasStringVariable(self, *, id_):
+    return self.HasElement(id_=id_)
+  def GetStringVariable(self, *, id_):
+    return self.GetElement(id_=id_)
+  def PopStringVariable(self, *, id_):
+    return self.PopElement(id_=id_)
 
-  def AddBoolVariable(self, id_, value):
-    return self.AddElement(id_, BoolVariable(value))
-  def HasBoolVariable(self, id_):
-    return self.HasElement(id_)
-  def GetBoolVariable(self, id_):
-    return self.GetElement(id_)
-  def PopBoolVariable(self, id_):
-    return self.PopElement(id_)
+  def AddBoolVariable(self, *, id_, value):
+    return self.AddElement(id_=id_, element=BoolVariable(value))
+  def HasBoolVariable(self, *, id_):
+    return self.HasElement(id_=id_)
+  def GetBoolVariable(self, *, id_):
+    return self.GetElement(id_=id_)
+  def PopBoolVariable(self, *, id_):
+    return self.PopElement(id_=id_)
 
-  def AddDateTimeVariable(self, id_, value):
-    return self.AddElement(id_, DateTimeVariable(value))
-  def HasDateTimeVariable(self, id_):
-    return self.HasElement(id_)
-  def GetDateTimeVariable(self, id_):
-    return self.GetElement(id_)
-  def PopDateTimeVariable(self, id_):
-    return self.PopElement(id_)
+  def AddDateTimeVariable(self, *, id_, value):
+    return self.AddElement(id_=id_, element=DateTimeVariable(value))
+  def HasDateTimeVariable(self, *, id_):
+    return self.HasElement(id_=id_)
+  def GetDateTimeVariable(self, *, id_):
+    return self.GetElement(id_=id_)
+  def PopDateTimeVariable(self, *, id_):
+    return self.PopElement(id_=id_)
 
-  def AddFunctionVariable(self, id_, value):
-    return self.AddElement(id_, FunctionVariable(value))
-  def HasFunctionVariable(self, id_):
-    return self.HasElement(id_)
-  def GetFunctionVariable(self, id_):
-    return self.GetElement(id_)
-  def PopFunctionVariable(self, id_):
-    return self.PopElement(id_)
+  def AddFunctionVariable(self, *, id_, value):
+    return self.AddElement(id_=id_, element=FunctionVariable(value))
+  def HasFunctionVariable(self, *, id_):
+    return self.HasElement(id_=id_)
+  def GetFunctionVariable(self, *, id_):
+    return self.GetElement(id_=id_)
+  def PopFunctionVariable(self, *, id_):
+    return self.PopElement(id_=id_)
 
 
 @json_util.JSONDecorator(
@@ -470,8 +470,7 @@ class Label(VisualElement):
                alight=None,
                on_click=None):
     super(Label, self).__init__()
-    assert text is not None
-    self.text = text
+    self.text = text  # Can be None
     self.font = font or 1.
     self.size = size or Label.MIN
     self.alight = alight or Label.CENTER
@@ -596,8 +595,7 @@ class Select(VisualElement):
                hint=None,
                alight=None):
     super(Select, self).__init__()
-    assert value is not None
-    self.value = value
+    self.value = value  # Can be None, since should be entered
     assert len(items) > 0
     self.items = items
     self.hint = hint  # Can be None
@@ -701,11 +699,11 @@ class MenuItem(VisualElement):
     return self.text
 
   def AddImage(self, image):
-    return self.AddElement(IMAGE_ID, image)
+    return self.AddElement(id_=IMAGE_ID, element=image)
   def HasImage(self):
-    return self.HasElement(IMAGE_ID)
+    return self.HasElement(id_=IMAGE_ID)
   def GetImage(self):
-    return self.GetElement(IMAGE_ID)
+    return self.GetElement(id_=IMAGE_ID)
 
   def GetOnClick(self):
     return self.on_click
@@ -721,16 +719,16 @@ class Menu(ElementContainer):
   def GetText(self):
     return self.text
 
-  def AddMenuItem(self, id_,
+  def AddMenuItem(self, *,
+                  id_=None,
                   text=None,
                   image=None,
                   on_click=None):
-    menu_item = MenuItem(text=text,
-                         image=image,
-                         on_click=on_click)
-    return self.AddElement(id_, menu_item)
-  def GetMenuItem(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=MenuItem(text=text,
+                                                     image=image,
+                                                     on_click=on_click))
+  def GetMenuItem(self, *, id_):
+    return self.GetElement(id_=id_)
 
 
 @json_util.JSONDecorator(
@@ -755,21 +753,21 @@ class Button(VisualElement):
     return self.text
 
   def AddImage(self, image):
-    return self.AddElement(IMAGE_ID, image)
+    return self.AddElement(id_=IMAGE_ID, element=image)
   def HasImage(self):
-    return self.HasElement(IMAGE_ID)
+    return self.HasElement(id_=IMAGE_ID)
   def GetImage(self):
-    return self.GetElement(IMAGE_ID)
+    return self.GetElement(id_=IMAGE_ID)
 
   def GetOnClick(self):
     return self.on_click
 
   def AddContextMenu(self, text=None):
-    return self.AddElement(CONTEXT_MENU_ID, Menu(text=text))
+    return self.AddElement(id_=CONTEXT_MENU_ID, element=Menu(text=text))
   def HasContextMenu(self):
-    return self.HasElement(CONTEXT_MENU_ID)
+    return self.HasElement(id_=CONTEXT_MENU_ID)
   def GetContextMenu(self):
-    return self.GetElement(CONTEXT_MENU_ID)
+    return self.GetElement(id_=CONTEXT_MENU_ID)
 
 
 @json_util.JSONDecorator({})
@@ -777,16 +775,16 @@ class Navigation(ElementContainer):
   def __init__(self):
     super(Navigation, self).__init__()
 
-  def AddButton(self, id_,
+  def AddButton(self, *,
+                id_=None,
                 text=None,
                 image=None,
                 on_click=None):
-    button = Button(text=text,
-                    image=image,
-                    on_click=on_click)
-    return self.AddElement(id_, button)
-  def GetButton(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Button(text=text,
+                                                   image=image,
+                                                   on_click=on_click))
+  def GetButton(self, *, id_):
+    return self.GetElement(id_=id_)
     
 
 @json_util.JSONDecorator(
@@ -965,117 +963,127 @@ class BaseElementsContainer(VisualElement):
   def __init__(self):
     super(BaseElementsContainer, self).__init__()
 
-  def AddFrame(self, id_,
+  def AddFrame(self, *,
+               id_=None,
                orientation=None,
                size=None,
                border=None,
                on_click=None):
-    return self.AddElement(id_, Frame(orientation=orientation,
-                                      size=size,
-                                      border=border,
-                                      on_click=on_click))
-  def GetFrame(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Frame(orientation=orientation, size=size, border=border, on_click=on_click))
+  def GetFrame(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddLabel(self, id_,
+  def AddLabel(self, *,
+               id_=None,
                text=None,
                font=None,
                size=None,
                alight=None):
-    return self.AddElement(id_, Label(text=text, font=font, size=size, alight=alight))
-  def GetLabel(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Label(text=text, font=font, size=size, alight=alight))
+  def GetLabel(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddText(self, id_,
-               text=None,
-               hint=None,
-               size=None,
-               type_=None,
-               multiline=None):
-    return self.AddElement(id_, Text(text=text, hint=hint, size=size, type_=type_, multiline=multiline))
-  def GetText(self, id_):
-    return self.GetElement(id_)
+  def AddText(self, *,
+              id_=None,
+              text=None,
+              hint=None,
+              size=None,
+              type_=None,
+              multiline=None):
+    return self.AddElement(id_=id_, element=Text(text=text, hint=hint, size=size, type_=type_, multiline=multiline))
+  def GetText(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddSwitch(self, id_,
+  def AddSwitch(self, *,
+                id_=None,
                 value=None,
                 text=None,
                 alight=None):
-    return self.AddElement(id_, Switch(value=value, text=text, alight=alight))
-  def GetSwitch(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Switch(value=value, text=text, alight=alight))
+  def GetSwitch(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddSelect(self, id_,
+  def AddSelect(self, *,
+                id_=None,
                 value=None,
                 items=None,
                 hint=None,
                 alight=None):
-    return self.AddElement(id_, Select(value=value, items=items, hint=hint, alight=alight))
-  def GetSelect(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Select(value=value, items=items, hint=hint, alight=alight))
+  def GetSelect(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddImage(self, id_,
+  def AddImage(self, *,
+               id_=None,
                filename=None,
                url=None):
-    return self.AddElement(id_, Image(filename=filename, url=url))
-  def GetImage(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Image(filename=filename, url=url))
+  def GetImage(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddSlider(self, id_,
+  def AddSlider(self, *,
+                id_=None,
                 value=None,
                 min_value=None,
                 max_value=None,
                 step=None):
-    return self.AddElement(id_, Slider(value=value, min_value=min_value, max_value=max_value, step=step))
-  def GetSlider(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Slider(value=value, min_value=min_value, max_value=max_value, step=step))
+  def GetSlider(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddButton(self, id_,
-               text=None,
-               image=None,
-               on_click=None):
-    return self.AddElement(id_, Button(text=text, on_click=on_click, image=image))
-  def GetButton(self, id_):
-    return self.GetElement(id_)
+  def AddButton(self, *,
+                id_=None,
+                text=None,
+                image=None,
+                on_click=None):
+    return self.AddElement(id_=id_, element=Button(text=text, on_click=on_click, image=image))
+  def GetButton(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddContactPicker(self, id_,
+  def AddContactPicker(self, *,
+                       id_=None,
                        contact=None,
                        hint=None,
                        size=None,
                        on_pick=None):
-    return self.AddElement(id_, ContactPicker(contact=contact, hint=hint, size=size, on_pick=on_pick))
-  def GetContactPicker(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=ContactPicker(contact=contact, hint=hint, size=size, on_pick=on_pick))
+  def GetContactPicker(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddDateTimePicker(self, id_,
+  def AddDateTimePicker(self, *,
+                        id_=None,
                         datetime_=None,
                         type_=None,
                         hint=None,
                         size=None):
-    return self.AddElement(id_, DateTimePicker(datetime_=datetime_, type_=type_, hint=hint, size=size))
-  def GetDateTimePicker(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=DateTimePicker(datetime_=datetime_, type_=type_, hint=hint, size=size))
+  def GetDateTimePicker(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddPlacePicker(self, id_,
+  def AddPlacePicker(self, *,
+                     id_=None,
                      place=None,
                      type_=None,
                      hint=None,
                      size=None):
-    return self.AddElement(id_, PlacePicker(place=place, type_=type_, hint=hint, size=size))
-  def GetPlacePicker(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=PlacePicker(place=place, type_=type_, hint=hint, size=size))
+  def GetPlacePicker(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddSeparator(self, id_):
-    return self.AddElement(id_, Separator())
-  def GetSeparator(self, id_):
-    return self.GetElement(id_)
+  def AddSeparator(self, *,
+                   id_=None):
+    return self.AddElement(id_=id_, element=Separator())
+  def GetSeparator(self, *, id_):
+    return self.GetElement(id_=id_)
 
-  def AddWeb(self, id_,
+  def AddWeb(self, *,
+             id_=None,
              url=None,
              size=None,
              scrollable=None):
-    return self.AddElement(id_, Web(url=url, size=size, scrollable=scrollable))
-  def GetWeb(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Web(url=url, size=size, scrollable=scrollable))
+  def GetWeb(self, *, id_):
+    return self.GetElement(id_=id_)
 
 
 @json_util.JSONDecorator(
@@ -1127,16 +1135,16 @@ class Alert(ElementContainer):
   def GetText(self):
     return self.text
 
-  def AddButton(self, id_,
+  def AddButton(self, *,
+                id_=None,
                 text=None,
                 image=None,
                 on_click=None):
-    button = Button(text=text,
-                    image=image,
-                    on_click=on_click)
-    return self.AddElement(id_, button)
-  def GetButton(self, id_):
-    return self.GetElement(id_)
+    return self.AddElement(id_=id_, element=Button(text=text,
+                                                   image=image,
+                                                   on_click=on_click))
+  def GetButton(self, *, id_):
+    return self.GetElement(id_=id_)
 
 
 @json_util.JSONDecorator(
@@ -1173,11 +1181,11 @@ class Screen(BaseElementsContainer):
 
   def AddTitleImage(self, title_image):
     assert self.title is None
-    return self.AddElement(TITLE_IMAGE_ID, title_image)
+    return self.AddElement(id_=TITLE_IMAGE_ID, element=title_image)
   def HasTitleImage(self):
-    return self.HasElement(TITLE_IMAGE_ID)
+    return self.HasElement(id_=TITLE_IMAGE_ID)
   def GetTitleImage(self):
-    return self.GetElement(TITLE_IMAGE_ID)
+    return self.GetElement(id_=TITLE_IMAGE_ID)
 
   def SetOnRefresh(self, on_refresh):
     self.on_refresh = on_refresh
@@ -1190,29 +1198,29 @@ class Screen(BaseElementsContainer):
     return self.on_more
 
   def AddMainButton(self, text=None, image=None, on_click=None):
-    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, image=image, on_click=on_click))
+    return self.AddElement(id_=MAIN_BUTTON_ID, element=Button(text=text, image=image, on_click=on_click))
   def GetMainButton(self):
-    return self.GetElement(MAIN_BUTTON_ID)
+    return self.GetElement(id_=MAIN_BUTTON_ID)
 
   def AddNavigation(self):
-    return self.AddElement(NAVIGATION_ID, Navigation())
+    return self.AddElement(id_=NAVIGATION_ID, element=Navigation())
   def GetNavigation(self):
-    return self.GetElement(NAVIGATION_ID)
+    return self.GetElement(id_=NAVIGATION_ID)
 
   def AddNextStepButton(self, text=None, image=None, on_click=None):
-    return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, image=image, on_click=on_click))
+    return self.AddElement(id_=NEXT_STEP_BUTTON_ID, element=Button(text=text, image=image, on_click=on_click))
   def GetNextStepButton(self):
-    return self.GetElement(NEXT_STEP_BUTTON_ID)
+    return self.GetElement(id_=NEXT_STEP_BUTTON_ID)
 
   def AddPrevStepButton(self, text=None, image=None, on_click=None):
-    return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, image=image, on_click=on_click))
+    return self.AddElement(id_=PREV_STEP_BUTTON_ID, element=Button(text=text, image=image, on_click=on_click))
   def GetPrevStepButton(self):
-    return self.GetElement(PREV_STEP_BUTTON_ID)
+    return self.GetElement(id_=PREV_STEP_BUTTON_ID)
 
   def AddAlert(self, text=None):
-    return self.AddElement(ALERT_ID, Alert(text=text))
+    return self.AddElement(id_=ALERT_ID, element=Alert(text=text))
   def GetAlert(self):
-    return self.GetElement(ALERT_ID) 
+    return self.GetElement(id_=ALERT_ID) 
 
 
 @json_util.JSONDecorator(

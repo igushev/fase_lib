@@ -258,7 +258,7 @@ class KarmaCounter(fase.Service):
           reject_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
           reject_button.AddStringVariable(id_='friend_phone_number_str', value=friend_phone_number)
 
-      user_event_context_button = user_event_button_frame.AddButton(id_='user_event_context_menu_button')
+      user_event_context_button = user_event_button_frame.AddButton(id_='user_event_context_menu_button', text='...')
       user_event_context_menu = user_event_context_button.AddContextMenu()
       report_abuse_button = user_event_context_menu.AddMenuItem(
           id_='report_abuse_menu_item', text='Report Abuse', on_click=KarmaCounter.OnReportAbuse)

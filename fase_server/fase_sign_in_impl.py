@@ -78,7 +78,7 @@ class FaseSignInButton(fase.Button):
     if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
     service.PopStringVariable(id_='fase_sign_in_request_user_data')
-    user_id = service.PopStringVariable('fase_sign_in_user_id_str').GetValue()
+    user_id = service.PopStringVariable(id_='fase_sign_in_user_id_str').GetValue()
     # NOTE(igushev): We should either lookup by user_id and service_id and have deterministic hash.
     session_id_signed_in = GenerateSignedInSessionId(user_id)
     # Delete service and screen current.
@@ -213,7 +213,7 @@ def _OnRequestUserData(service, screen, element, request_user_data, user):
 
 
 def OnRequestUserDataEnteredData(service, screen, element):
-  user_id = service.GetStringVariable('fase_sign_in_user_id_str').GetValue()
+  user_id = service.GetStringVariable(id_='fase_sign_in_user_id_str').GetValue()
   user = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id)
 
   # Requested user data.
@@ -378,7 +378,7 @@ def OnSignInCancelOption(service, screen, element):
 
 def _CleanUserVariables(service):
   if service.HasStringVariable(id_='fase_sign_in_user_id_str'):
-    service.PopStringVariable('fase_sign_in_user_id_str')
+    service.PopStringVariable(id_='fase_sign_in_user_id_str')
 
 
 def _CleanActivationVariables(service):
