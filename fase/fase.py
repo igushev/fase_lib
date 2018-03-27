@@ -470,10 +470,11 @@ class Label(VisualElement):
                alight=None,
                on_click=None):
     super(Label, self).__init__()
+    assert text is not None
     self.text = text
-    self.font = font
-    self.size = size
-    self.alight = alight
+    self.font = font or 1.
+    self.size = size or Label.MIN
+    self.alight = alight or Label.CENTER
     self.on_click = on_click
 
   def GetText(self):
@@ -515,11 +516,11 @@ class Text(VisualElement):
                type_=None,
                multiline=None):
     super(Text, self).__init__()
-    self.text = text
-    self.hint = hint
-    self.size = size
-    self.type = type_
-    self.multiline = multiline
+    self.text = text  # Can be None, since should be entered
+    self.hint = hint  # Can be None
+    self.size = size or Text.MIN
+    self.type = type_ or Text.TEXT
+    self.multiline = multiline or False
 
   def Update(self, value):
     self.text = value
@@ -556,9 +557,10 @@ class Switch(VisualElement):
                text=None,
                alight=None):
     super(Switch, self).__init__()
+    assert value is not None
     self.value = value
-    self.text = text
-    self.alight = alight
+    self.text = text  # Can be None
+    self.alight = alight or Switch.CENTER
 
   def Update(self, value):
     self.value = (value == str(True))
@@ -594,10 +596,12 @@ class Select(VisualElement):
                hint=None,
                alight=None):
     super(Select, self).__init__()
+    assert value is not None
     self.value = value
+    assert len(items) > 0
     self.items = items
-    self.hint = hint
-    self.alight = alight
+    self.hint = hint  # Can be None
+    self.alight = alight or Select.CENTER
 
   def Update(self, value):
     self.value = value
@@ -632,10 +636,13 @@ class Slider(VisualElement):
                max_value=None,
                step=None):
     super(Slider, self).__init__()
+    assert value is not None
     self.value = value
+    assert min_value is not None
     self.min_value = min_value
+    assert max_value is not None
     self.max_value = max_value
-    self.step = step
+    self.step = step  # Can be None
 
   def Update(self, value):
     self.value = float(value)
@@ -663,6 +670,7 @@ class Image(VisualElement):
                filename=None,
                url=None):
     super(Image, self).__init__()
+    assert filename or url
     self.filename = filename
     self.url = url
 
@@ -683,6 +691,7 @@ class MenuItem(VisualElement):
                on_click=None,
                image=None):
     super(MenuItem, self).__init__()
+    assert text or image
     self.text = text
     self.on_click = on_click
     if image:
@@ -734,6 +743,7 @@ class Button(VisualElement):
                on_click=None,
                image=None):
     super(Button, self).__init__()
+    assert text or image
     self.text = text
     self.on_click = on_click
     if image:
@@ -795,9 +805,9 @@ class ContactPicker(VisualElement):
                size=None,
                on_pick=None):
     super(ContactPicker, self).__init__()
-    self.contact = contact
-    self.hint = hint
-    self.size = size
+    self.contact = contact  # Can be None, since should be entered
+    self.hint = hint  # Can be None
+    self.size = size or ContactPicker.MIN
     self.on_pick = on_pick
 
   def Update(self, value):
@@ -843,11 +853,10 @@ class DateTimePicker(VisualElement):
                hint=None,
                size=None):
     super(DateTimePicker, self).__init__()
-    assert type_ is not None
-    self.datetime = datetime_
-    self.type = type_
-    self.hint = hint
-    self.size = size
+    self.datetime = datetime_  # Can be None, since should be entered
+    self.type = type_ or DateTimePicker.DATETIME
+    self.hint = hint  # Can be None
+    self.size = size or DateTimePicker.MIN
 
   def Update(self, value):
     self.datetime = datetime.datetime.strptime(value, DATETIME_FORMAT) if value is not None else None
@@ -886,11 +895,11 @@ class PlacePicker(VisualElement):
                hint=None,
                size=None):
     super(PlacePicker, self).__init__()
+    self.place = place  # Can be None, since should be entered
     assert type_ is not None
-    self.place = place
     self.type = type_
-    self.hint = hint
-    self.size = size
+    self.hint = hint  # Can be None
+    self.size = size or PlacePicker.MIN
     
   def Update(self, value):
     if value is None:
@@ -936,9 +945,10 @@ class Web(VisualElement):
                size=None,
                scrollable=None):
     super(Web, self).__init__()
+    assert url is not None
     self.url = url
-    self.size = size
-    self.scrollable = scrollable
+    self.size = size or Web.MIN
+    self.scrollable = scrollable or True
 
   def GetUrl(self):
     return self.url
@@ -1087,10 +1097,10 @@ class Frame(BaseElementsContainer):
                on_click=None,
                border=None):
     super(Frame, self).__init__()
-    self.orientation = orientation
-    self.size = size
+    self.orientation = orientation or Frame.VERTICAL
+    self.size = size or Frame.MIN
     self.on_click = on_click
-    self.border = border
+    self.border = border  # Can be None
 
   def GetOrientation(self):
     return self.orientation
@@ -1111,6 +1121,7 @@ class Alert(ElementContainer):
 
   def __init__(self, text=None):
     super(Alert, self).__init__()
+    assert text is not None
     self.text = text
 
   def GetText(self):
