@@ -75,8 +75,8 @@ class NotesService(fase.Service):
       notes = filter(filter_func, notes)
     for note in sorted(notes, key=key_func, reverse=reverse):
       note_frame = notes_frame.AddFrame(
-          id_='note_frame_%s' % note.note_id, orientation=fase.Frame.VERTICAL, on_click=NotesService.OnNote,
-          border=True)
+          id_='note_frame_%s' % note.note_id, orientation=fase.Frame.VERTICAL, border=True,
+          on_click=NotesService.OnNote)
       note_frame.AddStringVariable(id_='frame_note_id', value=note.note_id)
 
       note_header_frame = note_frame.AddFrame(
@@ -97,20 +97,20 @@ class NotesService(fase.Service):
     return screen
 
   def _AddButtons(self, screen):
-    screen.AddMainButton(text='New', on_click=NotesService.OnNew, image=fase.Image(filename='images/new.png'))
+    screen.AddMainButton(text='New', image=fase.Image(filename='images/new.png'), on_click=NotesService.OnNew)
     navigation = screen.AddNavigation()
-    navigation.AddButton(id_='notes_button', text='Notes', on_click=NotesService.OnNotes,
-                         image=fase.Image(filename='images/notes.png'))
-    navigation.AddButton(id_='favourites_button', text='Favourites', on_click=NotesService.OnFavourites,
-                         image=fase.Image(filename='images/favourite_non.png'))
-    navigation.AddButton(id_='recent_button', text='Recent', on_click=NotesService.OnRecent,
-                         image=fase.Image(filename='images/recent.png'))
+    navigation.AddButton(id_='notes_button', text='Notes', image=fase.Image(filename='images/notes.png'),
+                         on_click=NotesService.OnNotes)
+    navigation.AddButton(id_='favourites_button', text='Favourites',
+                         image=fase.Image(filename='images/favourite_non.png'), on_click=NotesService.OnFavourites)
+    navigation.AddButton(id_='recent_button', text='Recent', image=fase.Image(filename='images/recent.png'),
+                         on_click=NotesService.OnRecent)
     if self.IfSignedIn():
-      navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=NotesService.OnSignOut,
-                       image=fase.Image(filename='images/sign_out.png'))
+      navigation.AddButton(id_='sign_out_button', text='Sign Out', image=fase.Image(filename='images/sign_out.png'),
+                           on_click=NotesService.OnSignOut)
     else:
-      navigation.AddButton(id_='sign_in_button', text='Sign In', on_click=NotesService.OnSignIn,
-                       image=fase.Image(filename='images/sign_in.png'))
+      navigation.AddButton(id_='sign_in_button', text='Sign In', image=fase.Image(filename='images/sign_in.png'),
+                           on_click=NotesService.OnSignIn)
 
 
   def OnSignIn(self, screen, element):
@@ -153,15 +153,15 @@ class NotesService(fase.Service):
       favourite_bool.SetValue(note.favourite)
 
     screen.AddStringVariable(id_='current_note_id', value=note_id)
-    screen.AddNextStepButton(on_click=NotesService.OnSaveNote, text='Save')
+    screen.AddNextStepButton(text='Save', on_click=NotesService.OnSaveNote)
 
     prev_step_button = screen.AddPrevStepButton(text='Back')
     context_menu = prev_step_button.AddContextMenu()
     context_menu.AddMenuItem(id_='favourite_menu_item',
                              text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
-                             on_click=NotesService.OnReverseFavouriteNote,
                              image=fase.Image(filename=('images/favourite.png' if favourite_bool.GetValue() else
-                                                        'images/favourite_non.png')))
+                                                        'images/favourite_non.png')),
+                             on_click=NotesService.OnReverseFavouriteNote)
     if note_id is not None:
       context_menu.AddMenuItem(id_='delete_menu_item', text='Delete', image=fase.Image(filename='images/delete.png'),
                                on_click=NotesService.OnDeleteNote)

@@ -156,7 +156,7 @@ def OnSignInOption(service, screen, element):
   sign_in_frame.AddText(id_='phone_number_text_id', hint='Phone Number')
   sign_in_button = sign_in_frame.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
   sign_in_button.SetRequestLocale(True)
-  screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
+  screen.AddPrevStepButton(text='Back', on_click=OnSignInStart)
   return screen
 
 
@@ -208,7 +208,7 @@ def _OnRequestUserData(service, screen, element, request_user_data, user):
 
   enter_button = enter_frame.AddButton(id_='enter_button_id', text='Enter', on_click=OnRequestUserDataEnteredData)
   enter_button.SetRequestLocale(True)
-  screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
+  screen.AddPrevStepButton(text='Back', on_click=OnSignInStart)
   return screen
 
 
@@ -260,7 +260,7 @@ def OnSignUpOption(service, screen, element):
 
   sign_up_button = sign_up_frame.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpEnteredData)
   sign_up_button.SetRequestLocale(True)
-  screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
+  screen.AddPrevStepButton(text='Back', on_click=OnSignInStart)
   return screen
   
 
@@ -348,7 +348,7 @@ def OnActivationCodeSent(service, screen, element):
   enter_activation_frame.AddText(id_='activation_code_text_id', hint='Activation Code')
   enter_activation_frame.AddElement(
       id_='send_button_id', element=FaseSignInButton(text='Send', on_click=fase.FunctionPlaceholder))
-  screen.AddPrevStepButton(on_click=OnSignInStart, text='Back')
+  screen.AddPrevStepButton(text='Back', on_click=OnSignInStart)
   return screen
 
 
@@ -396,7 +396,7 @@ def StartSignOut(service, on_cancel=None):
       id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.FunctionPlaceholder))
   if on_cancel is not None:
     service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
-    screen.AddPrevStepButton(on_click=OnSignOutCancelOption, text='Cancel')
+    screen.AddPrevStepButton(text='Cancel', on_click=OnSignOutCancelOption)
   return screen
 
 

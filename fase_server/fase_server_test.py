@@ -20,8 +20,7 @@ class ServerTestService(fase.Service):
     screen = fase.Screen(self)
     screen.AddImage(id_='image_id', filename='/logo.png')
     screen.AddText(id_='text_name_id', hint='Enter Name')
-    screen.AddButton(id_='next_button_id',
-                     text='Next', on_click=ServerTestService.OnNextButton)
+    screen.AddButton(id_='next_button_id', text='Next', on_click=ServerTestService.OnNextButton)
     return screen
 
   def OnNextButton(self, screen, element):
@@ -29,8 +28,7 @@ class ServerTestService(fase.Service):
     screen = fase.Screen(self)
     screen.AddImage(id_='image_id', filename='/hello.png')
     screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
-    screen.AddButton(id_='reset_button_id',
-                     text='Reset', on_click=ServerTestService.OnResetButton)
+    screen.AddButton(id_='reset_button_id', text='Reset', on_click=ServerTestService.OnResetButton)
     return screen
     
   def OnResetButton(self, screen, element):

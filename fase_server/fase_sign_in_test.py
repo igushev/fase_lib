@@ -26,10 +26,8 @@ class SignInTestService(fase.Service):
 
   def OnStart(self):
     screen = fase.Screen(self)
-    screen.AddButton(id_='sign_in_button_id',
-                     text='Sign In', on_click=SignInTestService.OnSignIn)
-    screen.AddButton(id_='about_button_id',
-                     text='About', on_click=SignInTestService.OnAbount)
+    screen.AddButton(id_='sign_in_button_id', text='Sign In', on_click=SignInTestService.OnSignIn)
+    screen.AddButton(id_='about_button_id', text='About', on_click=SignInTestService.OnAbount)
     return screen
 
   request_user_data = None
@@ -45,8 +43,7 @@ class SignInTestService(fase.Service):
   def OnSignInDone(self, user_id_before=None):
     screen = fase.Screen(self)
     screen.AddLabel(id_='user_id_before_label_id', text=user_id_before)
-    screen.AddButton(id_='sign_out_button_id',
-                     text='Sign Out', on_click=SignInTestService.OnSignOut)
+    screen.AddButton(id_='sign_out_button_id', text='Sign Out', on_click=SignInTestService.OnSignOut)
     return screen
 
   def OnSignInSkip(self):

@@ -688,20 +688,17 @@ class MenuItem(VisualElement):
 
   def __init__(self,
                text=None,
-               on_click=None,
-               image=None):
+               image=None,
+               on_click=None):
     super(MenuItem, self).__init__()
     assert text or image
     self.text = text
-    self.on_click = on_click
     if image:
       self.AddImage(image)
+    self.on_click = on_click
 
   def GetText(self):
     return self.text
-
-  def GetOnClick(self):
-    return self.on_click
 
   def AddImage(self, image):
     return self.AddElement(IMAGE_ID, image)
@@ -709,6 +706,9 @@ class MenuItem(VisualElement):
     return self.HasElement(IMAGE_ID)
   def GetImage(self):
     return self.GetElement(IMAGE_ID)
+
+  def GetOnClick(self):
+    return self.on_click
 
 
 @json_util.JSONDecorator({
@@ -723,11 +723,11 @@ class Menu(ElementContainer):
 
   def AddMenuItem(self, id_,
                   text=None,
-                  on_click=None,
-                  image=None):
+                  image=None,
+                  on_click=None):
     menu_item = MenuItem(text=text,
-                         on_click=on_click,
-                         image=image)
+                         image=image,
+                         on_click=on_click)
     return self.AddElement(id_, menu_item)
   def GetMenuItem(self, id_):
     return self.GetElement(id_)
@@ -740,19 +740,26 @@ class Button(VisualElement):
 
   def __init__(self,
                text=None,
-               on_click=None,
-               image=None):
+               image=None,
+               on_click=None):
     super(Button, self).__init__()
     assert text or image
     self.text = text
-    self.on_click = on_click
     if image:
       self.AddImage(image)
+    self.on_click = on_click
 
   def SetText(self, text):
     self.text = text
   def GetText(self):
     return self.text
+
+  def AddImage(self, image):
+    return self.AddElement(IMAGE_ID, image)
+  def HasImage(self):
+    return self.HasElement(IMAGE_ID)
+  def GetImage(self):
+    return self.GetElement(IMAGE_ID)
 
   def GetOnClick(self):
     return self.on_click
@@ -764,13 +771,6 @@ class Button(VisualElement):
   def GetContextMenu(self):
     return self.GetElement(CONTEXT_MENU_ID)
 
-  def AddImage(self, image):
-    return self.AddElement(IMAGE_ID, image)
-  def HasImage(self):
-    return self.HasElement(IMAGE_ID)
-  def GetImage(self):
-    return self.GetElement(IMAGE_ID)
-
 
 @json_util.JSONDecorator({})
 class Navigation(ElementContainer):
@@ -779,11 +779,11 @@ class Navigation(ElementContainer):
 
   def AddButton(self, id_,
                 text=None,
-                on_click=None,
-                image=None):
+                image=None,
+                on_click=None):
     button = Button(text=text,
-                    on_click=on_click,
-                    image=image)
+                    image=image,
+                    on_click=on_click)
     return self.AddElement(id_, button)
   def GetButton(self, id_):
     return self.GetElement(id_)
@@ -968,12 +968,12 @@ class BaseElementsContainer(VisualElement):
   def AddFrame(self, id_,
                orientation=None,
                size=None,
-               on_click=None,
-               border=None):
+               border=None,
+               on_click=None):
     return self.AddElement(id_, Frame(orientation=orientation,
                                       size=size,
-                                      on_click=on_click,
-                                      border=border))
+                                      border=border,
+                                      on_click=on_click))
   def GetFrame(self, id_):
     return self.GetElement(id_)
 
@@ -1031,8 +1031,8 @@ class BaseElementsContainer(VisualElement):
 
   def AddButton(self, id_,
                text=None,
-               on_click=None,
-               image=None):
+               image=None,
+               on_click=None):
     return self.AddElement(id_, Button(text=text, on_click=on_click, image=image))
   def GetButton(self, id_):
     return self.GetElement(id_)
@@ -1094,13 +1094,13 @@ class Frame(BaseElementsContainer):
   def __init__(self,
                orientation=None,
                size=None,
-               on_click=None,
-               border=None):
+               border=None,
+               on_click=None):
     super(Frame, self).__init__()
     self.orientation = orientation or Frame.VERTICAL
     self.size = size or Frame.MIN
-    self.on_click = on_click
     self.border = border  # Can be None
+    self.on_click = on_click
 
   def GetOrientation(self):
     return self.orientation
@@ -1129,11 +1129,11 @@ class Alert(ElementContainer):
 
   def AddButton(self, id_,
                 text=None,
-                on_click=None,
-                image=None):
+                image=None,
+                on_click=None):
     button = Button(text=text,
-                    on_click=on_click,
-                    image=image)
+                    image=image,
+                    on_click=on_click)
     return self.AddElement(id_, button)
   def GetButton(self, id_):
     return self.GetElement(id_)
@@ -1189,8 +1189,8 @@ class Screen(BaseElementsContainer):
   def GetOnMore(self):
     return self.on_more
 
-  def AddMainButton(self, text=None, on_click=None, image=None):
-    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
+  def AddMainButton(self, text=None, image=None, on_click=None):
+    return self.AddElement(MAIN_BUTTON_ID, Button(text=text, image=image, on_click=on_click))
   def GetMainButton(self):
     return self.GetElement(MAIN_BUTTON_ID)
 
@@ -1199,13 +1199,13 @@ class Screen(BaseElementsContainer):
   def GetNavigation(self):
     return self.GetElement(NAVIGATION_ID)
 
-  def AddNextStepButton(self, text=None, on_click=None, image=None):
-    return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
+  def AddNextStepButton(self, text=None, image=None, on_click=None):
+    return self.AddElement(NEXT_STEP_BUTTON_ID, Button(text=text, image=image, on_click=on_click))
   def GetNextStepButton(self):
     return self.GetElement(NEXT_STEP_BUTTON_ID)
 
-  def AddPrevStepButton(self, text=None, on_click=None, image=None):
-    return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, on_click=on_click, image=image))
+  def AddPrevStepButton(self, text=None, image=None, on_click=None):
+    return self.AddElement(PREV_STEP_BUTTON_ID, Button(text=text, image=image, on_click=on_click))
   def GetPrevStepButton(self):
     return self.GetElement(PREV_STEP_BUTTON_ID)
 
