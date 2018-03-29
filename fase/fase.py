@@ -463,6 +463,8 @@ class VisualElement(VariableContainer):
      'on_click': json_util.JSONFunction()})
 class Label(VisualElement):
 
+  FONT_LIST = [0.5, 0.75, 1., 1.25, 1.5]
+
   MIN = 1
   MAX = 2
 
@@ -479,6 +481,7 @@ class Label(VisualElement):
     super(Label, self).__init__()
     self.text = text  # Can be None
     self.font = font or 1.
+    assert self.font in Label.FONT_LIST
     self.size = size or Label.MIN
     self.alight = alight or Label.CENTER
     self.on_click = on_click

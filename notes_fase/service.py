@@ -92,7 +92,7 @@ class NotesService(fase.Service):
       datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.now())
       note_deails_frame = note_frame.AddFrame(id_='note_deails_frame', orientation=fase.Frame.HORIZONTAL)
       note_deails_frame.AddLabel(
-          id_='note_deails_frame_datetime_text', text=datetime_text, font=0.7,
+          id_='note_deails_frame_datetime_text', text=datetime_text, font=0.75,
           size=fase.Label.MAX, alight=fase.Label.RIGHT)
     return screen
 

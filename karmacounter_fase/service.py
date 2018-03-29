@@ -121,7 +121,7 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('Dashboard')
     dashboard_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
     dashboard_frame.AddLabel(text='Score', size=fase.Label.MAX)
-    dashboard_frame.AddLabel(text=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
+    dashboard_frame.AddLabel(text=str(starting_page.user.score), font=1.5, size=fase.Label.MAX)
     self._AddButtons(screen)
     return screen
 
