@@ -734,6 +734,8 @@ class Menu(ElementContainer):
     return self.AddElement(id_=id_, element=MenuItem(text=text,
                                                      image=image,
                                                      on_click=on_click))
+  def HasMenuItem(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetMenuItem(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -790,6 +792,8 @@ class Navigation(ElementContainer):
     return self.AddElement(id_=id_, element=Button(text=text,
                                                    image=image,
                                                    on_click=on_click))
+  def HasButton(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetButton(self, *, id_):
     return self.GetElement(id_=id_)
     
@@ -977,6 +981,8 @@ class BaseElementsContainer(VisualElement):
                border=None,
                on_click=None):
     return self.AddElement(id_=id_, element=Frame(orientation=orientation, size=size, border=border, on_click=on_click))
+  def HasFrame(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetFrame(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -987,6 +993,8 @@ class BaseElementsContainer(VisualElement):
                size=None,
                alight=None):
     return self.AddElement(id_=id_, element=Label(text=text, font=font, size=size, alight=alight))
+  def HasLabel(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetLabel(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -998,6 +1006,8 @@ class BaseElementsContainer(VisualElement):
               type_=None,
               multiline=None):
     return self.AddElement(id_=id_, element=Text(text=text, hint=hint, size=size, type_=type_, multiline=multiline))
+  def HasText(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetText(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1007,6 +1017,8 @@ class BaseElementsContainer(VisualElement):
                 text=None,
                 alight=None):
     return self.AddElement(id_=id_, element=Switch(value=value, text=text, alight=alight))
+  def HasSwitch(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetSwitch(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1017,6 +1029,8 @@ class BaseElementsContainer(VisualElement):
                 hint=None,
                 alight=None):
     return self.AddElement(id_=id_, element=Select(value=value, items=items, hint=hint, alight=alight))
+  def HasSelect(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetSelect(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1025,6 +1039,8 @@ class BaseElementsContainer(VisualElement):
                filename=None,
                url=None):
     return self.AddElement(id_=id_, element=Image(filename=filename, url=url))
+  def HasImage(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetImage(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1035,6 +1051,8 @@ class BaseElementsContainer(VisualElement):
                 max_value=None,
                 step=None):
     return self.AddElement(id_=id_, element=Slider(value=value, min_value=min_value, max_value=max_value, step=step))
+  def HasSlider(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetSlider(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1044,6 +1062,8 @@ class BaseElementsContainer(VisualElement):
                 image=None,
                 on_click=None):
     return self.AddElement(id_=id_, element=Button(text=text, on_click=on_click, image=image))
+  def HasButton(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetButton(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1054,6 +1074,8 @@ class BaseElementsContainer(VisualElement):
                        size=None,
                        on_pick=None):
     return self.AddElement(id_=id_, element=ContactPicker(contact=contact, hint=hint, size=size, on_pick=on_pick))
+  def HasContactPicker(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetContactPicker(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1064,6 +1086,8 @@ class BaseElementsContainer(VisualElement):
                         hint=None,
                         size=None):
     return self.AddElement(id_=id_, element=DateTimePicker(datetime_=datetime_, type_=type_, hint=hint, size=size))
+  def HasDateTimePicker(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetDateTimePicker(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1074,12 +1098,16 @@ class BaseElementsContainer(VisualElement):
                      hint=None,
                      size=None):
     return self.AddElement(id_=id_, element=PlacePicker(place=place, type_=type_, hint=hint, size=size))
+  def HasPlacePicker(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetPlacePicker(self, *, id_):
     return self.GetElement(id_=id_)
 
   def AddSeparator(self, *,
                    id_=None):
     return self.AddElement(id_=id_, element=Separator())
+  def HasSeparator(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetSeparator(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1089,6 +1117,8 @@ class BaseElementsContainer(VisualElement):
              size=None,
              scrollable=None):
     return self.AddElement(id_=id_, element=Web(url=url, size=size, scrollable=scrollable))
+  def HasWeb(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetWeb(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1150,6 +1180,8 @@ class Alert(ElementContainer):
     return self.AddElement(id_=id_, element=Button(text=text,
                                                    image=image,
                                                    on_click=on_click))
+  def HasButton(self, *, id_):
+    return self.HasElement(id_=id_)
   def GetButton(self, *, id_):
     return self.GetElement(id_=id_)
 
@@ -1206,26 +1238,36 @@ class Screen(BaseElementsContainer):
 
   def AddMainButton(self, text=None, image=None, on_click=None):
     return self.AddElement(id_=MAIN_BUTTON_ID, element=Button(text=text, image=image, on_click=on_click))
+  def HasMainButton(self):
+    return self.HasElement(id_=MAIN_BUTTON_ID)
   def GetMainButton(self):
     return self.GetElement(id_=MAIN_BUTTON_ID)
 
   def AddNavigation(self):
     return self.AddElement(id_=NAVIGATION_ID, element=Navigation())
+  def HasNavigation(self):
+    return self.HasElement(id_=NAVIGATION_ID)
   def GetNavigation(self):
     return self.GetElement(id_=NAVIGATION_ID)
 
   def AddNextStepButton(self, text=None, image=None, on_click=None):
     return self.AddElement(id_=NEXT_STEP_BUTTON_ID, element=Button(text=text, image=image, on_click=on_click))
+  def HasNextStepButton(self):
+    return self.HasElement(id_=NEXT_STEP_BUTTON_ID)
   def GetNextStepButton(self):
     return self.GetElement(id_=NEXT_STEP_BUTTON_ID)
 
   def AddPrevStepButton(self, text=None, image=None, on_click=None):
     return self.AddElement(id_=PREV_STEP_BUTTON_ID, element=Button(text=text, image=image, on_click=on_click))
+  def HasPrevStepButton(self):
+    return self.HasElement(id_=PREV_STEP_BUTTON_ID)
   def GetPrevStepButton(self):
     return self.GetElement(id_=PREV_STEP_BUTTON_ID)
 
   def AddAlert(self, text=None):
     return self.AddElement(id_=ALERT_ID, element=Alert(text=text))
+  def HasAlert(self):
+    return self.HasElement(id_=ALERT_ID)
   def GetAlert(self):
     return self.GetElement(id_=ALERT_ID) 
 
