@@ -106,7 +106,7 @@ class Contact(data_util.AbstractObject):
     {'date_of_birth': json_util.JSONBool(),
      'home_city': json_util.JSONBool(),
      'min_date_of_birth': json_util.JSONDateTime()})
-class RequestUserData(object):
+class RequestUserData(data_util.AbstractObject):
 
   def __init__(self,
                date_of_birth=False,

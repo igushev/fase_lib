@@ -73,6 +73,10 @@ Table of Contents
   * *locale*: *Locale*
   * *datetime_added*: date
 
+* **Device**
+  * *device_type*: string
+  * *device_token*: string
+
 ## Elements Classes
 * **Element**. Basic Interface.
 
@@ -95,6 +99,7 @@ Table of Contents
   * *size*: int
   * *alight*: int
   * *on_click*: function
+    * FONT_LIST = [0.5, 0.75, 1., 1.25, 1.5]
     * MIN = 1
     * MAX = 2
     * LEFT = 1

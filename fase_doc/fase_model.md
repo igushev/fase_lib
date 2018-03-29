@@ -43,10 +43,6 @@ Table of Contents
 * **ScreenInfo**
   * *screen_id*: string
 
-* **Device**
-  * *device_type*: string
-  * *device_token*: string
-
 * **Resource**
   * *filename*: string
 
@@ -80,6 +76,9 @@ Table of Contents
   * *elements_update*: *ElementsUpdate*
   * *session_info*: *SessionInfo*
   * *screen_info*: *ScreenInfo*
+
+* **Method**
+  * *method*: string
 
 * **Command**
   * *command*: string

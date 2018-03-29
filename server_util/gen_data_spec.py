@@ -9,7 +9,7 @@ from base_util import json_util
 
 FIELD_DESC_REGEXP = '.*\'(?P<field_name>[a-zA-Z0-9_]+)\'\:\ ?json_util\.JSON.*'
 CLASS_DEF_REGEXP = 'class (?P<class_name>[a-zA-z0-9]+)\([a-zA-z0-9\.]+\)\:'
-CONSTANT_DEF_REGEXP = '\ +(?P<name>[A-Z]+)\ ?=\ ?(?P<value>.+)'
+CONSTANT_DEF_REGEXP = '\ +(?P<name>[A-Z_]+)\ ?=\ ?(?P<value>.+)'
 
 
 def JSONObjectStr(json_obj):
@@ -83,7 +83,7 @@ def GenerateDataSpecification(module_name, filepath):
         spec_file.write('. %s' % cls.__doc__)
       spec_file.write('\n')
 
-      assert set(field_names) == set(cls.desc_dict.keys())
+      assert set(field_names) == set(cls.desc_dict.keys()), (cls_name, set(field_names), set(cls.desc_dict.keys())) 
       assert len(field_names) == len(set(field_names))
       for arg_name in field_names:
         json_obj = cls.desc_dict[arg_name]
