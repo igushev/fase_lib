@@ -30,7 +30,7 @@ DELETED_EVENT_ADDED_BY_WITNESS_MSG = '%s deleted an event you added to them'
 def _ErrorAlert(service, message, on_click):
   screen = fase.Screen(service)
   alert = screen.AddAlert(message)
-  alert.AddButton(id_="ok_id", text="OK", on_click=on_click)
+  alert.AddButton(text="OK", on_click=on_click)
   return screen
 
 
@@ -104,29 +104,24 @@ class KarmaCounter(fase.Service):
 
   def _AddButtons(self, screen):
     navigation = screen.AddNavigation()
-    navigation.AddButton(id_='dashboard_button', text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
-    navigation.AddButton(id_='your_events_button', text='Your Events', on_click=KarmaCounter.OnDisplayYourEvents)
-    navigation.AddButton(
-        id_='your_friends_events_button', text='Your Friends Events', on_click=KarmaCounter.OnDisplayYourFriendsEvents)
-    navigation.AddButton(
-        id_='statistics_by_cities_button', text='Statistics by Cities',
-        on_click=KarmaCounter.OnDisplayStatisticsByCities)
-    navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=KarmaCounter.OnSignOut)
+    navigation.AddButton(text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
+    navigation.AddButton(text='Your Events', on_click=KarmaCounter.OnDisplayYourEvents)
+    navigation.AddButton(text='Your Friends Events', on_click=KarmaCounter.OnDisplayYourFriendsEvents)
+    navigation.AddButton(text='Statistics by Cities', on_click=KarmaCounter.OnDisplayStatisticsByCities)
+    navigation.AddButton(text='Sign Out', on_click=KarmaCounter.OnSignOut)
     main_button = screen.AddMainButton(text='Add Event')
     main_button_context_menu = main_button.AddContextMenu()
-    main_button_context_menu.AddMenuItem(
-        id_='add_event_to_yourself', text='Add Event to Yourself', on_click=KarmaCounter.OnAddUserEvent)
-    main_button_context_menu.AddMenuItem(
-        id_='add_event_to_friend', text='Add Event to Friend', on_click=KarmaCounter.OnAddOtherUserEvent)
+    main_button_context_menu.AddMenuItem(text='Add Event to Yourself', on_click=KarmaCounter.OnAddUserEvent)
+    main_button_context_menu.AddMenuItem(text='Add Event to Friend', on_click=KarmaCounter.OnAddOtherUserEvent)
 
   def DisplayDashboard(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
     starting_page = kc_client.KarmaCounterClient.Get().GetStartingPage(session_info)
     screen = fase.Screen(self)
     screen.SetTitle('Dashboard')
-    dashboard_frame = screen.AddFrame(id_='dashboard_frame', orientation=fase.Frame.VERTICAL)
-    dashboard_frame.AddLabel(id_='score_title_label', text='Score', size=fase.Label.MAX)
-    dashboard_frame.AddLabel(id_='score_label', text=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
+    dashboard_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
+    dashboard_frame.AddLabel(text='Score', size=fase.Label.MAX)
+    dashboard_frame.AddLabel(text=str(starting_page.user.score), font=3.0, size=fase.Label.MAX)
     self._AddButtons(screen)
     return screen
 
@@ -238,14 +233,11 @@ class KarmaCounter(fase.Service):
         friend_phone_number = user_event.user.phone_number
         user_event_header_frame.AddLabel(
             id_='user_event_friend_display_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
-      user_event_header_frame.AddLabel(id_='user_event_date_label', text=user_event.display_datetime)
-      user_event_frame.AddLabel(
-          id_='user_event_description_label', text=user_event.description, alight=fase.Label.LEFT)
-      user_event_frame.AddLabel(id_='user_event_status_label', text=user_event.display_status, alight=fase.Label.LEFT)
-      user_event_button_frame = user_event_frame.AddFrame(
-          id_='user_event_button_frame', orientation=fase.Frame.HORIZONTAL)
-      user_event_button_frame.AddFrame(
-          id_='button_emtpy_frame', orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
+      user_event_header_frame.AddLabel(text=user_event.display_datetime)
+      user_event_frame.AddLabel(text=user_event.description, alight=fase.Label.LEFT)
+      user_event_frame.AddLabel(text=user_event.display_status, alight=fase.Label.LEFT)
+      user_event_button_frame = user_event_frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
+      user_event_button_frame.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
 
       if user_event.verification_status == kc_data.VerificationStatus.pending:
         if (users_own and not user_event.self_added) or (not users_own and user_event.self_added):
@@ -258,7 +250,7 @@ class KarmaCounter(fase.Service):
           reject_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
           reject_button.AddStringVariable(id_='friend_phone_number_str', value=friend_phone_number)
 
-      user_event_context_button = user_event_button_frame.AddButton(id_='user_event_context_menu_button', text='...')
+      user_event_context_button = user_event_button_frame.AddButton(text='...')
       user_event_context_menu = user_event_context_button.AddContextMenu()
       report_abuse_button = user_event_context_menu.AddMenuItem(
           id_='report_abuse_menu_item', text='Report Abuse', on_click=KarmaCounter.OnReportAbuse)
@@ -341,22 +333,22 @@ class KarmaCounter(fase.Service):
     return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().BlockUser, screen, element)
 
   def _DisplayCitiesStatistics(self, frame, cities_statistics):
-    for i, city_statistics in enumerate(cities_statistics):
-      city_frame = frame.AddFrame(id_='city_frame_%d' % i, orientation=fase.Frame.HORIZONTAL)
-      city_frame.AddLabel(id_='city_name_label', text=city_statistics.display_name)
-      city_frame.AddLabel(id_='city_score_label', text=city_statistics.display_score)
+    for city_statistics in cities_statistics:
+      city_frame = frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
+      city_frame.AddLabel(text=city_statistics.display_name)
+      city_frame.AddLabel(text=city_statistics.display_score)
 
   def DisplayStatisticsByCities(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
     cities_statistics_top_bottom = kc_client.KarmaCounterClient.Get().CitiesStatisticsTopBottom(session_info)
     screen = fase.Screen(self)
     screen.SetTitle('Statistics by Cities')
-    screen.AddLabel(id_='top_label', text='Cities With Highest Score')
-    top_frame = screen.AddFrame(id_='top_frame', orientation=fase.Frame.VERTICAL)
+    screen.AddLabel(text='Cities With Highest Score')
+    top_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
     self._DisplayCitiesStatistics(top_frame, cities_statistics_top_bottom.external_cities_statistics_top)
 
-    screen.AddLabel(id_='bottom_label', text='Cities With Lowest Score')
-    bottom_frame = screen.AddFrame(id_='bottom_frame', orientation=fase.Frame.VERTICAL)
+    screen.AddLabel(text='Cities With Lowest Score')
+    bottom_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
     self._DisplayCitiesStatistics(bottom_frame, cities_statistics_top_bottom.external_cities_statistics_bottom)
     self._AddButtons(screen)
     return screen

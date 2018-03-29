@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import re
+import uuid
 
 from base_util import data_util
 from base_util import json_util
@@ -30,6 +31,10 @@ def AssertIsInstanceOrNone(obj, expected_type):
 
 def FunctionPlaceholder():
   pass
+
+
+def GenerateElementId(element):
+  return '%s_%s' % (element.__class__.__name__, str(uuid.uuid4()))
 
 
 def GenerateSessionId():
@@ -243,7 +248,9 @@ class ElementContainer(Element):
     super(ElementContainer, self).__init__()
     self.id_element_list = []
 
-  def AddElement(self, *, id_, element):
+  def AddElement(self, *, id_=None, element):
+    if id_ is None:
+      id_ = GenerateElementId(element)
     assert not self.HasElement(id_=id_)
     self.id_element_list.append((id_, element))
     return element
