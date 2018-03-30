@@ -34,6 +34,11 @@ Table of Contents
          * [Client Starts](#client-starts-4)
          * [User Click Main Button](#user-click-main-button)
          * [User Enters Data and Clicks Next Button](#user-enters-data-and-clicks-next-button)
+      * [KarmaCounter. Values With Nested Serialized JSON. Signing Up](#karmacounter-values-with-nested-serialized-json-signing-up)
+         * [Client Starts](#client-starts-5)
+         * [User Clicks Sign Up on Sign In/Sign Up Screen](#user-clicks-sign-up-on-sign-insign-up-screen-1)
+         * [User Enters Information and Clicks Sign Up](#user-enters-information-and-clicks-sign-up-1)
+         * [User Enters Activation Code and Clicks Send](#user-enters-activation-code-and-clicks-send-1)
 
 # Communication with Server
 ## Data Classes
