@@ -2620,3 +2620,670 @@ Server sends *Response* with Dashboard *Screen* which has one just added note:
 }
 ```
 **Client does NOT request resources since they have been cached!**
+
+## KarmaCounter. Values With Nested Serialized JSON. Signing Up
+
+### Client Starts
+Client starts and sends `/getservice` with *Device*:
+```
+method: post
+request: /getservice
+```
+```
+{
+  "device_token": "921e281e-d8a2-4b75-8bb2-9f19250933d4",
+  "device_type": "Python"
+}
+```
+Server sends *Response* with Sign In/Sign Up *Screen*:
+```
+{
+  "screen": {
+    "on_more": null,
+    "on_refresh": null,
+    "id_element_list": [
+      [
+        "sign_in_frame_id",
+        {
+          "__class__": "Frame",
+          "id_element_list": [
+            [
+              "sign_in_button_id",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Sign In",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ],
+            [
+              "sign_up_button_id",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Sign Up",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ]
+          ],
+          "orientation": 1,
+          "on_click": null,
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "size": 1,
+          "locale": null,
+          "border": null
+        }
+      ]
+    ],
+    "displayed": true,
+    "title": null,
+    "request_locale": false,
+    "__class__": "Screen",
+    "__module__": "fase.fase",
+    "scrollable": null,
+    "locale": null,
+    "_screen_id": "0bd0e7fe1123f2eb8606df37cf9afb6d"
+  },
+  "resources": null,
+  "session_info": {
+    "session_id": "f3f28480352d310bf60170581cfeb8af"
+  },
+  "elements_update": null,
+  "screen_info": {
+    "screen_id": "0bd0e7fe1123f2eb8606df37cf9afb6d"
+  }
+}
+```
+
+### User Clicks Sign Up on Sign In/Sign Up Screen
+User clicks "Sign Un" on Sign In/Sign Up Screen. Client sends `/elementcallback` with *ElementCallback*:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': '0bd0e7fe1123f2eb8606df37cf9afb6d', 'session-id': 'f3f28480352d310bf60170581cfeb8af'}
+```
+```
+{
+  "device": {
+    "device_token": "921e281e-d8a2-4b75-8bb2-9f19250933d4",
+    "device_type": "Python"
+  },
+  "locale": null,
+  "method": "on_click",
+  "elements_update": null,
+  "id_list": [
+    "sign_in_frame_id",
+    "sign_up_button_id"
+  ]
+}
+```
+Server sends *Response* with Sign Up form *Screen*:
+```
+{
+  "screen": {
+    "on_more": null,
+    "on_refresh": null,
+    "id_element_list": [
+      [
+        "sign_up_frame_id",
+        {
+          "__class__": "Frame",
+          "id_element_list": [
+            [
+              "phone_number_text_id",
+              {
+                "id_element_list": [],
+                "size": 1,
+                "text": null,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "__class__": "Text",
+                "type": 1,
+                "multiline": false,
+                "locale": null,
+                "hint": "Phone Number"
+              }
+            ],
+            [
+              "first_name_text_id",
+              {
+                "id_element_list": [],
+                "size": 1,
+                "text": null,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "__class__": "Text",
+                "type": 1,
+                "multiline": false,
+                "locale": null,
+                "hint": "First Name"
+              }
+            ],
+            [
+              "last_name_text_id",
+              {
+                "id_element_list": [],
+                "size": 1,
+                "text": null,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "__class__": "Text",
+                "type": 1,
+                "multiline": false,
+                "locale": null,
+                "hint": "Last Name"
+              }
+            ],
+            [
+              "date_of_birth_date_picker",
+              {
+                "id_element_list": [],
+                "size": 1,
+                "displayed": true,
+                "datetime": null,
+                "request_locale": false,
+                "__class__": "DateTimePicker",
+                "__module__": "fase.fase",
+                "type": 1,
+                "locale": null,
+                "hint": "Date of Birth"
+              }
+            ],
+            [
+              "home_city_place_picker",
+              {
+                "id_element_list": [],
+                "size": 1,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "__class__": "PlacePicker",
+                "type": 1,
+                "place": null,
+                "locale": null,
+                "hint": "Home City"
+              }
+            ],
+            [
+              "sign_up_button_id",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": true,
+                "text": "Sign Up",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ]
+          ],
+          "orientation": 1,
+          "on_click": null,
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "size": 1,
+          "locale": null,
+          "border": null
+        }
+      ],
+      [
+        "prev_step_button",
+        {
+          "id_element_list": [],
+          "on_click": {
+            "__func__": "FunctionPlaceholder",
+            "__module__": "fase.fase"
+          },
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "text": "Back",
+          "locale": null,
+          "__class__": "Button"
+        }
+      ]
+    ],
+    "displayed": true,
+    "title": null,
+    "request_locale": false,
+    "__class__": "Screen",
+    "__module__": "fase.fase",
+    "scrollable": null,
+    "locale": null,
+    "_screen_id": "f96d6579e0ddc421e47a34b261913d18"
+  },
+  "resources": null,
+  "session_info": {
+    "session_id": "f3f28480352d310bf60170581cfeb8af"
+  },
+  "elements_update": null,
+  "screen_info": {
+    "screen_id": "f96d6579e0ddc421e47a34b261913d18"
+  }
+}
+```
+
+### User Enters Information and Clicks Sign Up
+User enters all information and clicks Sign Up. Client sends `/elementcallback` with *ElementCallback* with
+*elements_update* field with just entered information:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': 'f96d6579e0ddc421e47a34b261913d18', 'session-id': 'f3f28480352d310bf60170581cfeb8af'}
+```
+```
+{
+  "device": {
+    "device_token": "921e281e-d8a2-4b75-8bb2-9f19250933d4",
+    "device_type": "Python"
+  },
+  "locale": {
+    "country_code": "US"
+  },
+  "method": "on_click",
+  "elements_update": {
+    "value_list": [
+      "19860522000000000000",
+      "{\"state\": \"California\", \"country\": \"United States\", \"city\": \"Palo Alto\", \"google_place_id\": \"palo-alto-google-id\"}",
+      "Edward",
+      "4086806761",
+      "Igushev"
+    ],
+    "id_list_list": [
+      [
+        "sign_up_frame_id",
+        "date_of_birth_date_picker"
+      ],
+      [
+        "sign_up_frame_id",
+        "home_city_place_picker"
+      ],
+      [
+        "sign_up_frame_id",
+        "first_name_text_id"
+      ],
+      [
+        "sign_up_frame_id",
+        "phone_number_text_id"
+      ],
+      [
+        "sign_up_frame_id",
+        "last_name_text_id"
+      ]
+    ]
+  },
+  "id_list": [
+    "sign_up_frame_id",
+    "sign_up_button_id"
+  ]
+}
+```
+Server sends *Response* with Activation Code *Screen*:
+```
+{
+  "screen": {
+    "on_more": null,
+    "on_refresh": null,
+    "id_element_list": [
+      [
+        "enter_activation_frame_id",
+        {
+          "__class__": "Frame",
+          "id_element_list": [
+            [
+              "activation_code_text_id",
+              {
+                "id_element_list": [],
+                "size": 1,
+                "text": null,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "__class__": "Text",
+                "type": 1,
+                "multiline": false,
+                "locale": null,
+                "hint": "Activation Code"
+              }
+            ],
+            [
+              "send_button_id",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Send",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ]
+          ],
+          "orientation": 1,
+          "on_click": null,
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "size": 1,
+          "locale": null,
+          "border": null
+        }
+      ],
+      [
+        "prev_step_button",
+        {
+          "id_element_list": [],
+          "on_click": {
+            "__func__": "FunctionPlaceholder",
+            "__module__": "fase.fase"
+          },
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "text": "Back",
+          "locale": null,
+          "__class__": "Button"
+        }
+      ]
+    ],
+    "displayed": true,
+    "title": null,
+    "request_locale": false,
+    "__class__": "Screen",
+    "__module__": "fase.fase",
+    "scrollable": null,
+    "locale": null,
+    "_screen_id": "fbc5714270d52c6e2a51fea9d939cfe1"
+  },
+  "resources": null,
+  "session_info": {
+    "session_id": "f3f28480352d310bf60170581cfeb8af"
+  },
+  "elements_update": null,
+  "screen_info": {
+    "screen_id": "fbc5714270d52c6e2a51fea9d939cfe1"
+  }
+}
+```
+
+### User Enters Activation Code and Clicks Send
+User enters activation code and clicks Send. Client sends `/elementcallback` with *ElementCallback* with
+*elements_update* field with just entered information:
+```
+method: post
+request: /elementcallback
+headers: {'screen-id': 'fbc5714270d52c6e2a51fea9d939cfe1', 'session-id': 'f3f28480352d310bf60170581cfeb8af'}
+```
+```
+{
+  "device": {
+    "device_token": "921e281e-d8a2-4b75-8bb2-9f19250933d4",
+    "device_type": "Python"
+  },
+  "locale": null,
+  "method": "on_click",
+  "elements_update": {
+    "value_list": [
+      "932214"
+    ],
+    "id_list_list": [
+      [
+        "enter_activation_frame_id",
+        "activation_code_text_id"
+      ]
+    ]
+  },
+  "id_list": [
+    "enter_activation_frame_id",
+    "send_button_id"
+  ]
+}
+```
+Server sends *Response* with Dashboard *Screen*:
+```
+{
+  "screen": {
+    "on_more": null,
+    "on_refresh": null,
+    "id_element_list": [
+      [
+        "Frame_6eb45c98-fb7e-4c40-922b-e5b8b6cb73d7",
+        {
+          "__class__": "Frame",
+          "id_element_list": [
+            [
+              "Label_21175355-cb0c-4083-a963-8aa8a7e739ed",
+              {
+                "alight": 3,
+                "id_element_list": [],
+                "size": 2,
+                "on_click": null,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "font": 1.0,
+                "request_locale": false,
+                "text": "Score",
+                "locale": null,
+                "__class__": "Label"
+              }
+            ],
+            [
+              "Label_f033d4d0-1513-496e-bcbe-bc38868b59ab",
+              {
+                "alight": 3,
+                "id_element_list": [],
+                "size": 2,
+                "on_click": null,
+                "displayed": true,
+                "__module__": "fase.fase",
+                "font": 1.5,
+                "request_locale": false,
+                "text": "-8",
+                "locale": null,
+                "__class__": "Label"
+              }
+            ]
+          ],
+          "orientation": 1,
+          "on_click": null,
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "size": 1,
+          "locale": null,
+          "border": null
+        }
+      ],
+      [
+        "navigation",
+        {
+          "id_element_list": [
+            [
+              "Button_630e4cff-4d82-4b35-a8e0-dd1b81c9ee97",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Dashboard",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ],
+            [
+              "Button_55589aa2-f434-4535-9127-2a9d4a0c3071",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Your Events",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ],
+            [
+              "Button_edabb788-943b-460c-8011-58ba7a793be3",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Your Friends Events",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ],
+            [
+              "Button_f4b98b64-ae3f-4b1c-80c2-6df15a5ee1b0",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Statistics by Cities",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ],
+            [
+              "Button_a30b146f-582c-4f5c-a1e0-dea8c380d198",
+              {
+                "id_element_list": [],
+                "on_click": {
+                  "__func__": "FunctionPlaceholder",
+                  "__module__": "fase.fase"
+                },
+                "displayed": true,
+                "__module__": "fase.fase",
+                "request_locale": false,
+                "text": "Sign Out",
+                "locale": null,
+                "__class__": "Button"
+              }
+            ]
+          ],
+          "__class__": "Navigation",
+          "__module__": "fase.fase"
+        }
+      ],
+      [
+        "main_button",
+        {
+          "id_element_list": [
+            [
+              "context_menu",
+              {
+                "id_element_list": [
+                  [
+                    "MenuItem_62a5f9b1-9ba6-465d-82df-d05d29aa1b6f",
+                    {
+                      "id_element_list": [],
+                      "on_click": {
+                        "__func__": "FunctionPlaceholder",
+                        "__module__": "fase.fase"
+                      },
+                      "displayed": true,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "text": "Add Event to Yourself",
+                      "locale": null,
+                      "__class__": "MenuItem"
+                    }
+                  ],
+                  [
+                    "MenuItem_2d08a33c-9e5e-4e67-b6ea-735075053fd7",
+                    {
+                      "id_element_list": [],
+                      "on_click": {
+                        "__func__": "FunctionPlaceholder",
+                        "__module__": "fase.fase"
+                      },
+                      "displayed": true,
+                      "__module__": "fase.fase",
+                      "request_locale": false,
+                      "text": "Add Event to Friend",
+                      "locale": null,
+                      "__class__": "MenuItem"
+                    }
+                  ]
+                ],
+                "text": null,
+                "__class__": "Menu",
+                "__module__": "fase.fase"
+              }
+            ]
+          ],
+          "on_click": null,
+          "displayed": true,
+          "__module__": "fase.fase",
+          "request_locale": false,
+          "text": "Add Event",
+          "locale": null,
+          "__class__": "Button"
+        }
+      ]
+    ],
+    "displayed": true,
+    "title": "Dashboard",
+    "request_locale": false,
+    "__class__": "Screen",
+    "__module__": "fase.fase",
+    "scrollable": null,
+    "locale": null,
+    "_screen_id": "d0e118e258e517c410151187f64c5c49"
+  },
+  "resources": null,
+  "session_info": {
+    "session_id": "e2a2c0ad02a3ec295b5cf513094b15b5"
+  },
+  "elements_update": null,
+  "screen_info": {
+    "screen_id": "d0e118e258e517c410151187f64c5c49"
+  }
+}
+```
