@@ -76,6 +76,7 @@ Table of Contents
 * **Device**
   * *device_type*: string
   * *device_token*: string
+  * *screen_size*: int
 
 ## Elements Classes
 * **Element**. Basic Interface.
