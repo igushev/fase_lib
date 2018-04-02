@@ -226,7 +226,7 @@ def OnRequestUserDataEnteredData(service, screen, element):
     if date_of_birth is None:
       return _ErrorAlert(service, message=NO_DATE_OF_BIRTH, on_click=OnSignUpOption)
     if request_user_data.min_date_of_birth is not None and request_user_data.min_date_of_birth < date_of_birth:
-      min_age = datetime.datetime.now() - request_user_data.min_date_of_birth
+      min_age = datetime.datetime.utcnow() - request_user_data.min_date_of_birth
       return _ErrorAlert(service, message=UNDER_AGE_USER % (min_age.days // 365), on_click=OnSignUpOption)
     user.date_of_birth = date_of_birth
   if request_user_data.home_city and user.home_city is None:
@@ -286,7 +286,7 @@ def OnSignUpEnteredData(service, screen, element):
   if user_list:
     return _ErrorAlert(service, message=USER_ALREADY_REGISTERED, on_click=OnSignUpOption)
 
-  datetime_now = datetime.datetime.now()
+  datetime_now = datetime.datetime.utcnow()
   user_id_hash = hashlib.md5()
   user_id_hash.update(datetime_now.strftime(fase.DATETIME_FORMAT).encode('utf-8'))
   user_id_hash.update(phone_number.encode('utf-8'))
@@ -304,7 +304,7 @@ def OnSignUpEnteredData(service, screen, element):
     if date_of_birth is None:
       return _ErrorAlert(service, message=NO_DATE_OF_BIRTH, on_click=OnSignUpOption)
     if request_user_data.min_date_of_birth is not None and request_user_data.min_date_of_birth < date_of_birth:
-      min_age = datetime.datetime.now() - request_user_data.min_date_of_birth
+      min_age = datetime.datetime.utcnow() - request_user_data.min_date_of_birth
       return _ErrorAlert(service, message=UNDER_AGE_USER % (min_age.days // 365), on_click=OnSignUpOption)
   else:
     date_of_birth = None

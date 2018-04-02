@@ -437,7 +437,7 @@ class UserEvent(CommonUserEvent):
     kwargs['self_added'] = (self.user_id == self.initiator_user_id)
     kwargs['display_status'] = self.DisplayStatus(receiver_user_id)
     kwargs['display_datetime'] = (
-        datetime_util.GetDatetimeDiffStr(self.datetime, datetime.datetime.now()))
+        datetime_util.GetDatetimeDiffStr(self.datetime, datetime.datetime.utcnow()))
     
     return ExternalUserEvent(**kwargs)
     

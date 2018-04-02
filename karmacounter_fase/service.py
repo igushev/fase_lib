@@ -46,7 +46,7 @@ class KarmaCounter(fase.Service):
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label_str', value='dashboard')
-    min_date_of_birth = datetime.datetime.now() - datetime.timedelta(days=MIN_AGE_YEARS*365)
+    min_date_of_birth = datetime.datetime.utcnow() - datetime.timedelta(days=MIN_AGE_YEARS*365)
     return fase_sign_in.StartSignIn(
         self, on_done=KarmaCounter.OnSignInDone,
         request_user_data=fase.RequestUserData(date_of_birth=True, home_city=True, min_date_of_birth=min_date_of_birth))

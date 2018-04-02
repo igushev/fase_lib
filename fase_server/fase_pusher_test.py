@@ -45,7 +45,7 @@ class FasePusherTest(unittest.TestCase):
                      phone_number='+13216549870',
                      first_name='Edward',
                      last_name='Igushev',
-                     datetime_added=datetime.datetime.now())
+                     datetime_added=datetime.datetime.utcnow())
     service = PusherTestService()
     service._session_id = fase_sign_in_impl.GenerateSignedInSessionId(user.user_id)
     service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_token_1_1'))

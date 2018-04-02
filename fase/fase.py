@@ -38,7 +38,7 @@ def GenerateElementId(element):
 
 
 def GenerateSessionId():
-  datetime_now = datetime.datetime.now()
+  datetime_now = datetime.datetime.utcnow()
   session_id_hash = hashlib.md5()
   session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
   session_id = session_id_hash.hexdigest()
@@ -46,7 +46,7 @@ def GenerateSessionId():
 
 
 def GenerateScreenId(session_id):
-  datetime_now = datetime.datetime.now()
+  datetime_now = datetime.datetime.utcnow()
   screen_id_hash = hashlib.md5()
   screen_id_hash.update(session_id.encode('utf-8'))
   screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
@@ -55,7 +55,7 @@ def GenerateScreenId(session_id):
 
 
 def GenerateUserId(session_id):
-  datetime_now = datetime.datetime.now()
+  datetime_now = datetime.datetime.utcnow()
   screen_id_hash = hashlib.md5()
   screen_id_hash.update(session_id.encode('utf-8'))
   screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
@@ -1299,7 +1299,7 @@ class Service(VariableContainer):
     self._user_id = GenerateUserId(self._session_id)
     self._user = None
     self._device_list = []
-    self._datetime_added = datetime.datetime.now()
+    self._datetime_added = datetime.datetime.utcnow()
 
   def GetSessionId(self):
     return self._session_id

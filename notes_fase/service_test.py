@@ -31,10 +31,10 @@ class NotesTest(unittest.TestCase):
                           phone_number='+13216549870',
                           first_name='Edward',
                           last_name='Igushev',
-                          datetime_added=datetime.datetime.now())]),
+                          datetime_added=datetime.datetime.utcnow())]),
         overwrite=True)
 
-    datetime_now = datetime.datetime.now()
+    datetime_now = datetime.datetime.utcnow()
     self.note_1 = notes_model.Note(note_id='321_1',
                                    user_id='321',
                                    header='Note 1 Header',
@@ -80,7 +80,7 @@ class NotesTest(unittest.TestCase):
                        actual_note_header_frame.GetImage(id_='note_header_image').GetFilename())
       self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetText())
       if expected_note.datetime:
-        expected_datetime_text = datetime_util.GetDatetimeDiffStr(expected_note.datetime, datetime.datetime.now())
+        expected_datetime_text = datetime_util.GetDatetimeDiffStr(expected_note.datetime, datetime.datetime.utcnow())
         actual_note_deails_frame = actual_note_frame.GetFrame(id_='note_deails_frame')
         self.assertEqual(expected_datetime_text,
                          actual_note_deails_frame.GetLabel(id_='note_deails_frame_datetime_text').GetText())
@@ -346,7 +346,7 @@ class NotesTest(unittest.TestCase):
     note_2_edited = copy.copy(self.note_2)
     note_2_edited.header = 'Note 2 Header edited'
     note_2_edited.text = 'Note 2 text edited'
-    note_2_edited.datetime = datetime.datetime.now()  # Should be updated by the Service.
+    note_2_edited.datetime = datetime.datetime.utcnow()  # Should be updated by the Service.
     
     # Edit Note.
     session_info, screen_info, screen = (
@@ -383,7 +383,7 @@ class NotesTest(unittest.TestCase):
     # Copy and edit Note.
     note_3_edited = copy.copy(self.note_3)
     note_3_edited.favourite = True
-    note_3_edited.datetime = datetime.datetime.now()  # Should be updated by the Service.
+    note_3_edited.datetime = datetime.datetime.utcnow()  # Should be updated by the Service.
     
     # Reverse Favourite for Note.
     session_info, screen_info, screen = (

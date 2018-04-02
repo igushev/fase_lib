@@ -297,7 +297,7 @@ class FaseSignInTest(unittest.TestCase):
                      phone_number='+13216549870',
                      first_name='Edward',
                      last_name='Igushev',
-                     datetime_added=datetime.datetime.now())
+                     datetime_added=datetime.datetime.utcnow())
     service = SignInTestService()
     service._session_id = fase_sign_in_impl.GenerateSignedInSessionId(user.user_id)
     screen = service.OnStart()
@@ -323,7 +323,7 @@ class FaseSignInTest(unittest.TestCase):
                      phone_number='+13216549870',
                      first_name='Edward',
                      last_name='Igushev',
-                     datetime_added=datetime.datetime.now())
+                     datetime_added=datetime.datetime.utcnow())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
@@ -393,7 +393,7 @@ class FaseSignInTest(unittest.TestCase):
                      phone_number='+13216549870',
                      first_name='Edward',
                      last_name='Igushev',
-                     datetime_added=datetime.datetime.now())
+                     datetime_added=datetime.datetime.utcnow())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
             service_list=[],
@@ -594,7 +594,7 @@ class FaseSignInTest(unittest.TestCase):
 
     # Request with Date of Birth and Minimum Date of Birth.
     SignInTestService.service_id = 'SignInTest_MinDateOfBirth'
-    min_date_of_birth = datetime.datetime.now()-datetime.timedelta(days=2*365)
+    min_date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=2*365)
     SignInTestService.request_user_data = fase.RequestUserData(date_of_birth=True,
                                                                min_date_of_birth=min_date_of_birth)
 
@@ -614,7 +614,7 @@ class FaseSignInTest(unittest.TestCase):
     device = service._device_list[-1]
 
     # Enter Date of Birth after Minimum Date of Birth.
-    date_of_birth = datetime.datetime.now()-datetime.timedelta(days=1*365)
+    date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=1*365)
     elements_update=fase_model.ElementsUpdate([['enter_frame_id', 'date_of_birth_date_picker']],
                                               [date_of_birth.strftime(fase.DATETIME_FORMAT)])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
@@ -647,7 +647,7 @@ class FaseSignInTest(unittest.TestCase):
     device = service._device_list[-1]
 
     # Enter Date of Birth before Minimum Date of Birth.
-    date_of_birth = datetime.datetime.now()-datetime.timedelta(days=3*365)
+    date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=3*365)
     elements_update=fase_model.ElementsUpdate([['enter_frame_id', 'date_of_birth_date_picker']],
                                               [date_of_birth.strftime(fase.DATETIME_FORMAT)])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)

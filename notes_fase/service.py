@@ -89,7 +89,7 @@ class NotesService(fase.Service):
 
       note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
 
-      datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.now())
+      datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.utcnow())
       note_deails_frame = note_frame.AddFrame(id_='note_deails_frame', orientation=fase.Frame.HORIZONTAL)
       note_deails_frame.AddLabel(
           id_='note_deails_frame_datetime_text', text=datetime_text, font=0.75,
@@ -171,7 +171,7 @@ class NotesService(fase.Service):
   def OnSaveNote(self, screen, element):
     note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
     user_id = self.GetUserId()
-    datetime_now = datetime.datetime.now()
+    datetime_now = datetime.datetime.utcnow()
     # If new note.
     if note_id is None:
       note_id_hash = hashlib.md5()

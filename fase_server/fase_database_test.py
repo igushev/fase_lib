@@ -73,17 +73,17 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
                        phone_number='+13216549870',
                        first_name='Edward',
                        last_name='Igushev',
-                       datetime_added=datetime.datetime.now())    
+                       datetime_added=datetime.datetime.utcnow())
     user_2 = fase.User(user_id='987',
                        phone_number='+19876543210',
                        first_name='Edward Junior',
                        last_name='Igushev',
-                       datetime_added=datetime.datetime.now())    
+                       datetime_added=datetime.datetime.utcnow())
     user_2b = fase.User(user_id='987b',
                         phone_number='+19876543210',
                         first_name='Edward Junior',
                         last_name='Igushev (One more account)',
-                        datetime_added=datetime.datetime.now())    
+                        datetime_added=datetime.datetime.utcnow())
 
     self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetUser(user_1.user_id))
     self.assertEqual([], fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(user_1.phone_number))
