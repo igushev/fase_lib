@@ -19,8 +19,6 @@ DELETE_DB_COMMAND = 'deletedb'
 TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
-DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
-
 WRONG_COMMAND = fase_model.BadRequest(
   code=401,
   message='Wrong command!')

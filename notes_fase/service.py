@@ -16,7 +16,6 @@ DELETE_DB_COMMAND = 'deletedb'
 TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
-DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
 PREVIEW_LENGTH = 50
 
 
@@ -175,7 +174,7 @@ class NotesService(fase.Service):
     # If new note.
     if note_id is None:
       note_id_hash = hashlib.md5()
-      note_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
+      note_id_hash.update(datetime_now.strftime(fase.DATETIME_FORMAT_HASH).encode('utf-8'))
       note_id_hash.update(user_id.encode('utf-8'))
       note_id = note_id_hash.hexdigest()
     note_frame = screen.GetFrame(id_='note_frame')

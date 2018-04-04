@@ -33,7 +33,7 @@ class DynamoDBNotesDatabaseTest(unittest.TestCase):
 
   def testNotes(self):
     notes_database.NotesDatabaseInterface.Get().CreateDatabase()
-    datetime_now = datetime.datetime.utcnow()
+    datetime_now = datetime.datetime.utcnow().replace(microsecond=0)
     note_1_1 = notes_model.Note(note_id='321_1',
                                 user_id='321',
                                 header='Note 1 Header',

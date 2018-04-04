@@ -69,21 +69,22 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     self.assertEqual(screen_prog_1, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_1))
     self.assertEqual(screen_prog_2, fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_2))
     
+    datetime_now = datetime.datetime.utcnow().replace(microsecond=0)
     user_1 = fase.User(user_id='321',
                        phone_number='+13216549870',
                        first_name='Edward',
                        last_name='Igushev',
-                       datetime_added=datetime.datetime.utcnow())
+                       datetime_added=datetime_now)
     user_2 = fase.User(user_id='987',
                        phone_number='+19876543210',
                        first_name='Edward Junior',
                        last_name='Igushev',
-                       datetime_added=datetime.datetime.utcnow())
+                       datetime_added=datetime_now)
     user_2b = fase.User(user_id='987b',
                         phone_number='+19876543210',
                         first_name='Edward Junior',
                         last_name='Igushev (One more account)',
-                        datetime_added=datetime.datetime.utcnow())
+                        datetime_added=datetime_now)
 
     self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetUser(user_1.user_id))
     self.assertEqual([], fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(user_1.phone_number))
@@ -102,8 +103,8 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetUser(user_2b.user_id))
     fase_database.FaseDatabaseInterface.Get().AddUser(user_2b)
     self.assertEqual(user_2b, fase_database.FaseDatabaseInterface.Get().GetUser(user_2b.user_id))
-    self.assertEqual([user_2, user_2b],
-                     fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(user_2b.phone_number))
+    self.assertEqual({user_2, user_2b},
+                     set(fase_database.FaseDatabaseInterface.Get().GetUserListByPhoneNumber(user_2b.phone_number)))
 
 
 

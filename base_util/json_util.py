@@ -6,10 +6,9 @@ import os
 
 
 DATE_FORMAT = '%Y-%m-%d'
-TIME_FORMAT = '%H:%M:%S.%f'
-TIME_FORMAT_SHORT = '%H:%M:%S' 
-DATETIME_FORMAT = '%s %s' % (DATE_FORMAT, TIME_FORMAT)
-DATETIME_FORMAT_SHORT = '%s %s' % (DATE_FORMAT, TIME_FORMAT_SHORT)
+TIME_FORMAT = '%H:%M:%S'
+DATETIME_FORMAT = '%sT%s' % (DATE_FORMAT, TIME_FORMAT)
+DATETIME_FORMAT_1 = '%s %s' % (DATE_FORMAT, TIME_FORMAT)
 MODULE_FIELD = '__module__'
 CLASS_FIELD = '__class__'
 FUNC_FIELD = '__func__'
@@ -95,7 +94,7 @@ class JSONDateTime(JSONObjectInterface):
     try:
       return datetime.datetime.strptime(simple, DATETIME_FORMAT)
     except:  # For backward compatibility.
-      return datetime.datetime.strptime(simple, DATETIME_FORMAT_SHORT)
+      return datetime.datetime.strptime(simple, DATETIME_FORMAT_1)
 
 
 class JSONFunction(JSONObjectInterface):

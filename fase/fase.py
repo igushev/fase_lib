@@ -7,7 +7,8 @@ from base_util import data_util
 from base_util import json_util
 
 
-DATETIME_FORMAT = '%Y%m%d%H%M%S%f'
+DATETIME_FORMAT = json_util.DATETIME_FORMAT
+DATETIME_FORMAT_HASH = '%Y%m%d%H%M%S%f'
 
 MAIN_BUTTON_ID = 'main_button'
 NAVIGATION_ID = 'navigation'
@@ -40,7 +41,7 @@ def GenerateElementId(element):
 def GenerateSessionId():
   datetime_now = datetime.datetime.utcnow()
   session_id_hash = hashlib.md5()
-  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
+  session_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
   session_id = session_id_hash.hexdigest()
   return session_id
 
@@ -49,7 +50,7 @@ def GenerateScreenId(session_id):
   datetime_now = datetime.datetime.utcnow()
   screen_id_hash = hashlib.md5()
   screen_id_hash.update(session_id.encode('utf-8'))
-  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
   screen_id = screen_id_hash.hexdigest()
   return screen_id
 
@@ -58,7 +59,7 @@ def GenerateUserId(session_id):
   datetime_now = datetime.datetime.utcnow()
   screen_id_hash = hashlib.md5()
   screen_id_hash.update(session_id.encode('utf-8'))
-  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT).encode('utf-8'))
+  screen_id_hash.update(datetime_now.strftime(DATETIME_FORMAT_HASH).encode('utf-8'))
   screen_id = screen_id_hash.hexdigest()
   return screen_id
 
@@ -1302,7 +1303,7 @@ class Service(VariableContainer):
     self._user_id = GenerateUserId(self._session_id)
     self._user = None
     self._device_list = []
-    self._datetime_added = datetime.datetime.utcnow()
+    self._datetime_added = datetime.datetime.utcnow().replace(microsecond=0)
 
   def GetSessionId(self):
     return self._session_id
