@@ -10,6 +10,7 @@ from karmacounter_fase import client as kc_client
 from karmacounter_fase import data as kc_data
 
 
+DEVICE_TYPE = 'Fase'
 APP_NAME = 'KarmaCounter'
 
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
@@ -42,6 +43,10 @@ class KarmaCounter(fase.Service):
 
   def _PushNotification(self, phone_number, message):
     user_id = fase_sign_in.GetUserIdByPhoneNumber(phone_number)
+    # Here user_id might be None because of backwards compatibility, when user might has registered using old Frontend
+    # and Fase Frontend does not has their information.
+    if user_id is None:
+      return
     fase_pusher.Push(user_id, APP_NAME, message)
 
   def OnStart(self):
@@ -60,6 +65,8 @@ class KarmaCounter(fase.Service):
                                                        state=self.GetUser().GetHomeCity().GetState(),
                                                        country=self.GetUser().GetHomeCity().GetCountry()),
                                date_of_birth=self.GetUser().GetDateOfBirth(),
+                               device=kc_data.Device(device_type=DEVICE_TYPE,
+                                                     device_token=self.GetUserId()),
                                locale=self.GetUser().GetLocale(),
                                code=GET_USER_SESSION_CODE)
     session_info = kc_client.KarmaCounterClient.Get().GetUserSession(new_user)
