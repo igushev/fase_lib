@@ -10,6 +10,7 @@ from fase_model import fase_model
 
 COUNTRY_CODE = 'US'
 DEVICE_TYPE = 'Python'
+PIXEL_DENSITY = 1.0
 
 
 def LoadSessionInfoIfExists(session_info_filepath):
@@ -34,7 +35,7 @@ class FaseClient(object):
     self.ui.SetClient(self)
     self.resource_manager = resource_manager
     self.session_info_filepath = session_info_filepath
-    self.device = fase.Device(DEVICE_TYPE, str(uuid.uuid4()))
+    self.device = fase.Device(DEVICE_TYPE, str(uuid.uuid4()), pixel_density=PIXEL_DENSITY)
     self.screen = None
     self.elements_update = None
     self.session_info = LoadSessionInfoIfExists(self.session_info_filepath)

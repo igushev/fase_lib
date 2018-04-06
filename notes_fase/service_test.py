@@ -1,8 +1,6 @@
 import copy
 import datetime
 import unittest
-import os
-import sys
 
 from base_util import datetime_util
 from server_util import resource_manager

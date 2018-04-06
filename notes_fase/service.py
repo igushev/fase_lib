@@ -105,10 +105,10 @@ class NotesService(fase.Service):
     navigation.AddButton(id_='recent_button', text='Recent', image=fase.Image(filename='images/recent.png'),
                          on_click=NotesService.OnRecent)
     if self.IfSignedIn():
-      navigation.AddButton(id_='sign_out_button', text='Sign Out', image=fase.Image(filename='images/sign_out.png'),
+      navigation.AddButton(id_='sign_out_button', text='Sign Out', image=fase.Image(filename='images/sign_out_@.png'),
                            on_click=NotesService.OnSignOut)
     else:
-      navigation.AddButton(id_='sign_in_button', text='Sign In', image=fase.Image(filename='images/sign_in.png'),
+      navigation.AddButton(id_='sign_in_button', text='Sign In', image=fase.Image(filename='images/sign_in_@.png'),
                            on_click=NotesService.OnSignIn)
 
 
