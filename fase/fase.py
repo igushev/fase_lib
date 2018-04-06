@@ -463,7 +463,7 @@ class VisualElement(VariableContainer):
     {'text': json_util.JSONString(),
      'font': json_util.JSONFloat(),
      'size': json_util.JSONInt(),
-     'alight': json_util.JSONInt(),
+     'align': json_util.JSONInt(),
      'on_click': json_util.JSONFunction()})
 class Label(VisualElement):
 
@@ -480,14 +480,14 @@ class Label(VisualElement):
                text=None,
                font=None,
                size=None,
-               alight=None,
+               align=None,
                on_click=None):
     super(Label, self).__init__()
     self.text = text  # Can be None
     self.font = font or 1.
     assert self.font in Label.FONT_LIST
     self.size = size or Label.MIN
-    self.alight = alight or Label.CENTER
+    self.align = align or Label.CENTER
     self.on_click = on_click
 
   def GetText(self):
@@ -499,8 +499,8 @@ class Label(VisualElement):
   def GetSize(self):
     return self.size
 
-  def GetAlight(self):
-    return self.alight
+  def GetAlign(self):
+    return self.align
 
   def GetOnClick(self):
     return self.on_click
@@ -558,7 +558,7 @@ class Text(VisualElement):
 @json_util.JSONDecorator(
     {'value': json_util.JSONBool(),
      'text': json_util.JSONString(),
-     'alight': json_util.JSONInt()})
+     'align': json_util.JSONInt()})
 class Switch(VisualElement):
 
   LEFT = 1
@@ -568,12 +568,12 @@ class Switch(VisualElement):
   def __init__(self,
                value=None,
                text=None,
-               alight=None):
+               align=None):
     super(Switch, self).__init__()
     assert value is not None
     self.value = value
     self.text = text  # Can be None
-    self.alight = alight or Switch.CENTER
+    self.align = align or Switch.CENTER
 
   def Update(self, value):
     self.value = (value == str(True))
@@ -588,15 +588,15 @@ class Switch(VisualElement):
   def GetText(self):
     return self.text
 
-  def GetAlight(self):
-    return self.alight
+  def GetAlign(self):
+    return self.align
 
 
 @json_util.JSONDecorator(
     {'value': json_util.JSONString(),
      'items': json_util.JSONList(json_util.JSONString()),
      'hint': json_util.JSONString(),
-     'alight': json_util.JSONInt()})
+     'align': json_util.JSONInt()})
 class Select(VisualElement):
 
   LEFT = 1
@@ -607,13 +607,13 @@ class Select(VisualElement):
                value=None,
                items=None,
                hint=None,
-               alight=None):
+               align=None):
     super(Select, self).__init__()
     self.value = value  # Can be None, since should be entered
     assert len(items) > 0
     self.items = items
     self.hint = hint  # Can be None
-    self.alight = alight or Select.CENTER
+    self.align = align or Select.CENTER
 
   def Update(self, value):
     self.value = value
@@ -631,8 +631,8 @@ class Select(VisualElement):
   def GetHint(self):
     return self.hint
 
-  def GetAlight(self):
-    return self.alight
+  def GetAlign(self):
+    return self.align
 
 
 @json_util.JSONDecorator(
@@ -1000,8 +1000,8 @@ class BaseElementsContainer(VisualElement):
                text=None,
                font=None,
                size=None,
-               alight=None):
-    return self.AddElement(id_=id_, element=Label(text=text, font=font, size=size, alight=alight))
+               align=None):
+    return self.AddElement(id_=id_, element=Label(text=text, font=font, size=size, align=align))
   def HasLabel(self, *, id_):
     return self.HasElement(id_=id_)
   def GetLabel(self, *, id_):
@@ -1024,8 +1024,8 @@ class BaseElementsContainer(VisualElement):
                 id_=None,
                 value=None,
                 text=None,
-                alight=None):
-    return self.AddElement(id_=id_, element=Switch(value=value, text=text, alight=alight))
+                align=None):
+    return self.AddElement(id_=id_, element=Switch(value=value, text=text, align=align))
   def HasSwitch(self, *, id_):
     return self.HasElement(id_=id_)
   def GetSwitch(self, *, id_):
@@ -1036,8 +1036,8 @@ class BaseElementsContainer(VisualElement):
                 value=None,
                 items=None,
                 hint=None,
-                alight=None):
-    return self.AddElement(id_=id_, element=Select(value=value, items=items, hint=hint, alight=alight))
+                align=None):
+    return self.AddElement(id_=id_, element=Select(value=value, items=items, hint=hint, align=align))
   def HasSelect(self, *, id_):
     return self.HasElement(id_=id_)
   def GetSelect(self, *, id_):

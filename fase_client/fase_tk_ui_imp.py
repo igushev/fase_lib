@@ -486,12 +486,12 @@ class FaseTkUIImp(object):
       label_font.configure(size=int(label_font.actual()['size']*label_element.GetFont()))
       ui_imp_label.configure(font=label_font)
 
-    if label_element.GetAlight() is not None:
-      if label_element.GetAlight() == fase.Label.LEFT:
+    if label_element.GetAlign() is not None:
+      if label_element.GetAlign() == fase.Label.LEFT:
         anchor = 'w'
-      elif label_element.GetAlight() == fase.Label.RIGHT:
+      elif label_element.GetAlign() == fase.Label.RIGHT:
         anchor = 'e'
-      elif label_element.GetAlight() == fase.Label.CENTER:
+      elif label_element.GetAlign() == fase.Label.CENTER:
         anchor = 'center'
       ui_imp_label.configure(anchor=anchor)
 
@@ -534,12 +534,12 @@ class FaseTkUIImp(object):
     ui_imp_switch = tkinter.Checkbutton(ui_imp_parent.GetUIImpParent(), text=switch_element.GetText(),
                                         variable=ui_imp_var, onvalue=str(True), offvalue=str(False))
 
-    if switch_element.GetAlight() is not None:
-      if switch_element.GetAlight() == fase.Switch.LEFT:
+    if switch_element.GetAlign() is not None:
+      if switch_element.GetAlign() == fase.Switch.LEFT:
         anchor = 'w'
-      elif switch_element.GetAlight() == fase.Switch.RIGHT:
+      elif switch_element.GetAlign() == fase.Switch.RIGHT:
         anchor = 'e'
-      elif switch_element.GetAlight() == fase.Switch.CENTER:
+      elif switch_element.GetAlign() == fase.Switch.CENTER:
         anchor = 'center'
       ui_imp_switch.configure(anchor=anchor)
 
@@ -559,7 +559,7 @@ class FaseTkUIImp(object):
     ui_imp_var.trace('w', ElementUpdatedCallback(self, id_list))
     ui_imp_select = tkinter.Spinbox(ui_imp_parent.GetUIImpParent(), values=select_element.GetItems(),
                                     textvariable=ui_imp_var)
-    # Ignore select_element.GetAlight() since not supported.
+    # Ignore select_element.GetAlign() since not supported.
 
     if select_element.GetDisplayed():
       ui_imp_select.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),

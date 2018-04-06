@@ -138,7 +138,7 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
     screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score')
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
-    screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', alight=fase.Switch.LEFT)
+    screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', align=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
     screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.OnAddUserEventCancel)
@@ -241,8 +241,8 @@ class KarmaCounter(fase.Service):
         user_event_header_frame.AddLabel(
             id_='user_event_friend_display_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
       user_event_header_frame.AddLabel(text=user_event.display_datetime)
-      user_event_frame.AddLabel(text=user_event.description, alight=fase.Label.LEFT)
-      user_event_frame.AddLabel(text=user_event.display_status, alight=fase.Label.LEFT)
+      user_event_frame.AddLabel(text=user_event.description, align=fase.Label.LEFT)
+      user_event_frame.AddLabel(text=user_event.display_status, align=fase.Label.LEFT)
       user_event_button_frame = user_event_frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
       user_event_button_frame.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
 

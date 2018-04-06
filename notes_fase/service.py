@@ -81,18 +81,18 @@ class NotesService(fase.Service):
       note_header_frame = note_frame.AddFrame(
           id_='note_header_frame', orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
       note_header_frame.AddLabel(
-          id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, alight=fase.Label.LEFT)
+          id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, align=fase.Label.LEFT)
       note_header_frame.AddImage(
           id_='note_header_image', filename=('images/favourite.png' if note.favourite else
                                              'images/favourite_non.png'))
 
-      note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], alight=fase.Label.LEFT)
+      note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], align=fase.Label.LEFT)
 
       datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.utcnow())
       note_deails_frame = note_frame.AddFrame(id_='note_deails_frame', orientation=fase.Frame.HORIZONTAL)
       note_deails_frame.AddLabel(
           id_='note_deails_frame_datetime_text', text=datetime_text, font=0.75,
-          size=fase.Label.MAX, alight=fase.Label.RIGHT)
+          size=fase.Label.MAX, align=fase.Label.RIGHT)
     return screen
 
   def _AddButtons(self, screen):
