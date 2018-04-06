@@ -1,9 +1,7 @@
 import copy
-import os
-import sys
 
 from base_util import singleton_util
-from server_util import resource_util
+from server_util import resource_manager
 
 from fase import fase
 from fase_model import fase_model
@@ -37,14 +35,10 @@ class BadRequestException(Exception):
     return self._bad_request
 
 
-def GetResourceDir():
-  return os.path.dirname(sys.modules[fase.Service.service_cls.__module__].__file__)
-  
-
 def _PrepareScreen(obj, pixel_density, resource_set):
   assert isinstance(obj, fase.Element)
   if isinstance(obj, fase.Image) and obj.GetFilename():
-    filename = resource_util.GetResourceFilename(GetResourceDir(), obj.GetFilename(), pixel_density)
+    filename = resource_manager.ResourceManager.Get().GetResourceFilename(obj.GetFilename(), pixel_density)
     if filename is not None:
       resource_set.add(fase_model.Resource(filename=filename))
     obj = copy.copy(obj)

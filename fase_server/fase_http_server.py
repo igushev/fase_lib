@@ -5,6 +5,7 @@ import os
 from flask import Flask, request, jsonify, send_file
 
 from base_util import json_util
+from server_util import resource_manager
 
 from fase import fase
 from fase_model import fase_model
@@ -119,6 +120,6 @@ def elementcallback():
 
 @application.route('/getresource/filename/<path:filename>', methods=['GET', 'OPTIONS'])
 def getresource(filename):
-  resource_dir = fase_server.GetResourceDir()
+  resource_dir = resource_manager.ResourceManager.Get().GetResourceDir()
   filename = os.path.join(*filename.split('/'))
   return send_file(os.path.join(resource_dir, filename))

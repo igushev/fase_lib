@@ -1,7 +1,13 @@
+import os
+import sys
+
 from server_util import activation_code_generator
 from server_util import config_util
 from server_util import device_pusher
+from server_util import resource_manager
 from server_util import sms_sender
+
+from fase import fase
 
 try:
   from . import fase_database
@@ -49,9 +55,14 @@ def GetDevicePusher(config):
   return device_pusher_
 
 
+def GetResourceDir():
+  return os.path.dirname(sys.modules[fase.Service.service_cls.__module__].__file__)
+  
+
 fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
 fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
 activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
+resource_manager.ResourceManager.Set(resource_manager.ResourceManager(GetResourceDir()))
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
 device_pusher.DevicePusher.Set(GetDevicePusher(fase_config))
 fase_server.FaseServer.Set(fase_server.FaseServer())
