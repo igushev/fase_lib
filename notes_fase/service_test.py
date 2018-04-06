@@ -58,7 +58,8 @@ class NotesTest(unittest.TestCase):
         overwrite=True)
 
     # Create Service
-    response = fase_server.FaseServer.Get().GetService(fase.Device(device_type='Python', device_token='Token'))
+    self.device = fase.Device(device_type='Python', device_token='Token')
+    response = fase_server.FaseServer.Get().GetService(self.device)
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -88,7 +89,7 @@ class NotesTest(unittest.TestCase):
   def AddNote(self, session_info, screen_info, note):
     # Click on New button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.MAIN_BUTTON_ID], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.MAIN_BUTTON_ID], method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -100,12 +101,12 @@ class NotesTest(unittest.TestCase):
     elements_update=fase_model.ElementsUpdate([['note_frame', 'header_text'],
                                                ['note_frame', 'text_text']], [note.header,
                                                                               note.text])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Save button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -119,7 +120,7 @@ class NotesTest(unittest.TestCase):
     # Click on the Note.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(
-            id_list=['notes_frame', 'note_frame_%s' % note.note_id], method=fase.ON_CLICK_METHOD),
+            id_list=['notes_frame', 'note_frame_%s' % note.note_id], method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -138,12 +139,12 @@ class NotesTest(unittest.TestCase):
     elements_update=fase_model.ElementsUpdate([['note_frame', 'header_text'],
                                                ['note_frame', 'text_text']], [note_edited.header,
                                                                                note_edited.text])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Save button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -159,7 +160,7 @@ class NotesTest(unittest.TestCase):
     # Click on Delete prev button context item.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'delete_menu_item'],
-                                   method=fase.ON_CLICK_METHOD),
+                                   method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -168,7 +169,7 @@ class NotesTest(unittest.TestCase):
     screen.GetElement(id_=fase.ALERT_ID)
     # Click on Yes.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.ALERT_ID, 'ok_id'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.ALERT_ID, 'ok_id'], method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -185,14 +186,14 @@ class NotesTest(unittest.TestCase):
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(
             id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'favourite_menu_item'],
-            method=fase.ON_CLICK_METHOD),
+            method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
 
     # Click on Save button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NEXT_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -215,7 +216,8 @@ class NotesTest(unittest.TestCase):
 
     # Click on Notes button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'notes_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'notes_button'], method=fase.ON_CLICK_METHOD,
+                                   device=self.device),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -223,7 +225,8 @@ class NotesTest(unittest.TestCase):
 
     # Click on Favourites button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'favourites_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'favourites_button'], method=fase.ON_CLICK_METHOD,
+                                   device=self.device),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -231,7 +234,8 @@ class NotesTest(unittest.TestCase):
 
     # Click on Recent button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'recent_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'recent_button'], method=fase.ON_CLICK_METHOD,
+                                   device=self.device),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -239,7 +243,8 @@ class NotesTest(unittest.TestCase):
 
     # Click on Notes button again.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'notes_button'], method=fase.ON_CLICK_METHOD),
+        fase_model.ElementCallback(id_list=[fase.NAVIGATION_ID, 'notes_button'], method=fase.ON_CLICK_METHOD,
+                                   device=self.device),
         session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
@@ -412,13 +417,13 @@ class NotesTest(unittest.TestCase):
     elements_update=fase_model.ElementsUpdate([['note_frame', 'header_text'],
                                                ['note_frame', 'text_text']], [note_2_edited.header,
                                                                               note_2_edited.text])
-    screen_update = fase_model.ScreenUpdate(elements_update=elements_update)
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=self.device)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
 
     # Click on Cancel button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'cancel_menu_item'],
-                                   method=fase.ON_CLICK_METHOD),
+                                   method=fase.ON_CLICK_METHOD, device=self.device),
         session_info, screen_info)
     session_info = response.session_info
     screen_info = response.screen_info

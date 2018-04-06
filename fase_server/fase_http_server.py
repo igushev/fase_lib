@@ -1,7 +1,6 @@
 import logging
 import traceback
 import os
-import sys
 
 from flask import Flask, request, jsonify, send_file
 
@@ -78,7 +77,7 @@ def sendservicecommand():
 
 @application.route('/getservice', methods=['POST', 'OPTIONS'])
 def getservice():
-  device_simple = request.get_json(force=True) 
+  device_simple = request.get_json(force=True)
   device = fase.Device.FromSimple(device_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().GetService, device)
   response_simple = CleanSimple(response_simple)
@@ -88,7 +87,7 @@ def getservice():
 @application.route('/getscreen', methods=['POST', 'OPTIONS'])
 def getscreen():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
-  device_simple = request.get_json(force=True) 
+  device_simple = request.get_json(force=True)
   device = fase.Device.FromSimple(device_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().GetScreen, device, session_info)
   response_simple = CleanSimple(response_simple)
@@ -99,7 +98,7 @@ def getscreen():
 def screenupdate():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   screen_info = fase_model.ScreenInfo(screen_id=request.headers.get('screen_id', None))
-  screen_update_simple = request.get_json(force=True) 
+  screen_update_simple = request.get_json(force=True)
   screen_update = fase_model.ScreenUpdate.FromSimple(screen_update_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().ScreenUpdate, screen_update, session_info, screen_info)
   response_simple = CleanSimple(response_simple)
@@ -110,7 +109,7 @@ def screenupdate():
 def elementcallback():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   screen_info = fase_model.ScreenInfo(screen_id=request.headers.get('screen_id', None))
-  element_callback_simple = request.get_json(force=True) 
+  element_callback_simple = request.get_json(force=True)
   element_callback = fase_model.ElementCallback.FromSimple(element_callback_simple)
   response_simple, code = SafeCall(
       fase_server.FaseServer.Get().ElementCallback, element_callback, session_info, screen_info)
@@ -120,6 +119,6 @@ def elementcallback():
 
 @application.route('/getresource/filename/<path:filename>', methods=['GET', 'OPTIONS'])
 def getresource(filename):
-  resource_dir = os.path.dirname(sys.modules[fase.Service.service_cls.__module__].__file__)
+  resource_dir = fase_server.GetResourceDir()
   filename = os.path.join(*filename.split('/'))
   return send_file(os.path.join(resource_dir, filename))

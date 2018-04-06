@@ -220,16 +220,16 @@ class User(data_util.AbstractObject):
 @json_util.JSONDecorator({
     'device_type': json_util.JSONString(),
     'device_token': json_util.JSONString(),
-    'screen_size': json_util.JSONInt()})
+    'pixel_density': json_util.JSONFloat()})
 class Device(data_util.AbstractObject):
 
   def __init__(self,
                device_type=None,
                device_token=None,
-               screen_size=None):
+               pixel_density=None):
     self.device_type = device_type
     self.device_token = device_token
-    self.screen_size = screen_size
+    self.pixel_density = pixel_density
 
 
 @json_util.JSONDecorator({}, inherited=True)
@@ -686,6 +686,8 @@ class Image(VisualElement):
     self.filename = filename
     self.url = url
 
+  def SetFilename(self, filename):
+    self.filename = filename
   def GetFilename(self):
     return self.filename
   

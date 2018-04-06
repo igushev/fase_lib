@@ -757,7 +757,8 @@ class FaseSignInTest(unittest.TestCase):
           overwrite=True)
   
       # Create Service.
-      response = fase_server.FaseServer.Get().GetService(fase.Device(device_type='Python', device_token='Token'))
+      device = fase.Device(device_type='Python', device_token='Token')
+      response = fase_server.FaseServer.Get().GetService(device)
       session_info = response.session_info
       screen_info = response.screen_info
       screen = response.screen
@@ -769,15 +770,11 @@ class FaseSignInTest(unittest.TestCase):
   
       # Click on Sign In button.
       response = fase_server.FaseServer.Get().ElementCallback(
-          fase_model.ElementCallback(id_list=['sign_in_button_id'], method=fase.ON_CLICK_METHOD),
+          fase_model.ElementCallback(id_list=['sign_in_button_id'], method=fase.ON_CLICK_METHOD, device=device),
           session_info, screen_info)
       session_info = response.session_info
       screen_info = response.screen_info
       screen = response.screen
-      # Get device.
-      service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-      device = service._device_list[-1]
-
       # Check.
       self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
       self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))

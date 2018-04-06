@@ -1,6 +1,9 @@
 import copy
+import os
+import sys
 
 from base_util import singleton_util
+from server_util import resource_util
 
 from fase import fase
 from fase_model import fase_model
@@ -34,23 +37,32 @@ class BadRequestException(Exception):
     return self._bad_request
 
 
-def _PrepareScreen(obj, resource_set):
+def GetResourceDir():
+  return os.path.dirname(sys.modules[fase.Service.service_cls.__module__].__file__)
+  
+
+def _PrepareScreen(obj, pixel_density, resource_set):
   assert isinstance(obj, fase.Element)
   if isinstance(obj, fase.Image) and obj.GetFilename():
-    resource_set.add(fase_model.Resource(filename=obj.GetFilename()))
+    filename = resource_util.GetResourceFilename(GetResourceDir(), obj.GetFilename(), pixel_density)
+    if filename is not None:
+      resource_set.add(fase_model.Resource(filename=filename))
+    obj = copy.copy(obj)
+    obj.SetFilename(filename)
+    return obj
   if not isinstance(obj, fase.ElementContainer):
     return obj
   obj = copy.copy(obj)
   obj.id_element_list = [
-      (id_, _PrepareScreen(element, resource_set))
+      (id_, _PrepareScreen(element, pixel_density, resource_set))
       for id_, element in obj.id_element_list
       if not isinstance(element, fase.Variable)]
   return obj
 
 
-def PrepareScreen(obj):
+def PrepareScreen(obj, pixel_density):
   resource_set = set()
-  screen = _PrepareScreen(obj, resource_set)
+  screen = _PrepareScreen(obj, pixel_density, resource_set)
   resources = fase_model.Resources(resource_list=list(resource_set)) if resource_set else None
   return screen, resources
 
@@ -84,7 +96,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddService(service)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog)
 
-    screen, resources = PrepareScreen(screen_prog.screen)
+    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
     return fase_model.Response(screen=screen,
                                resources=resources,
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
@@ -94,7 +106,7 @@ class FaseServer(object):
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
     screen_prog.recent_device = device
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
-    screen, resources = PrepareScreen(screen_prog.screen)
+    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
     return fase_model.Response(screen=screen,
                                resources=resources,
                                session_info=session_info,
@@ -119,7 +131,7 @@ class FaseServer(object):
 
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
-      screen, resources = PrepareScreen(screen_prog.screen)
+      screen, resources = PrepareScreen(screen_prog.screen, screen_update.device.pixel_density)
       return fase_model.Response(screen=screen,
                                  resources=resources,
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
@@ -151,7 +163,7 @@ class FaseServer(object):
 
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
-      screen, resources = PrepareScreen(screen_prog.screen)
+      screen, resources = PrepareScreen(screen_prog.screen, element_callback.device.pixel_density)
       return fase_model.Response(screen=screen,
                                  resources=resources,
                                  session_info=fase_model.SessionInfo(service.GetSessionId()),
@@ -168,7 +180,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
-    screen, resources = PrepareScreen(screen_prog.screen)
+    screen, resources = PrepareScreen(screen_prog.screen, element_callback.device.pixel_density)
     return fase_model.Response(screen=screen,
                                resources=resources,
                                session_info=fase_model.SessionInfo(service.GetSessionId()),
