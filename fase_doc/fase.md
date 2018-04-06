@@ -76,7 +76,7 @@ Table of Contents
 * **Device**
   * *device_type*: string
   * *device_token*: string
-  * *screen_size*: int
+  * *pixel_density*: float
 
 ## Elements Classes
 * **Element**. Basic Interface.
@@ -98,7 +98,7 @@ Table of Contents
   * *text*: string
   * *font*: float
   * *size*: int
-  * *alight*: int
+  * *align*: int
   * *on_click*: function
     * FONT_LIST = [0.5, 0.75, 1., 1.25, 1.5]
     * MIN = 1
@@ -131,7 +131,7 @@ Table of Contents
   * *locale*: *Locale*
   * *value*: bool
   * *text*: string
-  * *alight*: int
+  * *align*: int
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
@@ -144,7 +144,7 @@ Table of Contents
   * *value*: string
   * *items*: list(string)
   * *hint*: string
-  * *alight*: int
+  * *align*: int
     * LEFT = 1
     * RIGHT = 2
     * CENTER = 3
