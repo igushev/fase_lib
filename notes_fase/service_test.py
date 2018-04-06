@@ -10,6 +10,7 @@ from server_util import resource_manager
 from fase import fase
 from fase_model import fase_model
 from fase_server import fase_database
+from fase_server import fase_resource
 from fase_server import fase_server
 from fase_server import fase_sign_in_test_util
 
@@ -22,8 +23,8 @@ class NotesTest(unittest.TestCase):
 
   def setUp(self):
     super(NotesTest, self).setUp()
-    resource_dir = os.path.dirname(sys.modules[fase.Service.service_cls.__module__].__file__)
-    resource_manager.ResourceManager.Set(resource_manager.ResourceManager(resource_dir), overwrite=True)
+    resource_manager.ResourceManager.Set(
+        resource_manager.ResourceManager(fase_resource.GetResourceDir()), overwrite=True)
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
   def Start(self):

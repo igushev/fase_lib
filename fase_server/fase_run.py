@@ -9,6 +9,7 @@ import os
 import requests
 
 from server_util import activation_code_generator
+from server_util import resource_manager
 from server_util import sms_sender
 
 from fase_model import fase_model
@@ -19,6 +20,7 @@ from fase_client import fase_tk_ui_imp
 from fase_client import fase_ui
 from fase_server import fase_database
 from fase_server import fase_http_server
+from fase_server import fase_resource
 from fase_server import fase_server
 
 
@@ -66,6 +68,7 @@ def RunServerThread(server_host, server_port):
   fase_server.FaseServer.Set(fase_server.FaseServer())
   server_thread = threading.Thread(target=functools.partial(
       fase_http_server.application.run, host=server_host, port=server_port))
+  resource_manager.ResourceManager.Set(resource_manager.ResourceManager(fase_resource.GetResourceDir()))
   server_thread.daemon = True
   server_thread.start()
   time.sleep(1)
