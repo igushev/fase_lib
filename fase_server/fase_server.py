@@ -41,9 +41,11 @@ def _PrepareScreen(obj, pixel_density, resource_set):
     filename = resource_manager.ResourceManager.Get().GetResourceFilename(obj.GetFilename(), pixel_density)
     if filename is not None:
       resource_set.add(fase_model.Resource(filename=filename))
-    obj = copy.copy(obj)
-    obj.SetFilename(filename)
-    return obj
+      obj = copy.copy(obj)
+      obj.SetFilename(filename)
+      return obj
+    else:
+      return None
   if not isinstance(obj, fase.ElementContainer):
     return obj
   obj = copy.copy(obj)

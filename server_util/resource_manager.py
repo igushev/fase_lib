@@ -33,7 +33,7 @@ class ResourceManager():
       current_pixel_density = pixel_density
       while ((direction == -1 and current_pixel_density > PIXEL_DENSITY_MIN) or
              (direction == 1 and current_pixel_density < PIXEL_DENSITY_MAX)):
-        current_pixel_density_str = ('%.1f' % current_pixel_density).replace('.', '_')
+        current_pixel_density_str = ('%.2f' % current_pixel_density).replace('.', '_')
         filename = filename_template.replace(TEMPLATE_SYMBOL, current_pixel_density_str)
         if os.path.isfile(os.path.join(self.resource_dir, filename)):
           return filename

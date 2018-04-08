@@ -111,12 +111,17 @@ class KarmaCounter(fase.Service):
 
   def _AddButtons(self, screen):
     navigation = screen.AddNavigation()
-    navigation.AddButton(text='Dashboard', on_click=KarmaCounter.OnDisplayDashboard)
-    navigation.AddButton(text='Your Events', on_click=KarmaCounter.OnDisplayYourEvents)
-    navigation.AddButton(text='Your Friends Events', on_click=KarmaCounter.OnDisplayYourFriendsEvents)
-    navigation.AddButton(text='Statistics by Cities', on_click=KarmaCounter.OnDisplayStatisticsByCities)
-    navigation.AddButton(text='Sign Out', on_click=KarmaCounter.OnSignOut)
-    main_button = screen.AddMainButton(text='Add Event')
+    navigation.AddButton(text='Dashboard', image=fase.Image(filename='images/dashboard_@.png'),
+                         on_click=KarmaCounter.OnDisplayDashboard)
+    navigation.AddButton(text='Your Events', image=fase.Image(filename='images/your_events_@.png'),
+                         on_click=KarmaCounter.OnDisplayYourEvents)
+    navigation.AddButton(text='Your Friends Events', image=fase.Image(filename='images/your_friends_events_@.png'),
+                         on_click=KarmaCounter.OnDisplayYourFriendsEvents)
+    navigation.AddButton(text='Statistics by Cities', image=fase.Image(filename='images/statistics_by_cities_@.png'),
+                         on_click=KarmaCounter.OnDisplayStatisticsByCities)
+    navigation.AddButton(text='Sign Out', image=fase.Image(filename='images/sign_out_@.png'),
+                         on_click=KarmaCounter.OnSignOut)
+    main_button = screen.AddMainButton(text='Add Event', image=fase.Image(filename='images/add_event_@.png'))
     main_button_context_menu = main_button.AddContextMenu()
     main_button_context_menu.AddMenuItem(text='Add Event to Yourself', on_click=KarmaCounter.OnAddUserEvent)
     main_button_context_menu.AddMenuItem(text='Add Event to Friend', on_click=KarmaCounter.OnAddOtherUserEvent)
