@@ -381,8 +381,8 @@ class FaseTkUIImp(object):
     if not (main_button or nav_button_num):
       return
     if main_button:
-      total_button_num = math.ceil(nav_button_num / 2) * 2 + int(main_button)
-      main_button_i = math.ceil(nav_button_num / 2)
+      total_button_num = nav_button_num + 1
+      main_button_i = nav_button_num
     else:
       total_button_num = nav_button_num
       main_button_i = None
