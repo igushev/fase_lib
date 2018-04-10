@@ -141,7 +141,8 @@ class KarmaCounter(fase.Service):
     screen = fase.Screen(self)
     users_own = self.GetBoolVariable(id_='adding_users_own_bool').GetValue()
     screen.SetTitle('To Yourself' if users_own else 'To a Friend')
-    screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score')
+    screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score',
+                     align=fase.Select.LEFT)
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', align=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description')
@@ -348,6 +349,7 @@ class KarmaCounter(fase.Service):
     for city_statistics in cities_statistics:
       city_frame = frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
       city_frame.AddLabel(text=city_statistics.display_name)
+      city_frame.AddFrame(size=fase.Frame.MAX, orientation=fase.Frame.HORIZONTAL)
       city_frame.AddLabel(text=city_statistics.display_score)
 
   def DisplayStatisticsByCities(self, screen, element):
