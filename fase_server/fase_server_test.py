@@ -62,10 +62,10 @@ class FaseServerTest(unittest.TestCase):
     open(os.path.join(dirpath, self.file2_filename), 'w').close()
     self.file3_filename = 'file3.png'
     self.file1_template_filename = 'file1_@.png'
-    self.file1_20_filename = 'file1_2_0.png'
+    self.file1_20_filename = 'file1_2_00.png'
     open(os.path.join(dirpath, self.file1_20_filename), 'w').close()
     self.file2_template_filename = 'file2_@.png'
-    self.file2_20_filename = 'file2_2_0.png'
+    self.file2_20_filename = 'file2_2_00.png'
     open(os.path.join(dirpath, self.file2_20_filename), 'w').close()
     
     resource_manager.ResourceManager.Set(resource_manager.ResourceManager(dirpath), overwrite=True)
@@ -311,7 +311,7 @@ class FaseServerTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
-    expected_elements_update = fase_model.ElementsUpdate([['text_name_id']], ['']) 
+    expected_elements_update = fase_model.ElementsUpdate([['text_name_id']], [None]) 
     self.assertEqual(expected_elements_update, screen_prog.elements_update)
 
   def testHelloWorldScreenUpdateWithDiffDevice(self):
