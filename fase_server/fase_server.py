@@ -109,6 +109,11 @@ class FaseServer(object):
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
   @staticmethod
+  def _ProcessElementsUpdate(elements_update):
+    elements_update.value_list = [value if value else None for value in elements_update.value_list]
+    return elements_update
+
+  @staticmethod
   def _UpdateScreen(screen, elements_update):
     for id_list, value in zip(elements_update.id_list_list, elements_update.value_list):
       fase_model.GetScreenElement(screen, id_list).Update(value)
@@ -135,7 +140,8 @@ class FaseServer(object):
 
     same_device = screen_prog.recent_device == screen_update.device 
 
-    if screen_update.elements_update is not None: 
+    if screen_update.elements_update is not None:
+      screen_update.elements_update = FaseServer._ProcessElementsUpdate(screen_update.elements_update)
       FaseServer._UpdateScreen(screen_prog.screen, screen_update.elements_update)
       screen_prog.elements_update = (
           FaseServer._UpdateElementsUpdate(screen_prog.elements_update, screen_update.elements_update))
@@ -166,6 +172,7 @@ class FaseServer(object):
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
     if element_callback.elements_update is not None:
+      element_callback.elements_update = FaseServer._ProcessElementsUpdate(element_callback.elements_update)
       FaseServer._UpdateScreen(screen_prog.screen, element_callback.elements_update)
     element = self._GetElement(screen_prog.screen, element_callback)
     service, screen = (
