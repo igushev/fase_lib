@@ -1,10 +1,16 @@
+EMPTY_STRING = '<DYNAMODB_EMPTY_STRING>'
+
+
 def SimpleToField(simple):
   if isinstance(simple, list):
     return {'L': [SimpleToField(nested_simple) for nested_simple in simple]}
   elif isinstance(simple, dict):
     return {'M': {nested_key: SimpleToField(nested_simple) for nested_key, nested_simple in simple.items()}}
   elif isinstance(simple, str):
-    return {'S': simple}
+    if simple == '':
+      return {'S': EMPTY_STRING}
+    else:
+      return {'S': simple}
   elif isinstance(simple, bool):
     return {'BOOL': simple}
   elif isinstance(simple, (float, int)):
@@ -29,7 +35,11 @@ def FieldToSimple(type_item):
     return {nested_key: FieldToSimple(nested_type_item)
             for nested_key, nested_type_item in item.items()}
   elif type_ == 'S':
-    return str(item)
+    simple = str(item)
+    if simple == EMPTY_STRING:
+      return ''
+    else:
+      return simple
   elif type_ == 'BOOL':
     return item
   elif type_ == 'N':

@@ -529,7 +529,7 @@ class Text(VisualElement):
                type_=None,
                multiline=None):
     super(Text, self).__init__()
-    self.text = text  # Can be None, since should be entered
+    self.text = text or ''
     self.hint = hint  # Can be None
     self.size = size or Text.MIN
     self.type = type_ or Text.TEXT
@@ -829,7 +829,7 @@ class ContactPicker(VisualElement):
     self.on_pick = on_pick
 
   def Update(self, value):
-    if value is None:
+    if not value:
       self.contact = None
       return
     if self.contact is None:
@@ -877,7 +877,7 @@ class DateTimePicker(VisualElement):
     self.size = size or DateTimePicker.MIN
 
   def Update(self, value):
-    self.datetime = datetime.datetime.strptime(value, DATETIME_FORMAT) if value is not None else None
+    self.datetime = datetime.datetime.strptime(value, DATETIME_FORMAT) if value else None
 
   def Get(self):
     return self.datetime.strftime(DATETIME_FORMAT) if self.datetime is not None else None
@@ -920,7 +920,7 @@ class PlacePicker(VisualElement):
     self.size = size or PlacePicker.MIN
     
   def Update(self, value):
-    if value is None:
+    if not value:
       self.place = None
       return
     if self.place is None:

@@ -84,7 +84,7 @@ class TextElementVariable(object):
 
   def Get(self):
     value = self._ui_imp_var.get()
-    return value if value else None  # Replace empty string with None.
+    return value
 
   def Update(self, value):
     self._ui_imp_var.set(value if value is not None else '') 

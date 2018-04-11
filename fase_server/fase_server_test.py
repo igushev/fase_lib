@@ -311,7 +311,7 @@ class FaseServerTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
-    expected_elements_update = fase_model.ElementsUpdate([['text_name_id']], [None]) 
+    expected_elements_update = fase_model.ElementsUpdate([['text_name_id']], ['']) 
     self.assertEqual(expected_elements_update, screen_prog.elements_update)
 
   def testHelloWorldScreenUpdateWithDiffDevice(self):

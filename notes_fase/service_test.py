@@ -436,6 +436,21 @@ class NotesTest(unittest.TestCase):
     screen.GetElement(id_='notes_frame')
     self.AssertNotes([self.note_1, self.note_2, self.note_3], screen)
 
+  def testNotes_EmptyHeader(self):
+    session_info, screen_info, screen = self.Start()
+    self.AssertNotes([], screen)
+
+    # Create a Note.
+    note = notes_model.Note(note_id=None,
+                            user_id=None,
+                            header='',
+                            text='',
+                            datetime=None,
+                            favourite=False)
+
+    # Add Note.
+    session_info, screen_info, screen = self.AddNote(session_info, screen_info, note)
+    self.AssertNotes([note], screen)
 
 
 if __name__ == '__main__':
