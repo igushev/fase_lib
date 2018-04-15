@@ -5,6 +5,10 @@ from fase import fase_sign_in
 class FaseTestService(fase.Service):
 
   @staticmethod
+  def GetServiceId():
+    return 'FaseTest'
+
+  @staticmethod
   def ServiceCommand(command):
     if command.command == 'ServiceName':
       return 'FaseTest'
