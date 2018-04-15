@@ -178,10 +178,14 @@ class KarmaCounter(fase.Service):
     return screen
 
   def OnAddUserEvent(self, screen, element):
+    if self.HasBoolVariable(id_='adding_users_own_bool'):
+      self.PopBoolVariable(id_='adding_users_own_bool')
     self.AddBoolVariable(id_='adding_users_own_bool', value=True)
     return self._AddUserEvent(screen, element)
 
   def OnAddOtherUserEvent(self, screen, element):
+    if self.HasBoolVariable(id_='adding_users_own_bool'):
+      self.PopBoolVariable(id_='adding_users_own_bool')
     self.AddBoolVariable(id_='adding_users_own_bool', value=False)
     return self._AddUserEvent(screen, element)
 
