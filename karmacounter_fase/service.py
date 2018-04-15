@@ -14,6 +14,7 @@ DEVICE_TYPE = 'Fase'
 APP_NAME = 'KarmaCounter'
 
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
+SCORE_NOT_SELECTED = 'Please select a score!'
 PHONE_IS_INVALID = 'Phone number format is invalid!'
 PHONE_NO_COUNTRY_CODE = 'Phone number country code could not be inferred! Please try to add explicitly!'
 MIN_AGE_YEARS = 13
@@ -186,6 +187,10 @@ class KarmaCounter(fase.Service):
 
   def OnAddUserEventEnteredData(self, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
+    score_text = screen.GetSelect(id_='score_select').GetValue()
+    if not score_text:
+      return _ErrorAlert(self, message=SCORE_NOT_SELECTED, on_click=KarmaCounter._AddUserEvent)
+    score = int(score_text)
     if self.GetBoolVariable(id_='adding_users_own_bool').GetValue():
       witness_phone_number = (screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetPhoneNumber()
                               if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
@@ -197,7 +202,7 @@ class KarmaCounter(fase.Service):
                               if screen.GetContactPicker(id_='friend_contact_picker').GetContact() is not None else
                               None)
       new_user_event = kc_data.NewUserEvent(
-          score=int(screen.GetSelect(id_='score_select').GetValue()),
+          score=score,
           description=screen.GetText(id_='description_text').GetText(),
           witness_phone_number=witness_phone_number,
           witness_display_name=witness_display_name,
@@ -209,7 +214,7 @@ class KarmaCounter(fase.Service):
       phone_number = phone_number_verifier.Format(phone_number, self.GetUser().GetLocale().GetCountryCode())
       other_user_display_name = screen.GetContactPicker(id_='friend_contact_picker').GetContact().GetDisplayName()
       new_other_user_event = kc_data.NewOtherUserEvent(
-          score=int(screen.GetSelect(id_='score_select').GetValue()),
+          score=score,
           description=screen.GetText(id_='description_text').GetText(),
           phone_number=phone_number,
           other_user_display_name=other_user_display_name,
@@ -248,7 +253,7 @@ class KarmaCounter(fase.Service):
             id_='user_event_friend_display_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
       user_event_header_frame.AddLabel(text=user_event.display_datetime)
       user_event_frame.AddLabel(text=user_event.description, align=fase.Label.LEFT)
-      user_event_frame.AddLabel(text=user_event.display_status, align=fase.Label.LEFT)
+      user_event_frame.AddLabel(text=user_event.display_status, align=fase.Label.LEFT, font=0.75)
       user_event_button_frame = user_event_frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
       user_event_button_frame.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
 
