@@ -16,6 +16,8 @@ DELETE_DB_COMMAND = 'deletedb'
 TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
+SELECTED_ICON = 'solid_blue'
+NAVIGATION_ICON = 'color'
 PREVIEW_LENGTH = 50
 
 
@@ -55,19 +57,19 @@ class NotesService(fase.Service):
   def _DisplayNotes(self, screen):
     screen_label = self.GetStringVariable(id_='screen_label').GetValue()
     if screen_label == 'notes':
-      return self._DisplayNotesByFunc(lambda note: note.header, False, None, 'Notes', screen)
+      return self._DisplayNotesByFunc(screen_label, lambda note: note.header, False, None, 'Notes', screen)
     elif screen_label == 'favourites':
-      return self._DisplayNotesByFunc(lambda note: note.header, False, lambda x: x.favourite, 'Favourites', screen)
+      return self._DisplayNotesByFunc(screen_label, lambda note: note.header, False, lambda x: x.favourite, 'Favourites', screen)
     elif screen_label == 'recent':
-      return self._DisplayNotesByFunc(lambda note: note.datetime, True, None, 'Recent', screen)
+      return self._DisplayNotesByFunc(screen_label, lambda note: note.datetime, True, None, 'Recent', screen)
     else:
       raise AssertionError(screen_label)
 
-  def _DisplayNotesByFunc(self, key_func, reverse, filter_func, title, screen):
+  def _DisplayNotesByFunc(self, screen_label, key_func, reverse, filter_func, title, screen):
     screen = fase.Screen(self)
     screen.SetTitle(title)
     screen.SetScrollable(True)
-    self._AddButtons(screen)
+    self._AddButtons(screen, screen_label)
     notes_frame = screen.AddFrame(id_='notes_frame', orientation=fase.Frame.VERTICAL)
     notes = notes_database.NotesDatabaseInterface.Get().GetUserNotes(self.GetUserId())
     if filter_func:
@@ -83,8 +85,8 @@ class NotesService(fase.Service):
       note_header_frame.AddLabel(
           id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, align=fase.Label.LEFT)
       note_header_frame.AddImage(
-          id_='note_header_image', filename=('images/favourite.png' if note.favourite else
-                                             'images/favourite_non.png'))
+          id_='note_header_image', filename=('images/favourite_2/favourite_orange_@.png' if note.favourite else
+                                             'images/favourite_2/favourite_frame_black_@.png'))
 
       note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], align=fase.Label.LEFT)
 
@@ -95,22 +97,30 @@ class NotesService(fase.Service):
           size=fase.Label.MAX, align=fase.Label.RIGHT)
     return screen
 
-  def _AddButtons(self, screen):
-    screen.AddMainButton(text='New', image=fase.Image(filename='images/new.png'), on_click=NotesService.OnNew)
+  def _AddButtons(self, screen, screen_label):
+    screen.AddMainButton(text='New', image=fase.Image(filename='images/new/new_color_@.png'),
+                         on_click=NotesService.OnNew)
     navigation = screen.AddNavigation()
-    navigation.AddButton(id_='notes_button', text='Notes', image=fase.Image(filename='images/notes.png'),
+    navigation.AddButton(id_='notes_button', text='Notes',
+                         image=fase.Image(filename='images/notes/notes_%s_@.png' %
+                                          (SELECTED_ICON if screen_label == 'notes' else NAVIGATION_ICON)),
                          on_click=NotesService.OnNotes)
     navigation.AddButton(id_='favourites_button', text='Favourites',
-                         image=fase.Image(filename='images/favourite_non.png'), on_click=NotesService.OnFavourites)
-    navigation.AddButton(id_='recent_button', text='Recent', image=fase.Image(filename='images/recent.png'),
+                         image=fase.Image(filename='images/favourites/favourites_%s_@.png' %
+                                          (SELECTED_ICON if screen_label == 'favourites' else NAVIGATION_ICON)),
+                         on_click=NotesService.OnFavourites)
+    navigation.AddButton(id_='recent_button', text='Recent',
+                         image=fase.Image(filename='images/recent/recent_%s_@.png' %
+                                          (SELECTED_ICON if screen_label == 'recent' else NAVIGATION_ICON)),
                          on_click=NotesService.OnRecent)
     if self.IfSignedIn():
-      navigation.AddButton(id_='sign_out_button', text='Sign Out', image=fase.Image(filename='images/sign_out_@.png'),
+      navigation.AddButton(id_='sign_out_button', text='Sign Out',
+                           image=fase.Image(filename='images/account/account_color_@.png'),
                            on_click=NotesService.OnSignOut)
     else:
-      navigation.AddButton(id_='sign_in_button', text='Sign In', image=fase.Image(filename='images/sign_in_@.png'),
+      navigation.AddButton(id_='sign_in_button', text='Sign In',
+                           image=fase.Image(filename='images/account/account_color_@.png'),
                            on_click=NotesService.OnSignIn)
-
 
   def OnSignIn(self, screen, element):
     return fase_sign_in.StartSignIn(self, on_done=NotesService.OnSignInDone, on_cancel=NotesService.OnSignInOutCancel)
@@ -158,12 +168,9 @@ class NotesService(fase.Service):
     context_menu = prev_step_button.AddContextMenu()
     context_menu.AddMenuItem(id_='favourite_menu_item',
                              text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
-                             image=fase.Image(filename=('images/favourite.png' if favourite_bool.GetValue() else
-                                                        'images/favourite_non.png')),
                              on_click=NotesService.OnReverseFavouriteNote)
     if note_id is not None:
-      context_menu.AddMenuItem(id_='delete_menu_item', text='Delete', image=fase.Image(filename='images/delete.png'),
-                               on_click=NotesService.OnDeleteNote)
+      context_menu.AddMenuItem(id_='delete_menu_item', text='Delete', on_click=NotesService.OnDeleteNote)
     context_menu.AddMenuItem(id_='cancel_menu_item', text='Cancel', on_click=NotesService.OnCancelNote)
     return screen
 
@@ -193,6 +200,8 @@ class NotesService(fase.Service):
   def OnReverseFavouriteNote(self, screen, element):
     favourite_bool = screen.GetBoolVariable(id_='favourite_bool')
     favourite_bool.SetValue(not favourite_bool.GetValue())
+    screen.GetPrevStepButton().GetContextMenu().GetMenuItem(id_='favourite_menu_item').SetText(
+        'Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites')
     return screen
 
   def OnDeleteNote(self, screen, element):

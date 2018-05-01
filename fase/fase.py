@@ -711,6 +711,8 @@ class MenuItem(VisualElement):
       self.AddImage(image)
     self.on_click = on_click
 
+  def SetText(self, text):
+    self.text = text
   def GetText(self):
     return self.text
 
