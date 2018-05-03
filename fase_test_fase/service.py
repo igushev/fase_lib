@@ -25,6 +25,10 @@ class FaseTestService(fase.Service):
   def _AddButtons(self, screen):
     navigation = screen.AddNavigation()
     navigation.AddButton(id_='layout_test_button', text='Layout Test', on_click=FaseTestService.OnLayoutTest)
+    navigation.AddButton(id_='vertical_max_size_test_button', text='Vertical Max Size Test',
+                         on_click=FaseTestService.OnVerticalMaxSizeTest)
+    navigation.AddButton(id_='aligning_buttons_test_button', text='Aligning Buttons Test',
+                         on_click=FaseTestService.OnAligningButtonsTest)
     if self.IfSignedIn():
       navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=FaseTestService.OnSignOut)
     else:
@@ -32,7 +36,7 @@ class FaseTestService(fase.Service):
 
   def OnLayoutTest(self, screen, element):
     screen = fase.Screen(self)
-    screen.SetTitle('Test layout')
+    screen.SetTitle('Layout Test')
     screen.SetScrollable(True)
     self._AddButtons(screen)
     screen.AddLabel(text='Label Left', align=fase.Label.LEFT)
@@ -79,6 +83,31 @@ class FaseTestService(fase.Service):
     screen.AddSeparator()
     screen.AddLabel(text='Web')
     screen.AddWeb(url='www.google.com')
+    return screen
+
+  def OnVerticalMaxSizeTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Vertical Max Size Test')
+    self._AddButtons(screen)
+    screen.AddLabel(text='Two Text Field are Max Size')
+    screen.AddText(text='Text 1', multiline=True, size=fase.Text.MAX)
+    screen.AddText(text='Text 2', multiline=True, size=fase.Text.MAX)
+    return screen
+
+  def OnAligningButtonsTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Aligning Buttons Test')
+    self._AddButtons(screen)
+    screen.AddLabel(text='Two Buttons on Right Side')
+    frame1 = screen.AddFrame(orientation=fase.Frame.HORIZONTAL)
+    frame1.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
+    frame1.AddButton(text='Button1')
+    frame1.AddButton(text='Button2')
+    screen.AddLabel(text='Two Buttons on Sides')
+    frame2 = screen.AddFrame(orientation=fase.Frame.HORIZONTAL)
+    frame2.AddButton(text='Button1')
+    frame2.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
+    frame2.AddButton(text='Button2')
     return screen
 
   def OnSignIn(self, screen, element):
