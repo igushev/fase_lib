@@ -690,7 +690,7 @@ class Image(VisualElement):
     self.filename = filename
   def GetFilename(self):
     return self.filename
-  
+
   def GetUrl(self):
     return self.url
 

@@ -4,6 +4,7 @@ import tkinter
 from tkinter import font, messagebox, ttk
 from PIL import ImageTk, Image
 import re
+import requests
 
 from fase import fase
 
@@ -309,7 +310,12 @@ class FaseTkUIImp(object):
 
   def _ConfigureButtonImage(self, button_image_element, ui_imp_button):
     if button_image_element is not None:
-      ui_imp_photo = ImageTk.PhotoImage(Image.open(self.ui.GetResourceFilename(button_image_element.GetFilename())))
+      if button_image_element.GetFilename():
+        ui_imp_photo = ImageTk.PhotoImage(Image.open(self.ui.GetResourceFilename(button_image_element.GetFilename())))
+      elif button_image_element.GetUrl():
+        ui_imp_photo = ImageTk.PhotoImage(Image.open(requests.get(button_image_element.GetUrl(), stream=True).raw))
+      else:
+        raise AssertionError()
       ui_imp_button.ui_imp_photo = ui_imp_photo
       ui_imp_button.configure(image=ui_imp_photo, compound=tkinter.TOP)
 
@@ -588,7 +594,12 @@ class FaseTkUIImp(object):
 
   def DrawImage(self, id_list, image_element, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
-    ui_imp_photo = ImageTk.PhotoImage(Image.open(self.ui.GetResourceFilename(image_element.GetFilename())))
+    if image_element.GetFilename():
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(self.ui.GetResourceFilename(image_element.GetFilename())))
+    elif image_element.GetUrl():
+      ui_imp_photo = ImageTk.PhotoImage(Image.open(requests.get(image_element.GetUrl(), stream=True).raw))
+    else:
+      raise AssertionError()
     ui_imp_image = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
     ui_imp_image.image = ui_imp_photo
     if image_element.GetDisplayed(): 
