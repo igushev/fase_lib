@@ -81,7 +81,8 @@ class NotesTest(unittest.TestCase):
         self.assertFalse(actual_note_frame.HasStringVariable(id_='frame_note_id'))
       actual_note_header_frame = actual_note_frame.GetFrame(id_='note_header_frame')
       self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetText())
-      self.assertEqual('images/favourite.png' if expected_note.favourite else 'images/favourite_non.png',
+      self.assertEqual('images/favourite_2/favourite_orange_1_00.png' if expected_note.favourite else
+                       'images/favourite_2/favourite_frame_black_1_00.png',
                        actual_note_header_frame.GetImage(id_='note_header_image').GetFilename())
       self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetText())
       if expected_note.datetime:
