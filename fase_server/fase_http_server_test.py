@@ -174,7 +174,7 @@ class ApplicationTest(unittest.TestCase):
     screen.AddButton(id_='reset_button_id',text='Reset', on_click=fase.FunctionPlaceholder)
     return screen
 
-  def testHelloWorld(self):
+  def testService(self):
     device = fase.Device('MockType', 'MockToken')
     response = self._GetService(device)
     session_info = response.session_info
