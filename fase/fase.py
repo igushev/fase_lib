@@ -1300,6 +1300,10 @@ class Service(VariableContainer):
     assert issubclass(service_cls, Service)
     Service.service_cls = service_cls
 
+  @staticmethod
+  def ServiceCommand(command):
+    raise NotImplementedError()
+
   def __init__(self):
     super(Service, self).__init__()
     self._session_id = GenerateSessionId()

@@ -10,8 +10,6 @@ import fase_database
 import fase_http_server
 import fase_server
 
-from hello_world_fase import service as hello_world_service
-
 
 STATUS_OK = '200 OK'
 STATUS_BAD_REQUEST = '400 BAD REQUEST'
@@ -31,6 +29,36 @@ def CleanSimple(simple):
     return clean_simple
   else:
     return simple
+
+
+class ApplicationTestService(fase.Service):
+
+  @staticmethod
+  def ServiceCommand(command):
+    if command.command == 'ServiceName':
+      return 'HelloWorld'
+    else:
+      raise AssertionError('Wrong ServiceCommand') 
+
+  def OnStart(self):
+    screen = fase.Screen(self)
+    screen.AddText(id_='text_name_id', hint='Enter Name')
+    screen.AddButton(id_='next_button_id', text='Next', on_click=ApplicationTestService.OnNextButton)
+    return screen
+
+  def OnNextButton(self, screen, element):
+    name = screen.GetText(id_='text_name_id').GetText()
+    screen = fase.Screen(self)
+    screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
+    screen.AddButton(id_='reset_button_id', text='Reset', on_click=ApplicationTestService.OnResetButton)
+    return screen
+    
+  def OnResetButton(self, screen, element):
+    # Ignore previous screen and element.
+    return self.OnStart()
+
+
+fase.Service.RegisterService(ApplicationTestService)
 
 
 class ApplicationTest(unittest.TestCase):
