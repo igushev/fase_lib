@@ -28,7 +28,7 @@ class NotesTest(unittest.TestCase):
   def Start(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[
                 fase.User(user_id='321',

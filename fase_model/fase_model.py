@@ -103,6 +103,18 @@ class ScreenProg(data_util.AbstractObject):
     self.recent_device = recent_device
 
 
+@json_util.JSONDecorator(
+    {'session_id': json_util.JSONString(),
+     'service': json_util.JSONObject(fase.Service)})
+class ServiceProg(data_util.AbstractObject):
+
+  def __init__(self,
+               session_id=None,
+               service=None):
+    self.session_id = session_id
+    self.service = service
+
+
 @json_util.JSONDecorator({
     'screen': json_util.JSONObject(fase.Screen),
     'resources': json_util.JSONObject(Resources),

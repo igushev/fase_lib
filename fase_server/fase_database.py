@@ -11,10 +11,9 @@ from fase_model import fase_model
 @singleton_util.Singleton()
 class FaseDatabaseInterface(object):
 
-  def AddService(self, service, overwrite=False):
+  def AddServiceProg(self, service_prog, overwrite=False):
     raise NotImplemented()
-
-  def GetService(self, session_id):
+  def GetServiceProg(self, session_id):
     raise NotImplemented()
 
   def AddScreenProg(self, screen_prog, overwrite=False):
@@ -25,8 +24,8 @@ class FaseDatabaseInterface(object):
 
 class MockFaseDatabase(FaseDatabaseInterface):
 
-  def __init__(self, service_list, screen_prog_list, user_list):
-    self.session_id_to_service = {service._session_id: service for service in service_list}
+  def __init__(self, service_prog_list, screen_prog_list, user_list):
+    self.session_id_to_service_prog = {service_prog.session_id: service_prog for service_prog in service_prog_list}
     self.session_id_to_screen_prog = {screen_prog.session_id: screen_prog for screen_prog in screen_prog_list}
     self.user_id_to_user = {user.user_id: user for user in user_list}
 
@@ -36,15 +35,15 @@ class MockFaseDatabase(FaseDatabaseInterface):
   def DeleteDatabase(self):
     pass
 
-  def AddService(self, service, overwrite=False):
-    assert service._session_id not in self.session_id_to_service or overwrite
-    self.session_id_to_service[service._session_id] = service
+  def AddServiceProg(self, service_prog, overwrite=False):
+    assert service_prog.session_id not in self.session_id_to_service_prog or overwrite
+    self.session_id_to_service_prog[service_prog.session_id] = service_prog
 
-  def GetService(self, session_id):
-    return self.session_id_to_service.get(session_id)
+  def GetServiceProg(self, session_id):
+    return self.session_id_to_service_prog.get(session_id)
 
-  def DeleteService(self, session_id):
-    del self.session_id_to_service[session_id]
+  def DeleteServiceProg(self, session_id):
+    del self.session_id_to_service_prog[session_id]
 
   def AddScreenProg(self, screen_prog, overwrite=False):
     assert screen_prog.session_id not in self.session_id_to_screen_prog or overwrite
@@ -67,8 +66,8 @@ class MockFaseDatabase(FaseDatabaseInterface):
     user_list = [user for user in self.user_id_to_user.values() if user.phone_number == phone_number]
     return user_list
 
-  def GetSessionIdToService(self):
-    return self.session_id_to_service
+  def GetSessionIdToServiceProg(self):
+    return self.session_id_to_service_prog
   
   def GetSessionIdToScreenProg(self):
     return self.session_id_to_screen_prog
@@ -83,8 +82,8 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
     self.tables_suffix = tables_suffix or ''
     self.dynamodb = boto3.client('dynamodb', **kwargs)
 
-  def _GetServiceTableName(self):
-    return 'fase_service%s' % self.tables_suffix
+  def _GetServiceProgTableName(self):
+    return 'fase_service_prog%s' % self.tables_suffix
 
   def _GetScreenProgTableName(self):
     return 'fase_screen_prog%s' % self.tables_suffix
@@ -94,24 +93,24 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
 
   @staticmethod
   def GetTableNameList():
-    return ['fase_service', 'fase_screen_prog', 'fase_user']
+    return ['fase_service_prog', 'fase_screen_prog', 'fase_user']
 
   def CreateDatabase(self):
     table_names_response = self.dynamodb.list_tables()
     table_names = table_names_response['TableNames']
 
-    if self._GetServiceTableName() not in table_names:
+    if self._GetServiceProgTableName() not in table_names:
       self.dynamodb.create_table(
-          TableName=self._GetServiceTableName(),
+          TableName=self._GetServiceProgTableName(),
           AttributeDefinitions=[
               {
-                  'AttributeName': '_session_id',
+                  'AttributeName': 'session_id',
                   'AttributeType': 'S'
               },
           ],
           KeySchema=[
               {
-                  'AttributeName': '_session_id',
+                  'AttributeName': 'session_id',
                   'KeyType': 'HASH'
               },
           ],
@@ -194,32 +193,32 @@ class DynamoDBFaseDatabase(FaseDatabaseInterface):
       )
 
   def DeleteDatabase(self):
-    self.dynamodb.delete_table(TableName=self._GetServiceTableName())
+    self.dynamodb.delete_table(TableName=self._GetServiceProgTableName())
     self.dynamodb.delete_table(TableName=self._GetScreenProgTableName())
     self.dynamodb.delete_table(TableName=self._GetUserTableName())
 
-  def AddService(self, service, overwrite=False):
+  def AddServiceProg(self, service_prog, overwrite=False):
     self.dynamodb.put_item(
-        TableName=self._GetServiceTableName(),
-        Item=dynamodb_util.SimpleToItem(service.ToSimple()))
+        TableName=self._GetServiceProgTableName(),
+        Item=dynamodb_util.SimpleToItem(service_prog.ToSimple()))
 
-  def GetService(self, session_id):
-    service_response = self.dynamodb.get_item(
-        TableName=self._GetServiceTableName(),
+  def GetServiceProg(self, session_id):
+    service_prog_response = self.dynamodb.get_item(
+        TableName=self._GetServiceProgTableName(),
         Key={
-            '_session_id': dynamodb_util.SimpleToField(session_id),
+            'session_id': dynamodb_util.SimpleToField(session_id),
             }
     )
-    if 'Item' not in service_response:
+    if 'Item' not in service_prog_response:
       return None
-    service = fase.Service.FromSimple(dynamodb_util.ItemToSimple(service_response['Item']))
-    return service
+    service_prog = fase_model.ServiceProg.FromSimple(dynamodb_util.ItemToSimple(service_prog_response['Item']))
+    return service_prog
 
-  def DeleteService(self, session_id):
+  def DeleteServiceProg(self, session_id):
     self.dynamodb.delete_item(
-        TableName=self._GetServiceTableName(),
+        TableName=self._GetServiceProgTableName(),
         Key={
-            '_session_id': dynamodb_util.SimpleToField(session_id),
+            'session_id': dynamodb_util.SimpleToField(session_id),
             }
     )
 

@@ -94,7 +94,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check.
-    self.assertEqual(service_num_before, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(service_num_before, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(screen_num_before, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check present of main elements.
     screen.GetElement(id_='sign_in_button_id')
@@ -106,7 +106,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check.
-    self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check present of main elements.
     screen.GetElement(id_='sign_in_frame_id').GetElement(id_='sign_in_button_id')
@@ -121,7 +121,7 @@ class FaseSignInTest(unittest.TestCase):
       screen_info = response.screen_info
       screen = response.screen
       # Check.
-      self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
       self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
       # Check present of main elements.
       screen.GetElement(id_='sign_in_frame_id').GetElement(id_='phone_number_text_id')
@@ -144,7 +144,7 @@ class FaseSignInTest(unittest.TestCase):
       
       if request_user_data is not None:
         # Check.
-        self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+        self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
         self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
         # Check present of main elements.
         if request_user_data.date_of_birth:
@@ -186,7 +186,7 @@ class FaseSignInTest(unittest.TestCase):
       screen_info = response.screen_info
       screen = response.screen
       # Check.
-      self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
       self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
       # Check present of main elements.
       screen.GetElement(id_='sign_up_frame_id').GetElement(id_='phone_number_text_id')
@@ -214,7 +214,7 @@ class FaseSignInTest(unittest.TestCase):
       screen = response.screen
 
     # Check.
-    self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(service_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(screen_num_during, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check present of main elements.
     screen.GetElement(id_='enter_activation_frame_id').GetElement(id_='activation_code_text_id')
@@ -224,8 +224,8 @@ class FaseSignInTest(unittest.TestCase):
       return response
 
     # Assign user_id before entering activation code.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    user_id_before = service.GetUserId()
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    user_id_before = service_prog.service.GetUserId()
 
     # Enter activation code.
     elements_update=fase_model.ElementsUpdate(
@@ -241,7 +241,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check.
-    self.assertEqual(service_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(service_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(screen_num_after, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     user_id_to_user = fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()
     self.assertEqual(1, len(user_id_to_user))
@@ -261,14 +261,14 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Get device.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
     if device_token is not None:
       device = fase.Device(device_type='Python', device_token=device_token)
     else:
-      device = service._device_list[-1]
+      device = service_prog.service._device_list[-1]
 
     # Check.
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetUserIdToUser()))
     # Check present of main elements.
@@ -281,7 +281,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Check.
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check present of main elements.
     screen.GetElement(id_='sign_out_frame_id').GetElement(id_='sign_out_button_id')
@@ -302,11 +302,12 @@ class FaseSignInTest(unittest.TestCase):
     service._session_id = fase_sign_in_impl.GenerateSignedInSessionId(user.user_id)
     screen = service.OnStart()
     screen = service.OnAbount(screen, screen.GetElement(id_='about_button_id'))
+    service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
 
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[service],
+            service_prog_list=[service_prog],
             screen_prog_list=[screen_prog],
             user_list=[user]),
         overwrite=True)
@@ -326,7 +327,7 @@ class FaseSignInTest(unittest.TestCase):
                      datetime_added=datetime.datetime.utcnow())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[user]),
         overwrite=True)
@@ -341,7 +342,7 @@ class FaseSignInTest(unittest.TestCase):
   def testSignIn_Wrong_PhoneNumber(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -355,8 +356,8 @@ class FaseSignInTest(unittest.TestCase):
     session_info = response.session_info
     screen_info = response.screen_info
     # Get device.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device = service._device_list[-1]
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device = service_prog.service._device_list[-1]
 
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_in_frame_id', 'phone_number_text_id']], ['+13216549870'])
@@ -369,7 +370,7 @@ class FaseSignInTest(unittest.TestCase):
         session_info, screen_info)
     screen = response.screen
     # Check.
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check Alert window.
     self.assertEqual('User with such phone number has not been found!', screen.GetAlert().GetText())
@@ -377,7 +378,7 @@ class FaseSignInTest(unittest.TestCase):
   def testSignUp_Non_Existing_Service_Screen_User(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -396,7 +397,7 @@ class FaseSignInTest(unittest.TestCase):
                      datetime_added=datetime.datetime.utcnow())
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[user]),
         overwrite=True)
@@ -410,8 +411,8 @@ class FaseSignInTest(unittest.TestCase):
     session_info = response.session_info
     screen_info = response.screen_info
     # Get device.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device = service._device_list[-1]
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device = service_prog.service._device_list[-1]
 
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_up_frame_id', 'phone_number_text_id'],
@@ -428,7 +429,7 @@ class FaseSignInTest(unittest.TestCase):
         session_info, screen_info)
     screen = response.screen
     # Check.
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check Alert window.
     self.assertEqual('User with such phone number is already registered!', screen.GetAlert().GetText())
@@ -436,7 +437,7 @@ class FaseSignInTest(unittest.TestCase):
   def testSignUp_Wrong_ActivationCode(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -450,8 +451,8 @@ class FaseSignInTest(unittest.TestCase):
     session_info = response.session_info
     screen_info = response.screen_info
     # Get device.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device = service._device_list[-1]
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device = service_prog.service._device_list[-1]
 
     # Enter activation code.
     elements_update=fase_model.ElementsUpdate([['enter_activation_frame_id', 'activation_code_text_id']], '1234')
@@ -464,7 +465,7 @@ class FaseSignInTest(unittest.TestCase):
         session_info, screen_info)
     screen = response.screen
     # Check.
-    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check Alert window.
     self.assertEqual('Wrong activation code!', screen.GetAlert().GetText())
@@ -472,7 +473,7 @@ class FaseSignInTest(unittest.TestCase):
   def testSignOut_Existing_Service_Screen_User(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -487,10 +488,10 @@ class FaseSignInTest(unittest.TestCase):
     self.SignOutProcedure(response)
 
     # Check.
-    session_id_to_service = fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()
-    self.assertEqual(2, len(session_id_to_service))
-    self.assertIn(session_info.session_id, session_id_to_service)
-    actual_service_session_id = list(set(session_id_to_service.keys()) - {session_info.session_id})[0]
+    session_id_to_service_prog = fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()
+    self.assertEqual(2, len(session_id_to_service_prog))
+    self.assertIn(session_info.session_id, session_id_to_service_prog)
+    actual_service_session_id = list(set(session_id_to_service_prog.keys()) - {session_info.session_id})[0]
 
     session_id_to_screen_prog = fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()
     self.assertEqual(2, len(session_id_to_screen_prog))
@@ -511,7 +512,7 @@ class FaseSignInTest(unittest.TestCase):
   def testRequestUserData(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -577,7 +578,7 @@ class FaseSignInTest(unittest.TestCase):
   def testRequestUserData_MinDateOfBirth(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -610,8 +611,8 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Get device.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device = service._device_list[-1]
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device = service_prog.service._device_list[-1]
 
     # Enter Date of Birth after Minimum Date of Birth.
     date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=1*365)
@@ -643,8 +644,8 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     screen = response.screen
     # Get device.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device = service._device_list[-1]
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device = service_prog.service._device_list[-1]
 
     # Enter Date of Birth before Minimum Date of Birth.
     date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=3*365)
@@ -663,7 +664,7 @@ class FaseSignInTest(unittest.TestCase):
     screen = response.screen
 
     # Check.
-    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+    self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
     self.assertEqual(3, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
     # Check present of main elements.
     screen.GetElement(id_='enter_activation_frame_id').GetElement(id_='activation_code_text_id')
@@ -675,7 +676,7 @@ class FaseSignInTest(unittest.TestCase):
   def testDeviceList(self):
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[],
+            service_prog_list=[],
             screen_prog_list=[],
             user_list=[]),
         overwrite=True)
@@ -688,8 +689,8 @@ class FaseSignInTest(unittest.TestCase):
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev')
     session_info = response.session_info
     # Get device list.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device_list = service._device_list
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device_list = service_prog.service._device_list
 
     self.assertEqual(1, len(device_list))
     self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
@@ -702,8 +703,8 @@ class FaseSignInTest(unittest.TestCase):
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev')
     session_info = response.session_info
     # Get device list.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device_list = service._device_list
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device_list = service_prog.service._device_list
 
     self.assertEqual(2, len(device_list))
     self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
@@ -711,14 +712,14 @@ class FaseSignInTest(unittest.TestCase):
 
     # Sign In with third device.
     response = self.SignInProcedure(service_num_before=2, screen_num_before=2,
-                                      service_num_during=2, screen_num_during=2,
-                                      service_num_after=1, screen_num_after=1,
-                                      sign_in=True, device_token='Token3',
-                                      phone_number='+13216549870', first_name='Edward', last_name='Igushev')
+                                    service_num_during=2, screen_num_during=2,
+                                    service_num_after=1, screen_num_after=1,
+                                    sign_in=True, device_token='Token3',
+                                    phone_number='+13216549870', first_name='Edward', last_name='Igushev')
     session_info = response.session_info
     # Get device list.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device_list = service._device_list
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device_list = service_prog.service._device_list
 
     self.assertEqual(3, len(device_list))
     self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
@@ -729,20 +730,20 @@ class FaseSignInTest(unittest.TestCase):
     self.SignOutProcedure(response, device_token='Token2')
 
     # Get device list.
-    service = fase_database.FaseDatabaseInterface.Get().GetService(session_info.session_id)
-    device_list = service._device_list
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    device_list = service_prog.service._device_list
     self.assertEqual(2, len(device_list))
     self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
     self.assertEqual(fase.Device(device_type='Python', device_token='Token3'), device_list[1])    
 
     # Get signed out session.
-    session_id_to_service = fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()
-    self.assertEqual(2, len(session_id_to_service))
-    self.assertIn(session_info.session_id, session_id_to_service)
-    service_session_id_signed_out = list(set(session_id_to_service.keys()) - {session_info.session_id})[0]
-    service_signed_out = session_id_to_service[service_session_id_signed_out]
+    session_id_to_service_prog = fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()
+    self.assertEqual(2, len(session_id_to_service_prog))
+    self.assertIn(session_info.session_id, session_id_to_service_prog)
+    service_session_id_signed_out = list(set(session_id_to_service_prog.keys()) - {session_info.session_id})[0]
+    service_prog_signed_out = session_id_to_service_prog[service_session_id_signed_out]
     
-    device_list_signed_out = service_signed_out._device_list
+    device_list_signed_out = service_prog_signed_out.service._device_list
     self.assertEqual(1, len(device_list_signed_out))
     self.assertEqual(fase.Device(device_type='Python', device_token='Token2'), device_list_signed_out[0])    
 
@@ -751,7 +752,7 @@ class FaseSignInTest(unittest.TestCase):
                                                          ([fase.PREV_STEP_BUTTON_ID], 'cancel_label')]:
       fase_database.FaseDatabaseInterface.Set(
           fase_database.MockFaseDatabase(
-              service_list=[],
+              service_prog_list=[],
               screen_prog_list=[],
               user_list=[]),
           overwrite=True)
@@ -763,7 +764,7 @@ class FaseSignInTest(unittest.TestCase):
       screen_info = response.screen_info
       screen = response.screen
       # Check.
-      self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
       self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
       # Check present of main elements.
       screen.GetElement(id_='sign_in_button_id')
@@ -776,7 +777,7 @@ class FaseSignInTest(unittest.TestCase):
       screen_info = response.screen_info
       screen = response.screen
       # Check.
-      self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
       self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
       # Check present of main elements.
       screen.GetElement(id_='sign_in_frame_id').GetElement(id_='sign_in_button_id')
@@ -788,7 +789,7 @@ class FaseSignInTest(unittest.TestCase):
           session_info, screen_info)
       screen = response.screen
       # Check.
-      self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToService()))
+      self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
       self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToScreenProg()))
       # Check present of main elements.
       screen.GetElement(id_=expected_element_id)

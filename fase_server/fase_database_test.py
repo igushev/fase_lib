@@ -41,6 +41,7 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     service_1 = hello_world_service.HelloWorldService()
     screen_1 = service_1.OnStart()
     session_id_1 = service_1.GetSessionId()
+    service_prog_1 = fase_model.ServiceProg(session_id=session_id_1, service=service_1)
     screen_prog_1 = fase_model.ScreenProg(session_id=session_id_1, screen=screen_1)
 
     service_2 = hello_world_service.HelloWorldService()
@@ -49,16 +50,17 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
     text_name.Update('Edward Igushev')
     screen_2 = service_2.OnNextButton(screen_2, text_name)
     session_id_2 = service_2.GetSessionId()
+    service_prog_2 = fase_model.ServiceProg(session_id=session_id_2, service=service_2)
     screen_prog_2 = fase_model.ScreenProg(session_id=session_id_2, screen=screen_2)
 
-    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetService(session_id_1))
-    fase_database.FaseDatabaseInterface.Get().AddService(service_1)
-    self.assertEqual(service_1, fase_database.FaseDatabaseInterface.Get().GetService(session_id_1))
+    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id_1))
+    fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog_1)
+    self.assertEqual(service_prog_1, fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id_1))
 
-    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetService(session_id_2))
-    fase_database.FaseDatabaseInterface.Get().AddService(service_2)
-    self.assertEqual(service_1, fase_database.FaseDatabaseInterface.Get().GetService(session_id_1))
-    self.assertEqual(service_2, fase_database.FaseDatabaseInterface.Get().GetService(session_id_2))
+    self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id_2))
+    fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog_2)
+    self.assertEqual(service_prog_1, fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id_1))
+    self.assertEqual(service_prog_2, fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id_2))
 
     self.assertIsNone(fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id_1))
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog_1)

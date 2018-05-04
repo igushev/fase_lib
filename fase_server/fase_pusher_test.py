@@ -52,11 +52,12 @@ class FasePusherTest(unittest.TestCase):
     service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_token_1_2'))
     service._device_list.append(fase.Device(device_type='device_type_2', device_token='device_token_2_1'))
     screen = service.OnStart()
+    service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
 
     fase_database.FaseDatabaseInterface.Set(
         fase_database.MockFaseDatabase(
-            service_list=[service],
+            service_prog_list=[service_prog],
             screen_prog_list=[screen_prog],
             user_list=[user]),
         overwrite=True)

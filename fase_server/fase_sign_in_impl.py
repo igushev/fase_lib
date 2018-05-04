@@ -84,12 +84,13 @@ class FaseSignInButton(fase.Button):
     # Delete service and screen current.
     user_id_before = service.GetUserId()
     session_id_current = service.GetSessionId()
-    fase_database.FaseDatabaseInterface.Get().DeleteService(session_id=session_id_current)
+    fase_database.FaseDatabaseInterface.Get().DeleteServiceProg(session_id=session_id_current)
     fase_database.FaseDatabaseInterface.Get().DeleteScreenProg(session_id=session_id_current)
 
-    service_signed_in = fase_database.FaseDatabaseInterface.Get().GetService(session_id=session_id_signed_in)
-    if service_signed_in:
+    service_prog_signed_in = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id=session_id_signed_in)
+    if service_prog_signed_in:
       # Retrieve sign in service and call.
+      service_signed_in = service_prog_signed_in.service
       service_signed_in._device_list.append(device)
       screen_signed_in = on_done(service_signed_in, user_id_before=user_id_before)
       return service_signed_in, screen_signed_in
@@ -109,13 +110,15 @@ class FaseSignOutButton(fase.Button):
 
   def CallCallback(self, service, screen, device, method):
     assert method == fase.ON_CLICK_METHOD
-    if service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
-      service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
-    for i, device_signed_in in enumerate(service._device_list):
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(service.GetSessionId())
+    del service
+    if service_prog.service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
+      service_prog.service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
+    for i, device_signed_in in enumerate(service_prog.service._device_list):
       if device_signed_in == device:
-        del service._device_list[i]
+        del service_prog.service._device_list[i]
         break
-    fase_database.FaseDatabaseInterface.Get().AddService(service, overwrite=True)
+    fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
 
     service_cls = fase.Service.service_cls
     service = service_cls()
