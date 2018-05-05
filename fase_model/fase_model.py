@@ -5,6 +5,21 @@ from fase import fase
 
 
 @json_util.JSONDecorator({
+    'device_type': json_util.JSONString(),
+    'device_token': json_util.JSONString(),
+    'pixel_density': json_util.JSONFloat()})
+class Device(data_util.AbstractObject):
+
+  def __init__(self,
+               device_type=None,
+               device_token=None,
+               pixel_density=None):
+    self.device_type = device_type
+    self.device_token = device_token
+    self.pixel_density = pixel_density
+
+
+@json_util.JSONDecorator({
     'session_id': json_util.JSONString()})
 class SessionInfo(data_util.AbstractObject):
 
@@ -54,7 +69,7 @@ class ElementsUpdate(data_util.AbstractObject):
 
 @json_util.JSONDecorator({
     'elements_update': json_util.JSONObject(ElementsUpdate),
-    'device': json_util.JSONObject(fase.Device)})
+    'device': json_util.JSONObject(Device)})
 class ScreenUpdate(data_util.AbstractObject):
 
   def  __init__(self,
@@ -68,7 +83,7 @@ class ScreenUpdate(data_util.AbstractObject):
     'elements_update': json_util.JSONObject(ElementsUpdate),
     'id_list': json_util.JSONList(json_util.JSONString()),
     'method': json_util.JSONString(),
-    'device': json_util.JSONObject(fase.Device),
+    'device': json_util.JSONObject(Device),
     'locale': json_util.JSONObject(fase.Locale)})
 class ElementCallback(data_util.AbstractObject):
 
@@ -89,7 +104,7 @@ class ElementCallback(data_util.AbstractObject):
     'session_id': json_util.JSONString(),
     'screen': json_util.JSONObject(fase.Screen),
     'elements_update': json_util.JSONObject(ElementsUpdate),
-    'recent_device': json_util.JSONObject(fase.Device)})
+    'recent_device': json_util.JSONObject(Device)})
 class ScreenProg(data_util.AbstractObject):
 
   def __init__(self,
@@ -105,7 +120,8 @@ class ScreenProg(data_util.AbstractObject):
 
 @json_util.JSONDecorator(
     {'session_id': json_util.JSONString(),
-     'service': json_util.JSONObject(fase.Service)})
+     'service': json_util.JSONObject(fase.Service),
+     'device_list': json_util.JSONList(json_util.JSONObject(Device))})
 class ServiceProg(data_util.AbstractObject):
 
   def __init__(self,
@@ -113,6 +129,7 @@ class ServiceProg(data_util.AbstractObject):
                service=None):
     self.session_id = session_id
     self.service = service
+    self.device_list = []
 
 
 @json_util.JSONDecorator({

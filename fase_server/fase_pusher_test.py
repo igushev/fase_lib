@@ -48,11 +48,11 @@ class FasePusherTest(unittest.TestCase):
                      datetime_added=datetime.datetime.utcnow())
     service = PusherTestService()
     service._session_id = fase_sign_in_impl.GenerateSignedInSessionId(user.user_id)
-    service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_token_1_1'))
-    service._device_list.append(fase.Device(device_type='device_type_1', device_token='device_token_1_2'))
-    service._device_list.append(fase.Device(device_type='device_type_2', device_token='device_token_2_1'))
     screen = service.OnStart()
     service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
+    service_prog.device_list.append(fase_model.Device(device_type='device_type_1', device_token='device_token_1_1'))
+    service_prog.device_list.append(fase_model.Device(device_type='device_type_1', device_token='device_token_1_2'))
+    service_prog.device_list.append(fase_model.Device(device_type='device_type_2', device_token='device_token_2_1'))
     screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen)
 
     fase_database.FaseDatabaseInterface.Set(
@@ -61,7 +61,7 @@ class FasePusherTest(unittest.TestCase):
             screen_prog_list=[screen_prog],
             user_list=[user]),
         overwrite=True)
-    return device_type_1_provider, device_type_2_provider, service, user
+    return device_type_1_provider, device_type_2_provider, service_prog, user
 
   def testGeneral(self):
     device_type_1_provider, device_type_2_provider, _, user = (
@@ -76,7 +76,7 @@ class FasePusherTest(unittest.TestCase):
     self.AssertNotification('device_token_2_1', device_type_2_provider.notifications[0])
 
   def testUpdate(self):
-    device_type_1_provider, device_type_2_provider, service, user = (
+    device_type_1_provider, device_type_2_provider, service_prog, user = (
         self.AddDevicePushServiceProviderAndService())
 
     fase_pusher.Push(user.user_id, 'TestTitle', device_pusher.UPDATE_THROW_ERROR + 'device_token_1b')
@@ -84,20 +84,23 @@ class FasePusherTest(unittest.TestCase):
     self.assertEqual(2, len(device_type_1_provider.notifications))
     self.assertEqual(1, len(device_type_2_provider.notifications))
 
-    self.assertEqual(3, len(service._device_list))
-    self.assertEqual(fase.Device(device_type='device_type_1', device_token='device_token_1b'), service._device_list[0])
-    self.assertEqual(fase.Device(device_type='device_type_1', device_token='device_token_1b'), service._device_list[1])
-    self.assertEqual(fase.Device(device_type='device_type_2', device_token='device_token_1b'), service._device_list[2])
+    self.assertEqual(3, len(service_prog.device_list))
+    self.assertEqual(fase_model.Device(device_type='device_type_1', device_token='device_token_1b'),
+                     service_prog.device_list[0])
+    self.assertEqual(fase_model.Device(device_type='device_type_1', device_token='device_token_1b'),
+                     service_prog.device_list[1])
+    self.assertEqual(fase_model.Device(device_type='device_type_2', device_token='device_token_1b'),
+                     service_prog.device_list[2])
 
   def testDelete(self):
-    device_type_1_provider, device_type_2_provider, service, user = (
+    device_type_1_provider, device_type_2_provider, service_prog, user = (
         self.AddDevicePushServiceProviderAndService())
 
     fase_pusher.Push(user.user_id, 'TestTitle', device_pusher.DELETE_THROW_ERROR)
     
     self.assertEqual(0, len(device_type_1_provider.notifications))
     self.assertEqual(0, len(device_type_2_provider.notifications))
-    self.assertEqual(0, len(service._device_list))
+    self.assertEqual(0, len(service_prog.device_list))
     
 
 if __name__ == '__main__':

@@ -79,7 +79,7 @@ def sendservicecommand():
 @application.route('/getservice', methods=['POST', 'OPTIONS'])
 def getservice():
   device_simple = request.get_json(force=True)
-  device = fase.Device.FromSimple(device_simple)
+  device = fase_model.Device.FromSimple(device_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().GetService, device)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
@@ -89,7 +89,7 @@ def getservice():
 def getscreen():
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   device_simple = request.get_json(force=True)
-  device = fase.Device.FromSimple(device_simple)
+  device = fase_model.Device.FromSimple(device_simple)
   response_simple, code = SafeCall(fase_server.FaseServer.Get().GetScreen, device, session_info)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code

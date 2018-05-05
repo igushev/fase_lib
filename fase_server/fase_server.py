@@ -86,8 +86,8 @@ class FaseServer(object):
     service_cls = fase.Service.service_cls
 
     service = service_cls()
-    service._device_list.append(device)
     service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
+    service_prog.device_list.append(device)
     screen_prog = fase_model.ScreenProg(
         session_id=service.GetSessionId(), screen=service.OnStart(), recent_device=device)
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog)
@@ -169,12 +169,11 @@ class FaseServer(object):
     if element_callback.elements_update is not None:
       FaseServer._UpdateScreen(screen_prog.screen, element_callback.elements_update)
     element = self._GetElement(screen_prog.screen, element_callback)
-    service, screen = element.CallCallback(
-        service_prog.service, screen_prog.screen, element_callback.device, element_callback.method)
-    screen.UpdateScreenId(service)
-    service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
-    screen_prog = fase_model.ScreenProg(
-        session_id=service.GetSessionId(), screen=screen, recent_device=element_callback.device)
+    service_prog, screen_prog = element.CallCallback(
+        service_prog, screen_prog, element_callback.device, element_callback.method)
+    screen_prog.screen.UpdateScreenId(service_prog.service)
+    screen_prog.elements_update = None
+    screen_prog.recent_device = element_callback.device
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 

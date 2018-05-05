@@ -17,7 +17,7 @@ COUNTRY_CODE = 'US'
 def SignInProcedure(session_info, screen_info, sign_in_id_list,
                     sign_in=None, phone_number=None, first_name=None, last_name=None):
   assert sign_in is not None
-  device = fase.Device(device_type='Python', device_token='Token')
+  device = fase_model.Device(device_type='Python', device_token='Token')
   activation_code_generator.ActivationCodeGeneratorInterface.Set(
       activation_code_generator.MockActivationCodeGenerator(activation_code_generator.ActivationCodeGenerator()),
       overwrite=True)
@@ -110,7 +110,7 @@ def SignInProcedure(session_info, screen_info, sign_in_id_list,
 
 def SignOutProcedure(session_info, screen_info, sign_out_id_list):
   # Click on Sign Out button.
-  device = fase.Device(device_type='Python', device_token='Token')
+  device = fase_model.Device(device_type='Python', device_token='Token')
   response = fase_server.FaseServer.Get().ElementCallback(
       fase_model.ElementCallback(id_list=sign_out_id_list, method=fase.ON_CLICK_METHOD, device=device),
       session_info, screen_info)

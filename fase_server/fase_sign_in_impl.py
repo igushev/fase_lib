@@ -58,19 +58,21 @@ def _ErrorAlert(service, message, on_click):
 @json_util.JSONDecorator({})
 class FaseSignInButton(fase.Button):
 
-
-  def CallCallback(self, service, screen, device, method):
+  def CallCallback(self, service_prog, screen_prog, device, method):
     assert method == fase.ON_CLICK_METHOD
+    service = service_prog.service
     activation_code_sent = service.PopIntVariable(id_='fase_sign_in_activation_code_int').GetValue()
     activation_code_text = (
-        screen.GetFrame(id_='enter_activation_frame_id').GetText(id_='activation_code_text_id').GetText())
+        screen_prog.screen.GetFrame(id_='enter_activation_frame_id').GetText(id_='activation_code_text_id').GetText())
     if not activation_code_text:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
-      return service, _ErrorAlert(service, message=NO_ACTIVATION_CODE, on_click=OnActivationCodeSent)
+      screen_prog.screen = _ErrorAlert(service, message=NO_ACTIVATION_CODE, on_click=OnActivationCodeSent)
+      return service_prog, screen_prog
     activation_code_entered = int(activation_code_text)
     if activation_code_sent != activation_code_entered:
       service.AddIntVariable(id_='fase_sign_in_activation_code_int', value=activation_code_sent)
-      return service, _ErrorAlert(service, message=WRONG_ACTIVATION_CODE, on_click=OnActivationCodeSent)
+      screen_prog.screen = _ErrorAlert(service, message=WRONG_ACTIVATION_CODE, on_click=OnActivationCodeSent)
+      return service_prog, screen_prog 
 
     on_done = service.PopFunctionVariable(id_='fase_sign_in_on_done_class_method').GetValue()
     if service.HasFunctionVariable(id_='fase_sign_in_on_skip_class_method'):
@@ -83,48 +85,50 @@ class FaseSignInButton(fase.Button):
     session_id_signed_in = GenerateSignedInSessionId(user_id)
     # Delete service and screen current.
     user_id_before = service.GetUserId()
-    session_id_current = service.GetSessionId()
+    session_id_current = service_prog.session_id
     fase_database.FaseDatabaseInterface.Get().DeleteServiceProg(session_id=session_id_current)
     fase_database.FaseDatabaseInterface.Get().DeleteScreenProg(session_id=session_id_current)
 
     service_prog_signed_in = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id=session_id_signed_in)
     if service_prog_signed_in:
       # Retrieve sign in service and call.
-      service_signed_in = service_prog_signed_in.service
-      service_signed_in._device_list.append(device)
-      screen_signed_in = on_done(service_signed_in, user_id_before=user_id_before)
-      return service_signed_in, screen_signed_in
+      screen_prog_signed_in = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id=session_id_signed_in)
+      service_prog_signed_in.device_list.append(device)
+      screen_prog_signed_in.screen = on_done(service_prog_signed_in.service, user_id_before=user_id_before)
+      return service_prog_signed_in, screen_prog_signed_in
     else:
       # Assign signed in session id.
       user = fase_database.FaseDatabaseInterface.Get().GetUser(user_id=user_id)
+      service_prog.session_id = session_id_signed_in
       service._session_id = session_id_signed_in
       service._if_signed_in = True
       service._user_id = user_id
       service._user = user
-      screen = on_done(service, user_id_before=user_id_before)
-      return service, screen
+      screen_prog.screen = on_done(service, user_id_before=user_id_before)
+      screen_prog.session_id = session_id_signed_in
+      return service_prog, screen_prog
 
 
 @json_util.JSONDecorator({})
 class FaseSignOutButton(fase.Button):
 
-  def CallCallback(self, service, screen, device, method):
+  def CallCallback(self, service_prog, screen_prog, device, method):
     assert method == fase.ON_CLICK_METHOD
-    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(service.GetSessionId())
-    del service
     if service_prog.service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
       service_prog.service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
-    for i, device_signed_in in enumerate(service_prog.service._device_list):
+    for i, device_signed_in in enumerate(service_prog.device_list):
       if device_signed_in == device:
-        del service_prog.service._device_list[i]
+        del service_prog.device_list[i]
         break
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
 
     service_cls = fase.Service.service_cls
     service = service_cls()
-    service._device_list.append(device)
     screen = service.OnStart()
-    return service, screen
+    service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
+    service_prog.device_list.append(device)
+    screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen, recent_device=device)
+    return service_prog, screen_prog
 
 
 def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_user_data=None):

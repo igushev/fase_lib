@@ -248,8 +248,8 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, ui.draw_screen_calls)
     
     screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    service, screen = (
-        screen.GetElement(id_='next_button_id').CallCallback(service, screen, http_client.device, fase.ON_CLICK_METHOD))
+    screen = (getattr(screen.GetElement(id_='next_button_id'), fase.ON_CLICK_METHOD)
+              (service, screen, screen.GetElement(id_='next_button_id')))
     http_client.screen = screen
     client.ScreenUpdate()
     time.sleep(0.1)
@@ -286,8 +286,8 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, http_client.screen_update_calls)
 
     screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    service, element_callback_screen = (
-        screen.GetElement(id_='next_button_id').CallCallback(service, screen, http_client.device, fase.ON_CLICK_METHOD))
+    element_callback_screen = (getattr(screen.GetElement(id_='next_button_id'), fase.ON_CLICK_METHOD)
+                               (service, screen, screen.GetElement(id_='next_button_id')))
     http_client.expected_id_list = ['next_button_id']
     http_client.element_callback_screen = element_callback_screen
     http_client.element_callback_session_info = fase_model.SessionInfo(service.GetSessionId())
@@ -320,8 +320,8 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, ui.draw_screen_calls)
     
     screen.GetElement(id_='text_name_id').Update('Hanry Ford')
-    service, screen = (
-        screen.GetElement(id_='next_button_id').CallCallback(service, screen, http_client.device, fase.ON_CLICK_METHOD))
+    screen = (getattr(screen.GetElement(id_='next_button_id'), fase.ON_CLICK_METHOD)
+              (service, screen, screen.GetElement(id_='next_button_id')))
     http_client.screen = screen
     client.ScreenUpdate()
     time.sleep(0.1)

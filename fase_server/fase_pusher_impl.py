@@ -21,7 +21,7 @@ def Push(user_id, title, message):
   session_id = fase_sign_in_impl.GenerateSignedInSessionId(user_id)
   service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id)
   device_list = []
-  for device in service_prog.service._device_list:
+  for device in service_prog.device_list:
     if device_pusher.DevicePusher.Get().HasDevicePushServiceProvider(device.device_type):
       try:
         device_pusher.DevicePusher.Get().Push(device.device_type, device.device_token, title, message)
@@ -34,5 +34,5 @@ def Push(user_id, title, message):
         logging.error(type(e))
         logging.error(str(e))
     device_list.append(device)
-  service_prog.service._device_list = device_list 
+  service_prog.device_list = device_list 
   fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)

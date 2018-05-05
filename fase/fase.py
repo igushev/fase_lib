@@ -217,30 +217,15 @@ class User(data_util.AbstractObject):
       return self.phone_number
 
 
-@json_util.JSONDecorator({
-    'device_type': json_util.JSONString(),
-    'device_token': json_util.JSONString(),
-    'pixel_density': json_util.JSONFloat()})
-class Device(data_util.AbstractObject):
-
-  def __init__(self,
-               device_type=None,
-               device_token=None,
-               pixel_density=None):
-    self.device_type = device_type
-    self.device_token = device_token
-    self.pixel_density = pixel_density
-
-
 @json_util.JSONDecorator({}, inherited=True)
 class Element(data_util.AbstractObject):
   """Basic Interface."""
   def __init__(self):
     super(Element, self).__init__()
 
-  def CallCallback(self, service, screen, device, method):
-    screen = getattr(self, method)(service, screen, self)
-    return service, screen
+  def CallCallback(self, service_prog, screen_prog, device, method):
+    screen_prog.screen = getattr(self, method)(service_prog.service, screen_prog.screen, self)
+    return service_prog, screen_prog
 
 
 @json_util.JSONDecorator(
@@ -1288,7 +1273,6 @@ class Screen(BaseElementsContainer):
      '_if_signed_in': json_util.JSONBool(),
      '_user_id': json_util.JSONString(),
      '_user': json_util.JSONObject(User),
-     '_device_list': json_util.JSONList(json_util.JSONObject(Device)),
      '_datetime_added': json_util.JSONDateTime()})
 class Service(VariableContainer):
   
@@ -1310,7 +1294,6 @@ class Service(VariableContainer):
     self._if_signed_in = False
     self._user_id = GenerateUserId(self._session_id)
     self._user = None
-    self._device_list = []
     self._datetime_added = datetime.datetime.utcnow().replace(microsecond=0)
 
   def GetSessionId(self):

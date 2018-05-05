@@ -88,7 +88,7 @@ class FaseSignInTest(unittest.TestCase):
                       return_activation_code_enter=False):
     assert sign_in is not None
     # Create Service.
-    device = fase.Device(device_type='Python', device_token=(device_token or 'Token'))
+    device = fase_model.Device(device_type='Python', device_token=(device_token or 'Token'))
     response = fase_server.FaseServer.Get().GetService(device)
     session_info = response.session_info
     screen_info = response.screen_info
@@ -263,9 +263,9 @@ class FaseSignInTest(unittest.TestCase):
     # Get device.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
     if device_token is not None:
-      device = fase.Device(device_type='Python', device_token=device_token)
+      device = fase_model.Device(device_type='Python', device_token=device_token)
     else:
-      device = service_prog.service._device_list[-1]
+      device = service_prog.device_list[-1]
 
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
@@ -357,7 +357,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     # Get device.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device = service_prog.service._device_list[-1]
+    device = service_prog.device_list[-1]
 
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_in_frame_id', 'phone_number_text_id']], ['+13216549870'])
@@ -412,7 +412,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     # Get device.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device = service_prog.service._device_list[-1]
+    device = service_prog.device_list[-1]
 
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_up_frame_id', 'phone_number_text_id'],
@@ -452,7 +452,7 @@ class FaseSignInTest(unittest.TestCase):
     screen_info = response.screen_info
     # Get device.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device = service_prog.service._device_list[-1]
+    device = service_prog.device_list[-1]
 
     # Enter activation code.
     elements_update=fase_model.ElementsUpdate([['enter_activation_frame_id', 'activation_code_text_id']], '1234')
@@ -612,7 +612,7 @@ class FaseSignInTest(unittest.TestCase):
     screen = response.screen
     # Get device.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device = service_prog.service._device_list[-1]
+    device = service_prog.device_list[-1]
 
     # Enter Date of Birth after Minimum Date of Birth.
     date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=1*365)
@@ -645,7 +645,7 @@ class FaseSignInTest(unittest.TestCase):
     screen = response.screen
     # Get device.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device = service_prog.service._device_list[-1]
+    device = service_prog.device_list[-1]
 
     # Enter Date of Birth before Minimum Date of Birth.
     date_of_birth = datetime.datetime.utcnow()-datetime.timedelta(days=3*365)
@@ -690,10 +690,10 @@ class FaseSignInTest(unittest.TestCase):
     session_info = response.session_info
     # Get device list.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device_list = service_prog.service._device_list
+    device_list = service_prog.device_list
 
     self.assertEqual(1, len(device_list))
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token1'), device_list[0])    
 
     # Sign In with second device.
     response = self.SignInProcedure(service_num_before=2, screen_num_before=2,
@@ -704,11 +704,11 @@ class FaseSignInTest(unittest.TestCase):
     session_info = response.session_info
     # Get device list.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device_list = service_prog.service._device_list
+    device_list = service_prog.device_list
 
     self.assertEqual(2, len(device_list))
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token2'), device_list[1])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token1'), device_list[0])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token2'), device_list[1])    
 
     # Sign In with third device.
     response = self.SignInProcedure(service_num_before=2, screen_num_before=2,
@@ -719,22 +719,22 @@ class FaseSignInTest(unittest.TestCase):
     session_info = response.session_info
     # Get device list.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device_list = service_prog.service._device_list
+    device_list = service_prog.device_list
 
     self.assertEqual(3, len(device_list))
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token2'), device_list[1])    
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token3'), device_list[2])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token1'), device_list[0])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token2'), device_list[1])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token3'), device_list[2])    
 
     # Sign Out second device.
     self.SignOutProcedure(response, device_token='Token2')
 
     # Get device list.
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
-    device_list = service_prog.service._device_list
+    device_list = service_prog.device_list
     self.assertEqual(2, len(device_list))
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token1'), device_list[0])    
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token3'), device_list[1])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token1'), device_list[0])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token3'), device_list[1])    
 
     # Get signed out session.
     session_id_to_service_prog = fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()
@@ -743,9 +743,9 @@ class FaseSignInTest(unittest.TestCase):
     service_session_id_signed_out = list(set(session_id_to_service_prog.keys()) - {session_info.session_id})[0]
     service_prog_signed_out = session_id_to_service_prog[service_session_id_signed_out]
     
-    device_list_signed_out = service_prog_signed_out.service._device_list
+    device_list_signed_out = service_prog_signed_out.device_list
     self.assertEqual(1, len(device_list_signed_out))
-    self.assertEqual(fase.Device(device_type='Python', device_token='Token2'), device_list_signed_out[0])    
+    self.assertEqual(fase_model.Device(device_type='Python', device_token='Token2'), device_list_signed_out[0])    
 
   def testSkipCancel(self):
     for element_callback_id_list, expected_element_id in [(['sign_in_frame_id', 'skip_button_id'], 'skip_label'),
@@ -758,7 +758,7 @@ class FaseSignInTest(unittest.TestCase):
           overwrite=True)
   
       # Create Service.
-      device = fase.Device(device_type='Python', device_token='Token')
+      device = fase_model.Device(device_type='Python', device_token='Token')
       response = fase_server.FaseServer.Get().GetService(device)
       session_info = response.session_info
       screen_info = response.screen_info

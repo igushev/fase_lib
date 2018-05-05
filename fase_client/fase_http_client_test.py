@@ -46,7 +46,7 @@ class FaseHTTPClientTest(unittest.TestCase):
     fase_http_client.requests = MockRequests(self) 
     
     http_client = fase_http_client.FaseHTTPClient(MOCK_URL)
-    device = fase.Device('MockType', 'MockToken')
+    device = fase_model.Device('MockType', 'MockToken')
     response = fase_model.Response()
     fase_http_client.requests.expected_url = MOCK_URL + '/getservice'
     fase_http_client.requests.expected_json = device.ToSimple()
@@ -61,7 +61,7 @@ class FaseHTTPClientTest(unittest.TestCase):
     fase_http_client.requests = MockRequests(self) 
     
     http_client = fase_http_client.FaseHTTPClient(MOCK_URL)
-    device = fase.Device('MockType', 'MockToken')
+    device = fase_model.Device('MockType', 'MockToken')
     session_info = fase_model.SessionInfo(session_id='MockSessionId')
     response = fase_model.Response()
     fase_http_client.requests.expected_url = MOCK_URL + '/getscreen'
@@ -78,7 +78,7 @@ class FaseHTTPClientTest(unittest.TestCase):
     fase_http_client.requests = MockRequests(self) 
     
     http_client = fase_http_client.FaseHTTPClient(MOCK_URL)
-    device = fase.Device('MockType', 'MockToken')
+    device = fase_model.Device('MockType', 'MockToken')
     session_info = fase_model.SessionInfo(session_id='MockSessionId')
     screen_info = fase_model.ScreenInfo(screen_id='MockScreenId')
     response = fase_model.Response()
