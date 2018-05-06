@@ -121,14 +121,7 @@ class FaseSignOutButton(fase.Button):
         del service_prog.device_list[i]
         break
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
-
-    service_cls = fase.Service.service_cls
-    service = service_cls()
-    screen = service.OnStart()
-    service_prog = fase_model.ServiceProg(session_id=service.GetSessionId(), service=service)
-    service_prog.device_list.append(device)
-    screen_prog = fase_model.ScreenProg(session_id=service.GetSessionId(), screen=screen, recent_device=device)
-    return service_prog, screen_prog
+    return fase_model.GetServiceProgScreenProg(device)
 
 
 def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_user_data=None):

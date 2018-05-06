@@ -1288,6 +1288,16 @@ class Service(VariableContainer):
   def ServiceCommand(command):
     raise NotImplementedError()
 
+  @staticmethod
+  def Version():
+    return '1'
+
+  def OnStart(self):
+    raise NotImplemented()
+
+  def OnUpdate(self):
+    return self.OnStart()
+
   def __init__(self):
     super(Service, self).__init__()
     self._session_id = GenerateSessionId()

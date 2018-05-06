@@ -37,6 +37,15 @@ class ScreenInfo(data_util.AbstractObject):
     self.screen_id = screen_id
 
 
+@json_util.JSONDecorator(
+    {'version': json_util.JSONString()})
+class VersionInfo(data_util.AbstractObject):
+
+  def __init__(self,
+               version=None):
+    self.version = version
+
+
 @json_util.JSONDecorator({
     'filename': json_util.JSONString()})
 class Resource(data_util.AbstractObject):
@@ -47,12 +56,15 @@ class Resource(data_util.AbstractObject):
 
 
 @json_util.JSONDecorator({
-    'resource_list': json_util.JSONList(json_util.JSONObject(Resource))})
+    'resource_list': json_util.JSONList(json_util.JSONObject(Resource)),
+    'reset_resources': json_util.JSONBool()})
 class Resources(data_util.AbstractObject):
   
   def __init__(self,
-               resource_list=None):
+               resource_list=None,
+               reset_resources=False):
     self.resource_list = resource_list or []
+    self.reset_resources = reset_resources
 
 
 @json_util.JSONDecorator({
@@ -121,14 +133,17 @@ class ScreenProg(data_util.AbstractObject):
 @json_util.JSONDecorator(
     {'session_id': json_util.JSONString(),
      'service': json_util.JSONObject(fase.Service),
+     'version': json_util.JSONString(),
      'device_list': json_util.JSONList(json_util.JSONObject(Device))})
 class ServiceProg(data_util.AbstractObject):
 
   def __init__(self,
                session_id=None,
-               service=None):
+               service=None,
+               version=None):
     self.session_id = session_id
     self.service = service
+    self.version = version
     self.device_list = []
 
 
@@ -185,6 +200,19 @@ class BadRequest(data_util.AbstractObject):
   def __init__(self, code, message):
     self.code = code
     self.message = message
+
+
+def GetServiceProgScreenProg(device):
+  assert fase.Service.service_cls is not None
+  service_cls = fase.Service.service_cls
+  latest_version = service_cls.Version()
+
+  service = service_cls()
+  screen = service.OnStart()
+  service_prog = ServiceProg(session_id=service.GetSessionId(), service=service, version=latest_version)
+  service_prog.device_list.append(device)
+  screen_prog = ScreenProg(session_id=service.GetSessionId(), screen=screen, recent_device=device)
+  return service_prog, screen_prog 
 
 
 def ElementsUpdateToDict(elements_update):

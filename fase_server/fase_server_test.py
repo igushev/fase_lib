@@ -20,6 +20,18 @@ class ServerTestService(fase.Service):
     else:
       raise AssertionError('Wrong ServiceCommand') 
 
+  version = '1'
+
+  @staticmethod
+  def Version():
+    return ServerTestService.version
+
+  def OnUpdate(self):
+    screen = fase.Screen(self)
+    screen.AddLabel(id_='update_label_id', text='Service has been updated')
+    screen.AddButton(id_='start_button_id', text='Start', on_click=ServerTestService.OnResetButton)
+    return screen
+
   def OnStart(self):
     screen = fase.Screen(self)
     screen.AddImage(id_='image_id', filename='logo.png')
@@ -150,6 +162,13 @@ class FaseServerTest(unittest.TestCase):
     screen.AddImage(id_='image_id', filename='hello.png')
     screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
     screen.AddButton(id_='reset_button_id',text='Reset', on_click=ServerTestService.OnResetButton)
+    return screen
+
+  @staticmethod
+  def _GetUpdateScreen(service):
+    screen = fase.Screen(service)
+    screen.AddLabel(id_='update_label_id', text='Service has been updated')
+    screen.AddButton(id_='start_button_id', text='Start', on_click=ServerTestService.OnResetButton)
     return screen
 
   def _GetScreenProgAndAssert(self, session_info,
@@ -379,6 +398,57 @@ class FaseServerTest(unittest.TestCase):
     self.assertIsNone(response_enter_name_again.elements_update)
     self.assertEqual(session_info, response_enter_name_again.session_info)
     self.assertEqual(screen_info_clicked_next, response_enter_name_again.screen_info)
+
+  def testServiceElementCallbackServiceVersionObsolete(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info_entered_name)
+
+    ServerTestService.version = '2'
+
+    element_callback = (
+        fase_model.ElementCallback(id_list=['reset_button_id'], method=fase.ON_CLICK_METHOD, device=device))
+    response_updated = fase_server.FaseServer.Get().ElementCallback(
+        element_callback, session_info, screen_info_entered_name)
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    screen_prog_updated = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    screen_id_updated = screen_prog_updated.screen._screen_id
+    expected_screen = FaseServerTest._GetUpdateScreen(service_prog.service)
+    expected_screen._screen_id = screen_id_updated
+    self.assertEqual(expected_screen, screen_prog_updated.screen)
+    self.assertEqual(expected_screen, response_updated.screen)
+    self.assertEqual([], response_updated.resources.resource_list)
+    self.assertTrue(response_updated.resources.reset_resources)
+    self.assertIsNone(response_updated.elements_update)
+    self.assertEqual(session_info, response_updated.session_info)
+    self.assertEqual(fase_model.ScreenInfo(screen_id=screen_id_updated), response_updated.screen_info)
+
+    ServerTestService.version = '1'
+
+  def testServiceScreenUpdateServiceVersionObsolete(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, session_info, screen_info_entered_name)
+
+    ServerTestService.version = '2'
+
+    elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Howard Hughes'])
+    screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
+    response_updated = fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info_entered_name)
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    screen_prog_updated = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    screen_id_updated = screen_prog_updated.screen._screen_id
+    expected_screen = FaseServerTest._GetUpdateScreen(service_prog.service)
+    expected_screen._screen_id = screen_id_updated
+    self.assertEqual(expected_screen, screen_prog_updated.screen)
+    self.assertEqual(expected_screen, response_updated.screen)
+    self.assertEqual([], response_updated.resources.resource_list)
+    self.assertTrue(response_updated.resources.reset_resources)
+    self.assertIsNone(response_updated.elements_update)
+    self.assertEqual(session_info, response_updated.session_info)
+    self.assertEqual(fase_model.ScreenInfo(screen_id=screen_id_updated), response_updated.screen_info)
+
+    ServerTestService.version = '1'
 
 
 if __name__ == '__main__':

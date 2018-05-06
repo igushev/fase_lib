@@ -75,6 +75,12 @@ class KarmaCounter(fase.Service):
       self.AddStringVariable(id_='session_id_str', value=session_info.session_id)
     return self.DisplayCurrentScreen(None, None)
 
+  def OnUpdate(self):
+    if self.IfSignedIn():
+      return self.OnSignInDone()
+    else:
+      return self.OnStart()
+
   def DisplayCurrentScreen(self, screen, element):
     screen_label = self.GetStringVariable(id_='screen_label_str').GetValue()
     if screen_label == 'dashboard':
