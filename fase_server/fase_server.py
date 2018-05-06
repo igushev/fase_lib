@@ -82,6 +82,10 @@ class FaseServer(object):
     return fase_model.Status(service_cls.ServiceCommand(command))
 
   def GetService(self, device):
+    assert fase.Service.service_cls is not None
+    service_cls = fase.Service.service_cls
+    latest_version = service_cls.Version()
+
     service_prog, screen_prog = fase_model.GetServiceProgScreenProg(device)
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog)
@@ -89,16 +93,22 @@ class FaseServer(object):
     screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
     return fase_model.Response(screen=screen,
                                resources=resources,
+                               version_info=fase_model.VersionInfo(version=latest_version),
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
   def GetScreen(self, device, session_info):
+    assert fase.Service.service_cls is not None
+    service_cls = fase.Service.service_cls
+    latest_version = service_cls.Version()
+
     screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
     screen_prog.recent_device = device
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
     screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
     return fase_model.Response(screen=screen,
                                resources=resources,
+                               version_info=fase_model.VersionInfo(version=latest_version),
                                session_info=session_info,
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -130,6 +140,7 @@ class FaseServer(object):
     resources.reset_resources = True
     return fase_model.Response(screen=screen,
                                resources=resources,
+                               version_info=fase_model.VersionInfo(version=latest_version),
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -146,7 +157,7 @@ class FaseServer(object):
     current_id_list_to_value.update(id_list_to_value)
     return fase_model.DictToElementsUpdate(current_id_list_to_value) if current_id_list_to_value else None
 
-  def ScreenUpdate(self, screen_update, session_info, screen_info):
+  def ScreenUpdate(self, screen_update, version_info, session_info, screen_info):
     assert fase.Service.service_cls is not None
     service_cls = fase.Service.service_cls
     latest_version = service_cls.Version()
@@ -161,8 +172,10 @@ class FaseServer(object):
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
       screen, resources = PrepareScreen(screen_prog.screen, screen_update.device.pixel_density)
+      resources.reset_resources = latest_version != version_info.version
       return fase_model.Response(screen=screen,
                                  resources=resources,
+                                 version_info=fase_model.VersionInfo(version=latest_version),
                                  session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -178,6 +191,7 @@ class FaseServer(object):
     elements_update = screen_prog.elements_update if not same_device else None
 
     return fase_model.Response(elements_update=elements_update,
+                               version_info=fase_model.VersionInfo(version=latest_version),
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=screen_info)
 
@@ -186,7 +200,7 @@ class FaseServer(object):
     element.SetLocale(element_callback.locale)
     return element
 
-  def ElementCallback(self, element_callback, session_info, screen_info):
+  def ElementCallback(self, element_callback, version_info, session_info, screen_info):
     assert fase.Service.service_cls is not None
     service_cls = fase.Service.service_cls
     latest_version = service_cls.Version()
@@ -201,8 +215,10 @@ class FaseServer(object):
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
       screen, resources = PrepareScreen(screen_prog.screen, element_callback.device.pixel_density)
+      resources.reset_resources = latest_version != version_info.version
       return fase_model.Response(screen=screen,
                                  resources=resources,
+                                 version_info=fase_model.VersionInfo(version=latest_version),
                                  session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
@@ -218,5 +234,6 @@ class FaseServer(object):
     screen, resources = PrepareScreen(screen_prog.screen, element_callback.device.pixel_density)
     return fase_model.Response(screen=screen,
                                resources=resources,
+                               version_info=fase_model.VersionInfo(version=latest_version),
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))

@@ -151,6 +151,7 @@ class ServiceProg(data_util.AbstractObject):
     'screen': json_util.JSONObject(fase.Screen),
     'resources': json_util.JSONObject(Resources),
     'elements_update': json_util.JSONObject(ElementsUpdate),
+    'version_info': json_util.JSONObject(VersionInfo),
     'session_info': json_util.JSONObject(SessionInfo),
     'screen_info': json_util.JSONObject(ScreenInfo)})
 class Response(data_util.AbstractObject):
@@ -159,11 +160,13 @@ class Response(data_util.AbstractObject):
                screen=None,
                resources=None,
                elements_update=None,
+               version_info=None,
                session_info=None,
                screen_info=None):
     self.screen = screen
     self.resources = resources
     self.elements_update = elements_update
+    self.version_info = version_info
     self.session_info = session_info
     self.screen_info = screen_info
 

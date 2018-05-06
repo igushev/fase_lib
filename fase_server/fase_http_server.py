@@ -97,23 +97,26 @@ def getscreen():
 
 @application.route('/screenupdate', methods=['POST', 'OPTIONS'])
 def screenupdate():
+  version_info = fase_model.VersionInfo(version=request.headers.get('version', None))
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   screen_info = fase_model.ScreenInfo(screen_id=request.headers.get('screen_id', None))
   screen_update_simple = request.get_json(force=True)
   screen_update = fase_model.ScreenUpdate.FromSimple(screen_update_simple)
-  response_simple, code = SafeCall(fase_server.FaseServer.Get().ScreenUpdate, screen_update, session_info, screen_info)
+  response_simple, code = SafeCall(
+      fase_server.FaseServer.Get().ScreenUpdate, screen_update, version_info, session_info, screen_info)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
 
 
 @application.route('/elementcallback', methods=['POST', 'OPTIONS'])
 def elementcallback():
+  version_info = fase_model.VersionInfo(version=request.headers.get('version', None))
   session_info = fase_model.SessionInfo(session_id=request.headers.get('session_id', None))
   screen_info = fase_model.ScreenInfo(screen_id=request.headers.get('screen_id', None))
   element_callback_simple = request.get_json(force=True)
   element_callback = fase_model.ElementCallback.FromSimple(element_callback_simple)
   response_simple, code = SafeCall(
-      fase_server.FaseServer.Get().ElementCallback, element_callback, session_info, screen_info)
+      fase_server.FaseServer.Get().ElementCallback, element_callback, version_info, session_info, screen_info)
   response_simple = CleanSimple(response_simple)
   return jsonify(**response_simple), code
 

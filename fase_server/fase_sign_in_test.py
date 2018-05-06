@@ -90,6 +90,7 @@ class FaseSignInTest(unittest.TestCase):
     # Create Service.
     device = fase_model.Device(device_type='Python', device_token=(device_token or 'Token'))
     response = fase_server.FaseServer.Get().GetService(device)
+    version_info = response.version_info
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -102,7 +103,7 @@ class FaseSignInTest(unittest.TestCase):
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['sign_in_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check.
@@ -117,7 +118,7 @@ class FaseSignInTest(unittest.TestCase):
       response = fase_server.FaseServer.Get().ElementCallback(
           fase_model.ElementCallback(
               id_list=['sign_in_frame_id', 'sign_in_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-          session_info, screen_info)
+          version_info, session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
       # Check.
@@ -133,12 +134,12 @@ class FaseSignInTest(unittest.TestCase):
       # Enter phone number.
       elements_update=fase_model.ElementsUpdate([['sign_in_frame_id', 'phone_number_text_id']], [phone_number])
       screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-      fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+      fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
       # Click on Sign In button.
       response = fase_server.FaseServer.Get().ElementCallback(
           fase_model.ElementCallback(id_list=['sign_in_frame_id', 'sign_in_button_id'], method=fase.ON_CLICK_METHOD,
                                      device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-          session_info, screen_info)
+          version_info, session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
       
@@ -168,12 +169,12 @@ class FaseSignInTest(unittest.TestCase):
           value_list.append(home_city.Get())
         elements_update = fase_model.ElementsUpdate(id_list_list, value_list)
         screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-        fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+        fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
         # Click on Enter button.
         response = fase_server.FaseServer.Get().ElementCallback(
             fase_model.ElementCallback(id_list=['enter_frame_id', 'enter_button_id'], method=fase.ON_CLICK_METHOD,
                                        device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-            session_info, screen_info)
+            version_info, session_info, screen_info)
         screen_info = response.screen_info
         screen = response.screen
 
@@ -182,7 +183,7 @@ class FaseSignInTest(unittest.TestCase):
       response = fase_server.FaseServer.Get().ElementCallback(
           fase_model.ElementCallback(
               id_list=['sign_in_frame_id', 'sign_up_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-          session_info, screen_info)
+          version_info, session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
       # Check.
@@ -204,12 +205,12 @@ class FaseSignInTest(unittest.TestCase):
                                                                                                  first_name,
                                                                                                  last_name])
       screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-      fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+      fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
       # Click on Sign Up button.
       response = fase_server.FaseServer.Get().ElementCallback(
           fase_model.ElementCallback(id_list=['sign_up_frame_id', 'sign_up_button_id'], method=fase.ON_CLICK_METHOD,
                                      device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-          session_info, screen_info)
+          version_info, session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
 
@@ -232,12 +233,12 @@ class FaseSignInTest(unittest.TestCase):
         [['enter_activation_frame_id', 'activation_code_text_id']],
         [str(activation_code_generator.ActivationCodeGeneratorInterface.Get().codes[-1])])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
     # Click on Send button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(
             id_list=['enter_activation_frame_id', 'send_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check.
@@ -257,6 +258,7 @@ class FaseSignInTest(unittest.TestCase):
     return response
 
   def SignOutProcedure(self, response, device_token=None):
+    version_info = response.version_info
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -277,7 +279,7 @@ class FaseSignInTest(unittest.TestCase):
     # Click on Sign Out button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['sign_out_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check.
@@ -290,7 +292,7 @@ class FaseSignInTest(unittest.TestCase):
     fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['sign_out_frame_id', 'sign_out_button_id'], method=fase.ON_CLICK_METHOD,
                                    device=device),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
 
   def testSignIn_Existing_Service_Screen_User(self):
     user = fase.User(user_id='321',
@@ -353,6 +355,7 @@ class FaseSignInTest(unittest.TestCase):
                                     sign_in=True,
                                     phone_number='+13216549870',
                                     return_phone_enter=True)
+    version_info = response.version_info
     session_info = response.session_info
     screen_info = response.screen_info
     # Get device.
@@ -362,12 +365,12 @@ class FaseSignInTest(unittest.TestCase):
     # Enter phone number.
     elements_update=fase_model.ElementsUpdate([['sign_in_frame_id', 'phone_number_text_id']], ['+13216549870'])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
     # Click on Sign In button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['sign_in_frame_id', 'sign_in_button_id'], method=fase.ON_CLICK_METHOD,
                                    device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
@@ -408,6 +411,7 @@ class FaseSignInTest(unittest.TestCase):
                                     sign_in=False,
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev',
                                     return_phone_enter=True)
+    version_info = response.version_info
     session_info = response.session_info
     screen_info = response.screen_info
     # Get device.
@@ -421,12 +425,12 @@ class FaseSignInTest(unittest.TestCase):
                                                                                              'Edward',
                                                                                              'Igushev'])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
     # Click on Sign Up button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['sign_up_frame_id', 'sign_up_button_id'], method=fase.ON_CLICK_METHOD,
                                    device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
@@ -448,6 +452,7 @@ class FaseSignInTest(unittest.TestCase):
                                     sign_in=False,
                                     phone_number='+13216549870', first_name='Edward', last_name='Igushev',
                                     return_activation_code_enter=True)
+    version_info = response.version_info
     session_info = response.session_info
     screen_info = response.screen_info
     # Get device.
@@ -457,12 +462,12 @@ class FaseSignInTest(unittest.TestCase):
     # Enter activation code.
     elements_update=fase_model.ElementsUpdate([['enter_activation_frame_id', 'activation_code_text_id']], '1234')
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
     # Click on Send button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(
             id_list=['enter_activation_frame_id', 'send_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-        session_info, screen_info)
+        version_info, session_info, screen_info)
     screen = response.screen
     # Check.
     self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
@@ -607,6 +612,7 @@ class FaseSignInTest(unittest.TestCase):
                                     phone_number='+13216549870',
                                     request_user_data=fase.RequestUserData(date_of_birth=True),
                                     return_request_user_data_enter=True)
+    version_info = response.version_info
     session_info = response.session_info
     screen_info = response.screen_info
     screen = response.screen
@@ -619,14 +625,13 @@ class FaseSignInTest(unittest.TestCase):
     elements_update=fase_model.ElementsUpdate([['enter_frame_id', 'date_of_birth_date_picker']],
                                               [date_of_birth.strftime(fase.DATETIME_FORMAT)])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
 
     # Click on Enter button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['enter_frame_id', 'enter_button_id'], method=fase.ON_CLICK_METHOD,
                                    device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-        session_info, screen_info)
-    session_info = response.session_info
+        version_info, session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
     # Check Alert window.
@@ -652,14 +657,13 @@ class FaseSignInTest(unittest.TestCase):
     elements_update=fase_model.ElementsUpdate([['enter_frame_id', 'date_of_birth_date_picker']],
                                               [date_of_birth.strftime(fase.DATETIME_FORMAT)])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
-    fase_server.FaseServer.Get().ScreenUpdate(screen_update, session_info, screen_info)
+    fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
 
     # Click on Enter button.
     response = fase_server.FaseServer.Get().ElementCallback(
         fase_model.ElementCallback(id_list=['enter_frame_id', 'enter_button_id'], method=fase.ON_CLICK_METHOD,
                                    device=device, locale=fase.Locale(country_code=COUNTRY_CODE)),
-        session_info, screen_info)
-    session_info = response.session_info
+        version_info, session_info, screen_info)
     screen_info = response.screen_info
     screen = response.screen
 
@@ -760,6 +764,7 @@ class FaseSignInTest(unittest.TestCase):
       # Create Service.
       device = fase_model.Device(device_type='Python', device_token='Token')
       response = fase_server.FaseServer.Get().GetService(device)
+      version_info = response.version_info
       session_info = response.session_info
       screen_info = response.screen_info
       screen = response.screen
@@ -772,8 +777,7 @@ class FaseSignInTest(unittest.TestCase):
       # Click on Sign In button.
       response = fase_server.FaseServer.Get().ElementCallback(
           fase_model.ElementCallback(id_list=['sign_in_button_id'], method=fase.ON_CLICK_METHOD, device=device),
-          session_info, screen_info)
-      session_info = response.session_info
+          version_info, session_info, screen_info)
       screen_info = response.screen_info
       screen = response.screen
       # Check.
@@ -786,7 +790,7 @@ class FaseSignInTest(unittest.TestCase):
       # Click on Skip button
       response = fase_server.FaseServer.Get().ElementCallback(
           fase_model.ElementCallback(id_list=element_callback_id_list, method=fase.ON_CLICK_METHOD, device=device),
-          session_info, screen_info)
+          version_info, session_info, screen_info)
       screen = response.screen
       # Check.
       self.assertEqual(1, len(fase_database.FaseDatabaseInterface.Get().GetSessionIdToServiceProg()))
