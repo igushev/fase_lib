@@ -97,27 +97,6 @@ class FaseServer(object):
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
-  def GetScreen(self, device, session_info):
-    assert fase.Service.service_cls is not None
-    service_cls = fase.Service.service_cls
-    latest_version = service_cls.Version()
-
-    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
-    screen_prog.recent_device = device
-    fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
-    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
-    return fase_model.Response(screen=screen,
-                               resources=resources,
-                               version_info=fase_model.VersionInfo(version=latest_version),
-                               session_info=session_info,
-                               screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
-
-  @staticmethod
-  def _RefreshServiceProg(service_prog, screen_prog, device):
-    screen_prog.screen.UpdateScreenId(service_prog.service)
-    screen_prog.elements_update = None
-    screen_prog.recent_device = device
-
   @staticmethod
   def _ServiceUpdate(service_prog, screen_prog, device):
     assert fase.Service.service_cls is not None
@@ -143,6 +122,34 @@ class FaseServer(object):
                                version_info=fase_model.VersionInfo(version=latest_version),
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
+
+  def GetScreen(self, device, version_info, session_info):
+    assert fase.Service.service_cls is not None
+    service_cls = fase.Service.service_cls
+    latest_version = service_cls.Version()
+
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+
+    # If current version is no longer relevant, update the Service.
+    if latest_version != service_prog.version:
+      return FaseServer._ServiceUpdate(service_prog, screen_prog, device)
+
+    screen_prog.recent_device = device
+    fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
+    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
+    resources.reset_resources = latest_version != version_info.version
+    return fase_model.Response(screen=screen,
+                               resources=resources,
+                               version_info=fase_model.VersionInfo(version=latest_version),
+                               session_info=session_info,
+                               screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
+
+  @staticmethod
+  def _RefreshServiceProg(service_prog, screen_prog, device):
+    screen_prog.screen.UpdateScreenId(service_prog.service)
+    screen_prog.elements_update = None
+    screen_prog.recent_device = device
 
   @staticmethod
   def _UpdateScreen(screen, elements_update):

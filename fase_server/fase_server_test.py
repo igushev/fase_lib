@@ -180,9 +180,9 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(expected_elements_update, screen_prog.elements_update)
     self.assertEqual(expected_device, screen_prog.recent_device)
 
-  def _GetScreenAndAssert(self, device, session_info, screen_info, expected_screen=None, expected_resources=None,
-                          expected_elements_update=None):
-    response = fase_server.FaseServer.Get().GetScreen(device, session_info)
+  def _GetScreenAndAssert(self, device, version_info, session_info, screen_info, expected_screen=None,
+                          expected_resources=None, expected_elements_update=None):
+    response = fase_server.FaseServer.Get().GetScreen(device, version_info, session_info)
     self.assertEqual(expected_screen, response.screen)
     if expected_resources is not None:
       self.assertEqual(set(expected_resources.resource_list), set(response.resources.resource_list))
@@ -209,7 +209,7 @@ class FaseServerTest(unittest.TestCase):
 
     self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
     if get_screen_and_assert:
-      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen,
+      self._GetScreenAndAssert(device, version_info, session_info, screen_info, expected_screen=expected_screen,
                                expected_resources=expected_resources)
     return version_info, session_info, screen_info
 
@@ -232,7 +232,7 @@ class FaseServerTest(unittest.TestCase):
                                  expected_elements_update=elements_update,
                                  expected_device=device)
     if get_screen_and_assert:
-      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen,
+      self._GetScreenAndAssert(device, version_info, session_info, screen_info, expected_screen=expected_screen,
                                expected_resources=expected_resources)
 
   def _EnterNextAndAssert(self, name, device, version_info, session_info, screen_info, get_screen_and_assert=True):
@@ -252,7 +252,7 @@ class FaseServerTest(unittest.TestCase):
 
     self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
     if get_screen_and_assert:
-      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen,
+      self._GetScreenAndAssert(device, version_info, session_info, screen_info, expected_screen=expected_screen,
                                expected_resources=expected_resources)
     return screen_info
 
@@ -273,7 +273,7 @@ class FaseServerTest(unittest.TestCase):
 
     self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
     if get_screen_and_assert:
-      self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen,
+      self._GetScreenAndAssert(device, version_info, session_info, screen_info, expected_screen=expected_screen,
                                expected_resources=expected_resources)
     return screen_info
 
@@ -304,7 +304,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(session_info, response.session_info)
 
     self._GetScreenProgAndAssert(session_info, expected_screen=expected_screen, expected_device=device)
-    self._GetScreenAndAssert(device, session_info, screen_info, expected_screen=expected_screen,
+    self._GetScreenAndAssert(device, version_info, session_info, screen_info, expected_screen=expected_screen,
                              expected_resources=expected_resources)
     
     self._EnterResetAndAssert(device, version_info, session_info, screen_info)
@@ -362,7 +362,7 @@ class FaseServerTest(unittest.TestCase):
                                  expected_screen=expected_screen,
                                  expected_elements_update=elements_update,
                                  expected_device=device_2)
-    self._GetScreenAndAssert(device_2, session_info, screen_info, expected_screen=expected_screen,
+    self._GetScreenAndAssert(device_2, version_info, session_info, screen_info, expected_screen=expected_screen,
                              expected_resources=expected_resources)
 
   def testServiceElementCallbackScreenInfoObsolete(self):
@@ -421,6 +421,19 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(session_info, response_updated.session_info)
     self.assertEqual(fase_model.ScreenInfo(screen_id=screen_id_updated), response_updated.screen_info)
 
+  def testServiceGetScreenServiceVersionObsolete(self):
+    device = fase_model.Device('MockType', 'MockToken')
+    version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
+
+    previous_version = ServerTestService.version
+    ServerTestService.version = '2'
+
+    response_updated = fase_server.FaseServer.Get().GetScreen(device, version_info, session_info)
+    self._AssertServiceUpdateScreen(response_updated, session_info)
+
+    ServerTestService.version = previous_version
+
   def testServiceElementCallbackServiceVersionObsolete(self):
     device = fase_model.Device('MockType', 'MockToken')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
@@ -466,6 +479,24 @@ class FaseServerTest(unittest.TestCase):
     self.assertIsNone(response_updated.elements_update)
     self.assertEqual(session_info, response_updated.session_info)
 
+
+  def testServiceGetScreenDeviceVersionObsolete(self):
+    previous_version = ServerTestService.version
+    ServerTestService.version = '2'
+
+    device = fase_model.Device('MockType', 'MockToken')
+    version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
+    self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
+    screen_info_clicked_next = self._EnterNextAndAssert(
+        'Henry Ford', device, version_info, session_info, screen_info_entered_name)
+
+    version_info = fase_model.VersionInfo(version=previous_version)
+
+    response_updated = fase_server.FaseServer.Get().GetScreen(device, version_info, session_info)
+    self._AssertDeviceUpdateScreen(response_updated, session_info, screen_info_clicked_next)
+
+    ServerTestService.version = previous_version
+
   def testServiceElementCallbackDeviceVersionObsolete(self):
     previous_version = ServerTestService.version
     ServerTestService.version = '2'
@@ -482,7 +513,6 @@ class FaseServerTest(unittest.TestCase):
         fase_model.ElementCallback(id_list=['next_button_id'], method=fase.ON_CLICK_METHOD, device=device))
     response_updated = fase_server.FaseServer.Get().ElementCallback(
         element_callback, version_info, session_info, screen_info_entered_name)
-
     self._AssertDeviceUpdateScreen(response_updated, session_info, screen_info_clicked_next)
 
     ServerTestService.version = previous_version
@@ -503,7 +533,6 @@ class FaseServerTest(unittest.TestCase):
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device)
     response_updated = fase_server.FaseServer.Get().ScreenUpdate(
         screen_update, version_info, session_info, screen_info_entered_name)
-
     self._AssertDeviceUpdateScreen(response_updated, session_info, screen_info_clicked_next)
 
     ServerTestService.version = previous_version
