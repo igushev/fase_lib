@@ -158,7 +158,7 @@ class NotesService(fase.Service):
 
   def _DisplayNote(self, note_id, screen):
     screen = fase.Screen(self)
-    note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL)
+    note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL, size=fase.Frame.MAX)
     header_text = note_frame.AddText(id_='header_text', hint='Header')
     text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX, multiline=True)
     favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
