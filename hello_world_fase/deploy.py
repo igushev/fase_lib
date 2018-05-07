@@ -1,12 +1,13 @@
 import os
 
+from fase_server import fase_deploy
 from server_util import deploy_util
+from server_util import version_util
 
 
 HOME_DIR_VAR_NAME = 'FASE_HOME'
 DEPLOY_DIR_VAR_NAME = 'HELLO_WORLD_FASE_SERVER_DEPLOY_DIR'
 HELLO_WORLD_VERSION_FILENAME = 'hello_world_fase/version.txt'
-FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 FILENAME_TEMPLATE = 'HelloWorldFaseServer_HelloWorld_%s_Fase_%s'
 
 DEP_LIST = [
@@ -34,8 +35,8 @@ def main(argv):
   home_dir = os.environ[HOME_DIR_VAR_NAME]
   deploy_dir = os.environ[DEPLOY_DIR_VAR_NAME]
   assert deploy_dir, '%s must be set!' % DEPLOY_DIR_VAR_NAME 
-  hello_world_version = deploy_util.ReadAndUpdateVersion(HELLO_WORLD_VERSION_FILENAME, hello_world_position)
-  fase_version = deploy_util.ReadAndUpdateVersion(FASE_VERSION_FILENAME)
+  hello_world_version = version_util.ReadAndUpdateVersion(HELLO_WORLD_VERSION_FILENAME, hello_world_position)
+  fase_version = version_util.ReadAndUpdateVersion(fase_deploy.FASE_VERSION_FILENAME)
   filename = FILENAME_TEMPLATE % (hello_world_version.replace('.', '_'), fase_version.replace('.', '_'))
   deploy_util.Deploy(home_dir, DEP_LIST, MOVE_LIST, deploy_dir, filename)
 

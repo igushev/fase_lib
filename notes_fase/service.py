@@ -2,6 +2,7 @@ import datetime
 import hashlib
 
 from base_util import datetime_util
+from server_util import version_util
 
 from fase import fase
 from fase import fase_sign_in
@@ -15,6 +16,8 @@ DELETE_DB_COMMAND = 'deletedb'
 
 TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
+
+NOTES_VERSION_FILENAME = 'notes_fase/version.txt'
 
 SELECTED_ICON = 'solid_blue'
 NAVIGATION_ICON = 'color'
@@ -37,6 +40,12 @@ class NotesService(fase.Service):
       return TABLES_DELETED
     else:
       raise AssertionError(command.command)
+
+  version = version_util.ReadVersion(NOTES_VERSION_FILENAME)
+
+  @staticmethod
+  def Version():
+    return NotesService.version
 
   def OnStart(self):
     self.AddStringVariable(id_='screen_label', value='notes')

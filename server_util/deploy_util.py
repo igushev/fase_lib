@@ -3,23 +3,6 @@ import shutil
 import tempfile
 
 
-def ReadAndUpdateVersion(version_filename, update_position=None):
-  if os.path.exists(version_filename):
-    current_version = open(version_filename).readlines()[0]
-    numbers = current_version.split('.')
-    if update_position:
-      numbers[update_position] = '%02d' % (int(numbers[update_position]) + 1)
-      if update_position < -1:
-        numbers[update_position + 1:] = ['00'] * -(update_position + 1)
-    version = '.'.join(numbers)
-  else:
-    version = '1.00.00.00'
-  with open(version_filename, 'w') as fout:
-    fout.write(version)
-  print('\n'.join(['Version %s' % version]))
-  return version
-
-
 def Clean(dir_):
   os.system('find %s -name "__pycache__" | xargs rm -R' % dir_)
 

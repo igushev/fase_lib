@@ -1,12 +1,13 @@
 import os
 
+from fase_server import fase_deploy
+from notes_fase import service as notes_service
 from server_util import deploy_util
+from server_util import version_util
 
 
 HOME_DIR_VAR_NAME = 'FASE_HOME'
 DEPLOY_DIR_VAR_NAME = 'NOTES_FASE_SERVER_DEPLOY_DIR'
-NOTES_VERSION_FILENAME = 'notes_fase/version.txt'
-FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 FILENAME_TEMPLATE = 'NotesFaseServer_Notes_%s_Fase_%s'
 
 DEP_LIST = [
@@ -34,8 +35,8 @@ def main(argv):
   home_dir = os.environ[HOME_DIR_VAR_NAME]
   deploy_dir = os.environ[DEPLOY_DIR_VAR_NAME]
   assert deploy_dir, '%s must be set!' % DEPLOY_DIR_VAR_NAME 
-  notes_version = deploy_util.ReadAndUpdateVersion(NOTES_VERSION_FILENAME, notes_position)
-  fase_version = deploy_util.ReadAndUpdateVersion(FASE_VERSION_FILENAME)
+  notes_version = version_util.ReadAndUpdateVersion(notes_service.NOTES_VERSION_FILENAME, notes_position)
+  fase_version = version_util.ReadAndUpdateVersion(fase_deploy.FASE_VERSION_FILENAME)
   filename = FILENAME_TEMPLATE % (notes_version.replace('.', '_'), fase_version.replace('.', '_'))
   deploy_util.Deploy(home_dir, DEP_LIST, MOVE_LIST, deploy_dir, filename)
 

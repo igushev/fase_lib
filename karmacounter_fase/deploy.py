@@ -1,12 +1,13 @@
 import os
 
+from fase_server import fase_deploy
+from karmacounter_fase import service as kc_service
 from server_util import deploy_util
+from server_util import version_util
 
 
 HOME_DIR_VAR_NAME = 'FASE_HOME'
 DEPLOY_DIR_VAR_NAME = 'KARMACOUNTER_FASE_SERVER_DEPLOY_DIR'
-KARMACOUNTER_VERSION_FILENAME = 'karmacounter_fase/version.txt'
-FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
 FILENAME_TEMPLATE = 'KarmaCounterFaseServer_KarmaCounter_%s_Fase_%s'
 
 DEP_LIST = [
@@ -34,8 +35,8 @@ def main(argv):
   home_dir = os.environ[HOME_DIR_VAR_NAME]
   deploy_dir = os.environ[DEPLOY_DIR_VAR_NAME]
   assert deploy_dir, '%s must be set!' % DEPLOY_DIR_VAR_NAME 
-  karmacounter_version = deploy_util.ReadAndUpdateVersion(KARMACOUNTER_VERSION_FILENAME, kc_position)
-  fase_version = deploy_util.ReadAndUpdateVersion(FASE_VERSION_FILENAME)
+  karmacounter_version = version_util.ReadAndUpdateVersion(kc_service.KARMACOUNTER_VERSION_FILENAME, kc_position)
+  fase_version = version_util.ReadAndUpdateVersion(fase_deploy.FASE_VERSION_FILENAME)
   filename = FILENAME_TEMPLATE % (karmacounter_version.replace('.', '_'), fase_version.replace('.', '_'))
   deploy_util.Deploy(home_dir, DEP_LIST, MOVE_LIST, deploy_dir, filename)
 

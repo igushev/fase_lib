@@ -1,5 +1,10 @@
+from server_util import version_util
+
 from fase import fase
 from fase import fase_sign_in
+
+
+FASE_TEST_VERSION_FILENAME = 'fase_test_fase/version.txt'
 
 
 class FaseTestService(fase.Service):
@@ -14,6 +19,12 @@ class FaseTestService(fase.Service):
       return 'FaseTest'
     else:
       raise AssertionError('Wrong ServiceCommand') 
+
+  version = version_util.ReadVersion(FASE_TEST_VERSION_FILENAME)
+
+  @staticmethod
+  def Version():
+    return FaseTestService.version
 
   def OnStart(self):
     screen = fase.Screen(self)

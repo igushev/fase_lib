@@ -1,6 +1,7 @@
 import datetime
 
 from server_util import phone_number_verifier
+from server_util import version_util
 
 from fase import fase
 from fase import fase_pusher
@@ -12,6 +13,7 @@ from karmacounter_fase import data as kc_data
 
 DEVICE_TYPE = 'Fase'
 APP_NAME = 'KarmaCounter'
+KARMACOUNTER_VERSION_FILENAME = 'karmacounter_fase/version.txt'
 
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
 SCORE_NOT_SELECTED = 'Please select a score!'
@@ -41,6 +43,12 @@ class KarmaCounter(fase.Service):
   @staticmethod
   def GetServiceId():
     return APP_NAME
+
+  version = version_util.ReadVersion(KARMACOUNTER_VERSION_FILENAME)
+
+  @staticmethod
+  def Version():
+    return KarmaCounter.version
 
   def _PushNotification(self, phone_number, message):
     user_id = fase_sign_in.GetUserIdByPhoneNumber(phone_number)
