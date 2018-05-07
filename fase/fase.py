@@ -738,18 +738,25 @@ class Menu(ElementContainer):
 
 @json_util.JSONDecorator(
     {'text': json_util.JSONString(),
+     'align': json_util.JSONInt(),
      'on_click': json_util.JSONFunction()})
 class Button(VisualElement):
+
+  LEFT = 1
+  RIGHT = 2
+  CENTER = 3
 
   def __init__(self,
                text=None,
                image=None,
+               align=None,
                on_click=None):
     super(Button, self).__init__()
     assert text or image
     self.text = text
     if image:
       self.AddImage(image)
+    self.align = align or Select.CENTER
     self.on_click = on_click
 
   def SetText(self, text):
@@ -1056,8 +1063,9 @@ class BaseElementsContainer(VisualElement):
                 id_=None,
                 text=None,
                 image=None,
+                align=None,
                 on_click=None):
-    return self.AddElement(id_=id_, element=Button(text=text, on_click=on_click, image=image))
+    return self.AddElement(id_=id_, element=Button(text=text, image=image, align=align, on_click=on_click))
   def HasButton(self, *, id_):
     return self.HasElement(id_=id_)
   def GetButton(self, *, id_):

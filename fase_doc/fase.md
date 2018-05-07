@@ -73,11 +73,6 @@ Table of Contents
   * *locale*: *Locale*
   * *datetime_added*: date
 
-* **Device**
-  * *device_type*: string
-  * *device_token*: string
-  * *pixel_density*: float
-
 ## Elements Classes
 * **Element**. Basic Interface.
 
@@ -185,7 +180,11 @@ Table of Contents
   * *request_locale*: bool
   * *locale*: *Locale*
   * *text*: string
+  * *align*: int
   * *on_click*: function
+    * LEFT = 1
+    * RIGHT = 2
+    * CENTER = 3
 
 * **Navigation** extends *ElementContainer*
   * *id_element_list*: list(tuple(string, *Element* or subclass))

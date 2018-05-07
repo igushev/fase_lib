@@ -42,17 +42,26 @@ Table of Contents
 
 # Communication with Server
 ## Data Classes
+* **Device**
+  * *device_type*: string
+  * *device_token*: string
+  * *pixel_density*: float
+
 * **SessionInfo**
   * *session_id*: string
 
 * **ScreenInfo**
   * *screen_id*: string
 
+* **VersionInfo**
+  * *version*: string
+
 * **Resource**
   * *filename*: string
 
 * **Resources**
   * *resource_list*: list(*Resource*)
+  * *reset_resources*: bool
 
 * **ElementsUpdate**
   * *id_list_list*: list(list(string))
@@ -69,16 +78,11 @@ Table of Contents
   * *device*: *Device*
   * *locale*: *Locale*
 
-* **ScreenProg**
-  * *session_id*: string
-  * *screen*: *Screen* or subclass
-  * *elements_update*: *ElementsUpdate*
-  * *recent_device*: *Device*
-
 * **Response**
   * *screen*: *Screen* or subclass
   * *resources*: *Resources*
   * *elements_update*: *ElementsUpdate*
+  * *version_info*: *VersionInfo*
   * *session_info*: *SessionInfo*
   * *screen_info*: *ScreenInfo*
 
