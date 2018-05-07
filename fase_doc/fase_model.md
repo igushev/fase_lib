@@ -102,14 +102,14 @@ Table of Contents
 ## Server API
 **Please note that session-id and screen-id have "-"! It's relevant only in HTTP headers, in other places they have "_"!**
 
-|HTTP Request|HTTP Method|Need session-id|Need screen-id|Input Type|Output Type|Description|
-|------------|-----------|---------------|--------------|----------|-----------|-----------|
-|/sendinternalcommand|'POST', 'OPTIONS'||||Command|Status|Internal command to the framework|
-|/sendservicecommand|'POST', 'OPTIONS'|||Command|Status|Internal command to Service|
-|/getservice|'POST', 'OPTIONS'|||Device|Response|Create instance of the Service|
-|/getscreen|'POST', 'OPTIONS'|Yes||Device|Response|Get current Screen|
-|/screenupdate|'POST', 'OPTIONS'|Yes|Yes|ScreenUpdate|Response|Send information about current field state|
-|/elementcallback|'POST', 'OPTIONS'|Yes|Yes|ElementCallback|Response|Send information about registered callback|
+|HTTP Request|HTTP Method|Need version|Need session-id|Need screen-id|Input Type|Output Type|Description|
+|------------|-----------|------------|---------------|--------------|----------|-----------|-----------|
+|/sendinternalcommand|'POST', 'OPTIONS'|||||Command|Status|Internal command to the framework|
+|/sendservicecommand|'POST', 'OPTIONS'||||Command|Status|Internal command to Service|
+|/getservice|'POST', 'OPTIONS'||||Device|Response|Create instance of the Service|
+|/getscreen|'POST', 'OPTIONS'|Yes|Yes||Device|Response|Get current Screen|
+|/screenupdate|'POST', 'OPTIONS'|Yes|Yes|Yes|ScreenUpdate|Response|Send information about current field state|
+|/elementcallback|'POST', 'OPTIONS'|Yes|Yes|Yes|ElementCallback|Response|Send information about registered callback|
 |/getresource/filename/ <path:filename>|'GET', 'OPTIONS'||||<File>|Request resource by filename|
 
 ## Client
@@ -117,8 +117,8 @@ Table of Contents
 ### Client Launch
 
 When Client launches first time, it sends */getserivce* request to Server, receives and processes *Response*. When
-Client launches second and following times, it reads previously saved **locally** session_info, sends */getscreen*
-request to Server, receives and processes *Response*.
+Client launches second and following times, it reads previously saved **locally** version_info and session_info, sends
+*/getscreen* request to Server, receives and processes *Response*.
 
 ### Keeping Dictionary of Updated Elements
 
@@ -173,12 +173,15 @@ Example of *ElementCallback* message for Hello World Application when User click
 
 * If received *Screen* has Alert, it is shown to user in blocking fashion and Client instantly sends */elementcallback*
 requests with information about user's choice in same format;
-* Client saves **locally** current session_id and screen_id;
+* Client saves **locally** current version from version_info, session_id from session_info and screen_id from
+screen_info;
 * If new *Screen* is received, Client draws new *Screen*;
 * If *ElementUpdate* is received, Client updates the Elements.
-* Every *Response* might have *Resources* field which has list of *Resource* objects. Currently *Resource* might contain
-only filename of given resource. If *Resources* is present, Client must request all missing locally resources in
-**parallel** and save them **locally**. Filename serves as unique id of given resource.
+* Every *Response* has *Resources* field which has:
+  * Field *reset_resources*. If True, Client must reset **all** locally saved resources;
+  * List of *Resource* objects. Currently *Resource* might contain only filename of given resource. If list is not
+  empty, Client must request all missing locally resources in **parallel** and save them **locally**. Filename serves
+  as unique id of given resource.
 
 # Fase Application Examples
 
