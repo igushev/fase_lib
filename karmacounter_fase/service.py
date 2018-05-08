@@ -14,6 +14,7 @@ from karmacounter_fase import data as kc_data
 DEVICE_TYPE = 'Fase'
 APP_NAME = 'KarmaCounter'
 KARMACOUNTER_VERSION_FILENAME = 'karmacounter_fase/version.txt'
+START_SCREEN_LABEL = 'dashboard'
 
 GET_USER_SESSION_CODE = 'KarmaCounterGetUserSession'
 SCORE_NOT_SELECTED = 'Please select a score!'
@@ -59,7 +60,7 @@ class KarmaCounter(fase.Service):
     fase_pusher.Push(user_id, APP_NAME, message)
 
   def OnStart(self):
-    self.AddStringVariable(id_='screen_label_str', value='dashboard')
+    self.AddStringVariable(id_='screen_label_str', value=START_SCREEN_LABEL)
     min_date_of_birth = datetime.datetime.utcnow() - datetime.timedelta(days=MIN_AGE_YEARS*365)
     return fase_sign_in.StartSignIn(
         self, on_done=KarmaCounter.OnSignInDone,
@@ -81,6 +82,8 @@ class KarmaCounter(fase.Service):
     session_info = kc_client.KarmaCounterClient.Get().GetUserSession(new_user)
     if not self.HasStringVariable(id_='session_id_str'):
       self.AddStringVariable(id_='session_id_str', value=session_info.session_id)
+    if not self.HasStringVariable(id_='screen_label_str'):
+      self.AddStringVariable(id_='screen_label_str', value=START_SCREEN_LABEL)
     return self.DisplayCurrentScreen(None, None)
 
   def OnUpdate(self):
@@ -160,7 +163,7 @@ class KarmaCounter(fase.Service):
                      align=fase.Select.LEFT)
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
     screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', align=fase.Switch.LEFT)
-    screen.AddText(id_='description_text', hint='Description')
+    screen.AddText(id_='description_text', hint='Description', size=fase.Text.MAX, multiline=True)
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
     screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.OnAddUserEventCancel)
     self.OnFriendPick(screen, None)
