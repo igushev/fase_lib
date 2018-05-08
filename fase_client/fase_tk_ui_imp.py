@@ -445,6 +445,16 @@ class FaseTkUIImp(object):
       else:
         raise ValueError(self._orientation)
 
+  def _ConfigureAlign(self, element, ui_imp):
+    if element.GetAlign() is not None:
+      if element.GetAlign() == fase.Label.LEFT:
+        anchor = 'w'
+      elif element.GetAlign() == fase.Label.RIGHT:
+        anchor = 'e'
+      elif element.GetAlign() == fase.Label.CENTER:
+        anchor = 'center'
+      ui_imp.configure(anchor=anchor)
+
   def DrawRefreshButton(self, id_list, ui_imp_parent):
     self._ConfigureParent(ui_imp_parent)
     ui_imp_refresh_button = tkinter.Button(ui_imp_parent.GetUIImpParent(), text=REFRESH_BUTTON_TEXT)
@@ -492,14 +502,7 @@ class FaseTkUIImp(object):
       label_font.configure(size=int(label_font.actual()['size']*label_element.GetFont()))
       ui_imp_label.configure(font=label_font)
 
-    if label_element.GetAlign() is not None:
-      if label_element.GetAlign() == fase.Label.LEFT:
-        anchor = 'w'
-      elif label_element.GetAlign() == fase.Label.RIGHT:
-        anchor = 'e'
-      elif label_element.GetAlign() == fase.Label.CENTER:
-        anchor = 'center'
-      ui_imp_label.configure(anchor=anchor)
+    self._ConfigureAlign(label_element, ui_imp_label)
 
     click_callback = None
     if label_element.GetOnClick():
@@ -540,14 +543,7 @@ class FaseTkUIImp(object):
     ui_imp_switch = tkinter.Checkbutton(ui_imp_parent.GetUIImpParent(), text=switch_element.GetText(),
                                         variable=ui_imp_var, onvalue=str(True), offvalue=str(False))
 
-    if switch_element.GetAlign() is not None:
-      if switch_element.GetAlign() == fase.Switch.LEFT:
-        anchor = 'w'
-      elif switch_element.GetAlign() == fase.Switch.RIGHT:
-        anchor = 'e'
-      elif switch_element.GetAlign() == fase.Switch.CENTER:
-        anchor = 'center'
-      ui_imp_switch.configure(anchor=anchor)
+    self._ConfigureAlign(switch_element, ui_imp_switch)
 
     if switch_element.GetDisplayed():
       ui_imp_switch.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow(),

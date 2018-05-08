@@ -690,6 +690,9 @@ class Image(VisualElement):
   def GetUrl(self):
     return self.url
 
+  def GetAlign(self):
+    return self.align
+
   def GetOnClick(self):
     return self.on_click
 
@@ -784,6 +787,9 @@ class Button(VisualElement):
     return self.HasElement(id_=IMAGE_ID)
   def GetImage(self):
     return self.GetElement(id_=IMAGE_ID)
+
+  def GetAlign(self):
+    return self.align
 
   def GetOnClick(self):
     return self.on_click
