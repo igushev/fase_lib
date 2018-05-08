@@ -659,17 +659,28 @@ class Slider(VisualElement):
     return self.step
 
 
-@json_util.JSONDecorator({
-    'filename': json_util.JSONString(),
-    'url': json_util.JSONString()})
+@json_util.JSONDecorator(
+    {'filename': json_util.JSONString(),
+     'url': json_util.JSONString(),
+     'align': json_util.JSONInt(),
+     'on_click': json_util.JSONFunction()})
 class Image(VisualElement):
+
+  LEFT = 1
+  RIGHT = 2
+  CENTER = 3
+
   def __init__(self,
                filename=None,
-               url=None):
+               url=None,
+               align=None,
+               on_click=None):
     super(Image, self).__init__()
     assert filename or url
     self.filename = filename
     self.url = url
+    self.align = align or Image.CENTER
+    self.on_click = on_click
 
   def SetFilename(self, filename):
     self.filename = filename
@@ -678,6 +689,9 @@ class Image(VisualElement):
 
   def GetUrl(self):
     return self.url
+
+  def GetOnClick(self):
+    return self.on_click
 
 
 @json_util.JSONDecorator(
@@ -994,8 +1008,9 @@ class BaseElementsContainer(VisualElement):
                text=None,
                font=None,
                size=None,
-               align=None):
-    return self.AddElement(id_=id_, element=Label(text=text, font=font, size=size, align=align))
+               align=None,
+               on_click=None):
+    return self.AddElement(id_=id_, element=Label(text=text, font=font, size=size, align=align, on_click=on_click))
   def HasLabel(self, *, id_):
     return self.HasElement(id_=id_)
   def GetLabel(self, *, id_):
@@ -1040,8 +1055,10 @@ class BaseElementsContainer(VisualElement):
   def AddImage(self, *,
                id_=None,
                filename=None,
-               url=None):
-    return self.AddElement(id_=id_, element=Image(filename=filename, url=url))
+               url=None,
+               align=None,
+               on_click=None):
+    return self.AddElement(id_=id_, element=Image(filename=filename, url=url, align=align, on_click=on_click))
   def HasImage(self, *, id_):
     return self.HasElement(id_=id_)
   def GetImage(self, *, id_):

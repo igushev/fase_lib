@@ -39,20 +39,19 @@ class FaseTestService(fase.Service):
   def _AddButtons(self, screen):
     navigation = screen.AddNavigation()
     navigation.AddButton(id_='layout_test_button', text='Layout Test', on_click=FaseTestService.OnLayoutTest)
+    navigation.AddButton(id_='image_test_button', text='Image Test', on_click=FaseTestService.OnImageTest)
     navigation.AddButton(id_='vertical_max_size_test_button', text='Vertical Max Size Test',
                          on_click=FaseTestService.OnVerticalMaxSizeTest)
     navigation.AddButton(id_='aligning_buttons_test_button', text='Aligning Buttons Test',
                          on_click=FaseTestService.OnAligningButtonsTest)
     navigation.AddButton(id_='label_and_image_test_button', text='Label And Image Test',
                          on_click=FaseTestService.OnLabelAndImageTest)
-    navigation.AddButton(id_='web_test_test_button', text='Web Test',
-                         on_click=FaseTestService.OnWebTest)
+    navigation.AddButton(id_='web_test_test_button', text='Web Test', on_click=FaseTestService.OnWebTest)
     navigation.AddButton(id_='web_and_buttons_max_test_button', text='Web And Buttons Max Test',
                          on_click=FaseTestService.OnWebAndButtonsMaxTest)
     navigation.AddButton(id_='web_and_buttons_scrollable_test_button', text='Web And Buttons Scrollable Test',
                          on_click=FaseTestService.OnWebAndButtonsScrollableTest)
-    navigation.AddButton(id_='error_test_button', text='Error Test',
-                         on_click=FaseTestService.OnErrorTest)
+    navigation.AddButton(id_='error_test_button', text='Error Test', on_click=FaseTestService.OnErrorTest)
     if self.IfSignedIn():
       navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=FaseTestService.OnSignOut)
     else:
@@ -66,6 +65,7 @@ class FaseTestService(fase.Service):
     screen.AddLabel(text='Label Left', align=fase.Label.LEFT)
     screen.AddLabel(text='Label Center', align=fase.Label.CENTER)
     screen.AddLabel(text='Label Right', align=fase.Label.RIGHT)
+    screen.AddLabel(text='Label Clickable', on_click=FaseTestService.StartScreen)
     screen.AddLabel(text='Text Element Singline')
     screen.AddText(hint='Text Element')
     screen.AddLabel(text='Text Element Multiline')
@@ -82,16 +82,6 @@ class FaseTestService(fase.Service):
     screen.AddSelect(value='First', items=['First', 'Second', 'Third'], align=fase.Select.CENTER)
     screen.AddLabel(text='Select Right')
     screen.AddSelect(value='First', items=['First', 'Second', 'Third'], align=fase.Select.RIGHT)
-    screen.AddLabel(text='Image Filename 128x128')
-    screen.AddImage(filename='images/nyc_128x128.jpg')
-    screen.AddLabel(text='Image Filename 240x137')
-    screen.AddImage(filename='images/nyc_240x137.jpg')
-    screen.AddLabel(text='Image Filename 800x600')
-    screen.AddImage(filename='images/nyc_800x600.jpg')
-    screen.AddLabel(text='Image Filename 3000x2000')
-    screen.AddImage(filename='images/nyc_national_geographic_3000x2000.jpg')
-    screen.AddLabel(text='Image Url Small')
-    screen.AddImage(url='http://tryourla.com/wp-content/uploads/2010/08/la_skyline.jpg')
     screen.AddLabel(text='Slider')
     screen.AddSlider(value=50., min_value=0., max_value=200., step=5.)
     screen.AddLabel(text='Button Text Left')
@@ -117,6 +107,31 @@ class FaseTestService(fase.Service):
     screen.AddSeparator()
     screen.AddLabel(text='Web')
     screen.AddWeb(url='http://www.google.com')
+    return screen
+
+  def OnImageTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Image Test')
+    screen.SetScrollable(True)
+    self._AddButtons(screen)
+    screen.AddLabel(text='Image Filename 128x128')
+    screen.AddImage(filename='images/nyc_128x128.jpg')
+    screen.AddLabel(text='Image Filename 240x137')
+    screen.AddImage(filename='images/nyc_240x137.jpg')
+    screen.AddLabel(text='Image Filename 800x600')
+    screen.AddImage(filename='images/nyc_800x600.jpg')
+    screen.AddLabel(text='Image Filename 3000x2000')
+    screen.AddImage(filename='images/nyc_national_geographic_3000x2000.jpg')
+    screen.AddLabel(text='Image Url Small')
+    screen.AddImage(url='http://tryourla.com/wp-content/uploads/2010/08/la_skyline.jpg')
+    screen.AddLabel(text='Image Filename 128x128 Left')
+    screen.AddImage(filename='images/nyc_128x128.jpg', align=fase.Image.LEFT)
+    screen.AddLabel(text='Image Filename 128x128 Center')
+    screen.AddImage(filename='images/nyc_128x128.jpg', align=fase.Image.CENTER)
+    screen.AddLabel(text='Image Filename 128x128 Right')
+    screen.AddImage(filename='images/nyc_128x128.jpg', align=fase.Image.RIGHT)
+    screen.AddLabel(text='Image Filename 128x128 Clickable')
+    screen.AddImage(filename='images/nyc_128x128.jpg', on_click=FaseTestService.StartScreen)
     return screen
 
   def OnVerticalMaxSizeTest(self, screen, element):

@@ -602,6 +602,16 @@ class FaseTkUIImp(object):
       raise AssertionError()
     ui_imp_image = tkinter.Label(ui_imp_parent.GetUIImpParent(), image=ui_imp_photo)
     ui_imp_image.image = ui_imp_photo
+
+    click_callback = None
+    if image_element.GetOnClick():
+      click_callback = ElementCallbackCallback(self, id_list,fase.ON_CLICK_METHOD)
+    elif ui_imp_parent.GetClickCallback():
+      click_callback = ui_imp_parent.GetClickCallback()
+
+    if click_callback is not None:
+      ui_imp_image.bind('<1>', click_callback)
+
     if image_element.GetDisplayed(): 
       ui_imp_image.grid(column=ui_imp_parent.GetColumn(), row=ui_imp_parent.GetRow())
     ui_imp_parent.Next()

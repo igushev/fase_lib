@@ -161,6 +161,11 @@ Table of Contents
   * *locale*: *Locale*
   * *filename*: string
   * *url*: string
+  * *align*: int
+  * *on_click*: function
+    * LEFT = 1
+    * RIGHT = 2
+    * CENTER = 3
 
 * **MenuItem** extends *VisualElement*
   * *id_element_list*: list(tuple(string, *Element* or subclass))
