@@ -60,7 +60,6 @@ class KarmaCounter(fase.Service):
     fase_pusher.Push(user_id, APP_NAME, message)
 
   def OnStart(self):
-    self.AddStringVariable(id_='screen_label_str', value=START_SCREEN_LABEL)
     min_date_of_birth = datetime.datetime.utcnow() - datetime.timedelta(days=MIN_AGE_YEARS*365)
     return fase_sign_in.StartSignIn(
         self, on_done=KarmaCounter.OnSignInDone,
