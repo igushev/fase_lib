@@ -39,6 +39,7 @@ class FaseTestService(fase.Service):
   def _AddButtons(self, screen):
     navigation = screen.AddNavigation()
     navigation.AddButton(id_='layout_test_button', text='Layout Test', on_click=FaseTestService.OnLayoutTest)
+    navigation.AddButton(id_='label_test_button', text='Label Test', on_click=FaseTestService.OnLabelTest)
     navigation.AddButton(id_='image_test_button', text='Image Test', on_click=FaseTestService.OnImageTest)
     navigation.AddButton(id_='vertical_max_size_test_button', text='Vertical Max Size Test',
                          on_click=FaseTestService.OnVerticalMaxSizeTest)
@@ -107,6 +108,42 @@ class FaseTestService(fase.Service):
     screen.AddSeparator()
     screen.AddLabel(text='Web')
     screen.AddWeb(url='http://www.google.com')
+    return screen
+
+  def OnLabelTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Label Test')
+    screen.SetScrollable(True)
+    self._AddButtons(screen)
+
+    note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL, border=True)
+    note_header_frame1 = note_frame.AddFrame(
+        id_='note_header_frame1', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
+    note_header_frame1.AddLabel(
+        id_='note_header_label1', text='Header', font=1.5, size=fase.Label.MAX, align=fase.Label.LEFT)
+    note_header_frame1.AddImage(id_='note_header_image1', filename='images/nyc_128x128.jpg')
+
+    note_header_frame2 = note_frame.AddFrame(
+        id_='note_header_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
+    note_header_frame2.AddLabel(id_='note_header_label2', text='Header', font=1.5)
+    note_header_frame2.AddFrame(id_='note_header_frame2', size=fase.Frame.MAX)
+    note_header_frame2.AddImage(id_='note_header_image2', filename='images/nyc_128x128.jpg')
+
+    note_frame.AddLabel(id_='note_frame_label', text='Lot of\nmultiline\ntext', align=fase.Label.LEFT)
+
+    note_deails_frame1 = note_frame.AddFrame(id_='note_deails_frame1', orientation=fase.Frame.HORIZONTAL)
+    note_deails_frame1.AddLabel(
+        id_='note_deails_frame_datetime_text1', text='Yesterday', font=0.75,
+        size=fase.Label.MAX, align=fase.Label.RIGHT)
+    note_deails_frame2 = note_frame.AddFrame(id_='note_deails_frame2', orientation=fase.Frame.HORIZONTAL)
+    note_deails_frame2.AddFrame(id_='note_header_label2', size=fase.Frame.MAX)
+    note_deails_frame2.AddLabel(id_='note_deails_frame_datetime_text2', text='Yesterday', font=0.75)
+    note_deails_frame3 = note_frame.AddFrame(id_='note_deails_frame3', orientation=fase.Frame.HORIZONTAL)
+    note_deails_frame3.AddFrame(id_='note_header_label3', size=fase.Frame.MAX)
+    note_deails_frame3.AddLabel(
+        id_='note_deails_frame_datetime_text3', text='Yesterday', font=0.75,
+        size=fase.Label.MAX, align=fase.Label.LEFT)
+
     return screen
 
   def OnImageTest(self, screen, element):
