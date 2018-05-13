@@ -3,14 +3,10 @@ from collections import namedtuple
 from fase import fase
 from fase_client import fase_ui
 
-MIN = 1
 MAX = 2
 
 SCREEN_HEGHT = 1200
 SCREEN_WIDTH = 800
-
-VERTICAL = 1
-HORIZONAL = 2
 
 class Sizes(object):
   
@@ -33,21 +29,21 @@ def MaxElement(element, outer_orientation):
 
 
 def AddSizes(sizes_to, sizes_add, orientation):
-  if orientation == VERTICAL:
+  if orientation == fase.Frame.VERTICAL:
     return Sizes(sizes_to.height + sizes_add.height, max(sizes_to.width, sizes_add.width))
   else:
     return Sizes(max(sizes_to.height, sizes_add.height), (sizes_to.width + sizes_add.width))
 
 
 def SubstractSizes(sizes_from, sizes_sub, orientation):
-  if orientation == VERTICAL:
+  if orientation == fase.Frame.VERTICAL:
     return Sizes(sizes_from.height - sizes_sub.height, sizes_from.width)
   else:
     return Sizes(sizes_from.height, sizes_from.width - sizes_sub.width)
 
 
 def DistributedSizes(sizes_dist, num, orientation):
-  if orientation == VERTICAL:
+  if orientation == fase.Frame.VERTICAL:
     return Sizes(sizes_dist.height / num, sizes_dist.width)
   else:
     return Sizes(sizes_dist.height, sizes_dist.width / num)
@@ -67,7 +63,7 @@ def DrawElement(id_list, element, outer_orientation, outer_sizes):
     element_sizes = Sizes(200, 300)
   # If it has size MAX, stretch along outer_orientation
   if MaxElement(element, outer_orientation):
-    if outer_orientation == VERTICAL:
+    if outer_orientation == fase.Frame.VERTICAL:
       element_sizes.height = outer_sizes.height
     else:
       element_sizes.width = outer_sizes.width
@@ -116,4 +112,4 @@ def DrawFrameElement(frame_id_list, frame_element, frame_orientation, frame_size
   
 def DrawScreen(screen):
   screen_sizes = Sizes(SCREEN_HEGHT, SCREEN_WIDTH)
-  DrawFrameElement([], screen, VERTICAL, screen_sizes, scroll_frame=screen.scrollable)
+  DrawFrameElement([], screen, fase.Frame.VERTICAL, screen_sizes, scroll_frame=screen.scrollable)
