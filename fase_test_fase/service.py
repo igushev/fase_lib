@@ -126,7 +126,7 @@ class FaseTestService(fase.Service):
     note_header_frame2 = note_frame.AddFrame(
         id_='note_header_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_header_frame2.AddLabel(id_='note_header_label2', text='Header', font=1.5)
-    note_header_frame2.AddFrame(id_='note_header_frame2', size=fase.Frame.MAX)
+    note_header_frame2.AddFrame(id_='note_header_inner_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_header_frame2.AddImage(id_='note_header_image2', filename='images/nyc_128x128.jpg')
 
     note_frame.AddLabel(id_='note_frame_label', text='Lot of\nmultiline\ntext', align=fase.Label.LEFT)
@@ -136,10 +136,10 @@ class FaseTestService(fase.Service):
         id_='note_deails_frame_datetime_text1', text='Yesterday', font=0.75,
         size=fase.Label.MAX, align=fase.Label.RIGHT)
     note_deails_frame2 = note_frame.AddFrame(id_='note_deails_frame2', orientation=fase.Frame.HORIZONTAL)
-    note_deails_frame2.AddFrame(id_='note_header_label2', size=fase.Frame.MAX)
+    note_deails_frame2.AddFrame(id_='note_deails_inner_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_deails_frame2.AddLabel(id_='note_deails_frame_datetime_text2', text='Yesterday', font=0.75)
     note_deails_frame3 = note_frame.AddFrame(id_='note_deails_frame3', orientation=fase.Frame.HORIZONTAL)
-    note_deails_frame3.AddFrame(id_='note_header_label3', size=fase.Frame.MAX)
+    note_deails_frame3.AddFrame(id_='note_deails_inner_frame3', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_deails_frame3.AddLabel(
         id_='note_deails_frame_datetime_text3', text='Yesterday', font=0.75,
         size=fase.Label.MAX, align=fase.Label.LEFT)
