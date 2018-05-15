@@ -158,21 +158,27 @@ class NotesService(fase.Service):
 
   def _DisplayNote(self, note_id, screen):
     screen = fase.Screen(self)
+    screen.AddStringVariable(id_='current_note_id', value=note_id)
+    note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None
+    favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=note is not None and note.favourite)
+
     note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL, size=fase.Frame.MAX)
+    note_frame.AddImage(id_='favourite_image',
+                        filename=('images/favourite_2/favourite_orange_@.png' if favourite_bool.GetValue() else
+                                  'images/favourite_2/favourite_frame_black_@.png'), align=fase.Image.RIGHT,
+                        on_click=NotesService.OnReverseFavouriteNote)
     header_text = note_frame.AddText(id_='header_text', hint='Header')
     text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX, multiline=True)
-    favourite_bool = screen.AddBoolVariable(id_='favourite_bool', value=False)
+    if note_id is not None:
+      note_frame.AddImage(id_='delete_image', filename='images/delete/delete_color_@.png', align=fase.Image.RIGHT,
+                          on_click=NotesService.OnDeleteNote)
 
-    note = notes_database.NotesDatabaseInterface.Get().GetNote(note_id=note_id) if note_id is not None else None
     # If editing existing note.
     if note is not None:
       header_text.SetText(note.header)
       text_text.SetText(note.text)
-      favourite_bool.SetValue(note.favourite)
 
-    screen.AddStringVariable(id_='current_note_id', value=note_id)
     screen.AddNextStepButton(text='Save', on_click=NotesService.OnSaveNote)
-
     prev_step_button = screen.AddPrevStepButton(text='More')
     context_menu = prev_step_button.AddContextMenu()
     context_menu.AddMenuItem(id_='favourite_menu_item',
@@ -209,6 +215,9 @@ class NotesService(fase.Service):
   def OnReverseFavouriteNote(self, screen, element):
     favourite_bool = screen.GetBoolVariable(id_='favourite_bool')
     favourite_bool.SetValue(not favourite_bool.GetValue())
+    screen.GetFrame(id_='note_frame').GetImage(id_='favourite_image').SetFilename(
+        'images/favourite_2/favourite_orange_@.png' if favourite_bool.GetValue() else
+        'images/favourite_2/favourite_frame_black_@.png')
     screen.GetPrevStepButton().GetContextMenu().GetMenuItem(id_='favourite_menu_item').SetText(
         'Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites')
     return screen
