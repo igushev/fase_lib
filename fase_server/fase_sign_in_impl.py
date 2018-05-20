@@ -153,7 +153,7 @@ def OnSignInStart(service, screen, element):
 def OnSignInOption(service, screen, element):
   screen = fase.Screen(service)
   sign_in_frame = screen.AddFrame(id_='sign_in_frame_id', orientation=fase.Frame.VERTICAL)
-  sign_in_frame.AddText(id_='phone_number_text_id', hint='Phone Number')
+  sign_in_frame.AddText(id_='phone_number_text_id', hint='Phone Number', type_=fase.Text.PHONE)
   sign_in_button = sign_in_frame.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
   sign_in_button.SetRequestLocale(True)
   screen.AddPrevStepButton(text='Back', on_click=OnSignInStart)
@@ -244,7 +244,7 @@ def OnRequestUserDataEnteredData(service, screen, element):
 def OnSignUpOption(service, screen, element):
   screen = fase.Screen(service)
   sign_up_frame = screen.AddFrame(id_='sign_up_frame_id', orientation=fase.Frame.VERTICAL)
-  sign_up_frame.AddText(id_='phone_number_text_id', hint='Phone Number')
+  sign_up_frame.AddText(id_='phone_number_text_id', hint='Phone Number', type_=fase.Text.PHONE)
   sign_up_frame.AddText(id_='first_name_text_id', hint='First Name')
   sign_up_frame.AddText(id_='last_name_text_id', hint='Last Name')
 
@@ -345,7 +345,7 @@ def _OnEnteredData(service, screen, element, phone_number):
 def OnActivationCodeSent(service, screen, element):
   screen = fase.Screen(service)
   enter_activation_frame = screen.AddFrame(id_='enter_activation_frame_id', orientation=fase.Frame.VERTICAL)
-  enter_activation_frame.AddText(id_='activation_code_text_id', hint='Activation Code')
+  enter_activation_frame.AddText(id_='activation_code_text_id', hint='Activation Code', type_=fase.Text.DIGITS)
   enter_activation_frame.AddElement(
       id_='send_button_id', element=FaseSignInButton(text='Send', on_click=fase.FunctionPlaceholder))
   screen.AddPrevStepButton(text='Back', on_click=OnSignInStart)
