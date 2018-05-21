@@ -1,3 +1,5 @@
+import shutil
+
 from server_util import version_util
 
 from fase import fase
@@ -21,12 +23,15 @@ class FaseTestService(fase.Service):
       raise AssertionError('Wrong ServiceCommand') 
 
   version = version_util.ReadVersion(FASE_TEST_VERSION_FILENAME)
+  url_version = 1
 
   @staticmethod
   def Version():
     return FaseTestService.version
 
   def OnStart(self):
+    FaseTestService.UpdateVersionImage()
+    FaseTestService.UpdateURLImage()
     return self.StartScreen(None, None)
 
   def StartScreen(self, screen, element):
@@ -52,6 +57,10 @@ class FaseTestService(fase.Service):
                          on_click=FaseTestService.OnWebAndButtonsMaxTest)
     navigation.AddButton(id_='web_and_buttons_scrollable_test_button', text='Web And Buttons Scrollable Test',
                          on_click=FaseTestService.OnWebAndButtonsScrollableTest)
+    navigation.AddButton(id_='version_update_test_button', text='Version Update Test',
+                         on_click=FaseTestService.OnVersionUpdateTest)
+    navigation.AddButton(id_='url_update_test_button', text='URL Update Test',
+                         on_click=FaseTestService.OnURLUpdateTest)
     navigation.AddButton(id_='error_test_button', text='Error Test', on_click=FaseTestService.OnErrorTest)
     if self.IfSignedIn():
       navigation.AddButton(id_='sign_out_button', text='Sign Out', on_click=FaseTestService.OnSignOut)
@@ -67,10 +76,23 @@ class FaseTestService(fase.Service):
     screen.AddLabel(text='Label Center', align=fase.Label.CENTER)
     screen.AddLabel(text='Label Right', align=fase.Label.RIGHT)
     screen.AddLabel(text='Label Clickable', on_click=FaseTestService.StartScreen)
-    screen.AddLabel(text='Text Element Singline')
+    screen.AddLabel(text='Label Size 0.5', align=fase.Label.CENTER, font=0.5)
+    screen.AddLabel(text='Label Size 0.75', align=fase.Label.CENTER, font=0.75)
+    screen.AddLabel(text='Label Size 1.', align=fase.Label.CENTER, font=1.)
+    screen.AddLabel(text='Label Size 1.25', align=fase.Label.CENTER, font=1.25)
+    screen.AddLabel(text='Label Size 1.5', align=fase.Label.CENTER, font=1.5)
+    screen.AddSeparator()
+    screen.AddLabel(text='Text Element Default: Text and Singleline')
     screen.AddText(hint='Text Element')
     screen.AddLabel(text='Text Element Multiline')
     screen.AddText(hint='Text Element Multiline', multiline=True)
+    screen.AddLabel(text='Text Element Digits')
+    screen.AddText(hint='Text Element', type_=fase.Text.DIGITS)
+    screen.AddLabel(text='Text Element Phone')
+    screen.AddText(hint='Text Element', type_=fase.Text.PHONE)
+    screen.AddLabel(text='Text Element Email')
+    screen.AddText(hint='Text Element', type_=fase.Text.EMAIL)
+    screen.AddSeparator()
     screen.AddLabel(text='Switch Element Left')
     screen.AddSwitch(value=True, text='Switch Element', align=fase.Switch.LEFT)
     screen.AddLabel(text='Switch Element Center')
@@ -105,9 +127,6 @@ class FaseTestService(fase.Service):
     screen.AddDateTimePicker(hint='DateTime Picker Time', type_=fase.DateTimePicker.TIME)
     screen.AddLabel(text='Place Picker')
     screen.AddPlacePicker(hint='Place Picker', type_=fase.PlacePicker.CITY)
-    screen.AddSeparator()
-    screen.AddLabel(text='Web')
-    screen.AddWeb(url='http://www.google.com')
     return screen
 
   def OnLabelTest(self, screen, element):
@@ -210,6 +229,7 @@ class FaseTestService(fase.Service):
     frame_left.AddLabel(text='New York City', align=fase.Label.LEFT)
     frame_left.AddLabel(text='Population: 8 m', align=fase.Label.LEFT)
     frame_left.AddLabel(text='Rank: 1', align=fase.Label.LEFT)
+    frame_outer.AddSeparator()
     frame_right = frame_outer.AddFrame(id_='frame_right', orientation=fase.Frame.VERTICAL)
     frame_right.AddImage(filename='images/nyc_800x600.jpg')
     return screen
@@ -241,7 +261,50 @@ class FaseTestService(fase.Service):
     frame_button.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     frame_button.AddButton(text='Agree', on_click=FaseTestService.StartScreen)
     return screen
-    
+
+  def OnVersionUpdateTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Version Update')
+    self._AddButtons(screen)
+    screen.AddImage(filename='images/delete_16_00.png')
+    screen.AddLabel(text='Click button below and version will be updated, picture replaced with different color')
+    screen.AddButton(text='Update', align=fase.Button.CENTER, on_click=FaseTestService.UpdateVersion)
+    return screen
+
+  def UpdateVersion(self, screen, element):
+    FaseTestService.version = version_util.ReadAndUpdateVersion(FASE_TEST_VERSION_FILENAME, -1)
+    FaseTestService.UpdateVersionImage()
+    return self.StartScreen(None, None)
+
+  @staticmethod
+  def UpdateVersionImage():
+    if int(FaseTestService.version[-1]) % 2 == 0:
+      shutil.copyfile('fase_test_fase/images/delete_color_16_00.png', 'fase_test_fase/images/delete_16_00.png')
+    else:
+      shutil.copyfile('fase_test_fase/images/delete_solid_blue_16_00.png', 'fase_test_fase/images/delete_16_00.png')
+
+  def OnURLUpdateTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('URL Update Test')
+    self._AddButtons(screen)
+    screen.AddImage(url=('http://fase-test-fase-env-test1.us-west-2.elasticbeanstalk.com/'
+                         'getresource/filename/images/settings_16_00.png'))
+    screen.AddLabel(text='Click button below and picture by URL will be replaced with different color')
+    screen.AddButton(text='Update', align=fase.Button.CENTER, on_click=FaseTestService.UpdateURL)
+    return screen
+
+  def UpdateURL(self, screen, element):
+    FaseTestService.url_version += 1
+    FaseTestService.UpdateURLImage()
+    return self.StartScreen(None, None)
+
+  @staticmethod
+  def UpdateURLImage():
+    if FaseTestService.url_version % 2 == 0:
+      shutil.copyfile('fase_test_fase/images/settings_color_16_00.png', 'fase_test_fase/images/settings_16_00.png')
+    else:
+      shutil.copyfile('fase_test_fase/images/settings_solid_blue_16_00.png', 'fase_test_fase/images/settings_16_00.png')
+
   def OnErrorTest(self, screen, element):
     screen = fase.Screen(self)
     screen.SetTitle('Error Test')
@@ -257,13 +320,13 @@ class FaseTestService(fase.Service):
         self, on_done=FaseTestService.OnSignInDone, on_cancel=FaseTestService.OnSignInOutCancel)
 
   def OnSignInDone(self, user_id_before=None):
-    return self.OnStart()
+    return self.StartScreen(None, None)
 
   def OnSignOut(self, screen, element):
     return fase_sign_in.StartSignOut(self, on_cancel=FaseTestService.OnSignInOutCancel)
 
   def OnSignInOutCancel(self):
-    return self.OnStart()
+    return self.StartScreen(None, None)
 
 
 fase.Service.RegisterService(FaseTestService)
