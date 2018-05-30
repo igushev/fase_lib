@@ -95,7 +95,7 @@ class NotesService(fase.Service):
           id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, align=fase.Label.LEFT)
       note_header_frame.AddImage(
           id_='note_header_image', filename=('images/favourite_2/favourite_orange_@.png' if note.favourite else
-                                             'images/favourite_2/favourite_frame_black_@.png'))
+                                             'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=2.0)
 
       note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], align=fase.Label.LEFT)
 
@@ -165,13 +165,13 @@ class NotesService(fase.Service):
     note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL, size=fase.Frame.MAX)
     note_frame.AddImage(id_='favourite_image',
                         filename=('images/favourite_2/favourite_orange_@.png' if favourite_bool.GetValue() else
-                                  'images/favourite_2/favourite_frame_black_@.png'), align=fase.Image.RIGHT,
-                        on_click=NotesService.OnReverseFavouriteNote)
+                                  'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=2.0,
+                        align=fase.Image.RIGHT, on_click=NotesService.OnReverseFavouriteNote)
     header_text = note_frame.AddText(id_='header_text', hint='Header')
     text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX, multiline=True)
     if note_id is not None:
-      note_frame.AddImage(id_='delete_image', filename='images/delete/delete_color_@.png', align=fase.Image.RIGHT,
-                          on_click=NotesService.OnDeleteNote)
+      note_frame.AddImage(id_='delete_image', filename='images/delete/delete_color_@.png', pixel_density_mult=2.0,
+                          align=fase.Image.RIGHT, on_click=NotesService.OnDeleteNote)
 
     # If editing existing note.
     if note is not None:
