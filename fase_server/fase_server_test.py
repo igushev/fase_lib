@@ -76,9 +76,13 @@ class FaseServerTest(unittest.TestCase):
     self.file1_template_filename = 'file1_@.png'
     self.file1_20_filename = 'file1_2_00.png'
     open(os.path.join(dirpath, self.file1_20_filename), 'w').close()
+    self.file1_30_filename = 'file1_3_00.png'
+    open(os.path.join(dirpath, self.file1_30_filename), 'w').close()
     self.file2_template_filename = 'file2_@.png'
     self.file2_20_filename = 'file2_2_00.png'
     open(os.path.join(dirpath, self.file2_20_filename), 'w').close()
+    self.file2_30_filename = 'file2_3_00.png'
+    open(os.path.join(dirpath, self.file2_30_filename), 'w').close()
     
     resource_manager.ResourceManager.Set(resource_manager.ResourceManager(dirpath), overwrite=True)
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
@@ -122,12 +126,21 @@ class FaseServerTest(unittest.TestCase):
     _, session_info, _ = self._GetServiceAndAssert(device)
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
     screen = fase.Screen(service_prog.service)
-    frame1 = screen.AddFrame(id_='frame1_id')
-    frame1.AddImage(id_='image1_id', filename=self.file1_template_filename)
-    frame1.AddImage(id_='image2_id', filename=self.file2_template_filename)
-    _, resources = fase_server.PrepareScreen(screen, None)
+    frame = screen.AddFrame(id_='frame_id')
+    frame.AddImage(id_='image1_id', filename=self.file1_template_filename)
+    frame.AddImage(id_='image2_id', filename=self.file2_template_filename)
+    _, resources = fase_server.PrepareScreen(screen, device.pixel_density)
     self.assertEqual(set([fase_model.Resource(filename=self.file1_20_filename),
                           fase_model.Resource(filename=self.file2_20_filename)]),
+                     set(resources.resource_list))
+
+    screen = fase.Screen(service_prog.service)
+    frame = screen.AddFrame(id_='frame_id')
+    frame.AddImage(id_='image1_id', filename=self.file1_template_filename, pixel_density_mult=2.0)
+    frame.AddImage(id_='image2_id', filename=self.file2_template_filename, pixel_density_mult=2.0)
+    _, resources = fase_server.PrepareScreen(screen, device.pixel_density)
+    self.assertEqual(set([fase_model.Resource(filename=self.file1_30_filename),
+                          fase_model.Resource(filename=self.file2_30_filename)]),
                      set(resources.resource_list))
 
   def testSendInternalCommand(self):

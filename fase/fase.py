@@ -662,6 +662,7 @@ class Slider(VisualElement):
 @json_util.JSONDecorator(
     {'filename': json_util.JSONString(),
      'url': json_util.JSONString(),
+     'pixel_density_mult': json_util.JSONFloat(),
      'align': json_util.JSONInt(),
      'on_click': json_util.JSONFunction()})
 class Image(VisualElement):
@@ -673,12 +674,14 @@ class Image(VisualElement):
   def __init__(self,
                filename=None,
                url=None,
+               pixel_density_mult=None,
                align=None,
                on_click=None):
     super(Image, self).__init__()
     assert filename or url
     self.filename = filename
     self.url = url
+    self.pixel_density_mult = pixel_density_mult
     self.align = align or Image.CENTER
     self.on_click = on_click
 
@@ -689,6 +692,9 @@ class Image(VisualElement):
 
   def GetUrl(self):
     return self.url
+
+  def GetPixelDensityMult(self):
+    return self.pixel_density_mult
 
   def GetAlign(self):
     return self.align
@@ -1062,9 +1068,11 @@ class BaseElementsContainer(VisualElement):
                id_=None,
                filename=None,
                url=None,
+               pixel_density_mult=None,
                align=None,
                on_click=None):
-    return self.AddElement(id_=id_, element=Image(filename=filename, url=url, align=align, on_click=on_click))
+    return self.AddElement(id_=id_, element=Image(filename=filename, url=url, pixel_density_mult=pixel_density_mult,
+                                                  align=align, on_click=on_click))
   def HasImage(self, *, id_):
     return self.HasElement(id_=id_)
   def GetImage(self, *, id_):

@@ -35,9 +35,6 @@ class ResourceUtilTest(unittest.TestCase):
       self.assertEqual(expected_filename,
                        resource_manager.ResourceManager.Get().GetResourceFilename('images_@', pixel_density))
 
-  def testTemplateNoPixelDensity(self):
-    self.assertEqual('images_1_50', resource_manager.ResourceManager.Get().GetResourceFilename('images_@', None))
-
   def testTemplateNotFound(self):
     self.assertIsNone(resource_manager.ResourceManager.Get().GetResourceFilename('image_@', 1.5))
 

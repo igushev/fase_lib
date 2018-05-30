@@ -38,7 +38,8 @@ class BadRequestException(Exception):
 def _PrepareScreen(obj, pixel_density, resource_set):
   assert isinstance(obj, fase.Element)
   if isinstance(obj, fase.Image) and obj.GetFilename():
-    filename = resource_manager.ResourceManager.Get().GetResourceFilename(obj.GetFilename(), pixel_density)
+    filename = resource_manager.ResourceManager.Get().GetResourceFilename(
+        obj.GetFilename(), (pixel_density or 1.0) * (obj.GetPixelDensityMult() or 1.0))
     if filename is not None:
       resource_set.add(fase_model.Resource(filename=filename))
       obj = copy.copy(obj)

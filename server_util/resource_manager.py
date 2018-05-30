@@ -20,7 +20,6 @@ class ResourceManager():
 
   @functools.lru_cache(maxsize=None, typed=True)
   def GetResourceFilename(self, filename, pixel_density):
-    pixel_density = pixel_density or 1.0
     if TEMPLATE_SYMBOL in filename:
       return self.ResolveResourceFilename(filename, pixel_density)
     if os.path.isfile(os.path.join(self.resource_dir, filename)):
