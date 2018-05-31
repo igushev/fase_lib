@@ -179,14 +179,7 @@ class NotesService(fase.Service):
       text_text.SetText(note.text)
 
     screen.AddNextStepButton(text='Save', on_click=NotesService.OnSaveNote)
-    prev_step_button = screen.AddPrevStepButton(text='More')
-    context_menu = prev_step_button.AddContextMenu()
-    context_menu.AddMenuItem(id_='favourite_menu_item',
-                             text=('Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites'),
-                             on_click=NotesService.OnReverseFavouriteNote)
-    if note_id is not None:
-      context_menu.AddMenuItem(id_='delete_menu_item', text='Delete Note', on_click=NotesService.OnDeleteNote)
-    context_menu.AddMenuItem(id_='cancel_menu_item', text='Cancel Editing', on_click=NotesService.OnCancelNote)
+    screen.AddPrevStepButton(text='Back', on_click=NotesService.OnCancelNote)
     return screen
 
   def OnSaveNote(self, screen, element):
@@ -218,8 +211,6 @@ class NotesService(fase.Service):
     screen.GetFrame(id_='note_frame').GetImage(id_='favourite_image').SetFilename(
         'images/favourite_2/favourite_orange_@.png' if favourite_bool.GetValue() else
         'images/favourite_2/favourite_frame_black_@.png')
-    screen.GetPrevStepButton().GetContextMenu().GetMenuItem(id_='favourite_menu_item').SetText(
-        'Remove from Favourites' if favourite_bool.GetValue() else 'Add to Favourites')
     return screen
 
   def OnDeleteNote(self, screen, element):

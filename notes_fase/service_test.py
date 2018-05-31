@@ -82,8 +82,8 @@ class NotesTest(unittest.TestCase):
         self.assertFalse(actual_note_frame.HasStringVariable(id_='frame_note_id'))
       actual_note_header_frame = actual_note_frame.GetFrame(id_='note_header_frame')
       self.assertEqual(expected_note.header, actual_note_header_frame.GetLabel(id_='note_header_label').GetText())
-      self.assertEqual('images/favourite_2/favourite_orange_1_00.png' if expected_note.favourite else
-                       'images/favourite_2/favourite_frame_black_1_00.png',
+      self.assertEqual('images/favourite_2/favourite_orange_2_00.png' if expected_note.favourite else
+                       'images/favourite_2/favourite_frame_black_2_00.png',
                        actual_note_header_frame.GetImage(id_='note_header_image').GetFilename())
       self.assertEqual(expected_note.text, actual_note_frame.GetLabel(id_='note_frame_label').GetText())
       if expected_note.datetime:
@@ -167,10 +167,10 @@ class NotesTest(unittest.TestCase):
   def DeleteNote(self, version_info, session_info, screen_info, note):
     version_info, session_info, screen_info, _ = self.SelectNote(version_info, session_info, screen_info, note)
     
-    # Click on Delete prev button context item.
+    # Click on Delete image.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'delete_menu_item'],
-                                   method=fase.ON_CLICK_METHOD, device=self.device),
+        fase_model.ElementCallback(id_list=['note_frame', 'delete_image'], method=fase.ON_CLICK_METHOD,
+                                   device=self.device),
         version_info, session_info, screen_info)
     version_info = response.version_info
     session_info = response.session_info
@@ -194,11 +194,10 @@ class NotesTest(unittest.TestCase):
   def ReverseFavouriteNote(self, version_info, session_info, screen_info, note):
     version_info, session_info, screen_info, _ = self.SelectNote(version_info, session_info, screen_info, note)
 
-    # Click on Favourite prev button context item.
+    # Click on Favourite image.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(
-            id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'favourite_menu_item'],
-            method=fase.ON_CLICK_METHOD, device=self.device),
+        fase_model.ElementCallback(id_list=['note_frame', 'favourite_image'], method=fase.ON_CLICK_METHOD,
+                                   device=self.device),
         version_info, session_info, screen_info)
     version_info = response.version_info
     session_info = response.session_info
@@ -437,8 +436,7 @@ class NotesTest(unittest.TestCase):
 
     # Click on Cancel button.
     response = fase_server.FaseServer.Get().ElementCallback(
-        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID, fase.CONTEXT_MENU_ID, 'cancel_menu_item'],
-                                   method=fase.ON_CLICK_METHOD, device=self.device),
+        fase_model.ElementCallback(id_list=[fase.PREV_STEP_BUTTON_ID], method=fase.ON_CLICK_METHOD, device=self.device),
         version_info, session_info, screen_info)
     version_info = response.version_info 
     session_info = response.session_info
