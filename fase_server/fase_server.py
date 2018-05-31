@@ -1,6 +1,7 @@
 import copy
 
 from base_util import singleton_util
+from server_util import device_pusher
 from server_util import resource_manager
 
 from fase import fase
@@ -35,11 +36,13 @@ class BadRequestException(Exception):
     return self._bad_request
 
 
-def _PrepareScreen(obj, pixel_density, resource_set):
+def _PrepareScreen(obj, device, resource_set):
   assert isinstance(obj, fase.Element)
   if isinstance(obj, fase.Image) and obj.GetFilename():
+    pixel_density = (device.pixel_density or 1.0) if device.device_type == device_pusher.ANDROID else 1.0
+    pixel_density_mult = obj.GetPixelDensityMult() or 1.0
     filename = resource_manager.ResourceManager.Get().GetResourceFilename(
-        obj.GetFilename(), (pixel_density or 1.0) * (obj.GetPixelDensityMult() or 1.0))
+        obj.GetFilename(), pixel_density * pixel_density_mult)
     if filename is not None:
       resource_set.add(fase_model.Resource(filename=filename))
       obj = copy.copy(obj)
@@ -51,15 +54,15 @@ def _PrepareScreen(obj, pixel_density, resource_set):
     return obj
   obj = copy.copy(obj)
   obj.id_element_list = [
-      (id_, _PrepareScreen(element, pixel_density, resource_set))
+      (id_, _PrepareScreen(element, device, resource_set))
       for id_, element in obj.id_element_list
       if not isinstance(element, fase.Variable)]
   return obj
 
 
-def PrepareScreen(obj, pixel_density):
+def PrepareScreen(obj, device):
   resource_set = set()
-  screen = _PrepareScreen(obj, pixel_density, resource_set)
+  screen = _PrepareScreen(obj, device, resource_set)
   resources = fase_model.Resources(resource_list=list(resource_set))
   return screen, resources
 
@@ -91,7 +94,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog)
 
-    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
+    screen, resources = PrepareScreen(screen_prog.screen, device)
     return fase_model.Response(screen=screen,
                                resources=resources,
                                version_info=fase_model.VersionInfo(version=latest_version),
@@ -116,7 +119,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
-    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
+    screen, resources = PrepareScreen(screen_prog.screen, device)
     resources.reset_resources = True
     return fase_model.Response(screen=screen,
                                resources=resources,
@@ -138,7 +141,7 @@ class FaseServer(object):
 
     screen_prog.recent_device = device
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
-    screen, resources = PrepareScreen(screen_prog.screen, device.pixel_density)
+    screen, resources = PrepareScreen(screen_prog.screen, device)
     resources.reset_resources = latest_version != version_info.version
     return fase_model.Response(screen=screen,
                                resources=resources,
@@ -179,7 +182,7 @@ class FaseServer(object):
 
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
-      screen, resources = PrepareScreen(screen_prog.screen, screen_update.device.pixel_density)
+      screen, resources = PrepareScreen(screen_prog.screen, screen_update.device)
       resources.reset_resources = latest_version != version_info.version
       return fase_model.Response(screen=screen,
                                  resources=resources,
@@ -222,7 +225,7 @@ class FaseServer(object):
 
     # If given screen_id is no longer relevant, just send current screen
     if screen_prog.screen.GetScreenId() != screen_info.screen_id:
-      screen, resources = PrepareScreen(screen_prog.screen, element_callback.device.pixel_density)
+      screen, resources = PrepareScreen(screen_prog.screen, element_callback.device)
       resources.reset_resources = latest_version != version_info.version
       return fase_model.Response(screen=screen,
                                  resources=resources,
@@ -239,7 +242,7 @@ class FaseServer(object):
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
-    screen, resources = PrepareScreen(screen_prog.screen, element_callback.device.pixel_density)
+    screen, resources = PrepareScreen(screen_prog.screen, element_callback.device)
     return fase_model.Response(screen=screen,
                                resources=resources,
                                version_info=fase_model.VersionInfo(version=latest_version),
