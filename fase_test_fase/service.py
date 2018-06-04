@@ -173,7 +173,7 @@ class FaseTestService(fase.Service):
         size=fase.Label.MAX, align=fase.Label.RIGHT)
 
     note_frame.AddLabel(
-        text='Below horizontal frame with Inner Frame and Label. Inner Frame has MAX and Label has RIGHT')
+        text='Below horizontal frame with Inner Frame and Label. Inner Frame has MAX')
     note_deails_frame2 = note_frame.AddFrame(id_='note_deails_frame2', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame2.AddFrame(id_='note_deails_inner_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_deails_frame2.AddLabel(id_='note_deails_frame_datetime_text2', text='Yesterday', font=0.75)
