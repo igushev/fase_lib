@@ -304,13 +304,13 @@ class FaseTestService(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('Web Test')
     self._AddButtons(screen)
-    screen.AddWeb(url='http://www.bmwusa.com', size=fase.Web.MAX)
+    screen.AddWeb(url='http://www.apple.com', size=fase.Web.MAX)
     return screen
 
   def OnWebAndButtonsMaxTest(self, screen, element):
     screen = fase.Screen(self)
     screen.SetTitle('Web And Buttons Max Test')
-    screen.AddWeb(url='http://www.bmwusa.com', size=fase.Web.MAX)
+    screen.AddWeb(url='http://www.apple.com', size=fase.Web.MAX)
     frame_button = screen.AddFrame(orientation=fase.Frame.HORIZONTAL)
     frame_button.AddButton(text='Decline', on_click=FaseTestService.StartScreen)
     frame_button.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
@@ -321,7 +321,7 @@ class FaseTestService(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('Web And Buttons Scrollable Test')
     screen.SetScrollable(True)
-    screen.AddWeb(url='http://www.bmwusa.com')
+    screen.AddWeb(url='http://www.apple.com')
     frame_button = screen.AddFrame(orientation=fase.Frame.HORIZONTAL)
     frame_button.AddButton(text='Decline', on_click=FaseTestService.StartScreen)
     frame_button.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
