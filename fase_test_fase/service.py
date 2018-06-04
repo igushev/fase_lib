@@ -1,4 +1,5 @@
 import shutil
+import random
 
 from server_util import version_util
 
@@ -7,6 +8,9 @@ from fase import fase_sign_in
 
 
 FASE_TEST_VERSION_FILENAME = 'fase_test_fase/version.txt'
+REFRESH_INCREMENT = 10
+MORE_INCREMENT = 50
+
 
 
 class FaseTestService(fase.Service):
@@ -50,8 +54,14 @@ class FaseTestService(fase.Service):
                          on_click=FaseTestService.OnVerticalMaxSizeTest)
     navigation.AddButton(id_='aligning_buttons_test_button', text='Aligning Buttons Test',
                          on_click=FaseTestService.OnAligningButtonsTest)
-    navigation.AddButton(id_='label_and_image_test_button', text='Label And Image Test',
-                         on_click=FaseTestService.OnLabelAndImageTest)
+    navigation.AddButton(id_='refresh_test_button', text='Refresh Test',
+                         on_click=FaseTestService.OnRefreshTest)
+    navigation.AddButton(id_='more_test_button', text='More Test',
+                         on_click=FaseTestService.OnMoreTest)
+    navigation.AddButton(id_='vertical_split_with_separator_test_button', text='Vertical Split With Separator Test',
+                         on_click=FaseTestService.OnVerticalSplitWithSeparatorTest)
+    navigation.AddButton(id_='vertical_split_no_separator_test_button', text='Vertical Split No Separator Test',
+                         on_click=FaseTestService.OnVerticalSplitNoSeparatorTest)
     navigation.AddButton(id_='web_test_test_button', text='Web Test', on_click=FaseTestService.OnWebTest)
     navigation.AddButton(id_='web_and_buttons_max_test_button', text='Web And Buttons Max Test',
                          on_click=FaseTestService.OnWebAndButtonsMaxTest)
@@ -226,19 +236,62 @@ class FaseTestService(fase.Service):
     frame3.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     return screen
 
-  def OnLabelAndImageTest(self, screen, element):
+  def OnRefreshTest(self, screen, element):
+    if not screen.HasIntVariable(id_='refresh_start'):
+      screen.AddIntVariable(id_='refresh_start', value=0)
+    start = screen.GetIntVariable(id_='refresh_start').GetValue()
+
     screen = fase.Screen(self)
-    screen.SetTitle('Label And Image Test')
+    screen.SetTitle('Refresh Test')
     self._AddButtons(screen)
-    frame_outer = screen.AddFrame(id_='frame_outer', orientation=fase.Frame.HORIZONTAL)
-    frame_left = frame_outer.AddFrame(id_='frame_left', orientation=fase.Frame.VERTICAL)
-    frame_left.AddLabel(text='New York City', align=fase.Label.LEFT)
-    frame_left.AddLabel(text='Population: 8 m', align=fase.Label.LEFT)
-    frame_left.AddLabel(text='Rank: 1', align=fase.Label.LEFT)
-    frame_outer.AddSeparator()
-    frame_right = frame_outer.AddFrame(id_='frame_right', orientation=fase.Frame.VERTICAL)
-    frame_right.AddImage(filename='images/nyc_800x600.jpg')
+    screen.AddLabel(text='Refresh screen to continue numbers')
+    for i in range(start, start + REFRESH_INCREMENT):
+      screen.AddLabel(id_='label_number_%d' % i, text=str(i))
+    screen.SetOnRefresh(FaseTestService.OnRefreshTest)
+    screen.AddIntVariable(id_='refresh_start', value=start + REFRESH_INCREMENT)
     return screen
+
+  def OnMoreTest(self, screen, element):
+    if not screen.HasIntVariable(id_='more_start'):
+      screen.AddIntVariable(id_='more_start', value=0)
+    start = screen.GetIntVariable(id_='more_start').GetValue()
+
+    screen = fase.Screen(self)
+    screen.SetTitle('More Test')
+    screen.SetScrollable(True)
+    self._AddButtons(screen)
+    screen.AddLabel(text='Scroll screen to continue numbers')
+    for i in range(start, start + MORE_INCREMENT):
+      screen.AddLabel(id_='label_number_%d' % i, text=str(i))
+    screen.SetOnMore(FaseTestService.OnMoreTest)
+    screen.AddIntVariable(id_='more_start', value=start + MORE_INCREMENT)
+    return screen
+
+  @staticmethod
+  def _AddLabelAndImage(screen, separator=False):
+    for i in range(2):
+      frame_outer = screen.AddFrame(id_='frame_outer_%d' % i, orientation=fase.Frame.HORIZONTAL)
+      frame_left = frame_outer.AddFrame(id_='frame_left', orientation=fase.Frame.VERTICAL)
+      frame_left.AddLabel(text='New York City', align=fase.Label.LEFT)
+      frame_left.AddLabel(text='Population: 8 m', align=fase.Label.LEFT)
+      frame_left.AddLabel(text='Rank: %d' % i, align=fase.Label.LEFT)
+      if separator:
+        frame_outer.AddSeparator()
+      frame_right = frame_outer.AddFrame(id_='frame_right', orientation=fase.Frame.VERTICAL)
+      frame_right.AddImage(filename='images/nyc_800x600.jpg')
+    return screen
+
+  def OnVerticalSplitWithSeparatorTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Vertical Split With Separator Test')
+    self._AddButtons(screen)
+    return FaseTestService._AddLabelAndImage(screen, separator=True)
+
+  def OnVerticalSplitNoSeparatorTest(self, screen, element):
+    screen = fase.Screen(self)
+    screen.SetTitle('Vertical Split No Separator Test')
+    self._AddButtons(screen)
+    return FaseTestService._AddLabelAndImage(screen, separator=False)
 
   def OnWebTest(self, screen, element):
     screen = fase.Screen(self)
