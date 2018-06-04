@@ -166,13 +166,20 @@ class FaseTestService(fase.Service):
 
     note_frame.AddLabel(id_='note_frame_label', text='Lot of\nmultiline\ntext', align=fase.Label.LEFT)
 
+    note_frame.AddLabel(text='Below horizontal frame with Label. Label has MAX and RIGHT')
     note_deails_frame1 = note_frame.AddFrame(id_='note_deails_frame1', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame1.AddLabel(
         id_='note_deails_frame_datetime_text1', text='Yesterday', font=0.75,
         size=fase.Label.MAX, align=fase.Label.RIGHT)
+
+    note_frame.AddLabel(
+        text='Below horizontal frame with Inner Frame and Label. Inner Frame has MAX and Label has RIGHT')
     note_deails_frame2 = note_frame.AddFrame(id_='note_deails_frame2', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame2.AddFrame(id_='note_deails_inner_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_deails_frame2.AddLabel(id_='note_deails_frame_datetime_text2', text='Yesterday', font=0.75)
+
+    note_frame.AddLabel(
+        text='Below horizontal frame with Inner Frame and Label. Inner Frame has MAX and Label has MAX and LEFT')
     note_deails_frame3 = note_frame.AddFrame(id_='note_deails_frame3', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame3.AddFrame(id_='note_deails_inner_frame3', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_deails_frame3.AddLabel(
