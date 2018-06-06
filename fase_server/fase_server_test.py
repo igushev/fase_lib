@@ -116,7 +116,7 @@ class FaseServerTest(unittest.TestCase):
     frame2.AddImage(id_='image1_id', filename=self.file1_filename)
     frame2.AddImage(id_='image2_id', filename=self.file2_filename)
     frame2.AddImage(id_='image3_id', filename=self.file3_filename)
-    _, resources = fase_server.PrepareScreen(screen, None)
+    _, resources = fase_server.PrepareScreen(screen, device)
     self.assertEqual(set([fase_model.Resource(filename=self.file1_filename),
                           fase_model.Resource(filename=self.file2_filename)]),
                      set(resources.resource_list))
@@ -129,7 +129,7 @@ class FaseServerTest(unittest.TestCase):
     frame = screen.AddFrame(id_='frame_id')
     frame.AddImage(id_='image1_id', filename=self.file1_template_filename)
     frame.AddImage(id_='image2_id', filename=self.file2_template_filename)
-    _, resources = fase_server.PrepareScreen(screen, device.pixel_density)
+    _, resources = fase_server.PrepareScreen(screen, device)
     self.assertEqual(set([fase_model.Resource(filename=self.file1_20_filename),
                           fase_model.Resource(filename=self.file2_20_filename)]),
                      set(resources.resource_list))
@@ -138,7 +138,7 @@ class FaseServerTest(unittest.TestCase):
     frame = screen.AddFrame(id_='frame_id')
     frame.AddImage(id_='image1_id', filename=self.file1_template_filename, pixel_density_mult=2.0)
     frame.AddImage(id_='image2_id', filename=self.file2_template_filename, pixel_density_mult=2.0)
-    _, resources = fase_server.PrepareScreen(screen, device.pixel_density)
+    _, resources = fase_server.PrepareScreen(screen, device)
     self.assertEqual(set([fase_model.Resource(filename=self.file1_30_filename),
                           fase_model.Resource(filename=self.file2_30_filename)]),
                      set(resources.resource_list))

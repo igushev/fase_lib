@@ -39,7 +39,7 @@ class BadRequestException(Exception):
 def _PrepareScreen(obj, device, resource_set):
   assert isinstance(obj, fase.Element)
   if isinstance(obj, fase.Image) and obj.GetFilename():
-    pixel_density = (device.pixel_density or 1.0) if device.device_type == device_pusher.ANDROID else 1.0
+    pixel_density = (device.pixel_density or 1.0) if device.device_type != device_pusher.IOS else 1.0
     pixel_density_mult = obj.GetPixelDensityMult() or 1.0
     filename = resource_manager.ResourceManager.Get().GetResourceFilename(
         obj.GetFilename(), pixel_density * pixel_density_mult)
