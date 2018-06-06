@@ -682,7 +682,7 @@ class Image(VisualElement):
     self.filename = filename
     self.url = url
     self.pixel_density_mult = pixel_density_mult
-    self.align = align or Image.CENTER
+    self.align = align  # None is platform default.
     self.on_click = on_click
 
   def SetFilename(self, filename):
