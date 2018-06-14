@@ -86,11 +86,15 @@ class FaseTestService(fase.Service):
     screen.AddLabel(text='Label Center', align=fase.Label.CENTER)
     screen.AddLabel(text='Label Right', align=fase.Label.RIGHT)
     screen.AddLabel(text='Label Clickable', on_click=FaseTestService.StartScreen)
-    screen.AddLabel(text='Label Size 0.5', align=fase.Label.CENTER, font=0.5)
-    screen.AddLabel(text='Label Size 0.75', align=fase.Label.CENTER, font=0.75)
-    screen.AddLabel(text='Label Size 1.', align=fase.Label.CENTER, font=1.)
-    screen.AddLabel(text='Label Size 1.25', align=fase.Label.CENTER, font=1.25)
-    screen.AddLabel(text='Label Size 1.5', align=fase.Label.CENTER, font=1.5)
+    screen.AddLabel(text='Label Size 0.5', align=fase.Label.CENTER, font=fase.Font(size=0.5))
+    screen.AddLabel(text='Label Size 0.75', align=fase.Label.CENTER, font=fase.Font(size=0.75))
+    screen.AddLabel(text='Label Size 1.', align=fase.Label.CENTER, font=fase.Font(size=1.))
+    screen.AddLabel(text='Label Size 1.25', align=fase.Label.CENTER, font=fase.Font(size=1.25))
+    screen.AddLabel(text='Label Size 1.5', align=fase.Label.CENTER, font=fase.Font(size=1.5))
+    screen.AddLabel(text='Label Bold', align=fase.Label.CENTER, font=fase.Font(bold=True))
+    screen.AddLabel(text='Label Italic', align=fase.Label.CENTER, font=fase.Font(italic=True))
+    screen.AddLabel(text='Label Bold Italic', align=fase.Label.CENTER, font=fase.Font(bold=True, italic=True))
+    screen.AddLabel(text='Label Size 1.5 Bold', align=fase.Label.CENTER, font=fase.Font(size=1.5, bold=True))
     screen.AddSeparator()
     screen.AddLabel(text='Text Element Default: Text and Singleline')
     screen.AddText(hint='Text Element')
@@ -155,12 +159,12 @@ class FaseTestService(fase.Service):
     note_header_frame1 = note_frame.AddFrame(
         id_='note_header_frame1', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_header_frame1.AddLabel(
-        id_='note_header_label1', text='Header', font=1.5, size=fase.Label.MAX, align=fase.Label.LEFT)
+        id_='note_header_label1', text='Header', font=fase.Font(size=1.5), size=fase.Label.MAX, align=fase.Label.LEFT)
     note_header_frame1.AddImage(id_='note_header_image1', filename='images/nyc_128x128.jpg')
 
     note_header_frame2 = note_frame.AddFrame(
         id_='note_header_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
-    note_header_frame2.AddLabel(id_='note_header_label2', text='Header', font=1.5)
+    note_header_frame2.AddLabel(id_='note_header_label2', text='Header', font=fase.Font(size=1.5))
     note_header_frame2.AddFrame(id_='note_header_inner_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_header_frame2.AddImage(id_='note_header_image2', filename='images/nyc_128x128.jpg')
 
@@ -169,21 +173,21 @@ class FaseTestService(fase.Service):
     note_frame.AddLabel(text='Below horizontal frame with Label. Label has MAX and RIGHT')
     note_deails_frame1 = note_frame.AddFrame(id_='note_deails_frame1', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame1.AddLabel(
-        id_='note_deails_frame_datetime_text1', text='Yesterday', font=0.75,
+        id_='note_deails_frame_datetime_text1', text='Yesterday', font=fase.Font(size=0.75),
         size=fase.Label.MAX, align=fase.Label.RIGHT)
 
     note_frame.AddLabel(
         text='Below horizontal frame with Inner Frame and Label. Inner Frame has MAX')
     note_deails_frame2 = note_frame.AddFrame(id_='note_deails_frame2', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame2.AddFrame(id_='note_deails_inner_frame2', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
-    note_deails_frame2.AddLabel(id_='note_deails_frame_datetime_text2', text='Yesterday', font=0.75)
+    note_deails_frame2.AddLabel(id_='note_deails_frame_datetime_text2', text='Yesterday', font=fase.Font(size=0.75))
 
     note_frame.AddLabel(
         text='Below horizontal frame with Inner Frame and Label. Inner Frame has MAX and Label has MAX and LEFT')
     note_deails_frame3 = note_frame.AddFrame(id_='note_deails_frame3', orientation=fase.Frame.HORIZONTAL)
     note_deails_frame3.AddFrame(id_='note_deails_inner_frame3', orientation=fase.Frame.HORIZONTAL, size=fase.Frame.MAX)
     note_deails_frame3.AddLabel(
-        id_='note_deails_frame_datetime_text3', text='Yesterday', font=0.75,
+        id_='note_deails_frame_datetime_text3', text='Yesterday', font=fase.Font(size=0.75),
         size=fase.Label.MAX, align=fase.Label.LEFT)
 
     return screen

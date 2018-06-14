@@ -445,14 +445,39 @@ class VisualElement(VariableContainer):
 
 
 @json_util.JSONDecorator(
+    {'size': json_util.JSONFloat(),
+     'bold': json_util.JSONBool(),
+     'italic': json_util.JSONBool()})
+class Font():
+
+  SIZE_LIST = [0.5, 0.75, 1., 1.25, 1.5]
+
+  def __init__(self, *,
+               size=None,
+               bold=None,
+               italic=None):
+    self.size = size or 1.
+    assert self.size in Font.SIZE_LIST
+    self.bold = bold or False
+    self.italic = italic or False
+
+  def GetSize(self):
+    return self.size
+
+  def GetBold(self):
+    return self.bold
+
+  def GetItalic(self):
+    return self.italic
+
+
+@json_util.JSONDecorator(
     {'text': json_util.JSONString(),
-     'font': json_util.JSONFloat(),
+     'font': json_util.JSONObject(Font),
      'size': json_util.JSONInt(),
      'align': json_util.JSONInt(),
      'on_click': json_util.JSONFunction()})
 class Label(VisualElement):
-
-  FONT_LIST = [0.5, 0.75, 1., 1.25, 1.5]
 
   MIN = 1
   MAX = 2
@@ -469,8 +494,7 @@ class Label(VisualElement):
                on_click=None):
     super(Label, self).__init__()
     self.text = text  # Can be None
-    self.font = font or 1.
-    assert self.font in Label.FONT_LIST
+    self.font = font or Font()
     self.size = size or Label.MIN
     self.align = align or Label.CENTER
     self.on_click = on_click

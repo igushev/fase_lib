@@ -92,7 +92,8 @@ class NotesService(fase.Service):
       note_header_frame = note_frame.AddFrame(
           id_='note_header_frame', orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
       note_header_frame.AddLabel(
-          id_='note_header_label', text=note.header, font=1.5, size=fase.Label.MAX, align=fase.Label.LEFT)
+          id_='note_header_label', text=note.header, font=fase.Font(size=1.5),
+          size=fase.Label.MAX, align=fase.Label.LEFT)
       note_header_frame.AddImage(
           id_='note_header_image', filename=('images/favourite_2/favourite_orange_@.png' if note.favourite else
                                              'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=2.0)
@@ -102,7 +103,7 @@ class NotesService(fase.Service):
       datetime_text = datetime_util.GetDatetimeDiffStr(note.datetime, datetime.datetime.utcnow())
       note_deails_frame = note_frame.AddFrame(id_='note_deails_frame', orientation=fase.Frame.HORIZONTAL)
       note_deails_frame.AddLabel(
-          id_='note_deails_frame_datetime_text', text=datetime_text, font=0.75,
+          id_='note_deails_frame_datetime_text', text=datetime_text, font=fase.Font(size=0.75),
           size=fase.Label.MAX, align=fase.Label.RIGHT)
     return screen
 

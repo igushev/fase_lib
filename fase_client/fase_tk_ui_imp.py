@@ -497,10 +497,14 @@ class FaseTkUIImp(object):
     self._ConfigureParent(ui_imp_parent, maximize=(label_element.GetSize()==fase.Label.MAX))
     ui_imp_label = tkinter.Label(ui_imp_parent.GetUIImpParent(), text=label_element.GetText())
 
-    if label_element.GetFont() is not None:
-      label_font = font.Font(font=ui_imp_label['font'])
-      label_font.configure(size=int(label_font.actual()['size']*label_element.GetFont()))
-      ui_imp_label.configure(font=label_font)
+    label_element_font = label_element.GetFont() 
+    label_font = font.Font(font=ui_imp_label['font'])
+    label_font.configure(size=int(label_font.actual()['size']*label_element_font.GetSize()))
+    if label_element_font.GetBold():
+      label_font.configure(weight='bold')
+    if label_element_font.GetItalic():
+      label_font.configure(slant='italic')
+    ui_imp_label.configure(font=label_font)
 
     self._ConfigureAlign(label_element, ui_imp_label)
 

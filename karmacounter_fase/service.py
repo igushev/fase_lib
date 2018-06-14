@@ -150,7 +150,8 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('Dashboard')
     dashboard_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
     dashboard_frame.AddLabel(text='Score', size=fase.Label.MAX)
-    dashboard_frame.AddLabel(text=str(starting_page.user.score), font=1.5, size=fase.Label.MAX)
+    dashboard_frame.AddLabel(text=str(starting_page.user.score), font=fase.Font(size=1.5, bold=True),
+                             size=fase.Label.MAX)
     self._AddButtons(screen)
     return screen
 
@@ -256,12 +257,14 @@ class KarmaCounter(fase.Service):
     screen.SetTitle('Your Events' if users_own else 'Your Friend\'s Events')
     screen.SetScrollable(True)
     for user_event in user_events.events:
+      user_event_pending = user_event.verification_status == kc_data.VerificationStatus.pending
+      user_event_action = (users_own and not user_event.self_added) or (not users_own and user_event.self_added)
       user_event_frame = screen.AddFrame(
           id_='user_event_frame_%s' % user_event.event_id, orientation=fase.Frame.VERTICAL, border=True)
       user_event_header_frame = user_event_frame.AddFrame(
           id_='user_event_header_frame', orientation=fase.Frame.HORIZONTAL)
       user_event_header_frame.AddLabel(
-          id_='user_event_score_label', text=str(user_event.score), font=1.5)
+          id_='user_event_score_label', text=str(user_event.score), font=fase.Font(size=1.5, bold=True))
       if users_own:
         friend_display_name = user_event.witness.display_name if user_event.witness is not None else None
         friend_phone_number = user_event.witness.phone_number if user_event.witness is not None else None
@@ -272,13 +275,16 @@ class KarmaCounter(fase.Service):
         user_event_header_frame.AddLabel(
             id_='user_event_friend_display_name_label', text=user_event.user.display_name, size=fase.Label.MAX)
       user_event_header_frame.AddLabel(text=user_event.display_datetime)
-      user_event_frame.AddLabel(text=user_event.description, align=fase.Label.LEFT)
-      user_event_frame.AddLabel(text=user_event.display_status, align=fase.Label.LEFT, font=0.75)
+      user_event_frame.AddLabel(
+          text=user_event.description, align=fase.Label.LEFT,
+          font=fase.Font(bold=user_event_pending and user_event_action,
+                         italic=user_event_pending and not user_event_action))
+      user_event_frame.AddLabel(text=user_event.display_status, align=fase.Label.LEFT, font=fase.Font(size=0.75))
       user_event_button_frame = user_event_frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
       user_event_button_frame.AddFrame(orientation=fase.Frame.HORIZONTAL, size=fase.Label.MAX)
 
-      if user_event.verification_status == kc_data.VerificationStatus.pending:
-        if (users_own and not user_event.self_added) or (not users_own and user_event.self_added):
+      if user_event_pending:
+        if user_event_action:
           accept_button = user_event_button_frame.AddButton(
               id_='user_event_accept_button', text='Accept', on_click=KarmaCounter.OnAccept)
           accept_button.AddStringVariable(id_='user_event_id_str', value=user_event.event_id)
