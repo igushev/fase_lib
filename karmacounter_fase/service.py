@@ -63,6 +63,14 @@ class KarmaCounter(fase.Service):
     fase_pusher.Push(user_id, APP_NAME, message)
 
   def OnStart(self):
+    screen = fase.Screen(self)
+    screen.SetTitle('Agreement')
+    screen.SetScrollable(True)
+    screen.AddWeb(url='https://s3-us-west-2.amazonaws.com/thekarmacounter.com/first_use.html')
+    screen.AddButton(text='Agree', on_click=KarmaCounter.OnStartAgree)
+    return screen
+
+  def OnStartAgree(self, screen, element):
     min_date_of_birth = datetime.datetime.utcnow() - datetime.timedelta(days=MIN_AGE_YEARS*365)
     return fase_sign_in.StartSignIn(
         self, on_done=KarmaCounter.OnSignInDone,
@@ -92,7 +100,7 @@ class KarmaCounter(fase.Service):
     if self.IfSignedIn():
       return self.OnSignInDone()
     else:
-      return self.OnStart()
+      return self.OnStartAgree(None, None)
 
   def DisplayCurrentScreen(self, screen, element):
     screen_label = self.GetStringVariable(id_='screen_label_str').GetValue()

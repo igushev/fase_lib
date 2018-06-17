@@ -140,6 +140,7 @@ def StartSignIn(service, on_done=None, on_skip=None, on_cancel=None, request_use
 
 def OnSignInStart(service, screen, element):
   screen = fase.Screen(service)
+  screen.SetTitle('Sign In')
   sign_in_frame = screen.AddFrame(id_='sign_in_frame_id', orientation=fase.Frame.VERTICAL)
   sign_in_frame.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInOption)
   sign_in_frame.AddButton(id_='sign_up_button_id', text='Sign Up', on_click=OnSignUpOption)
@@ -152,6 +153,7 @@ def OnSignInStart(service, screen, element):
 
 def OnSignInOption(service, screen, element):
   screen = fase.Screen(service)
+  screen.SetTitle('Sign In')
   sign_in_frame = screen.AddFrame(id_='sign_in_frame_id', orientation=fase.Frame.VERTICAL)
   sign_in_frame.AddText(id_='phone_number_text_id', hint='Phone Number', type_=fase.Text.PHONE)
   sign_in_button = sign_in_frame.AddButton(id_='sign_in_button_id', text='Sign In', on_click=OnSignInEnteredData)
@@ -243,6 +245,7 @@ def OnRequestUserDataEnteredData(service, screen, element):
 
 def OnSignUpOption(service, screen, element):
   screen = fase.Screen(service)
+  screen.SetTitle('Sign Up')
   sign_up_frame = screen.AddFrame(id_='sign_up_frame_id', orientation=fase.Frame.VERTICAL)
   sign_up_frame.AddText(id_='phone_number_text_id', hint='Phone Number', type_=fase.Text.PHONE)
   sign_up_frame.AddText(id_='first_name_text_id', hint='First Name')
@@ -344,6 +347,7 @@ def _OnEnteredData(service, screen, element, phone_number):
 
 def OnActivationCodeSent(service, screen, element):
   screen = fase.Screen(service)
+  screen.SetTitle('Activation Code')
   enter_activation_frame = screen.AddFrame(id_='enter_activation_frame_id', orientation=fase.Frame.VERTICAL)
   enter_activation_frame.AddText(id_='activation_code_text_id', hint='Activation Code', type_=fase.Text.DIGITS)
   enter_activation_frame.AddElement(
@@ -390,6 +394,7 @@ def StartSignOut(service, on_cancel=None):
   assert service.IfSignedIn()
 
   screen = fase.Screen(service)
+  screen.SetTitle('Sign Out')
   screen.AddLabel(id_='user_name_label_id', text=service.GetUser().DisplayName())
   sign_out_frame = screen.AddFrame(id_='sign_out_frame_id', orientation=fase.Frame.VERTICAL)
   sign_out_frame.AddElement(
