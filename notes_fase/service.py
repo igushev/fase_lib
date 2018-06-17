@@ -108,7 +108,7 @@ class NotesService(fase.Service):
     return screen
 
   def _AddButtons(self, screen, screen_label):
-    screen.AddMainButton(text='New', image=fase.Image(filename='images/new/new_color_@.png'),
+    screen.AddMainButton(text='New', image=fase.Image(filename='images/new/new_%s_@.png' % NAVIGATION_ICON),
                          on_click=NotesService.OnNew)
     navigation = screen.AddNavigation()
     navigation.AddButton(id_='notes_button', text='Notes',
@@ -125,11 +125,11 @@ class NotesService(fase.Service):
                          on_click=NotesService.OnRecent)
     if self.IfSignedIn():
       navigation.AddButton(id_='sign_out_button', text='Sign Out',
-                           image=fase.Image(filename='images/account/account_color_@.png'),
+                           image=fase.Image(filename='images/account/account_%s_@.png' % NAVIGATION_ICON),
                            on_click=NotesService.OnSignOut)
     else:
       navigation.AddButton(id_='sign_in_button', text='Sign In',
-                           image=fase.Image(filename='images/account/account_color_@.png'),
+                           image=fase.Image(filename='images/account/account_%s_@.png' % NAVIGATION_ICON),
                            on_click=NotesService.OnSignIn)
 
   def OnSignIn(self, screen, element):
