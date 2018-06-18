@@ -336,6 +336,7 @@ class FaseTestService(fase.Service):
     screen = fase.Screen(self)
     screen.SetTitle('Version Update')
     self._AddButtons(screen)
+    screen.AddLabel(text='Version %s' % version_util.ReadVersion(FASE_TEST_VERSION_FILENAME))
     screen.AddImage(filename='images/delete_16_00.png')
     screen.AddLabel(text='Click button below and version will be updated, picture replaced with different color')
     screen.AddButton(text='Update', align=fase.Button.CENTER, on_click=FaseTestService.UpdateVersion)
