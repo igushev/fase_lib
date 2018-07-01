@@ -1,3 +1,4 @@
+import datetime
 import shutil
 import random
 
@@ -113,6 +114,7 @@ class FaseTestService(fase.Service):
     screen.AddSwitch(value=False, text='Switch Element', align=fase.Switch.CENTER)
     screen.AddLabel(text='Switch Element Right')
     screen.AddSwitch(value=True, text='Switch Element', align=fase.Switch.RIGHT)
+    screen.AddSeparator()
     screen.AddLabel(text='Select Left')
     screen.AddSelect(items=['First', 'Second', 'Third', 'Four'], align=fase.Select.LEFT)
     screen.AddLabel(text='Select Center')
@@ -125,8 +127,10 @@ class FaseTestService(fase.Service):
     screen.AddSelect(hint='Select a Number', items=['First', 'Second', 'Third', 'Four'])
     screen.AddLabel(text='Select With Hint And Selected Third Value')
     screen.AddSelect(value='Third', hint='Select a Number', items=['First', 'Second', 'Third', 'Four'])
+    screen.AddSeparator()
     screen.AddLabel(text='Slider')
     screen.AddSlider(value=50., min_value=0., max_value=200., step=5.)
+    screen.AddSeparator()
     screen.AddLabel(text='Button Text Left')
     screen.AddButton(text='Button', align=fase.Label.LEFT)
     screen.AddLabel(text='Button Text Center')
@@ -139,14 +143,30 @@ class FaseTestService(fase.Service):
     screen.AddButton(image=fase.Image(filename='images/nyc_240x137.jpg'))
     screen.AddLabel(text='Button Image Filename 800x600')
     screen.AddButton(image=fase.Image(filename='images/nyc_800x600.jpg'))
+    screen.AddSeparator()
     screen.AddLabel(text='Contact Picker')
     screen.AddContactPicker(hint='Contact Picker')
+    screen.AddLabel(text='Contact Picker With Contact')
+    screen.AddContactPicker(hint='Contact Picker',
+                            contact=fase.Contact(display_name='Edward', phone_number='+10000000001'))
     screen.AddLabel(text='DateTime Picker Date')
     screen.AddDateTimePicker(hint='DateTime Picker Date', type_=fase.DateTimePicker.DATE)
+    screen.AddLabel(text='DateTime Picker Date With Date')
+    screen.AddDateTimePicker(
+        hint='DateTime Picker Date', datetime_=datetime.datetime(year=1986, month=5, day=22, hour=13, minute=5),
+        type_=fase.DateTimePicker.DATE)
     screen.AddLabel(text='DateTime Picker Time')
     screen.AddDateTimePicker(hint='DateTime Picker Time', type_=fase.DateTimePicker.TIME)
+    screen.AddLabel(text='DateTime Picker Time With Time')
+    screen.AddDateTimePicker(
+        hint='DateTime Picker Time', datetime_=datetime.datetime(year=1986, month=5, day=22, hour=13, minute=5),
+        type_=fase.DateTimePicker.TIME)
     screen.AddLabel(text='Place Picker')
     screen.AddPlacePicker(hint='Place Picker', type_=fase.PlacePicker.CITY)
+    screen.AddLabel(text='Place Picker With Place')
+    screen.AddPlacePicker(
+        hint='Place Picker', type_=fase.PlacePicker.CITY,
+        place=fase.Place(google_place_id='palo-alto-id', city='Palo Alto', state='Golden Gate', country='USA'))
     return screen
 
   def OnLabelTest(self, screen, element):
