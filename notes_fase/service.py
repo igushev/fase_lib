@@ -102,7 +102,7 @@ class NotesService(fase.Service):
           size=fase.Label.MAX, align=fase.Label.LEFT)
       note_header_frame.AddImage(
           id_='note_header_image', filename=('images/favourite_2/favourite_orange_@.png' if note.favourite else
-                                             'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=2.0)
+                                             'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=1.5)
 
       note_frame.AddLabel(id_='note_frame_label', text=note.text[:PREVIEW_LENGTH], align=fase.Label.LEFT)
 
@@ -111,6 +111,7 @@ class NotesService(fase.Service):
       note_deails_frame.AddLabel(
           id_='note_deails_frame_datetime_text', text=datetime_text, font=fase.Font(size=0.75),
           size=fase.Label.MAX, align=fase.Label.RIGHT)
+      note_frame.AddSeparator()
     return screen
 
   def _AddButtons(self, screen, screen_label):
@@ -172,12 +173,12 @@ class NotesService(fase.Service):
     note_frame = screen.AddFrame(id_='note_frame', orientation=fase.Frame.VERTICAL, size=fase.Frame.MAX)
     note_frame.AddImage(id_='favourite_image',
                         filename=('images/favourite_2/favourite_orange_@.png' if favourite_bool.GetValue() else
-                                  'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=2.0,
+                                  'images/favourite_2/favourite_frame_black_@.png'), pixel_density_mult=1.5,
                         align=fase.Image.RIGHT, on_click=NotesService.OnReverseFavouriteNote)
     header_text = note_frame.AddText(id_='header_text', hint='Header')
     text_text = note_frame.AddText(id_='text_text', hint='Text', size=fase.Label.MAX, multiline=True)
     if note_id is not None:
-      note_frame.AddImage(id_='delete_image', filename='images/delete/delete_color_@.png', pixel_density_mult=2.0,
+      note_frame.AddImage(id_='delete_image', filename='images/delete/delete_color_@.png', pixel_density_mult=1.5,
                           align=fase.Image.RIGHT, on_click=NotesService.OnDeleteNote)
 
     # If editing existing note.
