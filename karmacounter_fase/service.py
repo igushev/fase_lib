@@ -288,7 +288,7 @@ class KarmaCounter(fase.Service):
       user_event_pending = user_event.verification_status == kc_data.VerificationStatus.pending
       user_event_action = (users_own and not user_event.self_added) or (not users_own and user_event.self_added)
       user_event_frame = screen.AddFrame(
-          id_='user_event_frame_%s' % user_event.event_id, orientation=fase.Frame.VERTICAL, border=True)
+          id_='user_event_frame_%s' % user_event.event_id, orientation=fase.Frame.VERTICAL)
       user_event_header_frame = user_event_frame.AddFrame(
           id_='user_event_header_frame', orientation=fase.Frame.HORIZONTAL)
       user_event_header_frame.AddLabel(

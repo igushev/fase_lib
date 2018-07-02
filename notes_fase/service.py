@@ -92,8 +92,7 @@ class NotesService(fase.Service):
       notes = filter(filter_func, notes)
     for note in sorted(notes, key=key_func, reverse=reverse):
       note_frame = notes_frame.AddFrame(
-          id_='note_frame_%s' % note.note_id, orientation=fase.Frame.VERTICAL, border=True,
-          on_click=NotesService.OnNote)
+          id_='note_frame_%s' % note.note_id, orientation=fase.Frame.VERTICAL, on_click=NotesService.OnNote)
       note_frame.AddStringVariable(id_='frame_note_id', value=note.note_id)
 
       note_header_frame = note_frame.AddFrame(
