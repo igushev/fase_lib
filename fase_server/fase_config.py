@@ -49,9 +49,17 @@ def GetDevicePusher(config):
   return device_pusher_
 
 
+def GetFaseServer(config):
+  allow_deletedb = False
+  if config.has_section('server'):
+    if config.has_option('server', 'allow_deletedb'):
+        allow_deletedb = bool(config.get('server', 'allow_deletedb'))
+  return fase_server.FaseServer(allow_deletedb=allow_deletedb)
+
+
 fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
 fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
 activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
 sms_sender.SMSSender.Set(GetSMSSender(fase_config))
 device_pusher.DevicePusher.Set(GetDevicePusher(fase_config))
-fase_server.FaseServer.Set(fase_server.FaseServer())
+fase_server.FaseServer.Set(GetFaseServer(fase_config))

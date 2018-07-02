@@ -148,6 +148,8 @@ class ApplicationTest(unittest.TestCase):
     self.assertEqual(fase_server.TABLES_CREATED, status.message)
 
     command = fase_model.Command(fase_server.DELETE_DB_COMMAND)
+    self._SendInternalCommandAndAssertFails(command, fase_server.DELETING_DB_IS_NOT_ALLOWED)
+    fase_server.FaseServer.Set(fase_server.FaseServer(allow_deletedb=True), overwrite=True)
     status = self._SendInternalCommand(command)
     self.assertEqual(fase_server.TABLES_DELETED, status.message)
 

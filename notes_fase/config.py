@@ -1,6 +1,7 @@
 from server_util import config_util
 
 from notes_fase import database as notes_database
+from notes_fase import service as notes_service
 
 
 def GetNotesDatabase(config):
@@ -9,5 +10,12 @@ def GetNotesDatabase(config):
       region_name=config.get('dynamodb', 'region_name'))
 
 
+def ConfigService(config):
+  if config.has_section('service'):
+    if config.has_option('service', 'allow_deletedb'):
+      notes_service.NotesService.allow_deletedb = bool(config.get('service', 'allow_deletedb'))
+
+
 notes_config = config_util.GetConfig('NOTES_CONFIG_FILENAME')
 notes_database.NotesDatabaseInterface.Set(GetNotesDatabase(notes_config))
+ConfigService(notes_config)

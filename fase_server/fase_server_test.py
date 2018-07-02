@@ -149,6 +149,8 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(fase_server.TABLES_CREATED, status.message)
 
     command = fase_model.Command(fase_server.DELETE_DB_COMMAND)
+    self.assertRaises(fase_server.BadRequestException, fase_server.FaseServer.Get().SendInternalCommand, command)
+    fase_server.FaseServer.Set(fase_server.FaseServer(allow_deletedb=True), overwrite=True)
     status = fase_server.FaseServer.Get().SendInternalCommand(command)
     self.assertEqual(fase_server.TABLES_DELETED, status.message)
 

@@ -24,6 +24,9 @@ TABLES_DELETED = 'All tables are being deleted'
 WRONG_COMMAND = fase_model.BadRequest(
   code=401,
   message='Wrong command!')
+DELETING_DB_IS_NOT_ALLOWED = fase_model.BadRequest(
+  code=402,
+  message='Deleting of database is not allowed by the configuration!')
 
 
 class BadRequestException(Exception):
@@ -70,11 +73,17 @@ def PrepareScreen(obj, device):
 @singleton_util.Singleton()
 class FaseServer(object):
 
+  def __init__(self,
+               allow_deletedb=False):
+    self.allow_deletedb = allow_deletedb
+
   def SendInternalCommand(self, command):
     if command.command == CREATE_DB_COMMAND:
       fase_database.FaseDatabaseInterface.Get().CreateDatabase()
       return fase_model.Status(TABLES_CREATED)
     elif command.command == DELETE_DB_COMMAND:
+      if not self.allow_deletedb:
+        raise BadRequestException(DELETING_DB_IS_NOT_ALLOWED)
       fase_database.FaseDatabaseInterface.Get().DeleteDatabase()
       return fase_model.Status(TABLES_DELETED)
     else:

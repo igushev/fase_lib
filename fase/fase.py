@@ -448,7 +448,7 @@ class VisualElement(VariableContainer):
     {'size': json_util.JSONFloat(),
      'bold': json_util.JSONBool(),
      'italic': json_util.JSONBool()})
-class Font():
+class Font(data_util.AbstractObject):
 
   SIZE_LIST = [0.5, 0.75, 1., 1.25, 1.5]
 

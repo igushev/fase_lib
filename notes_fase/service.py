@@ -17,6 +17,9 @@ DELETE_DB_COMMAND = 'deletedb'
 TABLES_CREATED = 'Add table are being created'
 TABLES_DELETED = 'All tables are being deleted'
 
+WRONG_COMMAND = 'Wrong command!'
+DELETING_DB_IS_NOT_ALLOWED = 'Deleting of database is not allowed by the configuration!'
+
 NOTES_VERSION_FILENAME = 'notes_fase/version.txt'
 
 SELECTED_ICON = 'solid_blue'
@@ -25,6 +28,8 @@ PREVIEW_LENGTH = 50
 
 
 class NotesService(fase.Service):
+
+  allow_deletedb = False
 
   @staticmethod
   def GetServiceId():
@@ -36,10 +41,12 @@ class NotesService(fase.Service):
       notes_database.NotesDatabaseInterface.Get().CreateDatabase()
       return TABLES_CREATED
     elif command.command == DELETE_DB_COMMAND:
+      if not NotesService.allow_deletedb:
+        raise AssertionError(DELETING_DB_IS_NOT_ALLOWED)
       notes_database.NotesDatabaseInterface.Get().DeleteDatabase()
       return TABLES_DELETED
     else:
-      raise AssertionError(command.command)
+      raise AssertionError(WRONG_COMMAND)
 
   version = version_util.ReadVersion(NOTES_VERSION_FILENAME)
 
