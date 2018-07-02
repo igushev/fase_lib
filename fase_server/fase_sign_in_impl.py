@@ -114,8 +114,6 @@ class FaseSignOutButton(fase.Button):
 
   def CallCallback(self, service_prog, screen_prog, device, method):
     assert method == fase.ON_CLICK_METHOD
-    if service_prog.service.HasFunctionVariable(id_='fase_sign_in_on_cancel_class_method'):
-      service_prog.service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method')
     for i, device_signed_in in enumerate(service_prog.device_list):
       if device_signed_in == device:
         del service_prog.device_list[i]
@@ -399,14 +397,16 @@ def StartSignOut(service, on_cancel=None):
   sign_out_frame = screen.AddFrame(id_='sign_out_frame_id', orientation=fase.Frame.VERTICAL)
   sign_out_frame.AddElement(
       id_='sign_out_button_id', element=FaseSignOutButton(text='Sign Out', on_click=fase.FunctionPlaceholder))
+  if service.HasFunctionVariable(id_='fase_sign_out_on_cancel_class_method'):
+    service.PopFunctionVariable(id_='fase_sign_out_on_cancel_class_method')
   if on_cancel is not None:
-    service.AddFunctionVariable(id_='fase_sign_in_on_cancel_class_method', value=on_cancel)
+    service.AddFunctionVariable(id_='fase_sign_out_on_cancel_class_method', value=on_cancel)
     screen.AddPrevStepButton(text='Cancel', on_click=OnSignOutCancelOption)
   return screen
 
 
 def OnSignOutCancelOption(service, screen, element):
-  on_cancel = service.PopFunctionVariable(id_='fase_sign_in_on_cancel_class_method').GetValue()
+  on_cancel = service.PopFunctionVariable(id_='fase_sign_out_on_cancel_class_method').GetValue()
   screen = on_cancel(service)
   return screen
 
