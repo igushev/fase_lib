@@ -2,4 +2,4 @@
 
 `notes_color_1024.png` is 200% increase of same  `notes_color_16_00.png`
 
-`notes_color_1024_white.png` is filled white and 200% increase of same  `notes_color_16_00.png`
+For iOS use Mac Preview->Export...->Uncheck alpha
