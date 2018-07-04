@@ -20,6 +20,8 @@ fase_pusher.fase_pusher_impl = sys.modules[__name__]
 def Push(user_id, title, message):
   session_id = fase_sign_in_impl.GenerateSignedInSessionId(user_id)
   service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id)
+  if service_prog is None:
+    return
   device_list = []
   for device in service_prog.device_list:
     if device_pusher.DevicePusher.Get().HasDevicePushServiceProvider(device.device_type):
