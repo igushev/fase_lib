@@ -419,6 +419,7 @@ class KarmaCounter(fase.Service):
     screen.AddLabel(text='Cities With Highest Score')
     top_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
     self._DisplayCitiesStatistics(top_frame, cities_statistics_top_bottom.external_cities_statistics_top)
+    screen.AddSeparator()
 
     screen.AddLabel(text='Cities With Lowest Score')
     bottom_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
