@@ -96,6 +96,7 @@ class FaseServer(object):
 
   def GetService(self, device):
     assert fase.Service.service_cls is not None
+    device.device_id = device.device_id or device.device_token  # For backwards compatibility. 
     service_cls = fase.Service.service_cls
     latest_version = service_cls.Version()
 
@@ -136,8 +137,17 @@ class FaseServer(object):
                                session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
+  @staticmethod
+  def _ServiceProgScreenProgUpdateDevice(service_prog, screen_prog, device):
+    for device_signed_in in service_prog.device_list:
+      if fase_model.SameDevice(device_signed_in, device):
+        device_signed_in.device_token = device.device_token
+        device_signed_in.pixel_density = device.pixel_density
+    screen_prog.recent_device = device
+
   def GetScreen(self, device, version_info, session_info):
     assert fase.Service.service_cls is not None
+    device.device_id = device.device_id or device.device_token  # For backwards compatibility. 
     service_cls = fase.Service.service_cls
     latest_version = service_cls.Version()
 
@@ -148,7 +158,8 @@ class FaseServer(object):
     if latest_version != service_prog.version:
       return FaseServer._ServiceUpdate(service_prog, screen_prog, device)
 
-    screen_prog.recent_device = device
+    FaseServer._ServiceProgScreenProgUpdateDevice(service_prog, screen_prog, device)
+    fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
     fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
     screen, resources = PrepareScreen(screen_prog.screen, device)
     resources.reset_resources = latest_version != version_info.version
@@ -162,7 +173,7 @@ class FaseServer(object):
   def _RefreshServiceProg(service_prog, screen_prog, device):
     screen_prog.screen.UpdateScreenId(service_prog.service)
     screen_prog.elements_update = None
-    screen_prog.recent_device = device
+    FaseServer._ServiceProgScreenProgUpdateDevice(service_prog, screen_prog, device)
 
   @staticmethod
   def _UpdateScreen(screen, elements_update):
@@ -179,6 +190,8 @@ class FaseServer(object):
 
   def ScreenUpdate(self, screen_update, version_info, session_info, screen_info):
     assert fase.Service.service_cls is not None
+    # For backwards compatibility.
+    screen_update.device.device_id = screen_update.device.device_id or screen_update.device.device_token 
     service_cls = fase.Service.service_cls
     latest_version = service_cls.Version()
 
@@ -199,13 +212,14 @@ class FaseServer(object):
                                  session_info=fase_model.SessionInfo(service_prog.service.GetSessionId()),
                                  screen_info=fase_model.ScreenInfo(screen_prog.screen.GetScreenId()))
 
-    same_device = screen_prog.recent_device == screen_update.device 
+    same_device = fase_model.SameDevice(screen_prog.recent_device, screen_update.device) 
 
     if screen_update.elements_update is not None:
       FaseServer._UpdateScreen(screen_prog.screen, screen_update.elements_update)
       screen_prog.elements_update = (
           FaseServer._UpdateElementsUpdate(screen_prog.elements_update, screen_update.elements_update))
-      screen_prog.recent_device = screen_update.device
+      FaseServer._ServiceProgScreenProgUpdateDevice(service_prog, screen_prog, screen_update.device)
+      fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
       fase_database.FaseDatabaseInterface.Get().AddScreenProg(screen_prog, overwrite=True)
 
     elements_update = screen_prog.elements_update if not same_device else None
@@ -222,6 +236,8 @@ class FaseServer(object):
 
   def ElementCallback(self, element_callback, version_info, session_info, screen_info):
     assert fase.Service.service_cls is not None
+    # For backwards compatibility.
+    element_callback.device.device_id = element_callback.device.device_id or element_callback.device.device_token 
     service_cls = fase.Service.service_cls
     latest_version = service_cls.Version()
 

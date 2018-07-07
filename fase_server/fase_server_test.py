@@ -88,7 +88,7 @@ class FaseServerTest(unittest.TestCase):
     fase_server.FaseServer.Set(fase_server.FaseServer(), overwrite=True)
 
   def testPrepareScreenNoVariables(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     _, session_info, _ = self._GetServiceAndAssert(device)
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
     screen = fase.Screen(service_prog.service)
@@ -104,7 +104,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertFalse(screen_removed_variables.GetElement(id_='frame_id').HasElement(id_='value_str'))
 
   def testPrepareScreenResources(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     _, session_info, _ = self._GetServiceAndAssert(device)
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
     screen = fase.Screen(service_prog.service)
@@ -122,7 +122,7 @@ class FaseServerTest(unittest.TestCase):
                      set(resources.resource_list))
 
   def testPrepareScreenResourcesPixelDensity(self):
-    device = fase_model.Device('MockType', 'MockToken', pixel_density=1.5)
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID', pixel_density=1.5)
     _, session_info, _ = self._GetServiceAndAssert(device)
     service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
     screen = fase.Screen(service_prog.service)
@@ -293,14 +293,14 @@ class FaseServerTest(unittest.TestCase):
     return screen_info
 
   def testService(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info)
     screen_info = self._EnterNextAndAssert('Henry Ford', device, version_info, session_info, screen_info)
     self._EnterResetAndAssert(device, version_info, session_info, screen_info)
 
   def testServiceElementCallbackWithElementsUpdate(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info = self._GetServiceAndAssert(device)
 
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Henry Ford'])
@@ -325,21 +325,21 @@ class FaseServerTest(unittest.TestCase):
     self._EnterResetAndAssert(device, version_info, session_info, screen_info)
 
   def testServiceElementCallbackWithDiffDevice(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info)
-    device_2 = fase_model.Device('MockType', 'MockToken2')
+    device_2 = fase_model.Device(device_type='MockType', device_id='MockDeviceID2')
     screen_info = self._EnterNextAndAssert('Henry Ford', device_2, version_info, session_info, screen_info)
     self._EnterResetAndAssert(device_2, version_info, session_info, screen_info)
 
   def testServiceUpdateElementsUpdate(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info)
     self._EnterNameAndAssert('Howard Hughes', device, version_info, session_info, screen_info)
 
   def testServiceUpdateElementsEmpty(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info = self._GetServiceAndAssert(device)
     # Enter name and assert update in database.
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info)
@@ -355,11 +355,11 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(expected_elements_update, screen_prog.elements_update)
 
   def testServiceScreenUpdateWithDiffDevice(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info)
     
-    device_2 = fase_model.Device('MockType', 'MockToken2')
+    device_2 = fase_model.Device(device_type='MockType', device_id='MockDeviceID2')
     elements_update=fase_model.ElementsUpdate([['text_name_id']], ['Howard Hughes'])
     screen_update = fase_model.ScreenUpdate(elements_update=elements_update, device=device_2)
     response = fase_server.FaseServer.Get().ScreenUpdate(screen_update, version_info, session_info, screen_info)
@@ -381,7 +381,7 @@ class FaseServerTest(unittest.TestCase):
                              expected_resources=expected_resources)
 
   def testServiceElementCallbackScreenInfoObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
     screen_info_clicked_next = self._EnterNextAndAssert(
@@ -402,7 +402,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(screen_info_clicked_next, response_click_again.screen_info)
 
   def testServiceScreenUpdateScreenInfoObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
     screen_info_clicked_next = self._EnterNextAndAssert(
@@ -437,7 +437,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(fase_model.ScreenInfo(screen_id=screen_id_updated), response_updated.screen_info)
 
   def testServiceGetScreenServiceVersionObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
 
@@ -450,7 +450,7 @@ class FaseServerTest(unittest.TestCase):
     ServerTestService.version = previous_version
 
   def testServiceElementCallbackServiceVersionObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
 
@@ -466,7 +466,7 @@ class FaseServerTest(unittest.TestCase):
     ServerTestService.version = previous_version
 
   def testServiceScreenUpdateServiceVersionObsolete(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
 
@@ -494,12 +494,11 @@ class FaseServerTest(unittest.TestCase):
     self.assertIsNone(response_updated.elements_update)
     self.assertEqual(session_info, response_updated.session_info)
 
-
   def testServiceGetScreenDeviceVersionObsolete(self):
     previous_version = ServerTestService.version
     ServerTestService.version = '2'
 
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
     screen_info_clicked_next = self._EnterNextAndAssert(
@@ -516,7 +515,7 @@ class FaseServerTest(unittest.TestCase):
     previous_version = ServerTestService.version
     ServerTestService.version = '2'
 
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
     screen_info_clicked_next = self._EnterNextAndAssert(
@@ -536,7 +535,7 @@ class FaseServerTest(unittest.TestCase):
     previous_version = ServerTestService.version
     ServerTestService.version = '2'
 
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     version_info, session_info, screen_info_entered_name = self._GetServiceAndAssert(device)
     self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info_entered_name)
     screen_info_clicked_next = self._EnterNextAndAssert(
@@ -551,6 +550,39 @@ class FaseServerTest(unittest.TestCase):
     self._AssertDeviceUpdateScreen(response_updated, session_info, screen_info_clicked_next)
 
     ServerTestService.version = previous_version
+
+  def _AssertDevice(self, device, session_info):
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    self.assertEqual(1, len(service_prog.device_list))
+    self.assertEqual(device, service_prog.device_list[0])
+    screen_prog = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_info.session_id)
+    self.assertEqual(device, screen_prog.recent_device)
+
+  def testServiceUpdateDevice(self):
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID', device_token='Token1')
+    version_info, session_info, screen_info = self._GetServiceAndAssert(device)
+    self._AssertDevice(device, session_info)
+
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID', device_token='Token2')
+    service_prog = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_info.session_id)
+    expected_screen = FaseServerTest._GetEnterNameScreen(service_prog.service)
+    expected_screen._screen_id = screen_info.screen_id
+    expected_resources = fase_model.Resources(resource_list=[fase_model.Resource(filename=self.logo_filename)])
+    self._GetScreenAndAssert(device, version_info, session_info, screen_info, expected_screen=expected_screen,
+                             expected_resources=expected_resources)
+    self._AssertDevice(device, session_info)
+
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID', device_token='Token3')
+    self._EnterNameAndAssert('Henry Ford', device, version_info, session_info, screen_info)
+    self._AssertDevice(device, session_info)
+
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID', device_token='Token4')
+    screen_info = self._EnterNextAndAssert('Henry Ford', device, version_info, session_info, screen_info)
+    self._AssertDevice(device, session_info)
+
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID', device_token='Token5')
+    self._EnterResetAndAssert(device, version_info, session_info, screen_info)
+    self._AssertDevice(device, session_info)
 
 
 if __name__ == '__main__':

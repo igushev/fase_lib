@@ -115,7 +115,7 @@ class FaseSignOutButton(fase.Button):
   def CallCallback(self, service_prog, screen_prog, device, method):
     assert method == fase.ON_CLICK_METHOD
     for i, device_signed_in in enumerate(service_prog.device_list):
-      if device_signed_in == device:
+      if fase_model.SameDevice(device_signed_in, device):
         del service_prog.device_list[i]
         break
     fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)

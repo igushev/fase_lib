@@ -177,7 +177,7 @@ class ApplicationTest(unittest.TestCase):
     return screen
 
   def testService(self):
-    device = fase_model.Device('MockType', 'MockToken')
+    device = fase_model.Device(device_type='MockType', device_id='MockDeviceID')
     response = self._GetService(device)
     session_info = response.session_info
     screen_info = response.screen_info

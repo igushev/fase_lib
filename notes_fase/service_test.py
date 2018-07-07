@@ -62,7 +62,7 @@ class NotesTest(unittest.TestCase):
         overwrite=True)
 
     # Create Service
-    self.device = fase_model.Device(device_type='Python', device_token='Token')
+    self.device = fase_model.Device(device_type='Python', device_id='DeviceID')
     response = fase_server.FaseServer.Get().GetService(self.device)
     version_info = response.version_info
     session_info = response.session_info

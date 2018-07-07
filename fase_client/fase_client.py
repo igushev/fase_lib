@@ -35,7 +35,7 @@ class FaseClient(object):
     self.ui.SetClient(self)
     self.resource_manager = resource_manager
     self.session_info_filepath = session_info_filepath
-    self.device = fase_model.Device(DEVICE_TYPE, str(uuid.uuid4()), pixel_density=PIXEL_DENSITY)
+    self.device = fase_model.Device(device_type=DEVICE_TYPE, device_id=str(uuid.uuid4()), pixel_density=PIXEL_DENSITY)
     self.screen = None
     self.elements_update = None
     self.session_info = LoadSessionInfoIfExists(self.session_info_filepath)

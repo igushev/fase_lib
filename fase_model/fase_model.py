@@ -6,15 +6,18 @@ from fase import fase
 
 @json_util.JSONDecorator({
     'device_type': json_util.JSONString(),
+    'device_id': json_util.JSONString(),
     'device_token': json_util.JSONString(),
     'pixel_density': json_util.JSONFloat()})
 class Device(data_util.AbstractObject):
 
   def __init__(self,
                device_type=None,
+               device_id=None,
                device_token=None,
                pixel_density=None):
     self.device_type = device_type
+    self.device_id = device_id
     self.device_token = device_token
     self.pixel_density = pixel_density
 
@@ -216,6 +219,10 @@ def GetServiceProgScreenProg(device):
   service_prog.device_list.append(device)
   screen_prog = ScreenProg(session_id=service.GetSessionId(), screen=screen, recent_device=device)
   return service_prog, screen_prog 
+
+
+def SameDevice(device_1, device_2):
+  return (device_1.device_type == device_2.device_type and device_1.device_id == device_2.device_id)
 
 
 def ElementsUpdateToDict(elements_update):
