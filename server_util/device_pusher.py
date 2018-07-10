@@ -77,7 +77,7 @@ class iOSDevicePushServiceProvider(DevicePushServiceProviderInterface):
     if http_response.status == 410:
       raise DeleteSessionException()
     if http_response.status != 200:
-      raise PushNotificationException()
+      raise PushNotificationException(http_response.read())
 
 
 class AndroidDevicePushServiceProvider(DevicePushServiceProviderInterface):
@@ -101,7 +101,7 @@ class AndroidDevicePushServiceProvider(DevicePushServiceProviderInterface):
 
     http_response = requests.post(self.server_url, headers=headers, json=data)
     if http_response.status_code != 200:
-      raise PushNotificationException()
+      raise PushNotificationException(http_response.text)
     result = http_response.json()
     if not result['failure'] and not result['canonical_ids']:
       return
@@ -111,7 +111,7 @@ class AndroidDevicePushServiceProvider(DevicePushServiceProviderInterface):
       raise UpdateDeviceTokenException(single_result['registration_id'])
     if 'error' in single_result and single_result['error'] == 'NotRegistered':
       raise DeleteSessionException()
-    raise PushNotificationException()
+    raise PushNotificationException(http_response.text)
 
 
 class NullDevicePushServiceProvider(DevicePushServiceProviderInterface):

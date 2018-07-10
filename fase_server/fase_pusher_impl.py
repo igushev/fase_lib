@@ -25,16 +25,17 @@ def Push(user_id, title, message):
   device_list = []
   for device in service_prog.device_list:
     if device_pusher.DevicePusher.Get().HasDevicePushServiceProvider(device.device_type):
-      try:
-        device_pusher.DevicePusher.Get().Push(device.device_type, device.device_token, title, message)
-      except device_pusher.UpdateDeviceTokenException as e:
-        device.device_token = e.device_token
-      except device_pusher.DeleteSessionException:
-        continue
-      except Exception as e:
-        logging.error('Error pushing notification')
-        logging.error(type(e))
-        logging.error(str(e))
+      if device.device_token:
+        try:
+          device_pusher.DevicePusher.Get().Push(device.device_type, device.device_token, title, message)
+        except device_pusher.UpdateDeviceTokenException as e:
+          device.device_token = e.device_token
+        except device_pusher.DeleteSessionException:
+          continue
+        except Exception as e:
+          logging.error('Error pushing notification')
+          logging.error(type(e))
+          logging.error(str(e))
     device_list.append(device)
   service_prog.device_list = device_list 
   fase_database.FaseDatabaseInterface.Get().AddServiceProg(service_prog, overwrite=True)
