@@ -190,7 +190,7 @@ class KarmaCounter(fase.Service):
     screen.AddSelect(id_='score_select', items=['-10', '-3', '-1', '0', '1', '3', '10'], hint='Score',
                      align=fase.Select.LEFT)
     screen.AddContactPicker(id_='friend_contact_picker', hint='Friend', on_pick=KarmaCounter.OnFriendPick)
-    screen.AddSwitch(id_='invite_switch', value=False, text='Invite Friend', align=fase.Switch.LEFT)
+    screen.AddSwitch(id_='invite_switch', value=True, text='Invite Friend', align=fase.Switch.LEFT)
     screen.AddText(id_='description_text', hint='Description', size=fase.Text.MAX, multiline=True)
     screen.AddNextStepButton(text='Add', on_click=KarmaCounter.OnAddUserEventEnteredData)
     screen.AddPrevStepButton(text='Cancel', on_click=KarmaCounter.OnAddUserEventCancel)
