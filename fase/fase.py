@@ -585,7 +585,7 @@ class Switch(VisualElement):
     self.align = align or Switch.CENTER
 
   def Update(self, value):
-    self.value = (value == str(True))
+    self.value = (value.lower() in ['true', '1'])
   def Get(self):
     return str(self.value)
 
