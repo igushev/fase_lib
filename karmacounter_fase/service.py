@@ -1,3 +1,4 @@
+from concurrent import futures
 import datetime
 
 from server_util import phone_number_verifier
@@ -110,10 +111,8 @@ class KarmaCounter(fase.Service):
       return self.DisplayYourEvents(screen_label, screen, element)
     elif screen_label == 'your_friends_events':
       return self.DisplayYourFriendsEvents(screen_label, screen, element)
-    elif screen_label == 'statistics_by_cities':
-      return self.DisplayStatisticsByCities(screen_label, screen, element)
     else:
-      raise AssertionError(screen_label)
+      return self.DisplayDashboard(screen_label, screen, element)
 
   def OnDisplayDashboard(self, screen, element):
     screen_label = 'dashboard'
@@ -129,11 +128,6 @@ class KarmaCounter(fase.Service):
     screen_label = 'your_friends_events'
     self.GetStringVariable(id_='screen_label_str').SetValue(screen_label)
     return self.DisplayYourFriendsEvents(screen_label, screen, element)
-
-  def OnDisplayStatisticsByCities(self, screen, element):
-    screen_label = 'statistics_by_cities'
-    self.GetStringVariable(id_='screen_label_str').SetValue(screen_label)
-    return self.DisplayStatisticsByCities(screen_label, screen, element)
 
   def OnSignOut(self, screen, element):
     return fase_sign_in.StartSignOut(self, on_cancel=KarmaCounter.OnSignOutCancel)
@@ -156,11 +150,6 @@ class KarmaCounter(fase.Service):
                                           (SELECTED_ICON if screen_label == 'your_friends_events' else
                                            NAVIGATION_ICON)),
                          on_click=KarmaCounter.OnDisplayYourFriendsEvents)
-    navigation.AddButton(text='Statistics by Cities',
-                         image=fase.Image(filename='images/graph/graph_%s_@.png' %
-                                          (SELECTED_ICON if screen_label == 'statistics_by_cities' else
-                                           NAVIGATION_ICON)),
-                         on_click=KarmaCounter.OnDisplayStatisticsByCities)
     navigation.AddButton(text='Sign Out',
                          image=fase.Image(filename='images/accounts/accounts_%s_@.png' % NAVIGATION_ICON),
                          on_click=KarmaCounter.OnSignOut)
@@ -171,15 +160,41 @@ class KarmaCounter(fase.Service):
     main_button_context_menu.AddMenuItem(text='Add Event to Yourself', on_click=KarmaCounter.OnAddUserEvent)
     main_button_context_menu.AddMenuItem(text='Add Event to Friend', on_click=KarmaCounter.OnAddOtherUserEvent)
 
+  def _DisplayCitiesStatistics(self, frame, cities_statistics):
+    for city_statistics in cities_statistics:
+      city_frame = frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
+      city_frame.AddLabel(text=city_statistics.display_name)
+      city_frame.AddFrame(size=fase.Frame.MAX, orientation=fase.Frame.HORIZONTAL)
+      city_frame.AddLabel(text=city_statistics.display_score)
+
   def DisplayDashboard(self, screen_label, screen, element):
     session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-    starting_page = kc_client.KarmaCounterClient.Get().GetStartingPage(session_info)
+    with futures.ThreadPoolExecutor() as tpe:
+      starting_page_future = tpe.submit(kc_client.KarmaCounterClient.Get().GetStartingPage, session_info)
+      cities_statistics_top_bottom_future = (
+          tpe.submit(kc_client.KarmaCounterClient.Get().CitiesStatisticsTopBottom, session_info))
+    starting_page = starting_page_future.result()
+    cities_statistics_top_bottom = cities_statistics_top_bottom_future.result()
+
     screen = fase.Screen(self)
     screen.SetTitle('Dashboard')
     dashboard_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
     dashboard_frame.AddLabel(text='Score', size=fase.Label.MAX)
     dashboard_frame.AddLabel(text=str(starting_page.user.score), font=fase.Font(size=1.5, bold=True),
                              size=fase.Label.MAX)
+    screen.AddSeparator()
+
+    top_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
+    top_frame.AddLabel(text='Cities With Highest Score')
+    self._DisplayCitiesStatistics(top_frame, cities_statistics_top_bottom.external_cities_statistics_top)
+    screen.AddSeparator()
+
+    bottom_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
+    bottom_frame.AddLabel(text='Cities With Lowest Score')
+    self._DisplayCitiesStatistics(bottom_frame, cities_statistics_top_bottom.external_cities_statistics_bottom)
+    screen.AddSeparator()
+    
+    screen.AddLabel(text='Only events accepted by friends are part of statistics', font=fase.Font(italic=True))
     self._AddButtons(screen, screen_label)
     return screen
 
@@ -405,29 +420,6 @@ class KarmaCounter(fase.Service):
 
   def OnBlockUser(self, screen, element):
     return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().BlockUser, screen, element)
-
-  def _DisplayCitiesStatistics(self, frame, cities_statistics):
-    for city_statistics in cities_statistics:
-      city_frame = frame.AddFrame(orientation=fase.Frame.HORIZONTAL)
-      city_frame.AddLabel(text=city_statistics.display_name)
-      city_frame.AddFrame(size=fase.Frame.MAX, orientation=fase.Frame.HORIZONTAL)
-      city_frame.AddLabel(text=city_statistics.display_score)
-
-  def DisplayStatisticsByCities(self, screen_label, screen, element):
-    session_info = kc_data.SessionInfo(session_id=self.GetStringVariable(id_='session_id_str').GetValue())
-    cities_statistics_top_bottom = kc_client.KarmaCounterClient.Get().CitiesStatisticsTopBottom(session_info)
-    screen = fase.Screen(self)
-    screen.SetTitle('Statistics by Cities')
-    screen.AddLabel(text='Cities With Highest Score')
-    top_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
-    self._DisplayCitiesStatistics(top_frame, cities_statistics_top_bottom.external_cities_statistics_top)
-    screen.AddSeparator()
-
-    screen.AddLabel(text='Cities With Lowest Score')
-    bottom_frame = screen.AddFrame(orientation=fase.Frame.VERTICAL)
-    self._DisplayCitiesStatistics(bottom_frame, cities_statistics_top_bottom.external_cities_statistics_bottom)
-    self._AddButtons(screen, screen_label)
-    return screen
 
   
 fase.Service.RegisterService(KarmaCounter)
