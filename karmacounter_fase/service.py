@@ -119,6 +119,9 @@ class KarmaCounter(fase.Service):
     self.GetStringVariable(id_='screen_label_str').SetValue(screen_label)
     return self.DisplayDashboard(screen_label, screen, element)
 
+  def OnDisplayStatisticsByCities(self, screen, element):
+    return self.OnDisplayDashboard(screen, element)
+
   def OnDisplayYourEvents(self, screen, element):
     screen_label = 'your_events'
     self.GetStringVariable(id_='screen_label_str').SetValue(screen_label)
