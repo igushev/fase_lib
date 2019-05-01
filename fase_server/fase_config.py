@@ -1,7 +1,10 @@
 from server_util import activation_code_generator
 from server_util import config_util
 from server_util import device_pusher
+from server_util import resource_manager
 from server_util import sms_sender
+
+from fase_server import fase_resource
 
 try:
   from . import fase_database
@@ -57,9 +60,11 @@ def GetFaseServer(config):
   return fase_server.FaseServer(allow_deletedb=allow_deletedb)
 
 
-fase_config = config_util.GetConfig('FASE_CONFIG_FILENAME')
-fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
-activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
-sms_sender.SMSSender.Set(GetSMSSender(fase_config))
-device_pusher.DevicePusher.Set(GetDevicePusher(fase_config))
-fase_server.FaseServer.Set(GetFaseServer(fase_config))
+def FaseConfig(filename):
+  fase_config = config_util.GetConfigByFilename(filename)
+  fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
+  activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
+  sms_sender.SMSSender.Set(GetSMSSender(fase_config))
+  device_pusher.DevicePusher.Set(GetDevicePusher(fase_config))
+  fase_server.FaseServer.Set(GetFaseServer(fase_config))
+  resource_manager.ResourceManager.Set(resource_manager.ResourceManager(fase_resource.GetResourceDir()))

@@ -25,6 +25,9 @@ STATUS_OK = 200
 STATUS_BAD_REQUEST = 400
 STATUS_ERROR = 500
 
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 5000
+
 
 def CleanSimple(simple):
   if isinstance(simple, list):
@@ -127,3 +130,6 @@ def getresource(filename):
   resource_dir = resource_manager.ResourceManager.Get().GetResourceDir()
   filename = os.path.join(*filename.split('/'))
   return send_file(os.path.join(resource_dir, filename))
+
+def Run():
+  application.run(host=SERVER_HOST, port=SERVER_PORT)
