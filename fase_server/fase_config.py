@@ -4,13 +4,13 @@ from server_util import device_pusher
 from server_util import resource_manager
 from server_util import sms_sender
 
-from fase_server import fase_resource
-
 try:
   from . import fase_database
+  from . import fase_resource
   from . import fase_server
 except SystemError:
   import fase_database
+  import fase_resource
   import fase_server
 
 
