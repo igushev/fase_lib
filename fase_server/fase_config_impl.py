@@ -1,8 +1,12 @@
+import sys
+
 from server_util import activation_code_generator
 from server_util import config_util
 from server_util import device_pusher
 from server_util import resource_manager
 from server_util import sms_sender
+
+from fase import fase_config
 
 try:
   from . import fase_database
@@ -12,6 +16,10 @@ except SystemError:
   import fase_database
   import fase_resource
   import fase_server
+
+
+# Register itself as API implementation.
+fase_config.fase_config_impl = sys.modules[__name__]
 
 
 def GetFaseDatabase(config):
