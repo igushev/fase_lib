@@ -60,7 +60,7 @@ def GetFaseServer(config):
   return fase_server.FaseServer(allow_deletedb=allow_deletedb)
 
 
-def FaseConfig(filename):
+def Configurate(filename):
   fase_config = config_util.GetConfigByFilename(filename)
   fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
   activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())

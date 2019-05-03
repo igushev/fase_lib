@@ -418,6 +418,3 @@ class FaseTestService(fase.Service):
 
   def OnSignInOutCancel(self):
     return self.StartScreen(None, None)
-
-
-fase.Service.RegisterService(FaseTestService)
