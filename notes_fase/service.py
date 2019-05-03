@@ -239,5 +239,3 @@ class NotesService(fase.Service):
   def OnDeleteNoteCancel(self, screen, element):
     note_id = screen.GetStringVariable(id_='current_note_id').GetValue()
     return self._DisplayNote(note_id, screen)
-
-fase.Service.RegisterService(NotesService)

@@ -16,6 +16,7 @@ def ConfigService(config):
       notes_service.NotesService.allow_deletedb = bool(config.get('service', 'allow_deletedb'))
 
 
-notes_config = config_util.GetConfig('NOTES_CONFIG_FILENAME')
-notes_database.NotesDatabaseInterface.Set(GetNotesDatabase(notes_config))
-ConfigService(notes_config)
+def Configurate(filename):
+  notes_config = config_util.GetConfigByFilename(filename)
+  notes_database.NotesDatabaseInterface.Set(GetNotesDatabase(notes_config))
+  ConfigService(notes_config)
