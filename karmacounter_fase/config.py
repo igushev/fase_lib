@@ -8,5 +8,5 @@ def GetKarmaCounterClient(config):
 
 
 def Configurate(filename):
-  karmacounter_fase_config = config_util.GetConfigByFilename(filename)
+  karmacounter_fase_config = config_util.GetConfigFromFile(filename)
   kc_client.KarmaCounterClient.Set(GetKarmaCounterClient(karmacounter_fase_config))

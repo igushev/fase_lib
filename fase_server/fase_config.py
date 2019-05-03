@@ -61,7 +61,7 @@ def GetFaseServer(config):
 
 
 def Configurate(filename):
-  fase_config = config_util.GetConfigByFilename(filename)
+  fase_config = config_util.GetConfigFromFile(filename)
   fase_database.FaseDatabaseInterface.Set(GetFaseDatabase(fase_config))
   activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
   sms_sender.SMSSender.Set(GetSMSSender(fase_config))

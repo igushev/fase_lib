@@ -17,6 +17,6 @@ def ConfigService(config):
 
 
 def Configurate(filename):
-  notes_config = config_util.GetConfigByFilename(filename)
+  notes_config = config_util.GetConfigFromFile(filename)
   notes_database.NotesDatabaseInterface.Set(GetNotesDatabase(notes_config))
   ConfigService(notes_config)
