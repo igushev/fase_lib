@@ -23,8 +23,8 @@ DEP_LIST = [
 ]
 
 MOVE_LIST = [
-    ('fase_server/application.py', 'application.py'),
-    ('fase_server/requirements.txt', 'requirements.txt')
+    ('karmacounter_fase/application.py', 'application.py'),
+    ('karmacounter_fase/requirements.txt', 'requirements.txt')
 ]
 
 

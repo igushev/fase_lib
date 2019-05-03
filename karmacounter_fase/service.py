@@ -423,6 +423,3 @@ class KarmaCounter(fase.Service):
 
   def OnBlockUser(self, screen, element):
     return self._SendUserEventInfo(kc_client.KarmaCounterClient.Get().BlockUser, screen, element)
-
-  
-fase.Service.RegisterService(KarmaCounter)
