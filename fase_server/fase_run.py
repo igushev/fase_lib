@@ -1,5 +1,6 @@
 import functools
 import logging
+import signal
 import subprocess
 import tempfile
 import threading
@@ -29,6 +30,20 @@ DYNAMODB_CMD = (
     ' -Djava.library.path=~/DynamoDBLocal/DynamoDBLocal_lib'
     ' -jar ~/DynamoDBLocal/DynamoDBLocal.jar -inMemory -port %d')
 DYNAMODB_REGION = 'us-west-2' 
+
+DYNAMODB_PORT = 8000
+DYNAMODB_URL = 'http://localhost:%d' % DYNAMODB_PORT
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 5000
+SERVER_URL = 'http://localhost:%d' % SERVER_PORT
+
+
+class ServerInfo():
+
+  def __init__(self, *, server_url, dynamodb_url, dynamodb_process):
+    self.server_url = server_url
+    self.dynamodb_url = dynamodb_url
+    self.dynamodb_process = dynamodb_process
 
 
 def AssertStatus(http_response):
@@ -73,6 +88,17 @@ def RunServerThread(server_host, server_port):
   server_thread.start()
   time.sleep(1)
 
+
+def RunServer():
+  dynamodb_process = RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL)
+  RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
+  CreateDatabase(server_url=SERVER_URL)
+  return ServerInfo(server_url=SERVER_URL, dynamodb_url=DYNAMODB_URL, dynamodb_process=dynamodb_process)
+
+
+def StopServer(server_info):
+    os.killpg(server_info.dynamodb_process.pid, signal.SIGKILL)
+  
 
 def RunClient(fase_server_url, session_info_filepath=None):
   http_client = fase_http_client.FaseHTTPClient(fase_server_url)

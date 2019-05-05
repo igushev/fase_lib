@@ -1,9 +1,7 @@
 import os
-import signal
 import time
 
 from fase_server import fase_run
-
 
 FASE_SERVER_URL = 'http://notes-fase-env-test1.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'notes_fase/session_info'
@@ -11,12 +9,6 @@ FASE_SESSION_INFO_FILENAME = 'notes_fase/session_info'
 IGNORE_SESSION_INFO = 'ignore'
 RESET_FLAG = 'reset'
 LOCAL_SERVER = 'local_server'
-
-DYNAMODB_PORT = 8000
-DYNAMODB_URL = 'http://localhost:%d'
-SERVER_HOST = '0.0.0.0'
-SERVER_PORT = 5000
-SERVER_URL = 'http://localhost:%d'
 
 
 def CreateDatabase(server_url):
@@ -47,13 +39,12 @@ def main(argv):
     from notes_fase import service as notes_service
     from fase import fase
     fase.Service.RegisterService(notes_service.NotesService)
-    dynamodb_process = fase_run.RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL % DYNAMODB_PORT)
-    fase_run.RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
-    fase_run.CreateDatabase(server_url=SERVER_URL % SERVER_PORT)
-    SetupServer(DYNAMODB_URL % DYNAMODB_PORT)
-    CreateDatabase(SERVER_URL % SERVER_PORT)
-    fase_run.RunClient(fase_server_url=SERVER_URL % SERVER_PORT)
-    os.killpg(dynamodb_process.pid, signal.SIGKILL)
+
+    server_info = fase_run.RunServer()
+    SetupServer(dynamodb_url=server_info.dynamodb_url)
+    CreateDatabase(server_url=server_info.server_url)
+    fase_run.RunClient(fase_server_url=server_info.server_url)
+    fase_run.StopServer(server_info)
 
 
 if __name__ == '__main__':
