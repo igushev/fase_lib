@@ -1,6 +1,6 @@
 import os
 
-from fase_server import fase_run
+from fase import fase_run_util
 
 KARMACOUNTER_URL = 'http://karmacounter-env-test1.us-west-2.elasticbeanstalk.com/'
 FASE_SERVER_URL = 'http://karmacounter-fase-env-test1.us-west-2.elasticbeanstalk.com'
@@ -24,16 +24,16 @@ def main(argv):
                              if IGNORE_SESSION_INFO not in arg_list else None)
     if RESET_FLAG in arg_list:
       os.remove(session_info_filepath)
-    fase_run.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
+    fase_run_util.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
     from karmacounter_fase import service as kc_service 
     from fase import fase
     fase.Service.RegisterService(kc_service.KarmaCounter)
 
-    server_info = fase_run.RunServer()
+    server_info = fase_run_util.RunServer()
     SetupClient(KARMACOUNTER_URL)
-    fase_run.RunClient(fase_server_url=server_info.server_url)
-    fase_run.StopServer(server_info)
+    fase_run_util.RunClient(fase_server_url=server_info.server_url)
+    fase_run_util.StopServer(server_info)
 
 
 if __name__ == '__main__':
