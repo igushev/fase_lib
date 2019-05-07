@@ -1,7 +1,7 @@
 import functools
 import os
 
-from base_util import singleton_util
+from fase_lib.base_util import singleton_util
 
 TEMPLATE_SYMBOL = '@'
 PIXEL_DENSITY_STEP = 0.25

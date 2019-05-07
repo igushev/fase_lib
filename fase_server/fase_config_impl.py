@@ -1,17 +1,16 @@
 import sys
 
-from server_util import activation_code_generator
-from server_util import config_util
-from server_util import device_pusher
-from server_util import resource_manager
-from server_util import sms_sender
-
-import fase_config
+from fase_lib import fase_config
+from fase_lib.server_util import activation_code_generator
+from fase_lib.server_util import config_util
+from fase_lib.server_util import device_pusher
+from fase_lib.server_util import resource_manager
+from fase_lib.server_util import sms_sender
 
 try:
-  from fase_server import fase_database
-  from fase_server import fase_resource
-  from fase_server import fase_server
+  from fase_lib.fase_server import fase_database
+  from fase_lib.fase_server import fase_resource
+  from fase_lib.fase_server import fase_server
 except ImportError:
   import fase_database
   import fase_resource

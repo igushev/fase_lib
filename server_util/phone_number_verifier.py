@@ -1,4 +1,4 @@
-import phonenumbers
+from fase_lib import phonenumbers
 
 
 class NoCountryCodeException(Exception):

@@ -2,10 +2,9 @@ import os
 import logging
 import requests
 
-from base_util import json_util
-
-import fase
-from fase_model import fase_model
+from fase_lib import fase
+from fase_lib.base_util import json_util
+from fase_lib.fase_model import fase_model
 
 
 def CleanSimple(simple):

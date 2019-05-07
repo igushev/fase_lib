@@ -5,7 +5,7 @@ import jwt
 import requests
 import time
 
-from base_util import singleton_util
+from fase_lib.base_util import singleton_util
 
 
 IOS = 'iOS'

@@ -1,14 +1,13 @@
 import copy
 
-from base_util import singleton_util
-from server_util import device_pusher
-from server_util import resource_manager
-
-import fase
-from fase_model import fase_model
+from fase_lib import fase
+from fase_lib.base_util import singleton_util
+from fase_lib.server_util import device_pusher
+from fase_lib.server_util import resource_manager
+from fase_lib.fase_model import fase_model
 
 try:
-  from fase_server import fase_database
+  from fase_lib.fase_server import fase_database
 except ImportError:
   import fase_database
 

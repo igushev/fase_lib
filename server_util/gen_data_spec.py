@@ -3,8 +3,8 @@ import os
 import sys
 import re
 
-from base_util import data_util
-from base_util import json_util
+from fase_lib.base_util import data_util
+from fase_lib.base_util import json_util
 
 
 FIELD_DESC_REGEXP = '.*\'(?P<field_name>[a-zA-Z0-9_]+)\'\:\ ?json_util\.JSON.*'

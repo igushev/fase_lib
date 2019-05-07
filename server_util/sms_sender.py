@@ -1,7 +1,7 @@
 import boto3
 from collections import namedtuple
 
-from base_util import singleton_util
+from fase_lib.base_util import singleton_util
 
 
 THROW_ERROR = 'Include text to throw error'

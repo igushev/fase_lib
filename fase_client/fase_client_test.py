@@ -3,8 +3,8 @@ import unittest
 import tempfile
 import time
 
-import fase
-from fase_model import fase_model
+from fase_lib import fase
+from fase_lib.fase_model import fase_model
 
 import fase_client
 import fase_resource_manager

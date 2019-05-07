@@ -9,20 +9,19 @@ import os
 
 import requests
 
-from server_util import activation_code_generator
-from server_util import resource_manager
-from server_util import sms_sender
-
-from fase_model import fase_model
-from fase_client import fase_client
-from fase_client import fase_http_client
-from fase_client import fase_resource_manager
-from fase_client import fase_tk_ui_imp
-from fase_client import fase_ui
-from fase_server import fase_database
-from fase_server import fase_http_server
-from fase_server import fase_resource
-from fase_server import fase_server
+from fase_lib.server_util import activation_code_generator
+from fase_lib.server_util import resource_manager
+from fase_lib.server_util import sms_sender
+from fase_lib.fase_model import fase_model
+from fase_lib.fase_client import fase_client
+from fase_lib.fase_client import fase_http_client
+from fase_lib.fase_client import fase_resource_manager
+from fase_lib.fase_client import fase_tk_ui_imp
+from fase_lib.fase_client import fase_ui
+from fase_lib.fase_server import fase_database
+from fase_lib.fase_server import fase_http_server
+from fase_lib.fase_server import fase_resource
+from fase_lib.fase_server import fase_server
 
 
 DYNAMODB_CMD = (

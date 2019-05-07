@@ -1,6 +1,6 @@
 import random
 
-from base_util import singleton_util
+from fase_lib.base_util import singleton_util
 
 
 MIN_ACTIVATION_CODE = 100000

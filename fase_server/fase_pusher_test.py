@@ -1,15 +1,14 @@
 import datetime
 import unittest
 
-from server_util import device_pusher 
+from fase_lib import fase_pusher
+from fase_lib import fase
+from fase_lib.server_util import device_pusher 
+from fase_lib.fase_model import fase_model
 
-import fase_pusher
-import fase
-from fase_model import fase_model
-
-import fase_database
-import fase_pusher_impl
-import fase_sign_in_impl
+from fase_lib.fase_server import fase_database
+from fase_lib.fase_server import fase_pusher_impl
+from fase_lib.fase_server import fase_sign_in_impl
 
 
 class PusherTestService(fase.Service):

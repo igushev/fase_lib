@@ -1,14 +1,13 @@
 import json
 import unittest
 
-from base_util import json_util
+from fase_lib import fase
+from fase_lib.base_util import json_util
+from fase_lib.fase_model import fase_model
 
-import fase
-from fase_model import fase_model
-
-import fase_database
-import fase_http_server
-import fase_server
+from fase_lib.fase_server import fase_database
+from fase_lib.fase_server import fase_http_server
+from fase_lib.fase_server import fase_server
 
 
 STATUS_OK = '200 OK'

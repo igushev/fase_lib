@@ -1,4 +1,4 @@
-import fase
+from fase_lib import fase
 
 
 BUILT_IN_IDS = set([fase.MAIN_BUTTON_ID,

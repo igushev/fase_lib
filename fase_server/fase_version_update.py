@@ -1,6 +1,6 @@
 import os
 
-from server_util import version_util
+from fase_lib.server_util import version_util
 
 
 FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'

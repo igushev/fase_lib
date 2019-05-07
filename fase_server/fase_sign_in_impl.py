@@ -2,18 +2,17 @@ import datetime
 import hashlib
 import sys
 
-from base_util import json_util
-from server_util import activation_code_generator
-from server_util import phone_number_verifier
-from server_util import sms_sender
-
-import fase
-import fase_sign_in
-from fase_model import fase_model
+from fase_lib import fase
+from fase_lib import fase_sign_in
+from fase_lib.base_util import json_util
+from fase_lib.server_util import activation_code_generator
+from fase_lib.server_util import phone_number_verifier
+from fase_lib.server_util import sms_sender
+from fase_lib.fase_model import fase_model
 
 try:
-  from fase_server import fase_database
-  from fase_server import fase_demo_data
+  from fase_lib.fase_server import fase_database
+  from fase_lib.fase_server import fase_demo_data
 except ImportError:
   import fase_database
   import fase_demo_data

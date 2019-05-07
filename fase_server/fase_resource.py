@@ -2,7 +2,7 @@ import os
 import sys
 
 
-import fase
+from fase_lib import fase
 
 
 def GetResourceDir():

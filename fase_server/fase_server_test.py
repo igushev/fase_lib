@@ -2,13 +2,12 @@ import os
 import tempfile
 import unittest
 
-from server_util import resource_manager
+from fase_lib import fase
+from fase_lib.server_util import resource_manager
+from fase_lib.fase_model import fase_model
 
-import fase
-from fase_model import fase_model
-
-import fase_database
-import fase_server
+from fase_lib.fase_server import fase_database
+from fase_lib.fase_server import fase_server
 
 
 class ServerTestService(fase.Service):

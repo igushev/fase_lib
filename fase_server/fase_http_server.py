@@ -4,15 +4,14 @@ import os
 
 from flask import Flask, request, jsonify, send_file
 
-from base_util import json_util
-from server_util import resource_manager
-
-import fase
-from fase_model import fase_model
+from fase_lib import fase
+from fase_lib.base_util import json_util
+from fase_lib.server_util import resource_manager
+from fase_lib.fase_model import fase_model
 
 try:
-  from fase_server import fase_sign_in_impl
-  from fase_server import fase_server
+  from fase_lib.fase_server import fase_sign_in_impl
+  from fase_lib.fase_server import fase_server
 except ImportError:  
   import fase_sign_in_impl
   import fase_server

@@ -1,13 +1,12 @@
 import logging
 import sys
 
-from server_util import device_pusher 
-
-import fase_pusher
+from fase_lib import fase_pusher
+from fase_lib.server_util import device_pusher 
 
 try:
-  from fase_server import fase_database
-  from fase_server import fase_sign_in_impl
+  from fase_lib.fase_server import fase_database
+  from fase_lib.fase_server import fase_sign_in_impl
 except ImportError:
   import fase_database
   import fase_sign_in_impl
