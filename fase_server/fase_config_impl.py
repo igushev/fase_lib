@@ -6,13 +6,13 @@ from server_util import device_pusher
 from server_util import resource_manager
 from server_util import sms_sender
 
-from fase import fase_config
+import fase_config
 
 try:
-  from . import fase_database
-  from . import fase_resource
-  from . import fase_server
-except SystemError:
+  from fase_server import fase_database
+  from fase_server import fase_resource
+  from fase_server import fase_server
+except ImportError:
   import fase_database
   import fase_resource
   import fase_server

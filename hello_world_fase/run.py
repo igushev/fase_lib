@@ -1,6 +1,6 @@
 import os
 
-from fase import fase_run_util
+import fase_run_util
 
 FASE_SERVER_URL = 'http://hello-world-fase-env-test1.us-west-2.elasticbeanstalk.com'
 FASE_SESSION_INFO_FILENAME = 'hello_world_fase/session_info'
@@ -21,7 +21,7 @@ def main(argv):
     fase_run_util.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
     from hello_world_fase import service as hello_world_service
-    from fase import fase
+    import fase
     fase.Service.RegisterService(hello_world_service.HelloWorldService)
 
     server_info = fase_run_util.RunServer()

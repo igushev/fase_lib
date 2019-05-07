@@ -1,13 +1,13 @@
 from server_util import activation_code_generator
 from server_util import sms_sender
 
-from fase import fase
+import fase
 from fase_model import fase_model
 
 try:
-  from . import fase_sign_in_impl
-  from . import fase_server
-except SystemError:  
+  from fase_server import fase_sign_in_impl
+  from fase_server import fase_server
+except ImportError:  
   import fase_sign_in_impl
   import fase_server
 

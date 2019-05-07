@@ -3,8 +3,8 @@ import unittest
 
 from server_util import device_pusher 
 
-from fase import fase_pusher
-from fase import fase
+import fase_pusher
+import fase
 from fase_model import fase_model
 
 import fase_database

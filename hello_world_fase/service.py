@@ -1,4 +1,4 @@
-from fase import fase
+import fase
 
 
 class HelloWorldService(fase.Service):

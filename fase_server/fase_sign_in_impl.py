@@ -7,14 +7,14 @@ from server_util import activation_code_generator
 from server_util import phone_number_verifier
 from server_util import sms_sender
 
-from fase import fase
-from fase import fase_sign_in
+import fase
+import fase_sign_in
 from fase_model import fase_model
 
 try:
-  from . import fase_database
-  from . import fase_demo_data
-except SystemError:
+  from fase_server import fase_database
+  from fase_server import fase_demo_data
+except ImportError:
   import fase_database
   import fase_demo_data
 

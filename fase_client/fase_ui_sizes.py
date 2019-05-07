@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from fase import fase
+import fase
 from fase_client import fase_ui
 
 MAX = 2

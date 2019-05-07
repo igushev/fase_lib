@@ -1,6 +1,6 @@
 import os
 
-from fase import fase_run_util
+import fase_run_util
 
 KARMACOUNTER_URL = 'http://karmacounter-env-test1.us-west-2.elasticbeanstalk.com/'
 FASE_SERVER_URL = 'http://karmacounter-fase-env-test1.us-west-2.elasticbeanstalk.com'
@@ -27,7 +27,7 @@ def main(argv):
     fase_run_util.RunClient(fase_server_url=FASE_SERVER_URL, session_info_filepath=session_info_filepath)
   else:
     from karmacounter_fase import service as kc_service 
-    from fase import fase
+    import fase
     fase.Service.RegisterService(kc_service.KarmaCounter)
 
     server_info = fase_run_util.RunServer()

@@ -7,13 +7,13 @@ from flask import Flask, request, jsonify, send_file
 from base_util import json_util
 from server_util import resource_manager
 
-from fase import fase
+import fase
 from fase_model import fase_model
 
 try:
-  from . import fase_sign_in_impl
-  from . import fase_server
-except SystemError:  
+  from fase_server import fase_sign_in_impl
+  from fase_server import fase_server
+except ImportError:  
   import fase_sign_in_impl
   import fase_server
 

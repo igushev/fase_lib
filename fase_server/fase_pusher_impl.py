@@ -3,12 +3,12 @@ import sys
 
 from server_util import device_pusher 
 
-from fase import fase_pusher
+import fase_pusher
 
 try:
-  from . import fase_database
-  from . import fase_sign_in_impl
-except SystemError:
+  from fase_server import fase_database
+  from fase_server import fase_sign_in_impl
+except ImportError:
   import fase_database
   import fase_sign_in_impl
 

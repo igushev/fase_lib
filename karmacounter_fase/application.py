@@ -3,9 +3,9 @@ import os
 from karmacounter_fase import config as kc_config
 from karmacounter_fase import service as kc_service
 
-from fase import fase
-from fase import fase_config
-from fase import fase_application
+import fase
+import fase_config
+import fase_application
 
 
 fase.Service.RegisterService(kc_service.KarmaCounter)

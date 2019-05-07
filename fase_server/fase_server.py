@@ -4,12 +4,12 @@ from base_util import singleton_util
 from server_util import device_pusher
 from server_util import resource_manager
 
-from fase import fase
+import fase
 from fase_model import fase_model
 
 try:
-  from . import fase_database
-except SystemError:
+  from fase_server import fase_database
+except ImportError:
   import fase_database
 
 

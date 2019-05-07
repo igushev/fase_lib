@@ -3,9 +3,9 @@ import os
 from notes_fase import config as notes_config
 from notes_fase import service as notes_service
 
-from fase import fase
-from fase import fase_config
-from fase import fase_application
+import fase
+import fase_config
+import fase_application
 
 
 fase.Service.RegisterService(notes_service.NotesService)

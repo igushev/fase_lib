@@ -4,8 +4,8 @@ import hashlib
 from base_util import datetime_util
 from server_util import version_util
 
-from fase import fase
-from fase import fase_sign_in
+import fase
+import fase_sign_in
 
 from notes_fase import database as notes_database
 from notes_fase import model as notes_model

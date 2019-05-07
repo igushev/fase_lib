@@ -2,9 +2,9 @@ import os
 
 from hello_world_fase import service as hello_world_service
 
-from fase import fase
-from fase import fase_config
-from fase import fase_application
+import fase
+import fase_config
+import fase_application
 
 
 fase.Service.RegisterService(hello_world_service.HelloWorldService)

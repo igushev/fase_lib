@@ -4,8 +4,8 @@ import random
 
 from server_util import version_util
 
-from fase import fase
-from fase import fase_sign_in
+import fase
+import fase_sign_in
 
 
 FASE_TEST_VERSION_FILENAME = 'fase_test_fase/version.txt'

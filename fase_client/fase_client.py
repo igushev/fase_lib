@@ -4,7 +4,7 @@ import uuid
 import queue
 import threading
 
-from fase import fase
+import fase
 from fase_model import fase_model
 
 

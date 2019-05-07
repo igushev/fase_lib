@@ -4,9 +4,9 @@ import datetime
 from server_util import phone_number_verifier
 from server_util import version_util
 
-from fase import fase
-from fase import fase_pusher
-from fase import fase_sign_in
+import fase
+import fase_pusher
+import fase_sign_in
 
 from karmacounter_fase import client as kc_client
 from karmacounter_fase import data as kc_data

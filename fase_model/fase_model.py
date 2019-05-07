@@ -1,7 +1,7 @@
 from base_util import data_util
 from base_util import json_util
 
-from fase import fase
+import fase
 
 
 @json_util.JSONDecorator({

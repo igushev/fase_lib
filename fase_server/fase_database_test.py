@@ -4,7 +4,7 @@ import signal
 import subprocess
 import unittest
 
-from fase import fase
+import fase
 from fase_model import fase_model
 
 import fase_database
