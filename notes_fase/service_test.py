@@ -2,15 +2,14 @@ import copy
 import datetime
 import unittest
 
-from base_util import datetime_util
-from server_util import resource_manager
-
-import fase
-from fase_model import fase_model
-from fase_server import fase_database
-from fase_server import fase_resource
-from fase_server import fase_server
-from fase_server import fase_sign_in_test_util
+from fase_lib import fase
+from fase_lib.base_util import datetime_util
+from fase_lib.server_util import resource_manager
+from fase_lib.fase_model import fase_model
+from fase_lib.fase_server import fase_database
+from fase_lib.fase_server import fase_resource
+from fase_lib.fase_server import fase_server
+from fase_lib.fase_server import fase_sign_in_test_util
 
 from notes_fase import database as notes_database
 from notes_fase import model as notes_model

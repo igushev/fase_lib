@@ -1,9 +1,9 @@
 import os
 
-from fase_server import fase_deploy
-from notes_fase import service as notes_service
-from server_util import deploy_util
-from server_util import version_util
+from fase_lib.fase_server import fase_deploy
+from fase_lib.notes_fase import service as notes_service
+from fase_lib.server_util import deploy_util
+from fase_lib.server_util import version_util
 
 
 HOME_DIR_VAR_NAME = 'FASE_HOME'
