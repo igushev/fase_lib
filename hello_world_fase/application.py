@@ -1,6 +1,6 @@
 import os
 
-from hello_world_fase import service as hello_world_service
+import service as hello_world_service
 
 import fase
 import fase_config
