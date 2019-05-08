@@ -1,10 +1,10 @@
 import os
 
-from fase_test_fase import service as fase_test_service
+from fase_lib import fase
+from fase_lib import fase_config
+from fase_lib import fase_application
 
-import fase
-import fase_config
-import fase_application
+from fase_test_fase import service as fase_test_service
 
 
 fase.Service.RegisterService(fase_test_service.FaseTestService)
