@@ -9,13 +9,31 @@ from fase_lib.fase_model import fase_model
 
 from fase_lib.fase_server import fase_database
 
-from hello_world_fase import service as hello_world_service
-
 
 DYNAMODB_CMD = (
     'java'
     ' -Djava.library.path=~/DynamoDBLocal/DynamoDBLocal_lib'
     ' -jar ~/DynamoDBLocal/DynamoDBLocal.jar -inMemory')
+
+
+class DatabaseTestService(fase.Service):
+
+  def OnStart(self):
+    screen = fase.Screen(self)
+    screen.AddText(id_='text_name_id', hint='Enter Name')
+    screen.AddButton(id_='next_button_id', text='Next', on_click=DatabaseTestService.OnNextButton)
+    return screen
+
+  def OnNextButton(self, screen, element):
+    name = screen.GetText(id_='text_name_id').GetText()
+    screen = fase.Screen(self)
+    screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
+    screen.AddButton(id_='reset_button_id', text='Reset', on_click=DatabaseTestService.OnResetButton)
+    return screen
+
+  def OnResetButton(self, screen, element):
+    # Ignore previous screen and element.
+    return self.OnStart()
 
 
 class DynamoDBFaseDatabaseTest(unittest.TestCase):
@@ -38,13 +56,13 @@ class DynamoDBFaseDatabaseTest(unittest.TestCase):
   def testFase(self):
     fase_database.FaseDatabaseInterface.Get().CreateDatabase()
 
-    service_1 = hello_world_service.HelloWorldService()
+    service_1 = DatabaseTestService()
     screen_1 = service_1.OnStart()
     session_id_1 = service_1.GetSessionId()
     service_prog_1 = fase_model.ServiceProg(session_id=session_id_1, service=service_1)
     screen_prog_1 = fase_model.ScreenProg(session_id=session_id_1, screen=screen_1)
 
-    service_2 = hello_world_service.HelloWorldService()
+    service_2 = DatabaseTestService()
     screen_2 = service_2.OnStart()
     text_name = screen_2.GetElement(id_='text_name_id') 
     text_name.Update('Edward Igushev')

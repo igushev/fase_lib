@@ -9,7 +9,25 @@ from fase_lib.fase_model import fase_model
 import fase_client
 import fase_resource_manager
 
-from hello_world_fase import service as hello_world_service
+
+class ClientTestService(fase.Service):
+
+  def OnStart(self):
+    screen = fase.Screen(self)
+    screen.AddText(id_='text_name_id', hint='Enter Name')
+    screen.AddButton(id_='next_button_id', text='Next', on_click=ClientTestService.OnNextButton)
+    return screen
+
+  def OnNextButton(self, screen, element):
+    name = screen.GetText(id_='text_name_id').GetText()
+    screen = fase.Screen(self)
+    screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
+    screen.AddButton(id_='reset_button_id', text='Reset', on_click=ClientTestService.OnResetButton)
+    return screen
+
+  def OnResetButton(self, screen, element):
+    # Ignore previous screen and element.
+    return self.OnStart()
 
 
 class MockFaseHTTPClient(object):
@@ -118,7 +136,7 @@ class MockFaseUI(object):
     self.test_obj.assertEqual(self.expected_value, value)
 
 
-class FaseServerTest(unittest.TestCase):
+class FaseClientTest(unittest.TestCase):
   
   def testGetService(self):
     resource_dir = tempfile.mkdtemp()
@@ -127,7 +145,7 @@ class FaseServerTest(unittest.TestCase):
     resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -142,7 +160,7 @@ class FaseServerTest(unittest.TestCase):
     self.assertEqual(1, ui.draw_screen_calls)
 
   def testGetScreen(self):
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
 
     resource_dir = tempfile.mkdtemp()
     http_client = MockFaseHTTPClient(self, resource_dir)
@@ -173,7 +191,7 @@ class FaseServerTest(unittest.TestCase):
     resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -204,7 +222,7 @@ class FaseServerTest(unittest.TestCase):
     resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -235,7 +253,7 @@ class FaseServerTest(unittest.TestCase):
     resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -267,7 +285,7 @@ class FaseServerTest(unittest.TestCase):
     resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
     screen = service.OnStart()
 
     http_client.service = service
@@ -307,7 +325,7 @@ class FaseServerTest(unittest.TestCase):
     resource_manager = fase_resource_manager.FaseResourceManager(resource_dir, http_client)
     client = fase_client.FaseClient(http_client=http_client, ui=ui, resource_manager=resource_manager)
 
-    service = hello_world_service.HelloWorldService()
+    service = ClientTestService()
     screen = service.OnStart()
 
     http_client.service = service

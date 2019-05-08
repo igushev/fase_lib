@@ -15,7 +15,7 @@ class HelloWorldService(fase.Service):
     screen.AddLabel(id_='hello_label_id', text='Hello, %s!' % name)
     screen.AddButton(id_='reset_button_id', text='Reset', on_click=HelloWorldService.OnResetButton)
     return screen
-    
+
   def OnResetButton(self, screen, element):
     # Ignore previous screen and element.
     return self.OnStart()
