@@ -1,7 +1,7 @@
 from fase_lib.server_util import config_util
 
-from notes_fase import database as notes_database
-from notes_fase import service as notes_service
+import database as notes_database
+import service as notes_service
 
 
 def GetNotesDatabase(config):

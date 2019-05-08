@@ -4,8 +4,8 @@ from fase_lib import fase
 from fase_lib import fase_config
 from fase_lib import fase_application
 
-from notes_fase import config as notes_config
-from notes_fase import service as notes_service
+import config as notes_config
+import service as notes_service
 
 
 fase.Service.RegisterService(notes_service.NotesService)

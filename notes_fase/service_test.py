@@ -11,9 +11,9 @@ from fase_lib.fase_server import fase_resource
 from fase_lib.fase_server import fase_server
 from fase_lib.fase_server import fase_sign_in_test_util
 
-from notes_fase import database as notes_database
-from notes_fase import model as notes_model
-from notes_fase import service as notes_service
+import database as notes_database
+import model as notes_model
+import service as notes_service
 
 fase.Service.RegisterService(notes_service.NotesService)
 

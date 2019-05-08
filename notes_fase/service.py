@@ -6,8 +6,8 @@ from fase_lib.base_util import datetime_util
 from fase_lib.server_util import version_util
 from fase_lib import fase_sign_in
 
-from notes_fase import database as notes_database
-from notes_fase import model as notes_model
+import database as notes_database
+import model as notes_model
 
 
 CREATE_DB_COMMAND = 'createdb'

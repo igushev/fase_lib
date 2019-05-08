@@ -30,3 +30,28 @@ def Deploy(home_dir, dep_list, move_list, deploy_dir, filename):
     raise AssertionError('File %s already exisits' % final_zip_filepath)
   shutil.move(zip_filepath, final_zip_filepath)
   print('\n'.join(['Release name:', filename, 'Deploy file:', final_zip_filepath]))
+
+
+
+def DeploySeparate(base_dir, copy_list, deploy_dir, filename):
+  build_dir = os.path.join(tempfile.mkdtemp(), 'deploy')
+  shutil.copytree(base_dir, build_dir)
+  for src_path, dest_name in copy_list:
+    shutil.copytree(src_path, os.path.join(build_dir, dest_name))
+
+  Clean(build_dir)
+
+  zip_dir = tempfile.mkdtemp()
+  filepath = os.path.join(zip_dir, filename)
+  zip_filepath = '%s.zip' % filepath 
+  shutil.make_archive(filepath, 'zip', build_dir)
+  shutil.rmtree(build_dir)
+
+  final_filepath = os.path.join(deploy_dir, filename)
+  final_zip_filepath = '%s.zip' % final_filepath
+  os.makedirs(deploy_dir, exist_ok=True)
+  if os.path.exists(final_zip_filepath):
+    os.remove(zip_filepath)
+    raise AssertionError('File %s already exisits' % final_zip_filepath)
+  shutil.move(zip_filepath, final_zip_filepath)
+  print('\n'.join(['Release name:', filename, 'Deploy file:', final_zip_filepath]))

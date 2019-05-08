@@ -88,7 +88,11 @@ class FaseSignInButton(fase.Button):
     fase_database.FaseDatabaseInterface.Get().DeleteServiceProg(session_id=session_id_current)
     fase_database.FaseDatabaseInterface.Get().DeleteScreenProg(session_id=session_id_current)
 
-    service_prog_signed_in = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id=session_id_signed_in)
+    try:
+      service_prog_signed_in = fase_database.FaseDatabaseInterface.Get().GetServiceProg(session_id=session_id_signed_in)
+    except Exception:
+      service_prog_signed_in = None
+
     if service_prog_signed_in:
       # Retrieve sign in service and call.
       screen_prog_signed_in = fase_database.FaseDatabaseInterface.Get().GetScreenProg(session_id=session_id_signed_in)
