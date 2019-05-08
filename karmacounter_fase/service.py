@@ -1,15 +1,14 @@
 from concurrent import futures
 import datetime
 
-from server_util import phone_number_verifier
-from server_util import version_util
+from fase_lib import fase
+from fase_lib import fase_pusher
+from fase_lib import fase_sign_in
+from fase_lib.server_util import phone_number_verifier
+from fase_lib.server_util import version_util
 
-import fase
-import fase_pusher
-import fase_sign_in
-
-from karmacounter_fase import client as kc_client
-from karmacounter_fase import data as kc_data
+import client as kc_client
+import data as kc_data
 
 
 DEVICE_TYPE = 'Fase'

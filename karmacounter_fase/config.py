@@ -1,6 +1,6 @@
-from server_util import config_util
+from fase_lib.server_util import config_util
 
-from karmacounter_fase import client as kc_client
+import client as kc_client
 
 
 def GetKarmaCounterClient(config):

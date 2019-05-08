@@ -1,9 +1,9 @@
 import logging
 import requests
 
-from base_util import singleton_util
+from fase_lib.base_util import singleton_util
 
-from karmacounter_fase import data as kc_data 
+import data as kc_data
 
 
 @singleton_util.Singleton()
