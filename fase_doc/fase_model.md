@@ -40,9 +40,7 @@ Table of Contents
          * [User Enters Information and Clicks Sign Up](#user-enters-information-and-clicks-sign-up-1)
          * [User Enters Activation Code and Clicks Send](#user-enters-activation-code-and-clicks-send-1)
 
-<aside class="warning">
-This documentation is only for someone making changes to a client implementation or writing a new one.
-</aside>
+**WARNING:** This documentation is only for someone making changes to a client implementation or writing a new one.
 
 # Communication with Server
 ## Data Classes
