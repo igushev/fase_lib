@@ -11,6 +11,7 @@ def ReadVersion(version_filename):
 
 
 def ReadAndUpdateVersion(version_filename, update_position=None):
+  """Takes given filename containing version, optionally updates the version and saves it, and returns the version."""
   if os.path.exists(version_filename):
     current_version = open(version_filename).readlines()[0]
     numbers = current_version.split('.')

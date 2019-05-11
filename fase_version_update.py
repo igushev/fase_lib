@@ -1,9 +1,9 @@
 import os
 
-from fase_lib.server_util import version_util
+from fase_lib.tools import version_util
 
 
-FASE_VERSION_FILENAME = 'fase_server/fase_version.txt'
+FASE_VERSION_FILENAME = 'fase_version.txt'
 
 
 def main(argv):
