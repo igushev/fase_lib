@@ -1,3 +1,6 @@
+"""Fase Configuration."""
+
+
 fase_config_impl = None
 
 
