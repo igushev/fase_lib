@@ -45,7 +45,7 @@ class ServerInfo():
     self.dynamodb_process = dynamodb_process
 
 
-def AssertStatus(http_response):
+def _AssertStatus(http_response):
   if http_response.status_code != requests.codes.ok:
     logging.error(http_response.text)
     http_response.raise_for_status()
@@ -55,19 +55,19 @@ def SendCommand(url, command_message):
   command = fase_model.Command(command=command_message)
   command_simple = command.ToSimple()
   http_response = requests.post(url, json=command_simple)
-  AssertStatus(http_response)
+  _AssertStatus(http_response)
   status_simple = http_response.json()
   status = fase_model.Status.FromSimple(status_simple)
   print(status.message)
 
 
-def CreateDatabase(server_url):
+def _CreateDatabase(server_url):
   url = server_url + '/sendinternalcommand'
   command_message = fase_server.CREATE_DB_COMMAND
   SendCommand(url, command_message)
 
 
-def RunDatabase(dynamodb_port, dynamodb_url):
+def _RunDatabase(dynamodb_port, dynamodb_url):
   dynamodb_process = (
       subprocess.Popen(DYNAMODB_CMD % dynamodb_port, shell=True, preexec_fn=os.setsid))
   fase_database.FaseDatabaseInterface.Set(
@@ -76,7 +76,7 @@ def RunDatabase(dynamodb_port, dynamodb_url):
   return dynamodb_process
 
 
-def RunServerThread(server_host, server_port):
+def _RunServerThread(server_host, server_port):
   activation_code_generator.ActivationCodeGenerator.Set(activation_code_generator.ActivationCodeGenerator())
   sms_sender.SMSSender.Set(sms_sender.SMSSender(sms_service_provider=sms_sender.PrintSMSServiceProvider()))
   fase_server.FaseServer.Set(fase_server.FaseServer())
@@ -89,17 +89,20 @@ def RunServerThread(server_host, server_port):
 
 
 def RunServer():
-  dynamodb_process = RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL)
-  RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
-  CreateDatabase(server_url=SERVER_URL)
+  """Runs Fase server locally and returns ServerInfo object with details."""
+  dynamodb_process = _RunDatabase(dynamodb_port=DYNAMODB_PORT, dynamodb_url=DYNAMODB_URL)
+  _RunServerThread(server_host=SERVER_HOST, server_port=SERVER_PORT)
+  _CreateDatabase(server_url=SERVER_URL)
   return ServerInfo(server_url=SERVER_URL, dynamodb_url=DYNAMODB_URL, dynamodb_process=dynamodb_process)
 
 
 def StopServer(server_info):
-    os.killpg(server_info.dynamodb_process.pid, signal.SIGKILL)
+  """Stops Fase server by given ServerInfo object."""
+  os.killpg(server_info.dynamodb_process.pid, signal.SIGKILL)
   
 
 def RunClient(fase_server_url, session_info_filepath=None):
+  """Runs Tkinter client by given server URL and reads/stores session in given session_info_filepath.""" 
   http_client = fase_http_client.FaseHTTPClient(fase_server_url)
   ui_imp = fase_tk_ui_imp.FaseTkUIImp()
   ui = fase_ui.FaseUI(ui_imp)
