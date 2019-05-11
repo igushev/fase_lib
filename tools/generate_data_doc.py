@@ -1,3 +1,12 @@
+"""Tools which for given module generates markdown documentation for every class derived from data_util.AbstractObject.
+
+python3 tools/generate_data_doc.py <module_name> <output_filepath>  
+
+Example:
+python3 tools/generate_data_doc.py fase fase.md
+"""
+
+
 import inspect
 import os
 import sys
@@ -44,19 +53,19 @@ def JSONObjectStr(json_obj):
                          json_obj.__class__.__name__)
   
 
-def GenerateDataSpecification(module_name, filepath):
+def GenerateDataDocumentation(module_name, output_filepath):
   exec('import %s' % module_name)
   module = sys.modules[module_name]
   cls_dict = {cls_name: cls for cls_name, cls in inspect.getmembers(module, inspect.isclass)}
   cls_field_names_dict = {}
   field_names = []
   first_class = True
-  with open(filepath, 'w') as spec_file:
-    spec_file.write('# Put Your Header Here\n')
+  with open(output_filepath, 'w') as output_file:
+    output_file.write('# Put Your Header Here\n')
     for line in inspect.getsource(module).split('\n'):
       constant_def_match = re.match(CONSTANT_DEF_REGEXP, line)
       if constant_def_match:
-        spec_file.write('    * %s = %s\n' % (constant_def_match.group('name'), constant_def_match.group('value')))
+        output_file.write('    * %s = %s\n' % (constant_def_match.group('name'), constant_def_match.group('value')))
       field_desc_match = re.match(FIELD_DESC_REGEXP, line)
       if field_desc_match:
         field_names.append(field_desc_match.group('field_name'))
@@ -71,24 +80,24 @@ def GenerateDataSpecification(module_name, filepath):
       if cls == data_util.AbstractObject:
         continue
       if not first_class:
-        spec_file.write('\n')
-      spec_file.write('* **%s**' % cls_name)
+        output_file.write('\n')
+      output_file.write('* **%s**' % cls_name)
 
       base_names = [base.__name__ for base in cls.__bases__ if base is not data_util.AbstractObject]
       for base_name in base_names:
         field_names = cls_field_names_dict[base_name] + field_names
       if base_names:
-        spec_file.write(' extends *%s*' % ', '.join(base_names))
+        output_file.write(' extends *%s*' % ', '.join(base_names))
       if cls.__doc__:
-        spec_file.write('. %s' % cls.__doc__)
-      spec_file.write('\n')
+        output_file.write('. %s' % cls.__doc__)
+      output_file.write('\n')
 
       assert set(field_names) == set(cls.desc_dict.keys()), (cls_name, set(field_names), set(cls.desc_dict.keys())) 
       assert len(field_names) == len(set(field_names))
       for arg_name in field_names:
         json_obj = cls.desc_dict[arg_name]
         arg_type = JSONObjectStr(json_obj)
-        spec_file.write('  * *%s*: %s\n' % (arg_name, arg_type))
+        output_file.write('  * *%s*: %s\n' % (arg_name, arg_type))
 
       cls_field_names_dict[cls_name] = field_names[:]
       field_names.clear()
@@ -98,8 +107,8 @@ def GenerateDataSpecification(module_name, filepath):
 def main(argv):
   assert len(argv) == 3
   module_name = argv[1]
-  filepath = argv[2]  
-  GenerateDataSpecification(module_name, filepath)
+  output_filepath = argv[2]  
+  GenerateDataDocumentation(module_name, output_filepath)
 
 
 if __name__ == '__main__':
