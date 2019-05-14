@@ -1,9 +1,10 @@
-"""Tool which by given database class which with static GetTableNameList() generates  AWS IAM Policy.
+"""Tool which by given database class which with static GetTableNameList() generates  AWS IAM DynamoDB Policy.
 
-python3 tools/generate_iam_policy.py <module_name> <database_class_name> <tables_suffix> <output_filepath>
+python3 tools/generate_dynamo_db_policy.py <module_name> <database_class_name> <tables_suffix> <output_filepath>
 
 Example:
-python3 tools/generate_iam_policy.py fase_server.fase_database DynamoDBFaseDatabase _prod iam_prod.txt
+python3 tools/generate_dynamo_db_policy.py \
+    fase_server.fase_database DynamoDBFaseDatabase _prod dynamo_db_policy_prod.json
 """
 
 
@@ -45,7 +46,7 @@ END_POLICY="""    ]
 """
 
 
-def GenerateIAMPolicty(module_name, database_class_name, tables_suffix, output_filepath):
+def GenerateDynamoDBPolicty(module_name, database_class_name, tables_suffix, output_filepath):
   exec('import %s' % module_name)
   module = sys.modules[module_name]
   database_class = getattr(module, database_class_name)
@@ -68,7 +69,7 @@ def main(argv):
   database_class_name = argv[2]
   tables_suffix = argv[3]
   output_filepath = argv[4]
-  GenerateIAMPolicty(module_name, database_class_name, tables_suffix, output_filepath)
+  GenerateDynamoDBPolicty(module_name, database_class_name, tables_suffix, output_filepath)
 
 
 if __name__ == '__main__':
