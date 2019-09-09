@@ -1,7 +1,11 @@
 # Fase Library
 Fase library to develop the server of a Fase Service.
 
-Read details about Fase [here](http://fase.io).
+Official website is [here](http://fase.io).
+
+Article on Medium about Fase is [here](https://medium.com/@igushev/frontend-in-the-cloud-creating-native-mobile-applications-on-python-free-and-open-source-5g-15b34d956036).
+
+API documentation is [here](http://fase.io/documentation/)
 
 How to develop Fase Service read [here](http://fase.io/converter_service/).
 
