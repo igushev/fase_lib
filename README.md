@@ -33,7 +33,7 @@ Table of Contents
 
 ## Demo
 
-<iframe src="https://www.youtube.com/embed/hb64nMG7QWY" width="640" height="360" allowfullscreen="allowfullscreen"></iframe>
+[![Demo](https://img.youtube.com/vi/hb64nMG7QWY/0.jpg)](https://www.youtube.com/embed/hb64nMG7QWY)
 
 ## GitHub Client Repositories
 
@@ -122,10 +122,10 @@ How to deploy the server of a Fase Service read [here](http://fase.io/converter_
 |Prev button|Button in the left upper corner|Built in system back button||
 
 ## Abstract Elements on iOS
-![Abstract Elements on iOS](images/elements/ios.png "Abstract Elements on iOS")
+![Abstract Elements on iOS](http://fase.io/images/elements/ios.png "Abstract Elements on iOS")
 
 ## Abstract Elements on Android
-![Abstract Elements on Android](images/elements/android.png "Abstract Elements on Android")
+![Abstract Elements on Android](http://fase.io/images/elements/android.png "Abstract Elements on Android")
 
 # Examples
 
