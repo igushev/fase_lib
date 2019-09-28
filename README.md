@@ -35,7 +35,7 @@ Table of Contents
 
 [![Demo](https://img.youtube.com/vi/hb64nMG7QWY/0.jpg)](https://youtu.be/hb64nMG7QWY)
 
-## GitHub Client Repositories
+## Mobile Platforms Client Repositories
 
   * Fase iOS - [https://github.com/igushev/fase_ios](https://github.com/igushev/fase_ios);
   * Fase Android - [https://github.com/igushev/fase_android](https://github.com/igushev/fase_android);
