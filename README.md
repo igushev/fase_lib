@@ -3,8 +3,8 @@
 Table of Contents
 =================
 
-   * [Overview](#overview)
-      * [Benefits](#benefits)
+   * [Introduction](#introduction)
+      * [Overview](#overview)
       * [Demo](#demo)
       * [GitHub Client Repositories](#github-client-repositories)
       * [Platforms](#platforms)
@@ -21,9 +21,9 @@ Table of Contents
       * [Notes Service](#notes-service)
    * [Links](#links)
 
-# Overview
+# Introduction
 
-## Benefits
+## Overview
 
   * Singular frontend which is rendered on _all_ platforms with **native components**;
   * Running frontend in the cloud allows to synchronize not only data, but entire context and provide synchronized and seamless user experience;
@@ -42,17 +42,17 @@ Table of Contents
 
 ## Platforms
 
-  * Supported: iOS, Android;
-  * Coming: Web Browser, Tizen;
+  * **Supported**: iOS, Android;
+  * **Coming**: Web Browser, Tizen;
 
 ## Languages
 
-  * Supported: Python;
-  * Coming: C++, Java, PHP, Go, JavaScript;
+  * **Supported**: Python;
+  * **Coming**: C++, Java, PHP, Go, JavaScript;
 
 # Hello World
 
-```
+```python
 from fase import fase
 
 
@@ -90,6 +90,7 @@ How to develop Fase Service read [here](http://fase.io/converter_service/).
 How to deploy the server of a Fase Service read [here](http://fase.io/converter_server/).
 
 # Fase Elements
+
 ## Comparing Fase Elements to similar Elements in iOS/Android/Tkinter
 |Fase|iOS|Android|Tkinter|
 |----|---|-------|-------|
@@ -131,15 +132,13 @@ How to deploy the server of a Fase Service read [here](http://fase.io/converter_
 
 ## Notes Service
 
-  * Source Code - [https://github.com/igushev/notes_fase](https://github.com/igushev/notes_fase)
+  * Fase Source Code - [https://github.com/igushev/notes_fase](https://github.com/igushev/notes_fase)
   * [App Store](https://itunes.apple.com/us/app/notes-service/id1406678770?ls=1&mt=8)
   * [Play Store](https://play.google.com/store/apps/details?id=com.notes_service)
 
 # Links
-Fase library to develop the server of a Fase Service.
 
-Official website is [here](http://fase.io).
-
-Article on Medium about Fase is [here](https://medium.com/@igushev/frontend-in-the-cloud-creating-native-mobile-applications-on-python-free-and-open-source-5g-15b34d956036).
+  * Official website - [http://fase.io](http://fase.io);
+  * [Article on Medium about Fase](https://medium.com/@igushev/frontend-in-the-cloud-creating-native-mobile-applications-on-python-free-and-open-source-5g-15b34d956036);
 
 
