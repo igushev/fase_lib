@@ -33,7 +33,7 @@ Table of Contents
 
 ## Demo
 
-[![Demo](https://img.youtube.com/vi/hb64nMG7QWY/0.jpg)](https://www.youtube.com/embed/hb64nMG7QWY)
+[![Demo](https://img.youtube.com/vi/hb64nMG7QWY/0.jpg)](https://youtu.be/hb64nMG7QWY)
 
 ## GitHub Client Repositories
 
