@@ -6,7 +6,7 @@ Table of Contents
    * [Introduction](#introduction)
       * [Overview](#overview)
       * [Demo](#demo)
-      * [GitHub Client Repositories](#github-client-repositories)
+      * [Mobile Platforms Client Repositories](#mobile-platforms-client-repositories)
       * [Platforms](#platforms)
       * [Languages](#languages)
    * [Hello World](#hello-world)
