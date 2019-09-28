@@ -10,7 +10,7 @@ Table of Contents
       * [Platforms](#platforms)
       * [Languages](#languages)
    * [Hello World](#hello-world)
-   * [Documentatoin](#documentatoin)
+   * [Documentation](#documentation)
    * [Fase Elements](#fase-elements)
       * [Comparing Fase Elements to similar Elements in iOS/Android/Tkinter](#comparing-fase-elements-to-similar-elements-in-iosandroidtkinter)
    * [Drawing Elements](#drawing-elements)
@@ -81,7 +81,7 @@ class HelloWorldService(fase.Service):
 fase.Service.RegisterService(HelloWorldService)
 ```
 
-# Documentatoin
+# Documentation
 
 API documentation is [here](http://fase.io/documentation/)
 
