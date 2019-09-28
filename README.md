@@ -38,7 +38,7 @@ Table of Contents
 ## GitHub Client Repositories
 
   * Fase iOS - [https://github.com/igushev/fase_ios](https://github.com/igushev/fase_ios);
-  * Fase Android - [https://github.com/igushev/fase_android](https://github.com/igushev/fase_android)
+  * Fase Android - [https://github.com/igushev/fase_android](https://github.com/igushev/fase_android);
 
 ## Platforms
 
